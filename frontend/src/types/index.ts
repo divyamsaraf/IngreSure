@@ -7,6 +7,10 @@ export interface MenuItem {
     currency: string
     is_available: boolean
     created_at: string
+    // Joined fields for safety checks
+    ingredients?: string[]
+    allergens?: string[]
+    dietary_tags?: string[]
 }
 
 export interface VerificationLog {
