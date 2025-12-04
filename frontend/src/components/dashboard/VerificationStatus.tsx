@@ -1,6 +1,6 @@
 import React from 'react'
 import { VerificationLog } from '@/types'
-import { CheckCircle, AlertTriangle, XCircle } from 'lucide-react'
+import { CheckCircle, AlertTriangle } from 'lucide-react'
 
 interface Props {
     log: VerificationLog

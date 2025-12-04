@@ -110,8 +110,8 @@ export default function ChatInterface() {
                         </div>
                         <p className="font-medium text-lg text-slate-600">How can I help you today?</p>
                         <div className="flex flex-wrap justify-center gap-2 max-w-xs mx-auto">
-                            <button onClick={() => setInput("Is the burger vegan?")} className="text-xs bg-white border px-3 py-1.5 rounded-full hover:bg-slate-50 transition">"Is the burger vegan?"</button>
-                            <button onClick={() => setInput("I have a peanut allergy.")} className="text-xs bg-white border px-3 py-1.5 rounded-full hover:bg-slate-50 transition">"I have a peanut allergy."</button>
+                            <button onClick={() => setInput("Is the burger vegan?")} className="text-xs bg-white border px-3 py-1.5 rounded-full hover:bg-slate-50 transition">&quot;Is the burger vegan?&quot;</button>
+                            <button onClick={() => setInput("I have a peanut allergy.")} className="text-xs bg-white border px-3 py-1.5 rounded-full hover:bg-slate-50 transition">&quot;I have a peanut allergy.&quot;</button>
                         </div>
                     </div>
                 )}

@@ -13,32 +13,32 @@ export default function RecommendationsPage() {
     const [selectedDiet, setSelectedDiet] = useState<string>('Vegan') // Default for demo
 
     useEffect(() => {
+        const fetchRecommendations = async () => {
+            setLoading(true)
+            try {
+                // 1. Fetch Safe Recommendations
+                const safe = await getSafeRecommendations({
+                    allergens: [], // Could be dynamic
+                    diets: [selectedDiet]
+                })
+                setSafeItems(safe)
+
+                // 2. Fetch Similar Items (Demo: pick first safe item if exists)
+                if (safe.length > 0) {
+                    const similar = await getSimilarItems(safe[0].id)
+                    setSimilarItems(similar)
+                } else {
+                    setSimilarItems([])
+                }
+            } catch (error) {
+                console.error('Error fetching recommendations:', error)
+            } finally {
+                setLoading(false)
+            }
+        }
+
         fetchRecommendations()
     }, [selectedDiet])
-
-    const fetchRecommendations = async () => {
-        setLoading(true)
-        try {
-            // 1. Fetch Safe Recommendations
-            const safe = await getSafeRecommendations({
-                allergens: [], // Could be dynamic
-                diets: [selectedDiet]
-            })
-            setSafeItems(safe)
-
-            // 2. Fetch Similar Items (Demo: pick first safe item if exists)
-            if (safe.length > 0) {
-                const similar = await getSimilarItems(safe[0].id)
-                setSimilarItems(similar)
-            } else {
-                setSimilarItems([])
-            }
-        } catch (error) {
-            console.error('Error fetching recommendations:', error)
-        } finally {
-            setLoading(false)
-        }
-    }
 
     return (
         <div className="container mx-auto p-6 max-w-6xl">

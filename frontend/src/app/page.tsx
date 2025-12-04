@@ -8,7 +8,7 @@ export default function LandingPage() {
       <header className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-20 px-6">
         <div className="container mx-auto max-w-5xl text-center">
           <h1 className="text-5xl font-bold mb-6 leading-tight">
-            Eat with Confidence.<br />Know What's Inside.
+            Eat with Confidence.<br />Know What&apos;s Inside.
           </h1>
           <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
             IngreSure uses AI to verify menu ingredients, detect allergens, and ensure your food matches your dietary needs.
