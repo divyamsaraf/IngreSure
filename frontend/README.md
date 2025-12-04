@@ -9,4 +9,11 @@ This directory contains the Next.js frontend application.
 - Tailwind CSS
 
 ## Setup
-(Instructions to be added)
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+2. Run development server:
+   ```bash
+   npm run dev
+   ```
