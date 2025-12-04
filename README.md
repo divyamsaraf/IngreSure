@@ -1,48 +1,86 @@
 # IngreSure
 
-**Tagline:** AI-powered deterministic assistant for restaurants and grocery items, ensuring accurate dietary, allergen, and ingredient verification.
+**Eat with Confidence. Know What's Inside.**
 
-## Overview
-IngreSure is a platform designed to help restaurants and users verify food items for dietary restrictions and allergens. It leverages AI to analyze ingredients and provide hallucination-free responses.
+IngreSure is an AI-powered food safety platform that helps consumers and restaurant owners verify menu ingredients, detect allergens, and ensure dietary compliance.
+
+## Features
+
+- **AI Verification**: Uses Mistral 7B to cross-reference menu descriptions with ingredients.
+- **Safety Engine**: Rule-based system for factual allergen and diet checks.
+- **Consumer Chat**: Real-time assistant to answer questions like "Is this vegan?".
+- **Recommendations**: Smart suggestions based on dietary needs and ingredient similarity.
+- **Restaurant Dashboard**: Analytics and review tools for owners.
 
 ## Tech Stack
-- **Frontend:** Next.js / React + Material UI / Tailwind
-- **Backend:** FastAPI (Python) + Supabase client
-- **AI:** Mistral 7B quantized 4-bit (local), FAISS (RAG), YOLOv8-nano + Tesseract OCR
-- **Database:** Supabase (PostgreSQL)
-- **Deployment:** Vercel (Frontend), Supabase Functions/FastAPI host (Backend)
 
-## Collaboration Workflow
-- **Main Branch:** `main` (Production-ready code)
-- **Developer Branches:**
-  - `Divyam`: Primary working branch for Divyam.
-  - `Shriya`: Primary working branch for Shriya.
-- **Feature Branches:**
-  - `frontend/`: Frontend related changes
-  - `backend/`: Backend related changes
-  - `ai/`: AI model and logic changes
-- **Workflow:** Developers push to their respective branches (`Divyam`, `Shriya`) and create Pull Requests to `main` for review.
+- **Frontend**: Next.js 14, Tailwind CSS, Lucide React
+- **Backend**: Next.js API Routes
+- **Database**: Supabase (PostgreSQL + pgvector)
+- **AI**: Ollama (Mistral 7B), LangChain (conceptually)
 
-## Setup Instructions
+## Getting Started
+
 ### Prerequisites
-- Node.js & npm
-- Python 3.10+
-- Supabase CLI (optional but recommended)
-- Ollama (for running Mistral 7B locally)
 
-### Running Locally
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/divyamsaraf/IngreSure.git
-   cd IngreSure
-   ```
+1.  **Node.js** (v18+)
+2.  **Python 3.9+** (for AI service)
+3.  **Ollama** (running locally)
+    ```bash
+    ollama serve
+    ollama pull mistral
+    ```
+4.  **Supabase Account**
 
-2. **AI Model Setup:**
-   - Install Ollama.
-   - Pull Mistral 7B: `ollama pull mistral`
+### Installation
 
-3. **Backend Setup:**
-   - Navigate to `backend/` (instructions to be added).
+1.  Clone the repository:
+    ```bash
+    git clone https://github.com/divyamsaraf/IngreSure.git
+    cd IngreSure
+    ```
 
-4. **Frontend Setup:**
-   - Navigate to `frontend/` (instructions to be added).
+2.  Install Frontend Dependencies:
+    ```bash
+    cd frontend
+    npm install
+    ```
+
+3.  Install AI Dependencies:
+    ```bash
+    cd ../ai
+    pip install -r requirements.txt
+    ```
+
+4.  Set up Environment Variables:
+    Create `.env.local` in `frontend/`:
+    ```env
+    NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_key
+    ```
+
+### Running the App
+
+1.  Start the AI Service (if running separately, otherwise Next.js calls Ollama directly):
+    ```bash
+    # Ensure Ollama is running
+    ```
+
+2.  Start the Frontend:
+    ```bash
+    cd frontend
+    npm run dev
+    ```
+
+3.  Open [http://localhost:3000](http://localhost:3000).
+
+## Project Structure
+
+- `frontend/`: Next.js application (App Router).
+- `ai/`: Python scripts for verification logic.
+- `database/`: SQL schema and migrations.
+- `docs/`: Architecture and API documentation.
+
+## License
+
+MIT
