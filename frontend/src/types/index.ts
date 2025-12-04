@@ -19,6 +19,6 @@ export interface VerificationLog {
     is_consistent: boolean
     confidence_score: number
     issues: string[]
-    suggested_corrections: Record<string, any>
+    suggested_corrections: Record<string, unknown>
     verified_at: string
 }

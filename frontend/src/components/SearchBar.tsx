@@ -29,9 +29,18 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
             InputProps={{
                 startAdornment: (
                     <InputAdornment position="start">
-                        <SearchIcon />
+                        <SearchIcon sx={{ color: 'text.secondary', fontSize: 28 }} />
                     </InputAdornment>
                 ),
+                sx: {
+                    borderRadius: 4,
+                    bgcolor: 'background.paper',
+                    boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
+                    fontSize: '1.1rem',
+                    py: 1.5,
+                    px: 2,
+                    '& fieldset': { border: 'none' }, // Cleaner look
+                }
             }}
         />
     );
