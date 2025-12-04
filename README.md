@@ -14,11 +14,14 @@ IngreSure is a platform designed to help restaurants and users verify food items
 
 ## Collaboration Workflow
 - **Main Branch:** `main` (Production-ready code)
+- **Developer Branches:**
+  - `Divyam`: Primary working branch for Divyam.
+  - `Shriya`: Primary working branch for Shriya.
 - **Feature Branches:**
   - `frontend/`: Frontend related changes
   - `backend/`: Backend related changes
   - `ai/`: AI model and logic changes
-- **Pull Requests:** All changes must go through PRs and be reviewed by at least one other developer.
+- **Workflow:** Developers push to their respective branches (`Divyam`, `Shriya`) and create Pull Requests to `main` for review.
 
 ## Setup Instructions
 ### Prerequisites
