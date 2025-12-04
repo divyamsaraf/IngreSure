@@ -47,7 +47,7 @@ export async function extractIntent(userMessage: string): Promise<ChatIntent> {
     }
 }
 
-export async function generateResponseStream(userMessage: string, context: any) {
+export async function generateResponseStream(userMessage: string, context: unknown) {
     const prompt = `
     You are a helpful restaurant assistant. 
     User Query: "${userMessage}"

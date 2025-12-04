@@ -20,9 +20,18 @@ export async function getSafeRecommendations(constraints: UserConstraints): Prom
     return result.safeItems
 }
 
+interface Ingredient {
+    ingredient_name: string;
+}
+
+interface MenuItemWithIngredients extends MenuItem {
+    item_ingredients: Ingredient[];
+    similarityScore?: number;
+}
+
 export async function getSimilarItems(itemId: string): Promise<MenuItem[]> {
     // 1. Fetch the target item's ingredients
-    const { data: targetItem, error: targetError } = await supabase
+    const { data: targetItemData, error: targetError } = await supabase
         .from('menu_items')
         .select(`
             *,
@@ -31,15 +40,16 @@ export async function getSimilarItems(itemId: string): Promise<MenuItem[]> {
         .eq('id', itemId)
         .single()
 
-    if (targetError || !targetItem) {
+    if (targetError || !targetItemData) {
         console.error('Error fetching target item:', targetError)
         return []
     }
 
-    const targetIngredients = targetItem.item_ingredients?.map((i: any) => i.ingredient_name) || []
+    const targetItem = targetItemData as unknown as MenuItemWithIngredients;
+    const targetIngredients = targetItem.item_ingredients?.map(i => i.ingredient_name) || []
 
     // 2. Fetch all other items
-    const { data: allItems, error: allError } = await supabase
+    const { data: allItemsData, error: allError } = await supabase
         .from('menu_items')
         .select(`
             *,
@@ -47,11 +57,13 @@ export async function getSimilarItems(itemId: string): Promise<MenuItem[]> {
         `)
         .neq('id', itemId) // Exclude self
 
-    if (allError || !allItems) return []
+    if (allError || !allItemsData) return []
+
+    const allItems = allItemsData as unknown as MenuItemWithIngredients[];
 
     // 3. Calculate similarity and rank
-    const rankedItems = allItems.map((item: any) => {
-        const ingredients = item.item_ingredients?.map((i: any) => i.ingredient_name) || []
+    const rankedItems = allItems.map((item) => {
+        const ingredients = item.item_ingredients?.map(i => i.ingredient_name) || []
         const score = calculateSimilarity(targetIngredients, ingredients)
         return {
             ...item,
@@ -59,8 +71,8 @@ export async function getSimilarItems(itemId: string): Promise<MenuItem[]> {
             similarityScore: score
         }
     })
-        .filter((item: any) => item.similarityScore > 0) // Filter out totally unrelated items
-        .sort((a: any, b: any) => b.similarityScore - a.similarityScore)
+        .filter((item) => (item.similarityScore || 0) > 0) // Filter out totally unrelated items
+        .sort((a, b) => (b.similarityScore || 0) - (a.similarityScore || 0))
         .slice(0, 5) // Top 5
 
     return rankedItems

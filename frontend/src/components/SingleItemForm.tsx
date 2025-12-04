@@ -55,10 +55,25 @@ export default function SingleItemForm() {
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 3, maxWidth: 600, mx: 'auto', p: 3, bgcolor: 'background.paper', borderRadius: 2, boxShadow: 1 }}>
-      <Typography variant="h6" gutterBottom>
-        Add Menu Item
-      </Typography>
+    <Box component="form" onSubmit={handleSubmit} sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 4,
+      maxWidth: 700,
+      mx: 'auto',
+      p: 5,
+      bgcolor: 'background.paper',
+      borderRadius: 4,
+      boxShadow: '0 10px 40px -10px rgba(0,0,0,0.1)'
+    }}>
+      <Box sx={{ textAlign: 'center', mb: 2 }}>
+        <Typography variant="h4" component="h2" gutterBottom sx={{ fontWeight: 700, color: 'primary.main' }}>
+          Add Menu Item
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          Enter the details of your dish to get AI-powered tags.
+        </Typography>
+      </Box>
 
       <TextField
         label="Item Name"
@@ -67,6 +82,8 @@ export default function SingleItemForm() {
         onChange={handleChange}
         required
         fullWidth
+        variant="outlined"
+        placeholder="e.g. Truffle Mushroom Risotto"
       />
 
       <TextField
@@ -75,66 +92,69 @@ export default function SingleItemForm() {
         value={formData.description}
         onChange={handleChange}
         multiline
-        rows={3}
+        rows={4}
         fullWidth
+        placeholder="Describe the dish, flavors, and textures..."
       />
 
       <TextField
-        label="Ingredients (comma separated)"
+        label="Ingredients"
         name="ingredients"
         value={formData.ingredients}
         onChange={handleChange}
-        helperText="e.g., Chicken, Rice, Salt, Pepper"
+        helperText="Separate ingredients with commas (e.g., Arborio Rice, Mushrooms, Parmesan)"
         fullWidth
       />
 
-      <FormControl fullWidth>
-        <InputLabel>Allergens</InputLabel>
-        <Select
-          multiple
-          name="allergens"
-          value={formData.allergens}
-          onChange={handleSelectChange}
-          input={<OutlinedInput label="Allergens" />}
-          renderValue={(selected) => (
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-              {selected.map((value) => (
-                <Chip key={value} label={value} />
-              ))}
-            </Box>
-          )}
-        >
-          {ALLERGENS.map((allergen) => (
-            <MenuItem key={allergen} value={allergen}>
-              {allergen}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 3 }}>
+        <FormControl fullWidth>
+          <InputLabel>Allergens</InputLabel>
+          <Select
+            multiple
+            name="allergens"
+            value={formData.allergens}
+            onChange={handleSelectChange}
+            input={<OutlinedInput label="Allergens" />}
+            renderValue={(selected) => (
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                {selected.map((value) => (
+                  <Chip key={value} label={value} size="small" color="error" variant="outlined" />
+                ))}
+              </Box>
+            )}
+          >
+            {ALLERGENS.map((allergen) => (
+              <MenuItem key={allergen} value={allergen}>
+                {allergen}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
-      <FormControl fullWidth>
-        <InputLabel>Dietary Types</InputLabel>
-        <Select
-          multiple
-          name="dietTypes"
-          value={formData.dietTypes}
-          onChange={handleSelectChange}
-          input={<OutlinedInput label="Dietary Types" />}
-          renderValue={(selected) => (
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-              {selected.map((value) => (
-                <Chip key={value} label={value} />
-              ))}
-            </Box>
-          )}
-        >
-          {DIET_TYPES.map((diet) => (
-            <MenuItem key={diet} value={diet}>
-              {diet}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+        <FormControl fullWidth>
+          <InputLabel>Dietary Types</InputLabel>
+          <Select
+            multiple
+            name="dietTypes"
+            value={formData.dietTypes}
+            onChange={handleSelectChange}
+            input={<OutlinedInput label="Dietary Types" />}
+            renderValue={(selected) => (
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                {selected.map((value) => (
+                  <Chip key={value} label={value} size="small" color="success" variant="outlined" />
+                ))}
+              </Box>
+            )}
+          >
+            {DIET_TYPES.map((diet) => (
+              <MenuItem key={diet} value={diet}>
+                {diet}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Box>
 
       <TextField
         label="Price"
@@ -142,11 +162,12 @@ export default function SingleItemForm() {
         type="number"
         value={formData.price}
         onChange={handleChange}
-        InputProps={{ startAdornment: <Typography sx={{ mr: 1 }}>$</Typography> }}
+        InputProps={{ startAdornment: <Typography sx={{ mr: 1, color: 'text.secondary' }}>$</Typography> }}
         fullWidth
+        sx={{ maxWidth: 200 }}
       />
 
-      <Button variant="contained" type="submit" size="large">
+      <Button variant="contained" type="submit" size="large" sx={{ mt: 2, py: 1.5, fontSize: '1.1rem' }}>
         Submit Item
       </Button>
     </Box>

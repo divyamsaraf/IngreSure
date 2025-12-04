@@ -52,25 +52,35 @@ IngreSure is an AI-powered food safety platform that helps consumers and restaur
     pip install -r requirements.txt
     ```
 
-4.  Set up Environment Variables:
+4.  **Set up Environment Variables:**
     Create `.env.local` in `frontend/`:
     ```env
     NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
     NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_key
+    NEXT_PUBLIC_LLM_API_URL=http://localhost:11434/api/generate
     ```
 
 ### Running the App
 
-1.  Start the AI Service (if running separately, otherwise Next.js calls Ollama directly):
+1.  **Start Ollama (Local AI):**
     ```bash
-    # Ensure Ollama is running
+    ollama serve
+    # In a new terminal:
+    ollama pull mistral
     ```
 
-2.  Start the Frontend:
+2.  **Start the Frontend:**
     ```bash
     cd frontend
+    npm install --legacy-peer-deps
     npm run dev
     ```
+
+3.  **Open the App:**
+    Visit [http://localhost:3000](http://localhost:3000) to access the landing page, chat, and search features.
+
+4.  **Supabase Edge Functions (Optional - for Upload/Search):**
+    Follow `docs/deployment_guide.md` to deploy functions if running against a live Supabase instance.
 
 3.  Open [http://localhost:3000](http://localhost:3000).
 

@@ -35,22 +35,30 @@ export default function CSVUpload() {
             <Paper
                 variant="outlined"
                 sx={{
-                    p: 5,
+                    p: 8,
+                    borderWidth: 2,
                     borderStyle: 'dashed',
+                    borderColor: 'primary.light',
+                    borderRadius: 4,
                     textAlign: 'center',
                     cursor: 'pointer',
                     bgcolor: 'background.default',
-                    '&:hover': { bgcolor: 'action.hover' },
+                    transition: 'all 0.2s ease-in-out',
+                    '&:hover': {
+                        bgcolor: 'action.hover',
+                        borderColor: 'primary.main',
+                        transform: 'scale(1.01)'
+                    },
                 }}
                 onDragOver={handleDragOver}
                 onDrop={handleDrop}
             >
-                <CloudUploadIcon sx={{ fontSize: 48, color: 'text.secondary', mb: 2 }} />
-                <Typography variant="h6" gutterBottom>
+                <CloudUploadIcon sx={{ fontSize: 64, color: 'primary.main', mb: 3, opacity: 0.8 }} />
+                <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
                     Drag & Drop CSV here
                 </Typography>
-                <Typography variant="body2" color="text.secondary" gutterBottom>
-                    or click to select a file
+                <Typography variant="body1" color="text.secondary" gutterBottom sx={{ mb: 3 }}>
+                    or click to browse your files
                 </Typography>
                 <input
                     type="file"
@@ -60,7 +68,7 @@ export default function CSVUpload() {
                     onChange={handleFileChange}
                 />
                 <label htmlFor="csv-upload-input">
-                    <Button variant="outlined" component="span" sx={{ mt: 2 }}>
+                    <Button variant="outlined" component="span" size="large" sx={{ borderRadius: 2, px: 4 }}>
                         Select File
                     </Button>
                 </label>

@@ -31,12 +31,12 @@ export async function searchMenuItems(query: string): Promise<MenuItem[]> {
     }
 
     // Transform data to match MenuItem interface
-    return data.map((item: any) => ({
+    return data.map((item) => ({
         ...item,
-        ingredients: item.item_ingredients?.map((i: any) => i.ingredient_name) || [],
-        allergens: item.item_ingredients?.filter((i: any) => i.is_allergen).map((i: any) => i.ingredient_name) || [],
+        ingredients: item.item_ingredients?.map((i: { ingredient_name: string }) => i.ingredient_name) || [],
+        allergens: item.item_ingredients?.filter((i: { is_allergen: boolean }) => i.is_allergen).map((i: { ingredient_name: string }) => i.ingredient_name) || [],
         dietary_tags: item.tag_history?.[0]?.tags || [] // Assuming latest tags
-    }))
+    })) as MenuItem[]
 }
 
 export async function checkSafety(constraints: UserConstraints): Promise<SafetyResult> {
@@ -57,12 +57,12 @@ export async function checkSafety(constraints: UserConstraints): Promise<SafetyR
             .limit(50)
 
         if (!error && data) {
-            items = data.map((item: any) => ({
+            items = data.map((item) => ({
                 ...item,
-                ingredients: item.item_ingredients?.map((i: any) => i.ingredient_name) || [],
-                allergens: item.item_ingredients?.filter((i: any) => i.is_allergen).map((i: any) => i.ingredient_name) || [],
+                ingredients: item.item_ingredients?.map((i: { ingredient_name: string }) => i.ingredient_name) || [],
+                allergens: item.item_ingredients?.filter((i: { is_allergen: boolean }) => i.is_allergen).map((i: { ingredient_name: string }) => i.ingredient_name) || [],
                 dietary_tags: item.tag_history?.[0]?.tags || []
-            }))
+            })) as MenuItem[]
         }
     }
 
