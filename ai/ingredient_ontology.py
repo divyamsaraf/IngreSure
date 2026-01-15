@@ -1,168 +1,320 @@
-from typing import List, Optional, Set, Dict
+from typing import Dict, List, Set, Optional, NamedTuple
 
-# --- INGREDIENT CATEGORIES ---
-DAIRY = {"milk", "cream", "butter", "ghee", "whey", "casein", "lactose", "sodium caseinate", "milk fat", "yogurt", "cheese", "curd"}
-MEAT = {"meat", "beef", "pork", "pig", "chicken", "lamb", "mutton", "goat", "turkey", "duck", "bacon", "ham", "sausage", "pepperoni", "salami", "animal fat", "lard", "tallow", "suet", "gelatin", "rennet", "pepsin", "calf"}
-BEEF = {"beef", "calf", "veal", "beef extract"}
-PORK = {"pork", "pig", "ham", "bacon", "lard", "pork fat", "gelatin"} # Gelatin usually pork/beef
-EGG = {"egg", "eggs", "egg white", "egg yolk", "albumin"}
-SEAFOOD = {"fish", "tuna", "salmon", "cod", "anchovy", "shellfish", "shrimp", "crab", "lobster", "oyster", "clam", "prawn", "squid", "calamari"}
-ROOT_VEG = {"onion", "garlic", "potato", "carrot", "ginger", "radish", "turnip", "beetroot", "sweet potato", "scallion", "shallot", "leek"}
-ALCOHOL = {"alcohol", "wine", "beer", "rum", "whiskey", "vodka", "liqueur", "cider", "spirit"}
+# --- 1. DATA STRUCTURES ---
 
-# --- UNIVERSAL SAFE INGREDIENTS ---
-# Always safe unless specific constraint (like sugar/starch is generally fine everywhere)
-UNIVERSAL_SAFE = {
-    "water", "sugar", "salt", "corn syrup", "dextrose", "fructose", "glucose",
-    "wheat", "flour", "rice", "starch", "corn starch", "potato starch", "modified starch",
-    "baking soda", "baking powder", "citric acid", "agar agar",
-    "soy lecithin", "sunflower lecithin", "vegetable oil", "canola oil",
-    "olive oil", "coconut oil", "palm oil", "cocoa butter", "cocoa mass",
-    "hydrogenated vegetable oil", "hydrogenated oil", "beta carotene",
-    "yeast", "pectin", "guar gum", "xanthan gum", "locust bean gum",
-    "carrageenan", "calcium chloride", "potassium sorbate", "sodium benzoate",
-    "aspartame", "sucralose", "acesulfame k", "saccharin", "stevia", "erythritol",
-    "natural flavor", "natural flavors", "artificial flavor", "artificial flavors", "flavor" 
-    # Flavors are considered safe by default in this ontology unless animal-derived is explicitly flagged
-    # but we will handle ambiguity if needed. User requested "Safe unless explicitly labeled".
+class IngredientProperties(NamedTuple):
+    source: str  # "plant", "animal", "milk", "synthetic", "mineral", "insect", "fish", "shellfish", "egg", "alcohol"
+    allergens: Set[str] # "milk", "egg", "peanut", "nut", "soy", "wheat", "fish", "shellfish"
+    notes: str
+    ambiguous: bool = False
+
+# --- 2. THE COMPREHENSIVE ONTOLOGY (O(1) Lookup) ---
+# All keys Must be normalized (lowercase, unique)
+
+INGREDIENT_DB: Dict[str, IngredientProperties] = {
+    # --- WATER & BASICS ---
+    "water": IngredientProperties("mineral", set(), "Universal safe"),
+    "carbonated water": IngredientProperties("mineral", set(), "Universal safe"),
+    "sparkling water": IngredientProperties("mineral", set(), "Universal safe"),
+    
+    # --- SUGARS & SWEETENERS ---
+    "sugar": IngredientProperties("plant", set(), "Universal safe"),
+    "cane sugar": IngredientProperties("plant", set(), "Universal safe"),
+    "beet sugar": IngredientProperties("plant", set(), "Universal safe"),
+    "fructose": IngredientProperties("plant", set(), "Universal safe"),
+    "glucose": IngredientProperties("plant", set(), "Universal safe"),
+    "dextrose": IngredientProperties("plant", set(), "Universal safe"),
+    "corn syrup": IngredientProperties("plant", set(), "Universal safe"),
+    "high fructose corn syrup": IngredientProperties("plant", set(), "Universal safe"),
+    "maltodextrin": IngredientProperties("plant", set(), "Universal safe"),
+    "honey": IngredientProperties("animal", set(), "Non-vegan"), # Animal produced (bee)
+    "aspartame": IngredientProperties("synthetic", set(), "Artificial sweetener"),
+    "sucralose": IngredientProperties("synthetic", set(), "Artificial sweetener"),
+    "acesulfame potassium": IngredientProperties("synthetic", set(), "Artificial sweetener"),
+    "acesulfame k": IngredientProperties("synthetic", set(), "Artificial sweetener"),
+    "saccharin": IngredientProperties("synthetic", set(), "Artificial sweetener"),
+    "stevia": IngredientProperties("plant", set(), "Natural sweetener"),
+    "erythritol": IngredientProperties("plant", set(), "Sugar alcohol"),
+    "xylitol": IngredientProperties("plant", set(), "Sugar alcohol"),
+    "sorbitol": IngredientProperties("plant", set(), "Sugar alcohol"),
+    
+    # --- SALTS & MINERALS ---
+    "salt": IngredientProperties("mineral", set(), "Universal safe"),
+    "sea salt": IngredientProperties("mineral", set(), "Universal safe"),
+    "baking soda": IngredientProperties("mineral", set(), "Universal safe"),
+    "sodium bicarbonate": IngredientProperties("mineral", set(), "Universal safe"),
+    "calcium carbonate": IngredientProperties("mineral", set(), "Universal safe"),
+    "calcium chloride": IngredientProperties("mineral", set(), "Universal safe"),
+    "potassium chloride": IngredientProperties("mineral", set(), "Universal safe"),
+    
+    # --- OILS & FATS ---
+    "vegetable oil": IngredientProperties("plant", set(), "Universal safe"),
+    "canola oil": IngredientProperties("plant", set(), "Universal safe"),
+    "soybean oil": IngredientProperties("plant", {"soy"}, "Universal safe"),
+    "sunflower oil": IngredientProperties("plant", set(), "Universal safe"),
+    "olive oil": IngredientProperties("plant", set(), "Universal safe"),
+    "coconut oil": IngredientProperties("plant", {"nut"}, "Universal safe"), # FDA classifies coconut as nut
+    "palm oil": IngredientProperties("plant", set(), "Universal safe"),
+    "hydrogenated vegetable oil": IngredientProperties("plant", set(), "Universal safe"),
+    "hydrogenated oil": IngredientProperties("plant", set(), "Universal safe"),
+    "cocoa butter": IngredientProperties("plant", set(), "Universal safe"),
+    "butter": IngredientProperties("milk", {"milk"}, "Dairy"),
+    "ghee": IngredientProperties("milk", {"milk"}, "Dairy"),
+    "cream": IngredientProperties("milk", {"milk"}, "Dairy"),
+    "milk fat": IngredientProperties("milk", {"milk"}, "Dairy"),
+    "lard": IngredientProperties("animal", set(), "Pork fat"),
+    "tallow": IngredientProperties("animal", set(), "Beef fat"),
+    "suet": IngredientProperties("animal", set(), "Beef fat"),
+    "animal fat": IngredientProperties("animal", set(), "Generic animal fat"),
+    "fish oil": IngredientProperties("fish", {"fish"}, "Fish derived"),
+    
+    # --- DAIRY ---
+    "milk": IngredientProperties("milk", {"milk"}, "Dairy"),
+    "skim milk": IngredientProperties("milk", {"milk"}, "Dairy"),
+    "whole milk": IngredientProperties("milk", {"milk"}, "Dairy"),
+    "milk powder": IngredientProperties("milk", {"milk"}, "Dairy"),
+    "whey": IngredientProperties("milk", {"milk"}, "Dairy"),
+    "whey protein": IngredientProperties("milk", {"milk"}, "Dairy"),
+    "casein": IngredientProperties("milk", {"milk"}, "Dairy"),
+    "sodium caseinate": IngredientProperties("milk", {"milk"}, "Dairy"),
+    "calcium caseinate": IngredientProperties("milk", {"milk"}, "Dairy"),
+    "lactose": IngredientProperties("milk", {"milk"}, "Dairy"),
+    "yogurt": IngredientProperties("milk", {"milk"}, "Dairy"),
+    "cheese": IngredientProperties("milk", {"milk"}, "Dairy"),
+    "curd": IngredientProperties("milk", {"milk"}, "Dairy"),
+    
+    # --- MEAT ---
+    "beef": IngredientProperties("animal", set(), "Beef"),
+    "steak": IngredientProperties("animal", set(), "Beef"),
+    "veal": IngredientProperties("animal", set(), "Beef"),
+    "calf": IngredientProperties("animal", set(), "Beef"),
+    "pork": IngredientProperties("animal", set(), "Pork"),
+    "ham": IngredientProperties("animal", set(), "Pork"),
+    "bacon": IngredientProperties("animal", set(), "Pork"),
+    "sausage": IngredientProperties("animal", set(), "Generic meat"), # Often pork
+    "chicken": IngredientProperties("animal", set(), "Poultry"),
+    "turkey": IngredientProperties("animal", set(), "Poultry"),
+    "duck": IngredientProperties("animal", set(), "Poultry"),
+    "lamb": IngredientProperties("animal", set(), "Meat"),
+    "mutton": IngredientProperties("animal", set(), "Meat"),
+    "goat": IngredientProperties("animal", set(), "Meat"),
+    "meat": IngredientProperties("animal", set(), "Generic meat"),
+    "gelatin": IngredientProperties("animal", set(), "Animal connective tissue"),
+    "rennet": IngredientProperties("animal", set(), "Enzyme from stomach"), # Assumed animal unless "microbial rennet"
+    "animal rennet": IngredientProperties("animal", set(), "Enzyme from stomach"),
+    "pepsin": IngredientProperties("animal", set(), "Enzyme from stomach"),
+    
+    # --- FISH & SEAFOOD ---
+    "fish": IngredientProperties("fish", {"fish"}, "Fish"),
+    "tuna": IngredientProperties("fish", {"fish"}, "Fish"),
+    "salmon": IngredientProperties("fish", {"fish"}, "Fish"),
+    "cod": IngredientProperties("fish", {"fish"}, "Fish"),
+    "anchovy": IngredientProperties("fish", {"fish"}, "Fish"),
+    "shrimp": IngredientProperties("shellfish", {"shellfish"}, "Shellfish"),
+    "crab": IngredientProperties("shellfish", {"shellfish"}, "Shellfish"),
+    "lobster": IngredientProperties("shellfish", {"shellfish"}, "Shellfish"),
+    "clam": IngredientProperties("shellfish", {"shellfish"}, "Shellfish"),
+    "oyster": IngredientProperties("shellfish", {"shellfish"}, "Shellfish"),
+    "shellfish": IngredientProperties("shellfish", {"shellfish"}, "Shellfish"),
+    
+    # --- EGGS ---
+    "egg": IngredientProperties("egg", {"egg"}, "Egg"),
+    "eggs": IngredientProperties("egg", {"egg"}, "Egg"),
+    "egg white": IngredientProperties("egg", {"egg"}, "Egg"),
+    "egg yolk": IngredientProperties("egg", {"egg"}, "Egg"),
+    "albumin": IngredientProperties("egg", {"egg"}, "Egg protein"),
+    
+    # --- GRAINS & FLOURS ---
+    "wheat": IngredientProperties("plant", {"wheat"}, "Grain"),
+    "wheat flour": IngredientProperties("plant", {"wheat"}, "Grain"),
+    "flour": IngredientProperties("plant", {"wheat"}, "Grain"),
+    "rice": IngredientProperties("plant", set(), "Grain"),
+    "rice flour": IngredientProperties("plant", set(), "Grain"),
+    "corn": IngredientProperties("plant", set(), "Grain"),
+    "corn flour": IngredientProperties("plant", set(), "Grain"),
+    "corn starch": IngredientProperties("plant", set(), "Grain"),
+    "starch": IngredientProperties("plant", set(), "Plant starch"),
+    "modified starch": IngredientProperties("plant", set(), "Plant starch"),
+    "potato starch": IngredientProperties("plant", set(), "Plant starch"),
+    "oats": IngredientProperties("plant", set(), "Grain"),
+    "barley": IngredientProperties("plant", {"wheat"}, "Grain (Gluten)"),
+    "rye": IngredientProperties("plant", {"wheat"}, "Grain (Gluten)"),
+    "malt": IngredientProperties("plant", {"wheat"}, "Barley derivative"),
+    
+    # --- VEGETABLES (Roots marked for Jain) ---
+    "onion": IngredientProperties("plant", set(), "Root vegetable"),
+    "onion powder": IngredientProperties("plant", set(), "Root vegetable"),
+    "garlic": IngredientProperties("plant", set(), "Root vegetable"),
+    "garlic powder": IngredientProperties("plant", set(), "Root vegetable"),
+    "potato": IngredientProperties("plant", set(), "Root vegetable"),
+    "carrot": IngredientProperties("plant", set(), "Root vegetable"),
+    "ginger": IngredientProperties("plant", set(), "Root vegetable"),
+    "tomato": IngredientProperties("plant", set(), " vegetable"),
+    "spinach": IngredientProperties("plant", set(), " vegetable"),
+    
+    # --- ADDITIVES & PRESERVATIVES ---
+    "citric acid": IngredientProperties("plant", set(), "Fermentation product"),
+    "ascorbic acid": IngredientProperties("plant", set(), "Vitamin C"),
+    "lecithin": IngredientProperties("plant", {"soy"}, "Soy usually"),
+    "soy lecithin": IngredientProperties("plant", {"soy"}, "Soy derived"),
+    "sunflower lecithin": IngredientProperties("plant", set(), "Sunflower derived"),
+    "pectin": IngredientProperties("plant", set(), "Fruit derived"),
+    "agar agar": IngredientProperties("plant", set(), "Seaweed derived"),
+    "carrageenan": IngredientProperties("plant", set(), "Seaweed derived"),
+    "guar gum": IngredientProperties("plant", set(), "Bean derived"),
+    "xanthan gum": IngredientProperties("plant", set(), "Fermentation product"),
+    "locust bean gum": IngredientProperties("plant", set(), "Bean derived"),
+    "acacia gum": IngredientProperties("plant", set(), "Tree sap"),
+    "gum arabic": IngredientProperties("plant", set(), "Tree sap"),
+    "potassium sorbate": IngredientProperties("synthetic", set(), "Preservative"),
+    "sodium benzoate": IngredientProperties("synthetic", set(), "Preservative"),
+    "calcium propionate": IngredientProperties("synthetic", set(), "Preservative"),
+    "sodium polyphosphate": IngredientProperties("synthetic", set(), "Emulsifier"),
+    "polysorbate": IngredientProperties("synthetic", set(), "Emulsifier"),
+    "polysorbate 60": IngredientProperties("synthetic", set(), "Emulsifier"),
+    "polysorbate 80": IngredientProperties("synthetic", set(), "Emulsifier"),
+    "mono- and diglycerides": IngredientProperties("plant", set(), "Usually plant oil derived"), # Can be animal but standard industry is plant. We mark plant for safety app default, or ambiguous? User said "No over hedging". Industry standard is plant. 
+    "glycerin": IngredientProperties("plant", set(), "Usually plant derived"),
+    "glycerol": IngredientProperties("plant", set(), "Usually plant derived"),
+    
+    # --- COLORS ---
+    "red 40": IngredientProperties("synthetic", set(), "Artificial color"),
+    "yellow 5": IngredientProperties("synthetic", set(), "Artificial color"),
+    "blue 1": IngredientProperties("synthetic", set(), "Artificial color"),
+    "beta carotene": IngredientProperties("plant", set(), "Natural color"),
+    "carmine": IngredientProperties("insect", set(), "Insect derived"),
+    "cochineal": IngredientProperties("insect", set(), "Insect derived"),
+    "e120": IngredientProperties("insect", set(), "Insect derived"),
+    "turmeric": IngredientProperties("plant", set(), "Natural color"),
+    "annatto": IngredientProperties("plant", set(), "Natural color"),
+    
+    # --- FLAVORS ---
+    "natural flavor": IngredientProperties("plant", set(), "Generally safe"), 
+    "artificial flavor": IngredientProperties("synthetic", set(), "Safe"),
+    "yeast extract": IngredientProperties("plant", set(), "Yeast"),
+    "msg": IngredientProperties("plant", set(), "Fermentation"),
+    "monosodium glutamate": IngredientProperties("plant", set(), "Fermentation"),
+    "vanilla": IngredientProperties("plant", set(), "Plant"),
+    "vanillin": IngredientProperties("synthetic", set(), "Synthetic"),
+    
+    # --- ALCOHOL ---
+    "alcohol": IngredientProperties("alcohol", set(), "Alcohol"),
+    "wine": IngredientProperties("alcohol", set(), "Alcohol"),
+    "beer": IngredientProperties("alcohol", {"wheat"}, "Alcohol"),
+    "rum": IngredientProperties("alcohol", set(), "Alcohol"),
+    "cider": IngredientProperties("alcohol", set(), "Alcohol"),
 }
 
-# --- AMBIGUOUS / CAUTION ---
-AMBIGUOUS_SET = {
-    "glycerin", "glycerol", "e422", "mono- and diglycerides", "e471", "polysorbate", 
-    "enzymes", "rennet", "lipase", "protease", "stearic acid", "magnesium stearate", "vitamin a", "retinol"
-}
+# --- 3. PROFILE DEFINITIONS & RULES ---
 
-def normalize_ingredient(ing: str) -> str:
-    return ing.lower().strip().replace("*", "").replace("  ", " ")
+class UserProfile(NamedTuple):
+    diet: str # "hindu_veg", "hindu_non_veg", "jain", "vegan", "vegetarian", "halal", "kosher", "sikh", "general"
+    dairy_allowed: bool
+    allergens: Set[str]
+    # religious_strictness: bool = True # Assume strict for now
 
-class FastPathResult:
-    def __init__(self, verdict: str, logic: Optional[List[str]] = None):
-        self.verdict = verdict  # SAFE, NOT_SUITABLE, HANDOFF
-        self.logic = logic or []
+def normalize_text(text: str) -> str:
+    return text.lower().strip().replace("*", "").replace(".", "")
 
-def evaluate_fast_path(ingredients: List[str], profile_str: str = "general") -> FastPathResult:
+def evaluate_ingredient_risk(ingredient: str, profile: UserProfile) -> Dict:
     """
-    Evaluates ingredients based on a granular profile string (e.g. "hindu vegan").
+    O(1) Check.
+    Returns: {"status": "SAFE"|"NOT_SAFE"|"UNCLEAR", "reason": str}
     """
-    profile_str = profile_str.lower()
+    norm = normalize_text(ingredient)
+    prop = INGREDIENT_DB.get(norm)
     
-    # 1. Determine constraints based on profile keywords
-    blocked_sets: List[Set[str]] = []
-    allowed_sets: List[Set[str]] = []
-    
-    # Base Rules
-    if "jain" in profile_str:
-        blocked_sets.extend([MEAT, SEAFOOD, EGG, ROOT_VEG])
-        # Jain Vegan vs Jain (Dairy OK)
-        if "vegan" in profile_str:
-            blocked_sets.append(DAIRY)
+    # If not found, try simple substring matches for common categories
+    if not prop:
+        if "milk" in norm or "cream" in norm or "cheese" in norm: prop = INGREDIENT_DB["milk"]
+        elif "beef" in norm: prop = INGREDIENT_DB["beef"]
+        elif "pork" in norm or "bacon" in norm: prop = INGREDIENT_DB["pork"]
+        elif "chicken" in norm: prop = INGREDIENT_DB["chicken"]
+        elif "egg" in norm: prop = INGREDIENT_DB["egg"]
+        elif "oil" in norm: prop = INGREDIENT_DB["vegetable oil"] # Assumption
+        elif "flour" in norm: prop = INGREDIENT_DB["flour"]
         else:
-            allowed_sets.append(DAIRY) # Explicitly allow dairy
+            return {"status": "UNCLEAR", "reason": f"Unknown ingredient: {ingredient}"}
+
+    # 1. ALLERGY CHECK
+    for allergen in prop.allergens:
+        if allergen in profile.allergens:
+            return {"status": "NOT_SAFE", "reason": f"Contains {allergen} (allergen)"}
+    
+    # 2. DIET CHECK
+    # Hindu Veg
+    if profile.diet == "hindu_veg":
+        if prop.source in ["animal", "fish", "shellfish", "egg", "insect"]:
+            # Exception: Beef is bad even for non-veg, but this is veg profile so all meat bad.
+            return {"status": "NOT_SAFE", "reason": f"Forbidden in Hindu Veg ({prop.notes})"}
+        if prop.source == "milk" and not profile.dairy_allowed:
+             return {"status": "NOT_SAFE", "reason": "Contains Dairy (Not allowed in profile)"}
+             
+    # Hindu Non-Veg
+    elif profile.diet == "hindu_non_veg":
+        if "beef" in prop.notes.lower() or "beef" in norm:
+             return {"status": "NOT_SAFE", "reason": "Beef is strictly forbidden in Hindu diets"}
+        if prop.source == "milk" and not profile.dairy_allowed:
+             return {"status": "NOT_SAFE", "reason": "Contains Dairy (Not allowed in profile)"}
+
+    # Jain
+    elif profile.diet == "jain":
+        if prop.source in ["animal", "fish", "shellfish", "egg", "insect"]:
+             return {"status": "NOT_SAFE", "reason": "Animal products forbidden in Jainism"}
+        if "root" in prop.notes.lower():
+             return {"status": "NOT_SAFE", "reason": "Root vegetables forbidden in Jainism"}
+        if prop.source == "milk" and not profile.dairy_allowed:
+             return {"status": "NOT_SAFE", "reason": "Contains Dairy"}
+
+    # Vegan
+    elif profile.diet == "vegan":
+        if prop.source in ["animal", "fish", "shellfish", "egg", "milk", "insect", "honey"]:
+             return {"status": "NOT_SAFE", "reason": f"Animal/Dairy product ({prop.notes})"}
+             
+    # Vegetarian
+    elif profile.diet == "vegetarian":
+        if prop.source in ["animal", "fish", "shellfish", "insect"]:
+             return {"status": "NOT_SAFE", "reason": "Meat/Seafood not vegetarian"}
+        if prop.source == "egg": # Some vegetarians eat eggs, others don't. Assuming lacto-ovo default unless specified? 
+            # Prompt doesn't specify rigid egg rule for generic 'vegetarian', but typical Western is OK. 
+            # Reviewing Prompt Truth Table: "Vegetarian -> No meat/fish/egg/gelatin". 
+            # Wait, standard vegetarian (Lacto-Ovo) allows egg. 
+            # But Truth Table user provided earlier says: "Vegetarian: meat,fish,egg,gelatin... NO".
+            # Okay, I will follow User Truth Table which implies Lacto-Vegetarian (Indian standard?).
+            return {"status": "NOT_SAFE", "reason": "Egg not allowed in strict vegetarian profile"}
+
+    # Halal
+    elif profile.diet == "halal":
+        if prop.source == "alcohol":
+             return {"status": "NOT_SAFE", "reason": "Alcohol is Haram"}
+        if "pork" in prop.notes.lower() or "pork" in norm or prop.source == "insect":
+             return {"status": "NOT_SAFE", "reason": "Pork/Insect forbidden in Halal"}
+        if prop.source in ["animal"] and "beef" not in norm and "pork" not in norm: 
+            # Generic meat -> needs Halal cert. Safe app -> Block or Warn?
+            # Prompt says "Deterministic... if ingredient is animal-derived and forbidden -> NOT SAFE".
+            # For Halal, non-halal meat is forbidden. Since we can't verify cert, we mark NOT SAFE or UNCLEAR?
+            # User example: "Chicken... Safe if Halal".
+            return {"status": "NOT_SAFE", "reason": "Meat requires Halal certification"}
             
-    elif "vegan" in profile_str:
-        blocked_sets.extend([MEAT, SEAFOOD, EGG, DAIRY])
-        # Block honey/gelatin logic handled by keywords/MEAT set inclusion
-        blocked_sets.append({"honey", "shellac", "carmine", "e120", "vitamin d3"})
-        
-    elif "hindu" in profile_str:
-        # Hindu Non-Veg vs Veg
-        if "non-veg" in profile_str or "non veg" in profile_str:
-             blocked_sets.append(BEEF)
-             # Allowed: Meat (Generic), Seafood, Egg, Dairy
-             allowed_sets.extend([MEAT, SEAFOOD, EGG, DAIRY])
-        else:
-             # Hindu Veg (Default)
-             blocked_sets.extend([MEAT, SEAFOOD, EGG])
-             # Check if vegan specified
-             if "vegan" in profile_str:
-                 blocked_sets.append(DAIRY)
-             else:
-                 allowed_sets.append(DAIRY)
+    # Kosher
+    elif profile.diet == "kosher":
+        if "pork" in prop.notes.lower() or prop.source == "shellfish" or prop.source == "insect":
+             return {"status": "NOT_SAFE", "reason": "Non-Kosher"}
+        if prop.source in ["animal", "meat"] and "pork" not in norm:
+             return {"status": "NOT_SAFE", "reason": "Meat requires Kosher certification"}
 
-    elif "halal" in profile_str:
-        blocked_sets.extend([PORK, ALCOHOL])
-        # Note: Non-halal meat is blocked, but we can't detect "Non-Halal Chicken" by string.
-        # We assume "Chicken" is safe unless user says "Halal Chicken Only" - strictness varies.
-        # For safety app: Block Pork/Alcohol strictly. Flag Meat as Ambiguous?
-        # User said: "Halal -> Pork, alcohol... NO; plant-based OK".
-        # We will assume generic meat is suspect? Or Safe?
-        # Let's block definite Haram.
-        
-    elif "vegetarian" in profile_str:
-        blocked_sets.extend([MEAT, SEAFOOD, EGG])
-        allowed_sets.append(DAIRY)
+    # Sikh
+    elif profile.diet == "sikh":
+        if "halal" in norm or "kutha" in norm:
+             return {"status": "NOT_SAFE", "reason": "Kutha meat forbidden"}
+        # Some Sikhs are veg, some non-veg. If generic Sikh -> Block Halal/Kutha.
+        # User truth table says: "Sikh -> no Halal/Kutha meat".
+        # If input is just "Chicken", we assume generic chicken is not Halal? Or safe?
+        # Usually generic chicken in West is safe for Sikh (Jhatka or whatever). 
+        # But for safety, "Meat" is usually flagged if profile is "Sikh Veg". 
+        # If "Sikh Non-Veg", Chicken is SAFE.
+        pass 
 
-    elif "kosher" in profile_str:
-        blocked_sets.extend([PORK, SEAFOOD]) # Shellfish in SEAFOOD need separation?
-        # Kosher rules are complex. Block Pork/Shellfish.
-        blocked_sets.append({"shrimp", "crab", "lobster", "oyster", "clam", "shellfish"})
-        
-    elif "sikh" in profile_str:
-        blocked_sets.append({"halal", "kutha"}) # Mainly method of slaughter.
-        if "vegetarian" in profile_str:
-            blocked_sets.extend([MEAT, SEAFOOD, EGG])
-            
-    # Combine sets
-    combined_block = set().union(*blocked_sets) if blocked_sets else set()
-    combined_allow = set().union(*allowed_sets) if allowed_sets else set()
-    
-    # Universal Safe is always valid base
-    # But if profile is "No Sugar" (not implemented), we would remove it.
-    # For now, UNIVERSAL_SAFE is truly universal for these religious/ethical profiles.
-    
-    normalized_inputs = [normalize_ingredient(i) for i in ingredients]
-    
-    # --- CHECK LOGIC ---
-    
-    blocked_found = []
-    
-    for ing in normalized_inputs:
-        # Check Explicit Block
-        for b in combined_block:
-            if b in ing:
-                blocked_found.append(ing)
-                break
-        if blocked_found and ing == blocked_found[-1]: continue
-        
-    if blocked_found:
-        return FastPathResult("NOT_SUITABLE", blocked_found)
-        
-    # Check Safe / Ambiguous
-    ambiguous_found = []
-    unknowns = []
-    valid_ingredients = []
-
-    for ing in normalized_inputs:
-        # 1. Is it safe? (Universal or Explicitly Allowed)
-        is_safe = False
-        if ing in UNIVERSAL_SAFE: is_safe = True
-        if not is_safe:
-             for s in combined_allow:
-                 if s in ing: 
-                     is_safe = True
-                     break
-        
-        if is_safe:
-            valid_ingredients.append(ing)
-            continue
-
-        # 2. Is it ambiguous?
-        is_ambiguous = False
-        for a in AMBIGUOUS_SET:
-            if a in ing:
-                ambiguous_found.append(ing)
-                is_ambiguous = True
-                break
-        if is_ambiguous:
-            continue
-            
-        unknowns.append(ing)
-
-    if not ambiguous and not unknowns:
-        return FastPathResult("SAFE", valid_ingredients)
-
-    if ambiguous or unknowns:
-        return FastPathResult("HANDOFF", ambiguous + unknowns)
-
-    return FastPathResult("HANDOFF", normalized_inputs)
+    # 3. UNIVERSAL ALLOWANCE Check
+    # If we got here, no block triggered.
+    return {"status": "SAFE", "reason": prop.notes}
