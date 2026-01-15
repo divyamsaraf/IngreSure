@@ -8,7 +8,22 @@ interface Message {
     content: string
 }
 
-export default function ChatInterface() {
+interface ChatInterfaceProps {
+    apiEndpoint?: string
+    title?: string
+    subtitle?: string
+    suggestions?: string[]
+}
+
+export default function ChatInterface({
+    apiEndpoint = '/api/chat',
+    title = 'IngreSure Assistant',
+    subtitle = 'Powered by SafetyAnalyst',
+    suggestions = [
+        "Is the burger vegan?",
+        "I have a peanut allergy."
+    ]
+}: ChatInterfaceProps) {
     const [messages, setMessages] = useState<Message[]>([])
     const [input, setInput] = useState('')
     const [loading, setLoading] = useState(false)
@@ -31,11 +46,10 @@ export default function ChatInterface() {
         setMessages(prev => [...prev, { role: 'user', content: userMsg }])
         setLoading(true)
 
-        // Add placeholder for assistant message
         setMessages(prev => [...prev, { role: 'assistant', content: '' }])
 
         try {
-            const response = await fetch('/api/chat', {
+            const response = await fetch(apiEndpoint, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message: userMsg })
@@ -54,35 +68,19 @@ export default function ChatInterface() {
                 if (done) break
 
                 const chunk = decoder.decode(value, { stream: true })
-                // Ollama returns multiple JSON objects like { "response": "word" }
-                // We need to parse them. They might be concatenated.
-                // e.g. {"response":"H"}{"response":"i"}
+                assistantMessage += chunk
 
-                // Simple regex to find "response":"..." patterns might be safer than splitting by }
-                // Or split by newline if Ollama sends newlines (it usually does)
-                const lines = chunk.split('\n').filter(line => line.trim() !== '')
-
-                for (const line of lines) {
-                    try {
-                        const json = JSON.parse(line)
-                        if (json.response) {
-                            assistantMessage += json.response
-                            setMessages(prev => {
-                                const newMsgs = [...prev]
-                                newMsgs[newMsgs.length - 1].content = assistantMessage
-                                return newMsgs
-                            })
-                        }
-                    } catch (e) {
-                        console.error('Error parsing chunk:', e)
-                    }
-                }
+                setMessages(prev => {
+                    const newMsgs = [...prev]
+                    newMsgs[newMsgs.length - 1].content = assistantMessage
+                    return newMsgs
+                })
             }
 
         } catch (error) {
             console.error('Chat error:', error)
             setMessages(prev => [
-                ...prev.slice(0, -1), // Remove empty assistant message
+                ...prev.slice(0, -1),
                 { role: 'assistant', content: 'Sorry, I encountered an error. Please try again.' }
             ])
         } finally {
@@ -91,47 +89,59 @@ export default function ChatInterface() {
     }
 
     return (
-        <div className="flex flex-col h-[600px] border border-slate-200 rounded-3xl bg-white shadow-xl overflow-hidden">
-            <div className="bg-slate-900 text-white p-6 flex items-center gap-3">
-                <div className="p-2 bg-white/10 rounded-full">
-                    <Bot className="w-6 h-6" />
+        <div className="flex flex-col h-[75vh] max-h-[800px] border border-slate-100 rounded-2xl bg-white shadow-xl overflow-hidden backdrop-blur-sm">
+            <div className="bg-slate-50/50 backdrop-blur p-4 border-b border-slate-100 flex items-center gap-3">
+                <div className="p-2 bg-blue-100/50 rounded-xl">
+                    <Bot className="w-6 h-6 text-blue-600" />
                 </div>
                 <div>
-                    <h2 className="font-bold text-lg">IngreSure Assistant</h2>
-                    <p className="text-xs text-slate-400">Powered by Mistral AI</p>
+                    <h2 className="font-bold text-gray-800 text-lg">{title}</h2>
+                    <p className="text-xs text-slate-500 font-medium">{subtitle}</p>
                 </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-slate-50">
+            <div className="flex-1 overflow-y-auto p-4 space-y-6 scroll-smooth">
                 {messages.length === 0 && (
-                    <div className="text-center text-slate-400 mt-20 space-y-4">
-                        <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <Bot className="w-8 h-8 text-slate-400" />
+                    <div className="h-full flex flex-col items-center justify-center p-8 text-center space-y-6">
+                        <div className="w-20 h-20 bg-blue-50 rounded-2xl flex items-center justify-center mb-2 shadow-sm animate-in fade-in zoom-in duration-500">
+                            <Bot className="w-10 h-10 text-blue-600" />
                         </div>
-                        <p className="font-medium text-lg text-slate-600">How can I help you today?</p>
-                        <div className="flex flex-wrap justify-center gap-2 max-w-xs mx-auto">
-                            <button onClick={() => setInput("Is the burger vegan?")} className="text-xs bg-white border px-3 py-1.5 rounded-full hover:bg-slate-50 transition">&quot;Is the burger vegan?&quot;</button>
-                            <button onClick={() => setInput("I have a peanut allergy.")} className="text-xs bg-white border px-3 py-1.5 rounded-full hover:bg-slate-50 transition">&quot;I have a peanut allergy.&quot;</button>
+                        <div className="max-w-md space-y-2">
+                            <h3 className="font-bold text-2xl text-slate-800">What's on your mind?</h3>
+                            <p className="text-slate-500">Check ingredients for allergies, religious diets (Halal, Jain, Hindu), or hidden additives.</p>
+                        </div>
+                        <div className="flex flex-wrap justify-center gap-2 max-w-lg">
+                            {suggestions.map((s, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => setInput(s)}
+                                    className="text-sm bg-white border border-slate-200 px-4 py-2 rounded-xl hover:border-blue-300 hover:text-blue-600 hover:bg-blue-50/50 transition-all duration-200 shadow-sm"
+                                >
+                                    {s}
+                                </button>
+                            ))}
                         </div>
                     </div>
                 )}
 
                 {messages.map((msg, idx) => (
-                    <div key={idx} className={`flex gap-4 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                    <div key={idx} className={`flex gap-4 ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-in slide-in-from-bottom-2 duration-300`}>
                         {msg.role === 'assistant' && (
-                            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 shadow-sm">
-                                <Bot className="w-6 h-6 text-blue-600" />
+                            <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
+                                <Bot className="w-5 h-5 text-blue-600" />
                             </div>
                         )}
-                        <div className={`max-w-[80%] p-4 rounded-2xl shadow-sm ${msg.role === 'user'
+                        <div className={`max-w-[85%] p-4 rounded-2xl shadow-sm ${msg.role === 'user'
                             ? 'bg-blue-600 text-white rounded-br-none'
-                            : 'bg-white border border-slate-100 text-slate-800 rounded-bl-none'
+                            : 'bg-white border border-slate-100 text-slate-800 rounded-bl-none shadow-md'
                             }`}>
-                            <p className="whitespace-pre-wrap text-sm leading-relaxed">{msg.content}</p>
+                            <div className="prose prose-sm max-w-none">
+                                <p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+                            </div>
                         </div>
                         {msg.role === 'user' && (
-                            <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center flex-shrink-0 shadow-sm">
-                                <User className="w-6 h-6 text-slate-600" />
+                            <div className="w-8 h-8 rounded-lg bg-slate-200 flex items-center justify-center flex-shrink-0 mt-1">
+                                <User className="w-5 h-5 text-slate-600" />
                             </div>
                         )}
                     </div>
@@ -139,23 +149,29 @@ export default function ChatInterface() {
                 <div ref={messagesEndRef} />
             </div>
 
-            <form onSubmit={handleSubmit} className="p-4 bg-white border-t border-slate-100 flex gap-3 items-center">
-                <input
-                    type="text"
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    placeholder="Ask about ingredients, allergens..."
-                    className="flex-1 px-6 py-3 bg-slate-50 border-none rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:bg-white transition-all placeholder:text-slate-400"
-                    disabled={loading}
-                />
-                <button
-                    type="submit"
-                    disabled={loading || !input.trim()}
-                    className="p-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-blue-600/20"
-                >
-                    {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
-                </button>
+            <form onSubmit={handleSubmit} className="p-4 bg-white border-t border-slate-100">
+                <div className="relative flex items-center">
+                    <input
+                        type="text"
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        placeholder="Type ingredients or ask a question..."
+                        className="w-full px-6 py-4 pr-14 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-400 font-medium text-slate-700"
+                        disabled={loading}
+                    />
+                    <button
+                        type="submit"
+                        disabled={loading || !input.trim()}
+                        className="absolute right-2 p-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 disabled:opacity-50 disabled:bg-slate-300 transition-all shadow-md shadow-blue-600/20"
+                    >
+                        {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
+                    </button>
+                </div>
+                <div className="text-center mt-2">
+                    <p className="text-[10px] text-slate-400">AI can make mistakes. Always check packaging labels.</p>
+                </div>
             </form>
         </div>
     )
+
 }

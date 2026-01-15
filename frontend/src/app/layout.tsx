@@ -12,6 +12,8 @@ export const metadata: Metadata = {
   }
 };
 
+import Navbar from "@/components/Navbar";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -19,8 +21,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased">
+      <body className="antialiased" suppressHydrationWarning>
         <ThemeRegistry>
+          <Navbar />
           {children}
         </ThemeRegistry>
       </body>

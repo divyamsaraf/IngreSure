@@ -2,9 +2,17 @@ import ChatInterface from '@/components/chat/ChatInterface'
 
 export default function ChatPage() {
     return (
-        <div className="container mx-auto p-6 max-w-4xl">
-            <h1 className="text-3xl font-bold mb-8 text-center">Consumer Chat</h1>
-            <ChatInterface />
+        <div className="container mx-auto max-w-2xl p-4 md:py-8 min-h-screen">
+            <ChatInterface
+                apiEndpoint="/api/chat?mode=grocery"
+                title="Grocery Safety Assistant"
+                subtitle="Powered by IngreSure SafetyAnalyst"
+                suggestions={[
+                    "Ingredients: Sugar, Gelatin, Water. Is this Halal?",
+                    "I am Jain. Can I eat potato chips?",
+                    "Check these ingredients for gluten..."
+                ]}
+            />
         </div>
     )
 }

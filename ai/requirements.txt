@@ -6,3 +6,6 @@ paddlepaddle==2.6.2
 # paddleocr==2.7.0.3 (Installed manually)
 Pillow==10.2.0
 numpy<2.0.0
+sentence-transformers
+supabase
+python-dotenv
