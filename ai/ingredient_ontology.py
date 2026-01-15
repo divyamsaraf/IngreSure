@@ -10,7 +10,7 @@ UNIVERSAL_SAFE = {
     "baking soda", "baking powder", "citric acid", "agar agar", 
     "soy lecithin", "sunflower lecithin", "vegetable oil", "canola oil",
     "olive oil", "coconut oil", "palm oil", "cocoa butter", "cocoa mass",
-    "yeast", "pectin", "guar gum", "xanthan gum", "locust bean gum",
+    "yeast", "pectin", "guar gum", "xanthan gum", "locust bean gum", "carrageenan",
     "calcium chloride", "potassium sorbate", "sodium benzoate"
 }
 
