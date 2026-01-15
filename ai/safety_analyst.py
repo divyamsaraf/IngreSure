@@ -1,228 +1,156 @@
 import logging
 import requests
 import json
-from typing import Generator, List, Dict, Optional
+from typing import Generator, List, Optional
+from ingredient_ontology import evaluate_fast_path
 
 logger = logging.getLogger(__name__)
 
-# Reusing config from rag_service for consistency
 OLLAMA_API_URL = "http://localhost:11434/api/generate"
 MODEL_NAME = "llama3.2:3b"
 
+# --- SESSION CONTEXT ---
+session_profile: Optional[str] = None  # stores user profile for session
+
 class SafetyAnalyst:
     """
-    Analyzes ingredient lists/product queries against strict dietary and religious standards.
-    Supported Profiles:
-    - Vegan / Vegetarian
-    - Gluten-Free
-    - Halal (Islamic)
-    - Kosher (Jewish)
-    - Hindu (No beef, often vegetarian)
-    - Jain (Strict vegetarian, no root vegetables like garlic/onion)
-    - Sikh (No Halal/Kutha meat)
-    - Allergen-Specific (Nut-free, etc.)
+    Human-first Grocery Safety Assistant.
+    Features:
+    - Session-aware profile handling
+    - Deterministic fast-path evaluation
+    - Concise human-style responses
+    - Multi-profile support (Hindu, Jain, Vegan, Halal, Vegetarian, Kosher, Sikh)
+    - Allergy, cultural, religious safety checks
     """
 
     SYSTEM_PROMPT = """
 You are IngreSure SafetyAnalyst, a grocery safety assistant that behaves like a knowledgeable human grocery expert.
 
-Your goal is to determine if a product is safe based on **allergens, dietary preferences, and religious restrictions**. Respond confidently, concisely, and humanly. Never sound robotic, indecisive, or repeatedly ask the same question.
+SYSTEM INSTRUCTIONS:
 
-========================
-CORE RULES
-========================
+1. Profiles & Dietary Rules:
+   - Handle all known dietary/religious/allergen profiles: Hindu (veg/non-veg, dairy/no dairy), Jain (veg/no root, dairy/no dairy), Vegan, Halal, Kosher, Sikh, Buddhist veg, and allergen-specific (nut, gluten, soy, lactose, egg, shellfish).
+   - User can change profile any time; re-evaluate ingredients deterministically based on current profile.
 
-1. **Session-aware profile handling**
-   - Never assume a dietary profile by default.
-   - If the user hasn’t specified a profile, ask once politely:
-     "Before I check further, do you have any dietary or religious restrictions?"
-   - Remember the user’s profile for the session.
-   - If the user specifies a new profile later, override the previous one **for that query only**.
+2. Ingredient Classification:
+   - All ingredients in the ontology are tagged by dietary compatibility, allergens, and ambiguity.
+   - Milk-derived ingredients are safe for Hindu vegetarian if dairy is allowed; unsafe if dairy-free.
+   - Oils, starches, sugars, gums, common sweeteners, beta carotene → always safe.
+   - Meat, eggs, gelatin, beef → always unsafe unless explicitly allowed by profile (e.g., Hindu Non-Veg).
+   - Root vegetables → unsafe for Jain.
+   - Artificial/Natural flavors → safe unless labeled as animal-derived.
 
-2. **Multi-profile handling**
-   - Users can request multiple profiles in a session (e.g., Hindu → Jain → Vegan).
-   - Evaluate each query strictly according to the profile **specified for that query**.
-   - Do not carry assumptions from previous queries unless explicitly told to remember multiple profiles.
+3. Decision Logic:
+   - FAST PATH: SAFE ingredients → immediately YES with high confidence.
+   - BLOCKED ingredients → immediately NO with high confidence.
+   - AMBIGUOUS ingredients → only trigger cautious note, but do not over-hedge.
+   - NEVER mix unrelated dietary rules unless multiple profiles are explicitly selected.
 
-3. **Deterministic fast-path evaluation**
-   - Ingredients in **UNIVERSAL_SAFE** or **SAFE_EXTENSIONS[profile]** → always SAFE.
-   - Ingredients in **BLOCK_SETS[profile]** → always NOT SUITABLE.
-   - Ingredients in **AMBIGUOUS_SET** or unknown → UNCLEAR; explain **humanly** only, do not ask user unless critical for safety.
-   - Never hedge on clearly safe ingredients like milk, cream, sugar, oils, gums, carrageenan.
+4. Response Style:
+   - Provide a single, concise human-style paragraph.
+   - Include 1–3 key ingredient examples.
+   - Include a confidence statement: High / Medium / Low.
+   - Avoid repeating profile questions if already known.
 
-4. **Truth Tables for profile-specific safety**
-   - **Hindu:** Dairy OK; meat, eggs, beef, pork, gelatin, animal fat → NO
-   - **Jain:** Dairy OK; meat, eggs, root vegetables (onion, garlic, potato, carrot) → NO
-   - **Halal:** Pork, alcohol, non-Halal gelatin → NO; plant-based additives OK
-   - **Vegan:** Any animal-derived ingredient → NO
-
-5. **Human-first responses**
-   - Responses must be:
-     - Direct Answer: Yes / No / Unclear
-     - Brief explanation (1–3 key ingredients)
-     - Confident, concise, human-style phrasing
-   - Avoid over-asking or multiple-step clarification loops
-   - For UNCLEAR ingredients, explain why (e.g., "Natural flavors may be plant- or animal-derived.")
-
-6. **Ingredient handling**
-   - Evaluate exact ingredients; substring checks allowed for robustness (e.g., "beef stock" triggers blocked for Hindu/Jain)
-   - Clearly safe additives (water, sugar, corn syrup, oils, milk, cream, casein, gums, carrageenan) → confidently SAFE
-   - Ambiguous additives (E-numbers, mono/diglycerides, enzymes, natural/artificial flavors) → UNCLEAR, explain reasoning
-
-7. **Response structure**
-   - Step 1: Direct answer (Yes/No/Unclear)
-   - Step 2: Explanation of 1–3 key ingredients
-   - Step 3: Human-style confidence statement
-   - Step 4: Optional next-step suggestion if helpful (e.g., check manufacturer for ambiguous additives)
-
-8. **No false uncertainty**
-   - Never hedge on safe ingredients.
-   - Only explain ambiguous or unknown ingredients.
-   - Do not ask the user repeatedly about ingredients that are deterministically safe or blocked.
-
-========================
-FAST-PATH OPTIMIZATION
-========================
-- Evaluate clearly safe / blocked ingredients before invoking LLM reasoning.
-- Only use LLM for ambiguous ingredients to produce human-style explanations.
-- Output should be **immediate and confident** for SAFE/NOT SUITABLE.
-- Limit response length to concise, readable human-style output.
-- Avoid unnecessary dialogue loops; combine reasoning in **one human-like response**.
-
-========================
-EXAMPLES
-========================
-Query: "Ingredients: MILK, CREAM, SUGAR. Is this Hindu veg?"
-Response:
-"Yes — this is Hindu vegetarian. Milk, cream, and sugar are all compatible with your diet. No hidden animal-derived additives are present."
-
-Query: "Ingredients: WATER, SODIUM CASEINATE, NATURAL FLAVORS. Is this Jain?"
-Response:
-"Mostly safe for Jain. Water and sodium caseinate are compatible. Natural flavors may be plant- or animal-derived, so uncertain."
-
-Query: "Ingredients: E471, SUGAR, COCOA BUTTER. Vegan?"
-Response:
-"No — this product contains E471, which may be animal-derived, so it is not confirmed vegan."
-
-========================
-MANDATORY BEHAVIORS
-========================
-- Do not assume profile unless explicitly provided by the user.
-- Ask politely **once** only if profile unknown.
-- Remember session profile but allow override per query.
-- FAST-PATH deterministic SAFE / NOT SUITABLE always takes precedence.
-- UNCLEAR only for ambiguous ingredients; explain clearly, do not ask unnecessary questions.
-- Responses must be human, concise, confident, readable, and directly answer the user’s question.
+5. Edge Cases:
+   - Profile changes mid-session → re-evaluate all ingredients deterministically.
+   - All ingredients not in the ontology → ask user only for clarification if truly unknown.
 """
 
     @staticmethod
     def _extract_profile(query: str) -> Optional[str]:
         q = query.lower()
-        if "jain" in q: return "jain"
+        # Look for complex phrases first
+        
+        # Hindu variants
+        if "hindu" in q:
+            if "non-veg" in q or "non veg" in q: return "hindu non-veg"
+            if "vegan" in q: return "hindu vegan"
+            if "no dairy" in q or "dairy free" in q: return "hindu (no dairy)"
+            return "hindu" # Default veg
+
+        # Jain variants
+        if "jain" in q:
+            if "vegan" in q: return "jain vegan"
+            return "jain"
+            
+        # Standard profiles
         if "vegan" in q: return "vegan"
         if "halal" in q: return "halal"
-        if "hindu" in q: return "hindu"
         if "vegetarian" in q: return "vegetarian"
-        return None # No default assumption
+        if "kosher" in q: return "kosher"
+        if "sikh" in q: return "sikh"
+        
+        return None
+
+    @staticmethod
+    def _get_current_profile(query: str) -> Optional[str]:
+        global session_profile
+        explicit_profile = SafetyAnalyst._extract_profile(query)
+        if explicit_profile:
+            session_profile = explicit_profile
+            return explicit_profile
+        return session_profile
 
     @staticmethod
     def _extract_ingredients(query: str) -> List[str]:
-        # Simple heuristic: Look for "Ingredients" keyword or just comma-separated list
-        # If user says "Ingredients: A, B, C"
         if "ingredients" in query.lower():
             try:
                 part = query.lower().split("ingredients")[-1]
-                # Clean up colon
                 if part.strip().startswith(":"):
                     part = part.strip()[1:]
                 return [x.strip() for x in part.split(",") if x.strip()]
             except:
                 pass
-        
-        # Fallback: if user just pastes a list "Water, Sugar, E471"
         if "," in query:
-             return [x.strip() for x in query.split(",") if x.strip()]
-        
+            return [x.strip() for x in query.split(",") if x.strip()]
         return []
 
     @staticmethod
     def analyze(query: str) -> Generator[str, None, None]:
-        """
-        HIGH-LEVEL SAFETY ANALYSIS
-
-        Steps:
-        1. Extract ingredients and any user-specified profile (diet/religion)
-        2. FAST PATH: Deterministic evaluation using evaluate_fast_path
-           - SAFE → Yield confident, human-style YES response
-           - NOT SUITABLE → Yield confident, human-style NO response with offending ingredients
-           - HANDOFF → Proceed to SLOW PATH
-        3. SLOW PATH: LLM reasoning for ambiguous ingredients only
-           - If profile unknown, politely ask user once about diet
-           - Must NOT override deterministic FAST PATH results
-           - Responses must be human, concise, confident, and follow SYSTEM_PROMPT
-        4. Always structure responses as:
-           - Direct Answer (Yes/No/Unclear)
-           - Brief Explanation (1-3 ingredients)
-           - Human-style Confidence
-           - Optional next step if helpful
-
-        GUARANTEES:
-        - No default diet assumptions
-        - No false uncertainty on clearly safe ingredients
-        - Diet truth tables applied only if user explicitly requests
-        - LLM cannot override rules
-        """
-        from ingredient_ontology import evaluate_fast_path
-        
-        profile = SafetyAnalyst._extract_profile(query)
+        profile = SafetyAnalyst._get_current_profile(query)
         ingredients = SafetyAnalyst._extract_ingredients(query)
-        
-        # --- FAST PATH CHECK ---
+
         if ingredients:
-            # If profile unknown, check "general" (mostly additives)
-            check_profile = profile if profile else "general" 
+            check_profile = profile if profile else "general"
             result = evaluate_fast_path(ingredients, check_profile)
-            
-            # 1. Deterministic SUCCESS (SAFE)
+
             if result.verdict == "SAFE":
                 if profile:
-                    yield f"Yes — this is {profile.title()} safe. 🌱\n\n"
-                    yield "All ingredients are compatible.\n"
+                    # Single confident paragraph
+                    safe_list = result.logic[:3] # Top 3 ingredients
+                    safe_str = ", ".join([i.lower() for i in safe_list])
+                    yield f"✅ Yes — safe for a {profile.title()} diet.\n\n"
+                    yield f"Ingredients like {safe_str} are compatible. "
+                    yield "Confidence: High."
                 else:
-                    yield "This looks like a standard product with no common additives. ✅\n\n"
-                    yield "However, I noticed you didn't specify a diet. Are you avoiding anything due to allergies or religious reasons (like Jain or Halal)?"
+                    yield "✅ This product is generally safe. Please specify dietary profile for precise checks."
                 return
 
-            # 2. Deterministic FAIL (NOT SUITABLE)
-            if result.verdict == "NOT SUITABLE":
+            if result.verdict == "NOT_SUITABLE":
                 if profile:
-                    yield f"No — this is not {profile.title()}. 🛑\n\n"
-                    yield f"It contains: {', '.join([x.title() for x in result.logic])}.\n"
+                    yield f"❌ No — not {profile.title()} safe.\n\n"
+                    yield f"It contains {', '.join([x.lower() for x in result.logic])}. "
+                    yield "Confidence: High."
                 else:
-                    # Rare for general profile to hit NOT SUITABLE unless we define poisons, 
-                    # but if we do:
-                    yield f"This contains {', '.join([x.title() for x in result.logic])}. ⚠️\n"
+                    yield f"⚠️ Contains potentially unsafe ingredients: {', '.join([x.lower() for x in result.logic])}."
                 return
 
-            # 3. HANDOFF (Ambiguous/Unknown) -> SLOW PATH (LLM formatting)
-            logic_context = "; ".join(result.logic)
-            # Only inject query into the prompt (no profile interpolation needed as it's just instructions)
-            enhanced_prompt = SafetyAnalyst.SYSTEM_PROMPT + \
-                              f"\n\nUser Query: {query}\n" \
-                              f"[SYSTEM INJECTION]: The Rule Engine detected ambiguity: {logic_context}. " \
-                              "Explain this humanly. If profile is unknown, ask user."
-
+            if result.verdict == "HANDOFF":
+                logic_context = ", ".join(result.logic)
+                # Ensure we don't ask for profile if we already have it
+                profile_context = f"User Profile: {profile}." if profile else "Profile Unknown."
+                enhanced_prompt = SafetyAnalyst.SYSTEM_PROMPT + \
+                                  f"\n{profile_context}\nUser Query: {query}\nAmbiguous ingredients: {logic_context}\nResponse:"
         else:
-            # Fallback for complex natural language queries (no clear list)
-            enhanced_prompt = SafetyAnalyst.SYSTEM_PROMPT + f"\n\nUser Query: {query}"
+            enhanced_prompt = SafetyAnalyst.SYSTEM_PROMPT + f"\nUser Query: {query}\nResponse:"
 
-        # --- SLOW PATH (LLM) ---
         payload = {
             "model": MODEL_NAME,
             "prompt": enhanced_prompt,
             "stream": True
         }
-        
+
         try:
             with requests.post(OLLAMA_API_URL, json=payload, stream=True, timeout=300) as response:
                 response.raise_for_status()

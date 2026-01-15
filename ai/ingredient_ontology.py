@@ -1,140 +1,168 @@
-from typing import List, Tuple, Optional, Set
+from typing import List, Optional, Set, Dict
 
-# --- 1. DEFINITIONS ---
+# --- INGREDIENT CATEGORIES ---
+DAIRY = {"milk", "cream", "butter", "ghee", "whey", "casein", "lactose", "sodium caseinate", "milk fat", "yogurt", "cheese", "curd"}
+MEAT = {"meat", "beef", "pork", "pig", "chicken", "lamb", "mutton", "goat", "turkey", "duck", "bacon", "ham", "sausage", "pepperoni", "salami", "animal fat", "lard", "tallow", "suet", "gelatin", "rennet", "pepsin", "calf"}
+BEEF = {"beef", "calf", "veal", "beef extract"}
+PORK = {"pork", "pig", "ham", "bacon", "lard", "pork fat", "gelatin"} # Gelatin usually pork/beef
+EGG = {"egg", "eggs", "egg white", "egg yolk", "albumin"}
+SEAFOOD = {"fish", "tuna", "salmon", "cod", "anchovy", "shellfish", "shrimp", "crab", "lobster", "oyster", "clam", "prawn", "squid", "calamari"}
+ROOT_VEG = {"onion", "garlic", "potato", "carrot", "ginger", "radish", "turnip", "beetroot", "sweet potato", "scallion", "shallot", "leek"}
+ALCOHOL = {"alcohol", "wine", "beer", "rum", "whiskey", "vodka", "liqueur", "cider", "spirit"}
 
-# Universal Safe Ingredients (Apps to all profiles unless typically checked)
-# Note: This is an expanding list.
+# --- UNIVERSAL SAFE INGREDIENTS ---
+# Always safe unless specific constraint (like sugar/starch is generally fine everywhere)
 UNIVERSAL_SAFE = {
-    "water", "sugar", "salt", "corn syrup", "dextrose", "fructose", 
-    "wheat", "flour", "rice", "starch", "corn starch", "potato starch",
-    "baking soda", "baking powder", "citric acid", "agar agar", 
+    "water", "sugar", "salt", "corn syrup", "dextrose", "fructose", "glucose",
+    "wheat", "flour", "rice", "starch", "corn starch", "potato starch", "modified starch",
+    "baking soda", "baking powder", "citric acid", "agar agar",
     "soy lecithin", "sunflower lecithin", "vegetable oil", "canola oil",
     "olive oil", "coconut oil", "palm oil", "cocoa butter", "cocoa mass",
-    "yeast", "pectin", "guar gum", "xanthan gum", "locust bean gum", "carrageenan",
-    "calcium chloride", "potassium sorbate", "sodium benzoate"
+    "hydrogenated vegetable oil", "hydrogenated oil", "beta carotene",
+    "yeast", "pectin", "guar gum", "xanthan gum", "locust bean gum",
+    "carrageenan", "calcium chloride", "potassium sorbate", "sodium benzoate",
+    "aspartame", "sucralose", "acesulfame k", "saccharin", "stevia", "erythritol",
+    "natural flavor", "natural flavors", "artificial flavor", "artificial flavors", "flavor" 
+    # Flavors are considered safe by default in this ontology unless animal-derived is explicitly flagged
+    # but we will handle ambiguity if needed. User requested "Safe unless explicitly labeled".
 }
 
-# Profile-Specific Safe Extensions
-SAFE_EXTENSIONS = {
-    "hindu": {"milk", "cream", "butter", "ghee", "whey", "casein", "lactose", "sodium caseinate", "milk fat"},
-    "jain": {"milk", "cream", "butter", "ghee", "whey", "casein", "lactose", "sodium caseinate"}, # Dairy OK, Root Veg NO
-    "vegan": set(), # Strictly Plant/Synthetic only
-    "halal": {"milk", "cream", "butter", "ghee", "whey", "casein", "sodium caseinate", "fish", "egg"} # Seafood usually Halal
-}
-
-# Block Sets (Explicitly Banned)
-BLOCK_SETS = {
-    "hindu": {
-        "meat", "beef", "pork", "pig", "chicken", "fish", "seafood", "egg", "gelatin", 
-        "lard", "tallow", "suet", "animal fat", "rennet", "pepsin", "calf"
-    },
-    "jain": {
-        "meat", "beef", "pork", "pig", "chicken", "fish", "seafood", "egg", "gelatin", 
-        "lard", "honey", "onion", "garlic", "potato", "carrot", "beef extract", "root"
-    },
-    "vegan": {
-        "meat", "beef", "pork", "pig", "chicken", "fish", "seafood", "egg", "gelatin", 
-        "lard", "tallow", "suet", "honey", "milk", "cream", "butter", "ghee", 
-        "whey", "casein", "caseinate", "lactose", "shellac", "carmine", "e120", "e904", "vitamin d3"
-    },
-    "halal": {
-        "pork", "pig", "ham", "bacon", "lard", "gelatin", "alcohol", "wine", "beer", "rum", 
-        "liqueur", "vanilla extract", "e120", "carmine"
-    }
-}
-
-# Ambiguous / Source-Dependent (Triggers Caution/Slow Path)
+# --- AMBIGUOUS / CAUTION ---
 AMBIGUOUS_SET = {
-    "glycerin", "glycerol", "e422",
-    "mono- and diglycerides", "monoglycerides", "diglycerides", "e471",
-    "polysorbate", "polysorbate 60", "polysorbate 80", "e433", "e435",
-    "natural flavor", "natural flavors", "flavor", "artificial flavor",
-    "enzymes", "rennet", "lipase", "protease",
-    "stearic acid", "magnesium stearate",
-    "vitamin a", "retinol" # Can be gelatin stabilized
+    "glycerin", "glycerol", "e422", "mono- and diglycerides", "e471", "polysorbate", 
+    "enzymes", "rennet", "lipase", "protease", "stearic acid", "magnesium stearate", "vitamin a", "retinol"
 }
-
-# --- 2. FAST PATH LOGIC ---
 
 def normalize_ingredient(ing: str) -> str:
     return ing.lower().strip().replace("*", "").replace("  ", " ")
 
 class FastPathResult:
-    def __init__(self, verdict: str, logic: List[str] = None):
-        self.verdict = verdict # SAFE, NOT_SUITABLE, HANDOFF
+    def __init__(self, verdict: str, logic: Optional[List[str]] = None):
+        self.verdict = verdict  # SAFE, NOT_SUITABLE, HANDOFF
         self.logic = logic or []
 
-def evaluate_fast_path(ingredients: List[str], profile: str = "hindu") -> FastPathResult:
+def evaluate_fast_path(ingredients: List[str], profile_str: str = "general") -> FastPathResult:
     """
-    FAST PATH SAFETY CHECK
-
-    Determines if the given list of ingredients is SAFE, NOT SUITABLE, or requires HANDOFF (ambiguous).
-
-    RULES ENFORCED:
-    1. Ingredients in UNIVERSAL_SAFE or SAFE_EXTENSIONS[profile] → SAFE
-       - Do not hedge or introduce uncertainty
-    2. Ingredients in BLOCK_SETS[profile] → NOT SUITABLE
-       - List offending ingredient(s)
-    3. Ingredients in AMBIGUOUS_SET → HANDOFF
-       - Only ambiguous ingredients trigger human-LLM evaluation
-    4. Unknown ingredients not in any set → HANDOFF
-    5. PROFILE must only be evaluated if user explicitly requested
-    6. If profile is unknown, system cannot assume; only allergen/additive check is performed
-    7. Substring checks allowed for robustness (e.g., "beef stock" triggers BLOCKED)
-    
-    OUTPUT:
-    FastPathResult(verdict: "SAFE"/"NOT SUITABLE"/"HANDOFF", logic: List[str])
+    Evaluates ingredients based on a granular profile string (e.g. "hindu vegan").
     """
-    profile = profile.lower()
+    profile_str = profile_str.lower()
     
-    # 1. Expand Sets
-    safe_set = UNIVERSAL_SAFE.union(SAFE_EXTENSIONS.get(profile, set()))
-    block_set = BLOCK_SETS.get(profile, set())
+    # 1. Determine constraints based on profile keywords
+    blocked_sets: List[Set[str]] = []
+    allowed_sets: List[Set[str]] = []
+    
+    # Base Rules
+    if "jain" in profile_str:
+        blocked_sets.extend([MEAT, SEAFOOD, EGG, ROOT_VEG])
+        # Jain Vegan vs Jain (Dairy OK)
+        if "vegan" in profile_str:
+            blocked_sets.append(DAIRY)
+        else:
+            allowed_sets.append(DAIRY) # Explicitly allow dairy
+            
+    elif "vegan" in profile_str:
+        blocked_sets.extend([MEAT, SEAFOOD, EGG, DAIRY])
+        # Block honey/gelatin logic handled by keywords/MEAT set inclusion
+        blocked_sets.append({"honey", "shellac", "carmine", "e120", "vitamin d3"})
+        
+    elif "hindu" in profile_str:
+        # Hindu Non-Veg vs Veg
+        if "non-veg" in profile_str or "non veg" in profile_str:
+             blocked_sets.append(BEEF)
+             # Allowed: Meat (Generic), Seafood, Egg, Dairy
+             allowed_sets.extend([MEAT, SEAFOOD, EGG, DAIRY])
+        else:
+             # Hindu Veg (Default)
+             blocked_sets.extend([MEAT, SEAFOOD, EGG])
+             # Check if vegan specified
+             if "vegan" in profile_str:
+                 blocked_sets.append(DAIRY)
+             else:
+                 allowed_sets.append(DAIRY)
+
+    elif "halal" in profile_str:
+        blocked_sets.extend([PORK, ALCOHOL])
+        # Note: Non-halal meat is blocked, but we can't detect "Non-Halal Chicken" by string.
+        # We assume "Chicken" is safe unless user says "Halal Chicken Only" - strictness varies.
+        # For safety app: Block Pork/Alcohol strictly. Flag Meat as Ambiguous?
+        # User said: "Halal -> Pork, alcohol... NO; plant-based OK".
+        # We will assume generic meat is suspect? Or Safe?
+        # Let's block definite Haram.
+        
+    elif "vegetarian" in profile_str:
+        blocked_sets.extend([MEAT, SEAFOOD, EGG])
+        allowed_sets.append(DAIRY)
+
+    elif "kosher" in profile_str:
+        blocked_sets.extend([PORK, SEAFOOD]) # Shellfish in SEAFOOD need separation?
+        # Kosher rules are complex. Block Pork/Shellfish.
+        blocked_sets.append({"shrimp", "crab", "lobster", "oyster", "clam", "shellfish"})
+        
+    elif "sikh" in profile_str:
+        blocked_sets.append({"halal", "kutha"}) # Mainly method of slaughter.
+        if "vegetarian" in profile_str:
+            blocked_sets.extend([MEAT, SEAFOOD, EGG])
+            
+    # Combine sets
+    combined_block = set().union(*blocked_sets) if blocked_sets else set()
+    combined_allow = set().union(*allowed_sets) if allowed_sets else set()
+    
+    # Universal Safe is always valid base
+    # But if profile is "No Sugar" (not implemented), we would remove it.
+    # For now, UNIVERSAL_SAFE is truly universal for these religious/ethical profiles.
     
     normalized_inputs = [normalize_ingredient(i) for i in ingredients]
     
-    # 2. Check for BLOCKED (Priority 1)
-    banned_found = []
-    for ing in normalized_inputs:
-        # Check explicit block
-        if ing in block_set:
-            banned_found.append(ing)
-            continue
-        # Check keyword blocking (e.g. "beef" in "beef stock")
-        for banned in block_set:
-            if banned in ing: # Robust substr check
-               banned_found.append(ing)
-               break
+    # --- CHECK LOGIC ---
     
-    if banned_found:
-        return FastPathResult("NOT SUITABLE", logic=banned_found)
-
-    # 3. Check for AMBIGUOUS (Priority 2 -> Handoff)
+    blocked_found = []
+    
     for ing in normalized_inputs:
-        if ing in AMBIGUOUS_SET:
-            return FastPathResult("HANDOFF", logic=[f"Ambiguous: {ing}"])
-        for amb in AMBIGUOUS_SET:
-            if amb in ing:
-                 return FastPathResult("HANDOFF", logic=[f"Ambiguous: {ing}"])
-
-    # 4. Check for SAFE (Priority 3)
-    # MUST be all in safe set
-    unknowns = []
-    for ing in normalized_inputs:
-        found_safe = False
-        if ing in safe_set:
-            found_safe = True
-        else:
-            # Substring check against safe set (CAREFUL here, strict rules)
-            # Actually, per user rules: "If any doubt exists, SAFE is forbidden."
-            # So we strictly assume if not in SAFE_SET, it is Unknown -> Handoff.
-            pass
+        # Check Explicit Block
+        for b in combined_block:
+            if b in ing:
+                blocked_found.append(ing)
+                break
+        if blocked_found and ing == blocked_found[-1]: continue
         
-        if not found_safe:
-           unknowns.append(ing)
+    if blocked_found:
+        return FastPathResult("NOT_SUITABLE", blocked_found)
+        
+    # Check Safe / Ambiguous
+    ambiguous_found = []
+    unknowns = []
+    valid_ingredients = []
 
-    if not unknowns:
-        return FastPathResult("SAFE", logic=["All ingredients recognized as safe."])
+    for ing in normalized_inputs:
+        # 1. Is it safe? (Universal or Explicitly Allowed)
+        is_safe = False
+        if ing in UNIVERSAL_SAFE: is_safe = True
+        if not is_safe:
+             for s in combined_allow:
+                 if s in ing: 
+                     is_safe = True
+                     break
+        
+        if is_safe:
+            valid_ingredients.append(ing)
+            continue
 
-    # 5. Default Handoff (Unknown ingredients)
-    return FastPathResult("HANDOFF", logic=[f"Unknown: {unknowns}"])
+        # 2. Is it ambiguous?
+        is_ambiguous = False
+        for a in AMBIGUOUS_SET:
+            if a in ing:
+                ambiguous_found.append(ing)
+                is_ambiguous = True
+                break
+        if is_ambiguous:
+            continue
+            
+        unknowns.append(ing)
+
+    if not ambiguous and not unknowns:
+        return FastPathResult("SAFE", valid_ingredients)
+
+    if ambiguous or unknowns:
+        return FastPathResult("HANDOFF", ambiguous + unknowns)
+
+    return FastPathResult("HANDOFF", normalized_inputs)
