@@ -66,8 +66,24 @@ class FastPathResult:
 
 def evaluate_fast_path(ingredients: List[str], profile: str = "hindu") -> FastPathResult:
     """
-    Returns immediate verdict if conditions met.
-    Else returns HANDOFF.
+    FAST PATH SAFETY CHECK
+
+    Determines if the given list of ingredients is SAFE, NOT SUITABLE, or requires HANDOFF (ambiguous).
+
+    RULES ENFORCED:
+    1. Ingredients in UNIVERSAL_SAFE or SAFE_EXTENSIONS[profile] → SAFE
+       - Do not hedge or introduce uncertainty
+    2. Ingredients in BLOCK_SETS[profile] → NOT SUITABLE
+       - List offending ingredient(s)
+    3. Ingredients in AMBIGUOUS_SET → HANDOFF
+       - Only ambiguous ingredients trigger human-LLM evaluation
+    4. Unknown ingredients not in any set → HANDOFF
+    5. PROFILE must only be evaluated if user explicitly requested
+    6. If profile is unknown, system cannot assume; only allergen/additive check is performed
+    7. Substring checks allowed for robustness (e.g., "beef stock" triggers BLOCKED)
+    
+    OUTPUT:
+    FastPathResult(verdict: "SAFE"/"NOT SUITABLE"/"HANDOFF", logic: List[str])
     """
     profile = profile.lower()
     
