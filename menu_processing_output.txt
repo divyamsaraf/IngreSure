@@ -1,0 +1,23 @@
+Starting Menu Processing...
+
+Processing: Vegan Buddha Bowl
+Verification Result:
+{
+  "error": "HTTPConnectionPool(host='localhost', port=11434): Read timed out. (read timeout=120)",
+  "is_consistent": false,
+  "confidence_score": 0.0,
+  "issues": [
+    "AI Verification Failed: HTTPConnectionPool(host='localhost', port=11434): Read timed out. (read timeout=120)"
+  ]
+}
+
+Processing: Classic Cheeseburger
+Verification Result:
+{
+  "error": "HTTPConnectionPool(host='localhost', port=11434): Read timed out. (read timeout=120)",
+  "is_consistent": false,
+  "confidence_score": 0.0,
+  "issues": [
+    "AI Verification Failed: HTTPConnectionPool(host='localhost', port=11434): Read timed out. (read timeout=120)"
+  ]
+}

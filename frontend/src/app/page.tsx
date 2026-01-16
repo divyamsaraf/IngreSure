@@ -13,13 +13,20 @@ export default function LandingPage() {
           <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
             IngreSure uses AI to verify menu ingredients, detect allergens, and ensure your food matches your dietary needs.
           </p>
-          <div className="flex gap-4 justify-center">
-            <Link href="/chat" className="bg-white text-blue-600 px-8 py-3 rounded-full font-bold hover:bg-gray-100 transition-colors flex items-center gap-2">
-              Try Chat Assistant <ArrowRight className="w-5 h-5" />
+          <div className="flex gap-4 justify-center flex-wrap">
+            <Link href="/chat" className="bg-white text-blue-600 px-6 py-3 rounded-full font-bold hover:bg-gray-100 transition-colors flex items-center gap-2">
+              Start Grocery Audit <ArrowRight className="w-5 h-5" />
             </Link>
-            <Link href="/dashboard" className="bg-transparent border-2 border-white text-white px-8 py-3 rounded-full font-bold hover:bg-white/10 transition-colors">
-              For Restaurants
+            {/* Restaurant Assistant hidden temporarily 
+            <Link href="/restaurant/chat" className="bg-indigo-600 border border-white/20 text-white px-6 py-3 rounded-full font-bold hover:bg-indigo-500 transition-colors flex items-center gap-2">
+              Restaurant Assistant <Search className="w-5 h-5" />
             </Link>
+            */}
+            {/* 
+            <Link href="/dashboard" className="bg-transparent border-2 border-white text-white px-6 py-3 rounded-full font-bold hover:bg-white/10 transition-colors">
+              For Partners
+            </Link>
+            */}
           </div>
         </div>
       </header>
@@ -36,7 +43,7 @@ export default function LandingPage() {
               </div>
               <h3 className="text-xl font-bold mb-3">AI Verification</h3>
               <p className="text-gray-600">
-                Our Mistral 7B powered engine cross-references menu descriptions with ingredient lists to catch inconsistencies.
+                Our Llama 3.2 powered engine cross-references ingredients against strict global dietary rules.
               </p>
             </div>
 
@@ -46,7 +53,7 @@ export default function LandingPage() {
               </div>
               <h3 className="text-xl font-bold mb-3">Safety First</h3>
               <p className="text-gray-600">
-                Rule-based safety engine ensures allergen and diet checks are based on facts, not hallucinations.
+                Determinitsic "Gold Standard" rule engine ensures verdicts are based on facts, not hallucinations.
               </p>
             </div>
 
@@ -56,7 +63,7 @@ export default function LandingPage() {
               </div>
               <h3 className="text-xl font-bold mb-3">Smart Search</h3>
               <p className="text-gray-600">
-                Find exactly what you can eat. Filter by diet, allergen, or ingredients with our intelligent recommendation system.
+                Instantly audit complex ingredient lists for hidden animal derivatives or allergens.
               </p>
             </div>
           </div>
@@ -66,9 +73,9 @@ export default function LandingPage() {
       {/* CTA Section */}
       <section className="bg-gray-900 text-white py-20 px-6 text-center">
         <div className="container mx-auto">
-          <h2 className="text-3xl font-bold mb-6">Ready to dine safely?</h2>
-          <Link href="/recommendations" className="bg-blue-600 text-white px-8 py-3 rounded-full font-bold hover:bg-blue-700 transition-colors inline-block">
-            Find Safe Food Now
+          <h2 className="text-3xl font-bold mb-6">Unsure about an ingredient?</h2>
+          <Link href="/chat" className="bg-blue-600 text-white px-8 py-3 rounded-full font-bold hover:bg-blue-700 transition-colors inline-block">
+            Check Food Safety Now
           </Link>
         </div>
       </section>

@@ -1,0 +1,12 @@
+{
+  "f67b273530dd104667326c2e4d21efa7ee90a0fbd736e0e78cbc857c2048f982": {
+    "is_consistent": true,
+    "confidence_score": 1.0,
+    "issues": [],
+    "suggested_corrections": {
+      "diet_types": [
+        "Vegan"
+      ]
+    }
+  }
+}

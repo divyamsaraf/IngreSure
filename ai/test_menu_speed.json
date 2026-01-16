@@ -1,0 +1,11 @@
+{
+    "restaurant_id": "78b31c65-3817-44da-b928-f4ff450095b3",
+    "menu_items": [
+        {
+            "name": "Llama Speed Test Burger",
+            "description": "Beef patty with cheese.",
+            "price": 12.0,
+            "category": "Mains"
+        }
+    ]
+}
