@@ -215,6 +215,17 @@ INGREDIENT_DB: Dict[str, IngredientProperties] = {
     "vanilla": IngredientProperties("plant", set(), "Plant"),
     "vanillin": IngredientProperties("synthetic", set(), "Synthetic"),
     
+    # --- NUTS & SEEDS ---
+    "almond": IngredientProperties("plant", {"nut"}, "Tree nut"),
+    "cashew": IngredientProperties("plant", {"nut"}, "Tree nut"),
+    "peanut": IngredientProperties("plant", {"peanut"}, "Legume (Allergen)"),
+    "walnut": IngredientProperties("plant", {"nut"}, "Tree nut"),
+    "pecan": IngredientProperties("plant", {"nut"}, "Tree nut"),
+    "hazelnut": IngredientProperties("plant", {"nut"}, "Tree nut"),
+    "pistachio": IngredientProperties("plant", {"nut"}, "Tree nut"),
+    "sesame": IngredientProperties("plant", {"sesame"}, "Seed (Allergen)"),
+    "sunflower seed": IngredientProperties("plant", set(), "Seed"),
+    
     # --- ALCOHOL ---
     "alcohol": IngredientProperties("alcohol", set(), "Alcohol"),
     "wine": IngredientProperties("alcohol", set(), "Alcohol"),

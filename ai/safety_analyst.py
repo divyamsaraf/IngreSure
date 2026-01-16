@@ -2,7 +2,7 @@ import logging
 import requests
 import json
 import re
-from typing import Generator, List, Optional, Set, Tuple
+from typing import Generator, List, Optional, Set, Tuple, Dict
 from ingredient_ontology import INGREDIENT_DB, UserProfile, evaluate_ingredient_risk, normalize_text
 
 logger = logging.getLogger(__name__)
@@ -143,6 +143,15 @@ OUTPUT RULES:
         if "soy meat" in n: return "soy meat"
         if "seitan" in n: return "seitan"
         
+        # Singularization (Heuristic)
+        # Convert "nuts" -> "nut", "almonds" -> "almond"
+        # Only if not found in DB directly (checked in loop), but here we preemptively singularize specifically for plural keys
+        if n.endswith("s") and not n.endswith("ss"): # crude
+             singular = n[:-1]
+             # Common exceptions handled by ontology lookup later, 
+             # but we return singular here to help O(1) hit
+             return singular
+             
         return n
 
     @staticmethod
@@ -186,8 +195,27 @@ OUTPUT RULES:
         return final_list
 
     @staticmethod
-    def analyze(query: str) -> Generator[str, None, None]:
-        # 1. Update Profile from NLP
+    def analyze(query: str, user_profile: Optional[Dict] = None) -> Generator[str, None, None]:
+        global CURRENT_USER_PROFILE
+        
+        # 0. Sync with explicit profile if provided
+        if user_profile:
+            # Map Dict to UserProfile
+            # Handle allergies being a list in JSON but set in Python
+            algs = set(user_profile.get("allergies", []))
+            
+            # Use 'diet' as provided - handle mappings if needed
+            d = user_profile.get("diet", "general").lower().replace(" ", "_")
+            if d == "no_specific_rules" or d == "none": d = "general"
+            
+            CURRENT_USER_PROFILE = UserProfile(
+                diet=d,
+                # JSON might send 'true'/'false' boolean, Python handles it
+                dairy_allowed=user_profile.get("dairy_allowed", True),
+                allergens=algs
+            )
+        
+        # 1. Update Profile from NLP (Overrides or Refines)
         SafetyAnalyst._parse_natural_language_profile(query)
         
         profile = CURRENT_USER_PROFILE
@@ -256,3 +284,16 @@ OUTPUT RULES:
             # Fallback if no ingredients found
             yield f"ℹ️ Updated Profile: **{profile_desc}**.\n"
             yield "Please provide ingredients to analyze."
+            
+        # 4. Yield Profile Protocol Update (Last step)
+        # This allows frontend to persist the updated profile session
+        try:
+            profile_dict = {
+                "diet": profile.diet,
+                "dairy_allowed": profile.dairy_allowed,
+                "allergens": list(profile.allergens),
+                "is_onboarding_completed": True
+            }
+            yield f"\n\n<<<PROFILE_UPDATE>>>{json.dumps(profile_dict)}<<<PROFILE_UPDATE>>>"
+        except Exception as e:
+            logger.error(f"Failed to serialize profile: {e}")

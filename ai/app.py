@@ -45,6 +45,7 @@ class VerificationRequest(BaseModel):
 class ChatRequest(BaseModel):
     query: str
     context_filter: Optional[Dict] = None # e.g. {"restaurant_id": "..."}
+    userProfile: Optional[Dict] = None # { "diet": "Vegan", "dairy_allowed": False, "allergens": [], "is_onboarding_completed": True }
 
 class MenuOnboardRequest(BaseModel):
     restaurant_id: str
@@ -148,7 +149,7 @@ async def chat_grocery(request: ChatRequest):
     logger.info(f"Grocery Chat query: {request.query}")
     try:
         async def generate_safety():
-            for token in SafetyAnalyst.analyze(request.query):
+            for token in SafetyAnalyst.analyze(request.query, request.userProfile):
                 yield token
         return StreamingResponse(generate_safety(), media_type="text/plain")
     except Exception as e:
