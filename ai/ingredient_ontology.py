@@ -141,6 +141,24 @@ INGREDIENT_DB: Dict[str, IngredientProperties] = {
     "rye": IngredientProperties("plant", {"wheat"}, "Grain (Gluten)"),
     "malt": IngredientProperties("plant", {"wheat"}, "Barley derivative"),
     
+    # --- PLANT-BASED MEAT ALTERNATIVES ---
+    "plant-based meat": IngredientProperties("plant", set(), "Plant-based alternative"),
+    "veggie burger": IngredientProperties("plant", set(), "Plant-based alternative"),
+    "veggie meat": IngredientProperties("plant", set(), "Plant-based alternative"),
+    "vegan sausage": IngredientProperties("plant", set(), "Plant-based alternative"),
+    "soy meat": IngredientProperties("plant", {"soy"}, "Plant-based alternative"),
+    "tofu patty": IngredientProperties("plant", {"soy"}, "Plant-based alternative"),
+    "seitan": IngredientProperties("plant", {"gluten", "wheat"}, "Wheat gluten (Plant-based)"),
+    "textured vegetable protein": IngredientProperties("plant", {"soy"}, "Plant-based alternative"),
+    "tvp": IngredientProperties("plant", {"soy"}, "Plant-based alternative"),
+    "jackfruit meat": IngredientProperties("plant", set(), "Plant-based alternative"),
+    "mushroom meat": IngredientProperties("plant", set(), "Plant-based alternative"),
+    "bean-based meat": IngredientProperties("plant", set(), "Plant-based alternative"),
+    "meatless meat": IngredientProperties("plant", set(), "Plant-based alternative"),
+    "impossible meat": IngredientProperties("plant", {"soy"}, "Plant-based alternative"),
+    "beyond meat": IngredientProperties("plant", set(), "Plant-based alternative"),
+    "mock duck": IngredientProperties("plant", {"gluten", "wheat"}, "Plant-based alternative"),
+
     # --- VEGETABLES (Roots marked for Jain) ---
     "onion": IngredientProperties("plant", set(), "Root vegetable"),
     "onion powder": IngredientProperties("plant", set(), "Root vegetable"),

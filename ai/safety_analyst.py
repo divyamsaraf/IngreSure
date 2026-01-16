@@ -127,6 +127,25 @@ OUTPUT RULES:
         )
 
     @staticmethod
+    def _normalize_ingredient_name(name: str) -> str:
+        """
+        Normalize ingredient names to handle cases like "meat (plant based)" 
+        mapping them to canonical ontology keys.
+        """
+        n = name.lower().strip()
+        
+        # Plant-based meat normalization
+        if "plant based" in n or "plant-based" in n:
+             if "meat" in n or "beef" in n or "chicken" in n or "pork" in n or "sausage" in n or "burger" in n:
+                 return "plant-based meat"
+                 
+        # Specific mappings
+        if "soy meat" in n: return "soy meat"
+        if "seitan" in n: return "seitan"
+        
+        return n
+
+    @staticmethod
     def _extract_ingredients(query: str) -> List[str]:
         # Robust extraction: look for "Ingredients:" prefix or assume comma list if no keywords
         # Also remove sentences like "Is this safe?"
@@ -138,23 +157,31 @@ OUTPUT RULES:
         
         # Strategy: If "Ingredients:" exists, take everything after it until a sentence end or new line
         if "ingredients:" in clean_q:
-            parts = clean_q.split("ingredients:")
-            candidate = parts[1]
-            # Split by dot or newline to stop reading user questions
-            candidate = candidate.split(".")[0].split("\n")[0]
-            clean_q = candidate
+            clean_q = clean_q.split("ingredients:")[1]
+
+        # Stop at period or newline to properly separate ingredients from profile statements
+        clean_q = clean_q.split(".")[0]
+        clean_q = clean_q.split("\n")[0]
+            
+        # Clean specific phrases
+        for sw in stopwords:
+             if sw in clean_q and sw != "ingredients": # Already split by ingredients:
+                  clean_q = clean_q.replace(sw, "")
+                  
+        # Split by comma
+        raw_list = [x.strip() for x in clean_q.split(",")]
         
-        # Split by commas
-        candidates = [x.strip() for x in clean_q.split(",") if x.strip()]
-        
-        # Filter out non-ingredient phrasing (heuristically)
-        # e.g. "i am hindu" is not an ingredient
+        # Normalize/Filter
         final_list = []
-        for c in candidates:
-            # Remove profile declarations from ingredient list
-            if any(k in c for k in ["hindu", "vegan", "allergy", "allergic", "safe", "diet"]):
-                continue
-            final_list.append(c)
+        for x in raw_list:
+            if not x: continue
+            # Filter out profile declarations (sanity check)
+            if any(k in x for k in ["hindu", "vegan", "allergy", "allergic", "safe", "diet", "i am"]):
+                 continue
+                 
+            # Apply normalization
+            norm = SafetyAnalyst._normalize_ingredient_name(x)
+            final_list.append(norm)
             
         return final_list
 
