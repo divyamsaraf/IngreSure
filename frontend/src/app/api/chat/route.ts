@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic'
 
 export async function POST(req: NextRequest) {
     try {
-        const { message } = await req.json()
+        const { message, userProfile } = await req.json()
         const mode = req.nextUrl.searchParams.get('mode') // 'grocery' or 'restaurant'
 
         // Forward to Python Backend
@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ query: message }),
+            body: JSON.stringify({ query: message, userProfile }),
         })
 
         if (!response.ok) {

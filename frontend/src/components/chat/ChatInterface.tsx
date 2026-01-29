@@ -48,6 +48,14 @@ export default function ChatInterface({
     const saveProfile = (newProfile: UserProfile) => {
         setProfile(newProfile)
         localStorage.setItem('ingresure_profile', JSON.stringify(newProfile))
+
+        // Unified Sync: Notify Backend immediately
+        fetch(apiEndpoint.replace('/chat', '') + '/update-profile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ profile: newProfile })
+        }).catch(err => console.error("Background Sync Failed:", err))
+
         // Add a system update message
         setMessages(prev => [...prev, {
             role: 'assistant',

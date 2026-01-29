@@ -1,0 +1,41 @@
+services:
+  # Python Backend Service
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ingresure-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+      - OLLAMA_API_URL=http://host.docker.internal:11434/api/generate
+    volumes:
+      - ./backend:/app  # Hot reload for dev
+    extra_hosts:
+      - "host.docker.internal:host-gateway" # Allow access to host Ollama
+    depends_on:
+      - frontend # Just to ensure order, strict dependency not required strictly
+
+  # Next.js Frontend Service
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ingresure-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+      - NEXT_PUBLIC_LLM_API_URL=http://localhost:8000
+    volumes:
+      - ./frontend:/app # Hot reload? Next standalone might not like this, but for dev usage:
+      # Actually for hot reload in docker we'd need to run 'npm run dev' not build.
+      # Keeping it simple for 'running' the app.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+# Note: Supabase is run separately via 'supabase start' to avoid complex docker-in-docker setups 
+# or duplicating the supabase stack locally. We connect to it via host.docker.internal or public URL.

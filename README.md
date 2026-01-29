@@ -2,95 +2,57 @@
 
 **Eat with Confidence. Know What's Inside.**
 
-IngreSure is an AI-powered food safety platform that helps consumers and restaurant owners verify menu ingredients, detect allergens, and ensure dietary compliance.
+IngreSure is an AI-powered food safety platform that helps consumers and restaurant owners verify menu ingredients, detect allergens, and ensure dietary compliance using a mix of deterministic rules and LLM reasoning.
 
-## Features
+## 🚀 Quick Start
 
-- **AI Verification**: Uses Mistral 7B to cross-reference menu descriptions with ingredients.
-- **Safety Engine**: Rule-based system for factual allergen and diet checks.
-- **Consumer Chat**: Real-time assistant to answer questions like "Is this vegan?".
-- **Recommendations**: Smart suggestions based on dietary needs and ingredient similarity.
-- **Restaurant Dashboard**: Analytics and review tools for owners.
-
-## Tech Stack
-
-- **Frontend**: Next.js 14, Tailwind CSS, Lucide React
-- **Backend**: Next.js API Routes
-- **Database**: Supabase (PostgreSQL + pgvector)
-- **AI**: Ollama (Mistral 7B), LangChain (conceptually)
-
-## Getting Started
-
-### Prerequisites
-
-1.  **Node.js** (v18+)
-2.  **Python 3.9+** (for AI service)
-3.  **Ollama** (running locally)
+1.  **Start Infrastructure** (Supabase + Ollama):
     ```bash
+    # Terminal 1
     ollama serve
-    ollama pull mistral
+    ollama pull llama3.2:3b
+    
+    # Terminal 2
+    supabase start
     ```
-4.  **Supabase Account**
 
-### Installation
-
-1.  Clone the repository:
+2.  **Start Backend**:
     ```bash
-    git clone https://github.com/divyamsaraf/IngreSure.git
     cd IngreSure
+    python3 backend/app.py
     ```
 
-2.  Install Frontend Dependencies:
+3.  **Start Frontend**:
     ```bash
     cd frontend
-    npm install
-    ```
-
-3.  Install AI Dependencies:
-    ```bash
-    cd ../ai
-    pip install -r requirements.txt
-    ```
-
-4.  **Set up Environment Variables:**
-    Create `.env.local` in `frontend/`:
-    ```env
-    NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_key
-    NEXT_PUBLIC_LLM_API_URL=http://localhost:11434/api/generate
-    ```
-
-### Running the App
-
-1.  **Start Ollama (Local AI):**
-    ```bash
-    ollama serve
-    # In a new terminal:
-    ollama pull mistral
-    ```
-
-2.  **Start the Frontend:**
-    ```bash
-    cd frontend
-    npm install --legacy-peer-deps
     npm run dev
     ```
 
-3.  **Open the App:**
-    Visit [http://localhost:3000](http://localhost:3000) to access the landing page, chat, and search features.
+Visit [http://localhost:3000](http://localhost:3000).
 
-4.  **Supabase Edge Functions (Optional - for Upload/Search):**
-    Follow `docs/deployment_guide.md` to deploy functions if running against a live Supabase instance.
+## 📚 Documentation
 
-3.  Open [http://localhost:3000](http://localhost:3000).
+We have detailed documentation for every part of the system:
 
-## Project Structure
+- **[Tech Stack & Deep Dive](docs/TECH_STACK_DEEP_DIVE.md)**: **START HERE**. A complete breakdown of every file, model, and service.
+- **[System Architecture](docs/SYSTEM_ARCHITECTURE.md)**: Diagrams and data flow references.
+- **[Backend API](docs/BACKEND_API.md)**: API Endpoint reference.
+- **[AI Engine Internals](docs/AI_ENGINE.md)**: How the SafetyAnalyst and RAG engines work.
+- **[Frontend Guide](docs/FRONTEND_GUIDE.md)**: Next.js structure and components.
 
-- `frontend/`: Next.js application (App Router).
-- `ai/`: Python scripts for verification logic.
-- `database/`: SQL schema and migrations.
-- `docs/`: Architecture and API documentation.
+## 🏗 Features
+
+- **Grocery Scanner**: Upload an ingredient label -> Get a safe/unsafe verdict.
+- **Chat Assistant**: Ask "Is E471 vegan?" and get an instant answer.
+- **Restaurant Search**: Find "Safe dishes" at supported restaurants.
+- **Menu Verification**: (B2B) Auto-audit menus for mistakes.
+
+## 🛠 Tech Stack
+
+- **AI**: Ollama (Llama 3.2), PaddleOCR, SentenceTransformers.
+- **Backend**: FastAPI (Python).
+- **Frontend**: Next.js 14, TailwindCSS.
+- **Database**: Supabase (PostgreSQL + pgvector).
 
 ## License
-
 MIT
