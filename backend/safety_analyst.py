@@ -179,25 +179,81 @@ OUTPUT RULES:
 
     @staticmethod
     def analyze(query: str, user_profile_dict: Optional[Dict] = None) -> Generator[str, None, None]:
-        # 1. Initialize Profile (Stateless)
-        # Use provided profile or default generic
         if user_profile_dict:
             current_profile = SafetyAnalyst.create_profile_from_dict(user_profile_dict)
         else:
             current_profile = UserProfile("general", True, set())
-        
-        # 2. Update Profile from NLP (Returns NEW profile, doesn't mutate global)
         updated_profile = SafetyAnalyst._parse_natural_language_profile(query, current_profile)
-        
-        # 3. Use the UPDATED profile for analysis
         profile = updated_profile
         ingredients = SafetyAnalyst._extract_ingredients(query)
+        profile_dict = {
+            "diet": profile.diet,
+            "dairy_allowed": profile.dairy_allowed,
+            "allergens": list(profile.allergens),
+            "allergies": list(profile.allergens),
+            "is_onboarding_completed": True,
+        }
+        dairy_str = "Dairy Allowed" if profile.dairy_allowed else "No Dairy"
+        profile_desc = f"{profile.diet.replace('_', ' ').title()} ({dairy_str})"
+        if profile.allergens:
+            profile_desc += f", Allergies: {', '.join(profile.allergens)}"
 
-        # 4. Analyze Ingredients
+        use_new = False
+        shadow = False
+        try:
+            from core.config import USE_NEW_ENGINE, SHADOW_MODE
+            use_new = USE_NEW_ENGINE
+            shadow = SHADOW_MODE
+        except ImportError:
+            pass
+
+        if use_new:
+            from core.bridge import run_new_engine_chat
+            from core.models.verdict import VerdictStatus
+            verdict = run_new_engine_chat(ingredients, profile_dict)
+            shadow_suffix = ""
+            if shadow:
+                unsafe_reasons_legacy = []
+                unclear_legacy = []
+                for ing in ingredients:
+                    result = evaluate_ingredient_risk(ing, profile)
+                    if result["status"] == "NOT_SAFE":
+                        unsafe_reasons_legacy.append(ing)
+                    elif result["status"] == "UNCLEAR":
+                        unclear_legacy.append(ing)
+                leg_status = "NOT_SAFE" if unsafe_reasons_legacy else ("UNCLEAR" if unclear_legacy else "SAFE")
+                if leg_status != verdict.status.value:
+                    shadow_suffix = f" | SHADOW_CHAT legacy_status={leg_status} new_status={verdict.status.value}"
+                    logger.info("SHADOW_CHAT legacy_status=%s new_status=%s", leg_status, verdict.status.value)
+            logger.info(
+                "INGRESURE_ENGINE: use_new_engine=True shadow_mode=%s | CHAT verdict=%s confidence=%.2f triggered=%s unknown_ingredients=%s%s",
+                shadow, verdict.status.value, verdict.confidence_score,
+                verdict.triggered_restrictions, verdict.uncertain_ingredients, shadow_suffix,
+            )
+            if verdict.status == VerdictStatus.NOT_SAFE:
+                yield f"❌ NOT SAFE — {', '.join(verdict.triggered_ingredients or verdict.triggered_restrictions)}.\n\n"
+                yield f"Evaluated for: **{profile_desc}**.\n"
+                yield f"Confidence: {verdict.confidence_score:.2f}"
+            elif verdict.status == VerdictStatus.UNCERTAIN:
+                yield f"⚠️ UNCLEAR — unknown or ambiguous: {', '.join(verdict.uncertain_ingredients)}.\n\n"
+                yield f"Evaluated for: **{profile_desc}**.\n"
+                yield f"Confidence: {verdict.confidence_score:.2f}"
+            elif verdict.status == VerdictStatus.SAFE and ingredients:
+                yield f"✅ SAFE — Compatible with **{profile_desc}**.\n\n"
+                yield f"Confidence: {verdict.confidence_score:.2f}"
+            else:
+                yield f"ℹ️ Updated Profile: **{profile_desc}**.\n"
+                yield "Please provide ingredients to analyze."
+            try:
+                yield f"\n\n<<<PROFILE_UPDATE>>>{json.dumps(profile_dict)}<<<PROFILE_UPDATE>>>"
+            except Exception as e:
+                logger.error("Failed to serialize profile: %s", e)
+            return
+
+        # Legacy path
         unsafe_reasons = []
         unclear_items = []
         safe_items = []
-        
         for ing in ingredients:
             result = evaluate_ingredient_risk(ing, profile)
             if result["status"] == "NOT_SAFE":
@@ -206,14 +262,13 @@ OUTPUT RULES:
                 unclear_items.append(ing)
             else:
                 safe_items.append(f"{ing.title()} ({result['reason']})")
-                
-        # 5. Construct Response
-        dairy_str = "Dairy Allowed" if profile.dairy_allowed else "No Dairy"
-        profile_desc = f"{profile.diet.replace('_', ' ').title()} ({dairy_str})"
-        if profile.allergens:
-            profile_desc += f", Allergies: {', '.join(profile.allergens)}"
 
-        # Output Logic
+        leg_verdict = "NOT_SAFE" if unsafe_reasons else ("UNCLEAR" if unclear_items else "SAFE")
+        logger.info(
+            "INGRESURE_ENGINE: use_new_engine=False shadow_mode=False | CHAT verdict=%s (legacy) ingredients_count=%s",
+            leg_verdict, len(ingredients),
+        )
+
         if unsafe_reasons:
             yield f"❌ NOT SAFE — {', '.join(unsafe_reasons)}.\n\n"
             yield f"Evaluated for: **{profile_desc}**.\n"

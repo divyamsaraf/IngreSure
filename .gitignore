@@ -1,2 +1,8 @@
 __pycache__/
 PROJECT_DETAILS.md
+
+# Documentation (phase reports, technical/refactor/arch/tech stack)
+docs/
+
+# Local env (flags, secrets)
+backend/.env

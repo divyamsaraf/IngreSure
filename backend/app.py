@@ -11,9 +11,20 @@ from pathlib import Path
 # Load env vars
 env_path = Path(__file__).parent.parent / "frontend" / ".env.local"
 load_dotenv(env_path)
+# Backend .env for USE_NEW_ENGINE / SHADOW_MODE
+load_dotenv(Path(__file__).parent / ".env")
 
 # Initialize App
 app = FastAPI(title="IngreSure Visual Scanner API")
+
+# Feature flags and config (core paths, logging)
+try:
+    from core.config import USE_NEW_ENGINE, SHADOW_MODE, log_config
+    log_config()
+except ImportError:
+    USE_NEW_ENGINE = False
+    SHADOW_MODE = False
+    def log_config(): pass
 
 # CORS
 app.add_middleware(
@@ -85,38 +96,46 @@ async def scan_image(file: UploadFile = File(...)):
     """
     1. OCR (PaddleOCR)
     2. LLM Cleanup (Ollama)
-    3. Rule Engine Classification
+    3. Rule Engine Classification (legacy) or ComplianceEngine (USE_NEW_ENGINE)
     """
-    logger.info(f"Received scan request: {file.filename}")
-    
+    logger.info("Scan request filename=%s use_new_engine=%s shadow_mode=%s", file.filename, USE_NEW_ENGINE, SHADOW_MODE)
+
     try:
-        # 1. Read Image
         image_bytes = await file.read()
-        
-        # 2. Run OCR
         raw_text = ocr_engine.extract_text(image_bytes)
-        logger.info(f"OCR Extracted {len(raw_text)} chars")
-        
-        # 3. Normalize Ingredients (LLM)
+        logger.info("OCR extracted %d chars", len(raw_text))
+
         ingredients = normalizer.normalize(raw_text)
-        logger.info(f"Normalized {len(ingredients)} ingredients")
-        
-        # 4. Apply Dietary Rules
-        scorecard = rule_engine.classify(ingredients)
-        
-        # 5. Calculate Confidence (Simple heuristic for now)
-        # In a real app, we'd use OCR confidence + LLM logprobs
-        confidence = 0.9 if len(ingredients) > 0 else 0.0
-        
+        logger.info("Normalized %d ingredients", len(ingredients))
+
+        scorecard: Dict[str, Dict] = {}
+        confidence = 0.0
+
+        if USE_NEW_ENGINE:
+            from core.bridge import run_new_engine_scan
+            verdict, scorecard = run_new_engine_scan(ingredients)
+            confidence = verdict.confidence_score
+            logger.info("Scan new_engine status=%s confidence=%s triggered=%s uncertain_count=%s",
+                        verdict.status.value, confidence, verdict.triggered_restrictions, len(verdict.uncertain_ingredients))
+            if SHADOW_MODE:
+                legacy_scorecard = rule_engine.classify(ingredients)
+                for diet in (legacy_scorecard or {}):
+                    leg = legacy_scorecard.get(diet, {}).get("status")
+                    new = scorecard.get(diet, {}).get("status")
+                    if leg != new:
+                        logger.info("SHADOW_SCAN diff diet=%s legacy=%s new=%s", diet, leg, new)
+        else:
+            scorecard = rule_engine.classify(ingredients)
+            confidence = 0.9 if len(ingredients) > 0 else 0.0
+
         return {
             "raw_text": raw_text,
             "ingredients": ingredients,
             "dietary_scorecard": scorecard,
             "confidence_scores": {"overall": confidence}
         }
-
     except Exception as e:
-        logger.error(f"Scan failed: {e}")
+        logger.error("Scan failed: %s", e, exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/verify-menu-item")
