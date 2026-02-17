@@ -4,22 +4,18 @@ export const dynamic = 'force-dynamic'
 
 export async function POST(req: NextRequest) {
     try {
-        const { message, userProfile } = await req.json()
+        const { message, userProfile, user_id } = await req.json()
         const mode = req.nextUrl.searchParams.get('mode') // 'grocery' or 'restaurant'
 
-        // Forward to Python Backend
-        // Note: Python backend expects {"query": "message"}
         const backendUrl = process.env.BACKEND_URL || 'http://127.0.0.1:8000'
-        
-        // Determine endpoint
-        const endpoint = mode === 'restaurant' ? '/chat/restaurant' : '/chat/grocery';
+        const endpoint = mode === 'restaurant' ? '/chat/restaurant' : '/chat/grocery'
 
         const response = await fetch(`${backendUrl}${endpoint}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ query: message, userProfile }),
+            body: JSON.stringify({ query: message, userProfile, user_id }),
         })
 
         if (!response.ok) {

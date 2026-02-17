@@ -9,8 +9,7 @@
       "rules": [
         {"field": "alcohol_content", "operator": "greater_than", "value": 0, "action": "FAIL"},
         {"field": "animal_species", "operator": "equals", "value": "pig", "action": "FAIL"},
-        {"field": "insect_derived", "operator": "equals", "value": true, "action": "FAIL"},
-        {"field": "meat_fish_derived", "operator": "equals", "value": true, "action": "FAIL"}
+        {"field": "insect_derived", "operator": "equals", "value": true, "action": "FAIL"}
       ]
     },
     {
@@ -21,8 +20,7 @@
       "rules": [
         {"field": "animal_species", "operator": "equals", "value": "pig", "action": "FAIL"},
         {"field": "animal_species", "operator": "equals", "value": "shellfish", "action": "FAIL"},
-        {"field": "insect_derived", "operator": "equals", "value": true, "action": "FAIL"},
-        {"field": "meat_fish_derived", "operator": "equals", "value": true, "action": "FAIL"}
+        {"field": "insect_derived", "operator": "equals", "value": true, "action": "FAIL"}
       ]
     },
     {
@@ -56,7 +54,9 @@
         {"field": "egg_source", "operator": "equals", "value": true, "action": "FAIL"},
         {"field": "insect_derived", "operator": "equals", "value": true, "action": "FAIL"},
         {"field": "root_vegetable", "operator": "equals", "value": true, "action": "FAIL"},
-        {"field": "alcohol_content", "operator": "greater_than", "value": 0, "action": "FAIL"}
+        {"field": "alcohol_content", "operator": "greater_than", "value": 0, "action": "FAIL"},
+        {"field": "onion_source", "operator": "equals", "value": true, "action": "FAIL"},
+        {"field": "garlic_source", "operator": "equals", "value": true, "action": "FAIL"}
       ]
     },
     {
@@ -97,8 +97,7 @@
       "region_scope": ["GLOBAL"],
       "severity": "STRICT",
       "rules": [
-        {"field": "meat_fish_derived", "operator": "equals", "value": true, "action": "FAIL"},
-        {"field": "insect_derived", "operator": "equals", "value": true, "action": "FAIL"}
+        {"field": "meat_fish_derived", "operator": "equals", "value": true, "action": "FAIL"}
       ]
     },
     {
@@ -108,8 +107,7 @@
       "severity": "STRICT",
       "rules": [
         {"field": "meat_fish_derived", "operator": "equals", "value": true, "action": "FAIL"},
-        {"field": "egg_source", "operator": "equals", "value": true, "action": "FAIL"},
-        {"field": "insect_derived", "operator": "equals", "value": true, "action": "FAIL"}
+        {"field": "egg_source", "operator": "equals", "value": true, "action": "FAIL"}
       ]
     },
     {
@@ -119,8 +117,7 @@
       "severity": "STRICT",
       "rules": [
         {"field": "meat_fish_derived", "operator": "equals", "value": true, "action": "FAIL"},
-        {"field": "dairy_source", "operator": "equals", "value": true, "action": "FAIL"},
-        {"field": "insect_derived", "operator": "equals", "value": true, "action": "FAIL"}
+        {"field": "dairy_source", "operator": "equals", "value": true, "action": "FAIL"}
       ]
     },
     {
@@ -129,8 +126,7 @@
       "region_scope": ["GLOBAL"],
       "severity": "STRICT",
       "rules": [
-        {"field": "animal_species", "operator": "in_list", "value": ["cow", "pig", "chicken", "lamb", "goat"], "action": "FAIL"},
-        {"field": "insect_derived", "operator": "equals", "value": true, "action": "FAIL"}
+        {"field": "animal_species", "operator": "in_list", "value": ["cow", "pig", "chicken", "lamb", "goat"], "action": "FAIL"}
       ]
     },
     {

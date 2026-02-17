@@ -127,30 +127,52 @@ OUTPUT RULES:
         if "soy meat" in n: return "soy meat"
         if "seitan" in n: return "seitan"
         
-        # Singularization (Heuristic)
-        if n.endswith("s") and not n.endswith("ss"):
-             singular = n[:-1]
-             return singular
-             
+        # Careful singularization: only simple plural forms
+        # Avoid mangling words like asparagus, couscous, citrus, hummus, lotus
+        no_strip_suffixes = ("us", "ss", "is", "os", "as")
+        if n.endswith("ies") and len(n) > 4:
+            return n[:-3] + "y"  # berries → berry, cherries → cherry
+        if n.endswith("es") and len(n) > 3 and not n.endswith(no_strip_suffixes):
+            return n[:-2] if n[-3] in "sxzh" else n[:-1]  # dishes → dish, tomatoes → tomato
+        if n.endswith("s") and len(n) > 3 and not n.endswith(no_strip_suffixes):
+            return n[:-1]  # eggs → egg, carrots → carrot
+
         return n
 
     @staticmethod
     def _extract_ingredients(query: str) -> List[str]:
+        import re
         # Clean query
         clean_q = query.lower()
         
-        # Remove common chat phrases
-        stopwords = ["is this safe", "is this", "can i eat", "contains", "ingredients:", "ingredients", "for me", "with", "safe", "is", "are", "?"]
-        
+        # Remove common chat phrases (longest first to avoid partial matches)
         if "ingredients:" in clean_q:
             clean_q = clean_q.split("ingredients:")[1]
 
         clean_q = clean_q.split(".")[0]
         clean_q = clean_q.split("\n")[0]
-            
-        for sw in stopwords:
-             clean_q = clean_q.replace(sw, " ") 
-                  
+
+        # Use word-boundary regex so "is" doesn't destroy "fish", "raisins", etc.
+        stopword_phrases = [
+            r"is\s+this\s+safe",
+            r"is\s+this",
+            r"can\s+i\s+eat",
+            r"contains",
+            r"ingredients",
+            r"for\s+me",
+        ]
+        stopword_words = [
+            r"with", r"safe", r"are",
+        ]
+        for phrase in stopword_phrases:
+            clean_q = re.sub(phrase, " ", clean_q)
+        for word in stopword_words:
+            clean_q = re.sub(r"\b" + word + r"\b", " ", clean_q)
+
+        # Remove question marks, colons, and extra whitespace
+        clean_q = re.sub(r"[?:]+", " ", clean_q)
+        clean_q = re.sub(r"\s+", " ", clean_q).strip()
+
         raw_list = [x.strip() for x in clean_q.split(",")]
         
         final_list = []
@@ -198,122 +220,29 @@ OUTPUT RULES:
         if profile.allergens:
             profile_desc += f", Allergies: {', '.join(profile.allergens)}"
 
-        use_new = False
-        shadow = False
-        try:
-            from core.config import USE_NEW_ENGINE, SHADOW_MODE
-            use_new = USE_NEW_ENGINE
-            shadow = SHADOW_MODE
-        except ImportError:
-            pass
-
-        if use_new:
-            from core.bridge import run_new_engine_chat
-            from core.models.verdict import VerdictStatus
-            verdict = run_new_engine_chat(ingredients, profile_dict)
-            shadow_suffix = ""
-            if shadow:
-                unsafe_reasons_legacy = []
-                unclear_legacy = []
-                for ing in ingredients:
-                    result = evaluate_ingredient_risk(ing, profile)
-                    if result["status"] == "NOT_SAFE":
-                        unsafe_reasons_legacy.append(ing)
-                    elif result["status"] == "UNCLEAR":
-                        unclear_legacy.append(ing)
-                leg_status = "NOT_SAFE" if unsafe_reasons_legacy else ("UNCLEAR" if unclear_legacy else "SAFE")
-                if leg_status != verdict.status.value:
-                    shadow_suffix = f" | SHADOW_CHAT legacy_status={leg_status} new_status={verdict.status.value}"
-                    logger.info("SHADOW_CHAT legacy_status=%s new_status=%s", leg_status, verdict.status.value)
-            logger.info(
-                "INGRESURE_ENGINE: use_new_engine=True shadow_mode=%s | CHAT verdict=%s confidence=%.2f triggered=%s unknown_ingredients=%s%s",
-                shadow, verdict.status.value, verdict.confidence_score,
-                verdict.triggered_restrictions, verdict.uncertain_ingredients, shadow_suffix,
-            )
-            if verdict.status == VerdictStatus.NOT_SAFE:
-                yield f"❌ NOT SAFE — {', '.join(verdict.triggered_ingredients or verdict.triggered_restrictions)}.\n\n"
-                yield f"Evaluated for: **{profile_desc}**.\n"
-                yield f"Confidence: {verdict.confidence_score:.2f}"
-            elif verdict.status == VerdictStatus.UNCERTAIN:
-                yield f"⚠️ UNCLEAR — unknown or ambiguous: {', '.join(verdict.uncertain_ingredients)}.\n\n"
-                yield f"Evaluated for: **{profile_desc}**.\n"
-                yield f"Confidence: {verdict.confidence_score:.2f}"
-            elif verdict.status == VerdictStatus.SAFE and ingredients:
-                yield f"✅ SAFE — Compatible with **{profile_desc}**.\n\n"
-                yield f"Confidence: {verdict.confidence_score:.2f}"
-            else:
-                yield f"ℹ️ Updated Profile: **{profile_desc}**.\n"
-                yield "Please provide ingredients to analyze."
-            try:
-                yield f"\n\n<<<PROFILE_UPDATE>>>{json.dumps(profile_dict)}<<<PROFILE_UPDATE>>>"
-            except Exception as e:
-                logger.error("Failed to serialize profile: %s", e)
-            return
-
-        # Legacy path
-        unsafe_reasons = []
-        unclear_items = []
-        safe_items = []
-        for ing in ingredients:
-            result = evaluate_ingredient_risk(ing, profile)
-            if result["status"] == "NOT_SAFE":
-                unsafe_reasons.append(f"{ing.title()} ({result['reason']})")
-            elif result["status"] == "UNCLEAR":
-                unclear_items.append(ing)
-            else:
-                safe_items.append(f"{ing.title()} ({result['reason']})")
-
-        leg_verdict = "NOT_SAFE" if unsafe_reasons else ("UNCLEAR" if unclear_items else "SAFE")
+        from core.bridge import run_new_engine_chat
+        from core.models.verdict import VerdictStatus
+        verdict = run_new_engine_chat(ingredients, profile_dict)
         logger.info(
-            "INGRESURE_ENGINE: use_new_engine=False shadow_mode=False | CHAT verdict=%s (legacy) ingredients_count=%s",
-            leg_verdict, len(ingredients),
+            "INGRESURE_ENGINE: CHAT verdict=%s confidence=%.2f triggered=%s unknown_ingredients=%s",
+            verdict.status.value, verdict.confidence_score,
+            verdict.triggered_restrictions, verdict.uncertain_ingredients,
         )
-
-        if unsafe_reasons:
-            yield f"❌ NOT SAFE — {', '.join(unsafe_reasons)}.\n\n"
+        if verdict.status == VerdictStatus.NOT_SAFE:
+            yield f"❌ NOT SAFE — {', '.join(verdict.triggered_ingredients or verdict.triggered_restrictions)}.\n\n"
             yield f"Evaluated for: **{profile_desc}**.\n"
-            yield "Confidence: High"
-            
-        elif unclear_items:
-            # LLM Fallback (Slow Path)
-            prompt = SafetyAnalyst.SYSTEM_PROMPT.format(
-                profile_desc=profile_desc,
-                unknown_ingredients=", ".join(unclear_items)
-            )
-            yield f"⚠️ UNCLEAR — checking {', '.join(unclear_items)}...\n\n"
-            
-            payload = {"model": MODEL_NAME, "prompt": prompt, "stream": True}
-            try:
-                with requests.post(OLLAMA_API_URL, json=payload, stream=True, timeout=30) as r:
-                    r.raise_for_status()
-                    for line in r.iter_lines():
-                        if line:
-                            j = json.loads(line)
-                            if "response" in j: yield j["response"]
-            except Exception as e:
-                yield f"Error checking unknown ingredients: {e}"
-        
-        elif safe_items:
-            # Safe Path
-            top_reasons = safe_items[:3]
+            yield f"Confidence: {verdict.confidence_score:.2f}"
+        elif verdict.status == VerdictStatus.UNCERTAIN:
+            yield f"⚠️ UNCLEAR — unknown or ambiguous: {', '.join(verdict.uncertain_ingredients)}.\n\n"
+            yield f"Evaluated for: **{profile_desc}**.\n"
+            yield f"Confidence: {verdict.confidence_score:.2f}"
+        elif verdict.status == VerdictStatus.SAFE and ingredients:
             yield f"✅ SAFE — Compatible with **{profile_desc}**.\n\n"
-            yield f"Key ingredients: {', '.join(top_reasons)}.\n"
-            yield "Confidence: High"
+            yield f"Confidence: {verdict.confidence_score:.2f}"
         else:
-            # No ingredients found fallback (Just profile update info)
             yield f"ℹ️ Updated Profile: **{profile_desc}**.\n"
             yield "Please provide ingredients to analyze."
-            
-        # 6. Yield Profile Protocol Update
-        # Always yield this so frontend stays in sync with NLP changes
         try:
-            profile_dict = {
-                "diet": profile.diet,
-                "dairy_allowed": profile.dairy_allowed,
-                "allergens": list(profile.allergens),
-                "allergies": list(profile.allergens), # Frontend compatibility
-                "is_onboarding_completed": True
-            }
             yield f"\n\n<<<PROFILE_UPDATE>>>{json.dumps(profile_dict)}<<<PROFILE_UPDATE>>>"
         except Exception as e:
-            logger.error(f"Failed to serialize profile: {e}")
+            logger.error("Failed to serialize profile: %s", e)

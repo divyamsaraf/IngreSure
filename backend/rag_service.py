@@ -6,7 +6,7 @@ from sentence_transformers import SentenceTransformer
 from supabase import create_client, Client
 import requests
 import json
-from dietary_rules import DietaryRuleEngine
+from core.bridge import extract_query_filters
 
 # Configuration
 OLLAMA_API_URL = "http://localhost:11434/api/generate"
@@ -50,7 +50,7 @@ class RAGService:
 
         try:
             # 1. Preprocess Query (Extract Filters)
-            filters = DietaryRuleEngine.extract_filters(query)
+            filters = extract_query_filters(query)
             filter_dietary = filters["dietary"] if filters["dietary"] else None
             filter_allergens = filters["allergens"] if filters["allergens"] else None
             

@@ -3,11 +3,9 @@ from unittest.mock import MagicMock, patch
 import sys
 import os
 
-# Add 'ai' directory to path so imports like 'from dietary_rules' work
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../ai')))
-
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from rag_service import RAGService
-from dietary_rules import DietaryRuleEngine
+from core.bridge import extract_query_filters
 
 class TestChatMode(unittest.TestCase):
     def setUp(self):
@@ -22,9 +20,9 @@ class TestChatMode(unittest.TestCase):
                 self.rag_service.generate_embedding = MagicMock(return_value=[0.1]*384)
 
     def test_filter_extraction(self):
-        """Test if DietaryRuleEngine extracts filters correctly."""
+        """Test if extract_query_filters extracts dietary and allergen filters."""
         query = "Do you have any vegan options without nuts?"
-        filters = DietaryRuleEngine.extract_filters(query)
+        filters = extract_query_filters(query)
         self.assertIn("Vegan", filters["dietary"])
         self.assertTrue(any(a in filters["allergens"] for a in ["Peanuts", "Tree Nuts"]))
 

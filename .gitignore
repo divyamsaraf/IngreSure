@@ -6,3 +6,8 @@ docs/
 
 # Local env (flags, secrets)
 backend/.env
+backend/.commit_msg
+
+# User-specific runtime data
+data/profiles.json
+data/unknown_ingredients_log.json

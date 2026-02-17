@@ -17,13 +17,10 @@ load_dotenv(Path(__file__).parent / ".env")
 # Initialize App
 app = FastAPI(title="IngreSure Visual Scanner API")
 
-# Feature flags and config (core paths, logging)
 try:
-    from core.config import USE_NEW_ENGINE, SHADOW_MODE, log_config
+    from core.config import log_config
     log_config()
 except ImportError:
-    USE_NEW_ENGINE = False
-    SHADOW_MODE = False
     def log_config(): pass
 
 # CORS
@@ -55,8 +52,9 @@ class VerificationRequest(BaseModel):
 
 class ChatRequest(BaseModel):
     query: str
-    context_filter: Optional[Dict] = None # e.g. {"restaurant_id": "..."}
-    userProfile: Optional[Dict] = None # { "diet": "Vegan", "dairy_allowed": False, "allergens": [], "is_onboarding_completed": True }
+    user_id: Optional[str] = None  # when set, profile is loaded from backend and used for restriction_ids
+    context_filter: Optional[Dict] = None
+    userProfile: Optional[Dict] = None  # legacy: used when user_id not set
 
 class MenuOnboardRequest(BaseModel):
     restaurant_id: str
@@ -65,15 +63,12 @@ class MenuOnboardRequest(BaseModel):
 # Import Engines
 from ocr_engine import OCREngine
 from llm_normalizer import IngredientNormalizer
-from dietary_rules import DietaryRuleEngine
 from verification_service import verify_menu_item
 from rag_service import RAGService
 from onboarding_service import OnboardingService
 
-# Initialize Engines (Global to avoid reloading)
 ocr_engine = OCREngine()
 normalizer = IngredientNormalizer()
-rule_engine = DietaryRuleEngine()
 rag_service = RAGService()
 onboarding_service = OnboardingService(rag_service)
 
@@ -93,46 +88,42 @@ async def onboard_menu(request: MenuOnboardRequest):
 
 @app.post("/scan", response_model=ScanResult)
 async def scan_image(file: UploadFile = File(...)):
-    """
-    1. OCR (PaddleOCR)
-    2. LLM Cleanup (Ollama)
-    3. Rule Engine Classification (legacy) or ComplianceEngine (USE_NEW_ENGINE)
-    """
-    logger.info("Scan request filename=%s use_new_engine=%s shadow_mode=%s", file.filename, USE_NEW_ENGINE, SHADOW_MODE)
-
+    """OCR -> normalize ingredients -> compliance engine -> scorecard."""
+    logger.info("Scan request filename=%s", file.filename)
     try:
         image_bytes = await file.read()
         raw_text = ocr_engine.extract_text(image_bytes)
         logger.info("OCR extracted %d chars", len(raw_text))
-
         ingredients = normalizer.normalize(raw_text)
         logger.info("Normalized %d ingredients", len(ingredients))
-
-        scorecard: Dict[str, Dict] = {}
-        confidence = 0.0
-
-        if USE_NEW_ENGINE:
-            from core.bridge import run_new_engine_scan
-            verdict, scorecard = run_new_engine_scan(ingredients)
-            confidence = verdict.confidence_score
-            logger.info("Scan new_engine status=%s confidence=%s triggered=%s uncertain_count=%s",
-                        verdict.status.value, confidence, verdict.triggered_restrictions, len(verdict.uncertain_ingredients))
-            if SHADOW_MODE:
-                legacy_scorecard = rule_engine.classify(ingredients)
-                for diet in (legacy_scorecard or {}):
-                    leg = legacy_scorecard.get(diet, {}).get("status")
-                    new = scorecard.get(diet, {}).get("status")
-                    if leg != new:
-                        logger.info("SHADOW_SCAN diff diet=%s legacy=%s new=%s", diet, leg, new)
-        else:
-            scorecard = rule_engine.classify(ingredients)
-            confidence = 0.9 if len(ingredients) > 0 else 0.0
-
+        from core.bridge import run_new_engine_scan, run_legacy_chat, SCAN_DIET_LABELS, DIET_LABEL_TO_RESTRICTION_ID
+        from core.config import SHADOW_MODE
+        verdict, scorecard = run_new_engine_scan(ingredients)
+        if SHADOW_MODE:
+            for label in SCAN_DIET_LABELS:
+                rid = DIET_LABEL_TO_RESTRICTION_ID.get(label)
+                legacy_profile = {"diet": label.lower().replace(" ", "_")} if rid else None
+                if legacy_profile and rid == "hindu_vegetarian":
+                    legacy_profile["diet"] = "hindu_veg"
+                legacy_status = run_legacy_chat(ingredients, legacy_profile)
+                new_status = "NOT_SAFE" if rid and rid in verdict.triggered_restrictions else "SAFE"
+                if legacy_status != new_status:
+                    logger.warning(
+                        "SHADOW_SCAN diff diet=%s legacy_status=%s new_status=%s",
+                        label, legacy_status, new_status,
+                    )
+                logger.info(
+                    "SHADOW_SCAN diet=%s legacy_status=%s new_status=%s",
+                    label, legacy_status, new_status,
+                )
+        logger.info("Scan status=%s confidence=%s triggered=%s uncertain_count=%s",
+                    verdict.status.value, verdict.confidence_score,
+                    verdict.triggered_restrictions, len(verdict.uncertain_ingredients))
         return {
             "raw_text": raw_text,
             "ingredients": ingredients,
             "dietary_scorecard": scorecard,
-            "confidence_scores": {"overall": confidence}
+            "confidence_scores": {"overall": verdict.confidence_score}
         }
     except Exception as e:
         logger.error("Scan failed: %s", e, exc_info=True)
@@ -162,15 +153,80 @@ from safety_analyst import SafetyAnalyst
 class UpdateProfileRequest(BaseModel):
     profile: Dict
 
+class ProfileBody(BaseModel):
+    user_id: str
+    dietary_preference: Optional[str] = None
+    allergens: Optional[List[str]] = None
+    lifestyle: Optional[List[str]] = None
+    religious_preferences: Optional[List[str]] = None
+
+def _parse_update_command(query: str):
+    """Parse /update <field> value1, value2. Returns (field, values) or (None, None). Supports dietary_preference (single), allergens, lifestyle, religious_preferences."""
+    q = query.strip()
+    if not q.lower().startswith("/update"):
+        return None, None
+    import re
+    m = re.match(r"/update\s+(\w+)\s+(.+)", q, re.IGNORECASE | re.DOTALL)
+    if not m:
+        return None, None
+    field_name = m.group(1).lower()
+    allowed = ("dietary_preference", "allergens", "religious_preferences", "lifestyle")
+    if field_name not in allowed:
+        return None, None
+    raw = m.group(2).strip()
+    values = [x.strip() for x in raw.split(",") if x.strip()]
+    if field_name == "dietary_preference" and values:
+        values = [values[0]]  # single value
+    return field_name, values
+
+@app.get("/profile/{user_id}")
+async def get_profile(user_id: str):
+    """Get persisted profile by user_id. Returns new shape; never None for existing fields."""
+    try:
+        from core.profile_storage import get_profile as get_stored
+        profile = get_stored(user_id)
+        if profile is None:
+            return {
+                "user_id": user_id,
+                "dietary_preference": "No rules",
+                "allergens": [],
+                "lifestyle": [],
+                "religious_preferences": [],
+            }
+        return profile.to_dict()
+    except Exception as e:
+        logger.error(f"Get profile failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/profile")
+async def create_or_update_profile(body: ProfileBody):
+    """Create or update profile by user_id. Merge: only provided fields are updated; never reset to None."""
+    try:
+        from core.profile_storage import get_or_create_profile, save_profile, update_profile_partial
+        from core.models.user_profile import UserProfile
+        # Partial update: only set fields that are explicitly provided
+        profile = update_profile_partial(
+            body.user_id,
+            dietary_preference=body.dietary_preference,
+            allergens=body.allergens,
+            lifestyle=body.lifestyle,
+            religious_preferences=body.religious_preferences,
+        )
+        if profile is None:
+            profile = get_or_create_profile(body.user_id)
+            save_profile(profile)
+        logger.info("PROFILE_UPDATE user_id=%s dietary_preference=%s", body.user_id, profile.dietary_preference)
+        return {"status": "ok", "profile": profile.to_dict()}
+    except Exception as e:
+        logger.error(f"Profile save failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.post("/update-profile")
 async def update_profile(request: UpdateProfileRequest):
     """
-    Endpoint to log profile updates. State is now managed client-side and synced via chat protocol.
-    This remains for logging/validation purposes.
+    Legacy: frontend profile sync. Prefer POST /profile with user_id for persistent storage.
     """
     try:
-        # Stateless Backend Refactor: We don't store session state in global anymore.
-        # Frontend is the Source of Truth.
         logger.info(f"Frontend Profile Sync: {request.profile}")
         return {"status": "ok", "message": "Profile synced (Stateless)"}
     except Exception as e:
@@ -180,18 +236,112 @@ async def update_profile(request: UpdateProfileRequest):
 @app.post("/chat/grocery")
 async def chat_grocery(request: ChatRequest):
     """
-    Endpoint 1: Grocery / Food Item Scanner (SafetyAnalyst, The "IngreSure Assistant").
-    Strict Deterministic Rules.
+    Grocery / Food Item Scanner. If user_id is set, profile is loaded from backend and used for compliance.
+    Supports /update <field> value1, value2 in chat to update profile.
     """
-    logger.info(f"Grocery Chat query: {request.query}")
+    logger.info("Grocery Chat query=%s user_id=%s", request.query, request.user_id)
     try:
+        from core.profile_storage import get_or_create_profile, save_profile, update_profile_partial
+        from core.models.user_profile import UserProfile
+        from core.bridge import user_profile_model_to_restriction_ids, run_new_engine_chat, run_legacy_chat
+        from core.config import SHADOW_MODE
+        from core.models.verdict import VerdictStatus
+
         async def generate_safety():
-            # Pass profile explicitly to stateless analyst
+            if request.user_id:
+                profile = get_or_create_profile(request.user_id)
+                field_name, values = _parse_update_command(request.query)
+                if field_name and values is not None:
+                    # Merge update: only the given field; never reset others to None
+                    if field_name == "dietary_preference":
+                        profile.update_merge(dietary_preference=values[0] if values else "No rules")
+                    elif field_name == "allergens":
+                        profile.update_merge(allergens=values)
+                    elif field_name == "lifestyle":
+                        profile.update_merge(lifestyle=values)
+                    elif field_name == "religious_preferences":
+                        profile.update_merge(religious_preferences=values)
+                    save_profile(profile)
+                    logger.info("PROFILE_UPDATE user_id=%s field=%s values=%s", request.user_id, field_name, values)
+                    msg = (
+                        f"Profile updated: {field_name}=[{', '.join(values)}]. "
+                        f"Dietary: {profile.dietary_preference}, Allergens: {profile.allergens}, "
+                        f"Religious: {profile.religious_preferences}, Lifestyle: {profile.lifestyle}."
+                    )
+                    yield msg + "\n\n"
+                    import json
+                    yield f"<<<PROFILE_UPDATE>>>{json.dumps(profile.to_dict())}<<<PROFILE_UPDATE>>>"
+                    return
+                ingredients = SafetyAnalyst._extract_ingredients(request.query)
+                # First-time user: no profile and no ingredients → prompt for profile
+                if profile.is_empty() and not ingredients:
+                    yield "<<<PROFILE_REQUIRED>>>\n\nPlease set your dietary preference, allergens, and lifestyle (e.g. use the profile dialog or /update dietary_preference Jain)."
+                    import json
+                    yield f"\n\n<<<PROFILE_UPDATE>>>{json.dumps(profile.to_dict())}<<<PROFILE_UPDATE>>>"
+                    return
+                restriction_ids = user_profile_model_to_restriction_ids(profile)
+                profile_context = {
+                    "dietary_preference": profile.dietary_preference,
+                    "allergens": profile.allergens,
+                    "religious_preferences": profile.religious_preferences,
+                    "lifestyle": profile.lifestyle,
+                }
+                verdict = run_new_engine_chat(
+                    ingredients,
+                    user_profile=profile,
+                    restriction_ids=restriction_ids,
+                    profile_context=profile_context,
+                    use_api_fallback=True,
+                )
+                if SHADOW_MODE:
+                    legacy_status = run_legacy_chat(ingredients, profile.to_dict())
+                    logger.info(
+                        "SHADOW_CHAT legacy_status=%s new_status=%s user_id=%s confidence=%.2f triggered=%s uncertain_count=%s",
+                        legacy_status, verdict.status.value, request.user_id,
+                        verdict.confidence_score, verdict.triggered_restrictions, len(verdict.uncertain_ingredients),
+                    )
+                    if legacy_status != verdict.status.value:
+                        logger.warning(
+                            "SHADOW_CHAT diff legacy_status=%s new_status=%s ingredients=%s",
+                            legacy_status, verdict.status.value, ingredients[:15],
+                        )
+                else:
+                    logger.info(
+                        "INGRESURE_ENGINE: USER_PROFILE user_id=%s dietary_preference=%s allergens=%s religious=%s lifestyle=%s | "
+                        "CHAT verdict=%s confidence=%.2f triggered=%s",
+                        request.user_id, profile.dietary_preference, profile.allergens,
+                        profile.religious_preferences, profile.lifestyle,
+                        verdict.status.value, verdict.confidence_score, verdict.triggered_restrictions,
+                    )
+                profile_desc = f"Dietary: {profile.dietary_preference}; Allergens: {profile.allergens}; Religious: {profile.religious_preferences}; Lifestyle: {profile.lifestyle}"
+                if verdict.status == VerdictStatus.NOT_SAFE:
+                    yield f"❌ NOT SAFE — {', '.join(verdict.triggered_ingredients or verdict.triggered_restrictions)}.\n\n"
+                    yield f"Evaluated for: **{profile_desc}**.\n"
+                    if verdict.informational_ingredients and verdict.confidence_score < 1.0:
+                        yield f"Minor ingredients (informational only): {', '.join(verdict.informational_ingredients)}.\n"
+                    yield f"Confidence: {verdict.confidence_score:.2f}"
+                elif verdict.status == VerdictStatus.UNCERTAIN:
+                    yield f"⚠️ UNCLEAR — unknown or ambiguous: {', '.join(verdict.uncertain_ingredients)}.\n\n"
+                    yield f"Evaluated for: **{profile_desc}**.\n"
+                    if verdict.informational_ingredients and verdict.confidence_score < 1.0:
+                        yield f"Minor ingredients (informational only): {', '.join(verdict.informational_ingredients)}.\n"
+                    yield f"Confidence: {verdict.confidence_score:.2f}"
+                elif verdict.status == VerdictStatus.SAFE and ingredients:
+                    yield f"✅ SAFE — Compatible with your profile.\n\n"
+                    if verdict.informational_ingredients and verdict.confidence_score < 1.0:
+                        yield f"Minor ingredients (informational only): {', '.join(verdict.informational_ingredients)}.\n"
+                    yield f"Confidence: {verdict.confidence_score:.2f}"
+                else:
+                    yield f"ℹ️ Please provide ingredients to analyze, or use /update to change your profile."
+                import json
+                yield f"\n\n<<<PROFILE_UPDATE>>>{json.dumps(profile.to_dict())}<<<PROFILE_UPDATE>>>"
+                return
             for token in SafetyAnalyst.analyze(request.query, request.userProfile):
                 yield token
+
         return StreamingResponse(generate_safety(), media_type="text/plain")
     except Exception as e:
-        logger.error(f"Grocery Chat failed: {e}")
+        logger.error(f"Grocery Chat failed: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/chat/restaurant")

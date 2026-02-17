@@ -252,18 +252,8 @@ def evaluate_ingredient_risk(ingredient: str, profile: UserProfile) -> Dict:
     """
     norm = normalize_text(ingredient)
     prop = INGREDIENT_DB.get(norm)
-    
-    # If not found, try simple substring matches for common categories
     if not prop:
-        if "milk" in norm or "cream" in norm or "cheese" in norm: prop = INGREDIENT_DB["milk"]
-        elif "beef" in norm: prop = INGREDIENT_DB["beef"]
-        elif "pork" in norm or "bacon" in norm: prop = INGREDIENT_DB["pork"]
-        elif "chicken" in norm: prop = INGREDIENT_DB["chicken"]
-        elif "egg" in norm: prop = INGREDIENT_DB["egg"]
-        elif "oil" in norm: prop = INGREDIENT_DB["vegetable oil"] # Assumption
-        elif "flour" in norm: prop = INGREDIENT_DB["flour"]
-        else:
-            return {"status": "UNCLEAR", "reason": f"Unknown ingredient: {ingredient}"}
+        return {"status": "UNCLEAR", "reason": f"Unknown ingredient: {ingredient}"}
 
     # 1. ALLERGY CHECK
     # Normalize profile allergens (Handle plural/singular mismatch)

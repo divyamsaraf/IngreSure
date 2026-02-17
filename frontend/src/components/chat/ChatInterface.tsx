@@ -4,7 +4,19 @@ import React, { useState, useRef, useEffect } from 'react'
 import { Send, User, Bot, Loader2 } from 'lucide-react'
 import OnboardingModal from './OnboardingModal'
 import ProfileHeader from './ProfileHeader'
-import { UserProfile, DEFAULT_PROFILE } from '@/types/userProfile'
+import { UserProfile, DEFAULT_PROFILE, backendToProfile, profileToBackend, ALLERGEN_OPTIONS } from '@/types/userProfile'
+
+const USER_ID_KEY = 'ingresure_user_id'
+
+function getOrCreateUserId(): string {
+  if (typeof window === 'undefined') return ''
+  let id = localStorage.getItem(USER_ID_KEY)
+  if (!id) {
+    id = crypto.randomUUID?.() ?? `anon-${Date.now()}`
+    localStorage.setItem(USER_ID_KEY, id)
+  }
+  return id
+}
 
 interface Message {
     role: 'user' | 'assistant'
@@ -32,34 +44,81 @@ export default function ChatInterface({
     const [loading, setLoading] = useState(false)
     const [profile, setProfile] = useState<UserProfile>(DEFAULT_PROFILE)
     const [showOnboarding, setShowOnboarding] = useState(false)
+    const [userId, setUserId] = useState<string>('')
+    const [profileLoaded, setProfileLoaded] = useState(false)
     const messagesEndRef = useRef<HTMLDivElement>(null)
 
-    // Load profile from local storage on mount
+    // Profile API base: /api (no double /api). apiEndpoint is e.g. /api/chat so base = /api, then /api/profile
+    const profileApiBase = apiEndpoint.replace(/\/chat.*$/, '') || '/api'
+
+    // Get or create user_id and load profile from backend (or show onboarding)
     useEffect(() => {
-        const saved = localStorage.getItem('ingresure_profile')
-        if (saved) {
-            setProfile(JSON.parse(saved))
-        } else {
-            // First time user -> Show modal
-            setShowOnboarding(true)
-        }
-    }, [])
+        const uid = getOrCreateUserId()
+        setUserId(uid)
+        fetch(`${profileApiBase}/profile?user_id=${encodeURIComponent(uid)}`)
+          .then(res => res.ok ? res.json() : null)
+          .then(data => {
+            if (data && (data.dietary_preference && data.dietary_preference !== 'No rules' || (data.allergens?.length > 0) || (data.religious_preferences?.length > 0) || (data.lifestyle?.length > 0) || (data.lifestyle_flags?.length > 0))) {
+              setProfile(backendToProfile(data))
+              setShowOnboarding(false)
+            } else {
+              const saved = localStorage.getItem('ingresure_profile')
+              if (saved) {
+                try {
+                  const p = JSON.parse(saved)
+                  if (p.is_onboarding_completed) setShowOnboarding(false)
+                  setProfile({ ...DEFAULT_PROFILE, ...p, user_id: uid })
+                } catch (_) {
+                  setShowOnboarding(true)
+                }
+              } else {
+                setShowOnboarding(true)
+              }
+            }
+            setProfileLoaded(true)
+          })
+          .catch((err) => {
+            console.error('Profile fetch failed:', err)
+            setProfileLoaded(true)
+            const saved = localStorage.getItem('ingresure_profile')
+            if (saved) {
+              try {
+                const p = JSON.parse(saved)
+                setProfile({ ...DEFAULT_PROFILE, ...p, user_id: getOrCreateUserId() })
+                if (p.is_onboarding_completed) setShowOnboarding(false)
+              } catch (_) {
+                setShowOnboarding(true)
+              }
+            } else {
+              setShowOnboarding(true)
+            }
+          })
+    }, [apiEndpoint])
 
     const saveProfile = (newProfile: UserProfile) => {
-        setProfile(newProfile)
-        localStorage.setItem('ingresure_profile', JSON.stringify(newProfile))
+        const uid = userId || getOrCreateUserId()
+        const toSave = { ...newProfile, user_id: uid, is_onboarding_completed: true }
+        setProfile(toSave)
+        localStorage.setItem('ingresure_profile', JSON.stringify(toSave))
 
-        // Unified Sync: Notify Backend immediately
-        fetch(apiEndpoint.replace('/chat', '') + '/update-profile', {
+        const payload = profileToBackend(toSave, uid)
+        fetch(`${profileApiBase}/profile`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ profile: newProfile })
-        }).catch(err => console.error("Background Sync Failed:", err))
+            body: JSON.stringify(payload),
+        })
+          .then(res => res.ok && res.json())
+          .then(() => {})
+          .catch(err => console.error('Profile save failed:', err))
 
-        // Add a system update message
+        const parts: string[] = []
+        if (toSave.dietary_preference && toSave.dietary_preference !== 'No rules') parts.push(`Diet: ${toSave.dietary_preference}`)
+        if (toSave.allergens?.length || toSave.allergies?.length) parts.push(`Allergens: ${(toSave.allergens ?? toSave.allergies ?? []).join(', ')}`)
+        if (toSave.religious_preferences?.length) parts.push(`Religious: ${toSave.religious_preferences.join(', ')}`)
+        if (toSave.lifestyle?.length || toSave.lifestyle_flags?.length) parts.push(`Lifestyle: ${(toSave.lifestyle ?? toSave.lifestyle_flags ?? []).join(', ')}`)
         setMessages(prev => [...prev, {
             role: 'assistant',
-            content: `✅ Profile Updated: **${newProfile.diet}** (${newProfile.dairy_allowed ? 'Dairy Allowed' : 'No Dairy'}). I'll keep this in mind!`
+            content: `✅ Profile saved. ${parts.length ? parts.join(' · ') : 'No restrictions set.'} I'll use this for personalized advice.`
         }])
     }
 
@@ -91,11 +150,11 @@ export default function ChatInterface({
 
             const payload = {
                 message: userMsg,
-                // Pass profile context to backend so it knows current state without NLP parsing every time
+                user_id: userId || getOrCreateUserId(),
                 userProfile: profile
             }
 
-            const response = await fetch(apiEndpoint, {
+            const response = await fetch(apiEndpoint + '?mode=grocery', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
@@ -117,42 +176,51 @@ export default function ChatInterface({
                 const chunk = decoder.decode(value, { stream: true })
                 buffer += chunk
 
-                // Check for profile update protocol
-                // Format: <<<PROFILE_UPDATE>>>{...json...}<<<PROFILE_UPDATE>>>
+                // Check for <<<PROFILE_REQUIRED>>> → open single profile dialog
+                if (buffer.includes('<<<PROFILE_REQUIRED>>>')) {
+                    setShowOnboarding(true)
+                    buffer = buffer.replace(/<<<PROFILE_REQUIRED>>>[^]*?(?=<<<PROFILE_UPDATE>>>|$)/g, '').trim()
+                    if (!buffer.trim()) buffer = 'Please set your dietary preference, allergens, and lifestyle in the form above so we can give you personalized advice.'
+                }
+
+                // Check for profile update protocol: <<<PROFILE_UPDATE>>>{...json...}<<<PROFILE_UPDATE>>>
                 const tag = "<<<PROFILE_UPDATE>>>"
                 if (buffer.includes(tag)) {
-                    const parts = buffer.split(tag)
-                    // Pattern: [Text, JSON, RemainingText] assuming clean wrap
-                    // It can be: "Text... <<<PROFILE_UPDATE>>> JSON <<<PROFILE_UPDATE>>>"
-
+                    const parts: string[] = buffer.split(tag)
                     if (parts.length >= 3) {
                         const jsonStr = parts[1]
                         try {
-                            const updatedProfile = JSON.parse(jsonStr)
-                            if (!updatedProfile.allergies) updatedProfile.allergies = []
-                            console.log("Syncing Profile from Backend:", updatedProfile)
-
-                            // Update Local State & Storage
-                            setProfile(updatedProfile)
-                            localStorage.setItem('ingresure_profile', JSON.stringify(updatedProfile))
-
-                            // Remove the protocol from valid text
-                            // Reconstruct text without the JSON block
-                            // Ideally, the JSON block is at the end, so we take parts[0]
-                            // But if there is text after (unlikely based on backend), we append it?
-                            // Backend sends it at the very end.
-
-                            buffer = parts[0] + (parts[2] || "") // Remove parts[1] (json) and delimiters
+                            const raw = JSON.parse(jsonStr)
+                            const updatedProfile = raw.user_id != null
+                              ? backendToProfile(raw)
+                              : { ...DEFAULT_PROFILE, ...raw, allergies: raw.allergies ?? raw.allergens ?? [], allergens: raw.allergens ?? raw.allergies ?? [] }
+                            updatedProfile.is_onboarding_completed = true
+                            // Don't overwrite a filled profile with an empty one (prevents reset to "No rules")
+                            const isEmpty = !updatedProfile.dietary_preference || updatedProfile.dietary_preference === 'No rules'
+                              && (updatedProfile.allergens?.length ?? 0) === 0
+                              && (updatedProfile.religious_preferences?.length ?? 0) === 0
+                              && (updatedProfile.lifestyle?.length ?? 0) === 0
+                            setProfile(prev => {
+                              if (isEmpty && prev.dietary_preference && prev.dietary_preference !== 'No rules') return prev
+                              if (isEmpty && ((prev.allergens?.length ?? 0) > 0 || (prev.religious_preferences?.length ?? 0) > 0 || (prev.lifestyle?.length ?? 0) > 0)) return prev
+                              return updatedProfile
+                            })
+                            if (!isEmpty) localStorage.setItem('ingresure_profile', JSON.stringify(updatedProfile))
+                            buffer = parts[0] + (parts[2] || '')
                         } catch (e) {
-                            console.error("Failed to parse backend profile update", e)
+                            console.error('Failed to parse backend profile update', e)
                         }
                     }
                 }
 
-                // Update UI with the CLEAN buffer (text only)
+                // Update UI with the CLEAN buffer (strip protocol tags)
                 setMessages(prev => {
                     const newMsgs = [...prev]
-                    newMsgs[newMsgs.length - 1].content = buffer.replace(/<<<PROFILE_UPDATE>>>.*?<<<PROFILE_UPDATE>>>/g, '')
+                    let content = buffer
+                        .replace(/<<<PROFILE_UPDATE>>>[\s\S]*?<<<PROFILE_UPDATE>>>/g, '')
+                        .replace(/<<<PROFILE_REQUIRED>>>[\s\S]*?(?=<<<PROFILE_UPDATE>>>|$)/g, '')
+                        .trim()
+                    newMsgs[newMsgs.length - 1].content = content || newMsgs[newMsgs.length - 1].content
                     return newMsgs
                 })
             }
@@ -177,6 +245,7 @@ export default function ChatInterface({
                 onClose={() => setShowOnboarding(false)}
                 onSave={saveProfile}
                 initialProfile={profile}
+                editMode={profile.is_onboarding_completed}
             />
 
             {/* Header Area */}
@@ -192,8 +261,8 @@ export default function ChatInterface({
                     </div>
                 </div>
 
-                {/* Persistent Profile Header */}
-                <ProfileHeader profile={profile} onEdit={() => setShowOnboarding(true)} />
+                {/* Inline Edit profile: always visible */}
+                <ProfileHeader profile={profile} onEdit={() => setShowOnboarding(true)} minimal={!profileLoaded} />
             </div>
 
             <div className="flex-1 overflow-y-auto p-4 space-y-6 scroll-smooth">
@@ -262,41 +331,45 @@ export default function ChatInterface({
                         type="text"
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
-                        placeholder={profile.is_onboarding_completed ? "Paste ingredients here..." : "Setup profile first or type ingredients..."}
+                        placeholder={profile.is_onboarding_completed ? "Paste ingredients or type /update allergens milk, egg to edit profile" : "Set your profile above (Edit profile) or paste ingredients to start."}
                         className="w-full px-6 py-4 pr-14 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-400 font-medium text-slate-700"
-                        disabled={loading}
+                        disabled={loading || !profileLoaded}
                     />
                     <button
                         type="submit"
-                        disabled={loading || !input.trim()}
+                        disabled={loading || !input.trim() || (!profile.is_onboarding_completed && !profileLoaded)}
                         className="absolute right-2 p-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 disabled:opacity-50 disabled:bg-slate-300 transition-all shadow-md shadow-blue-600/20"
                     >
                         {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
                     </button>
                 </div>
             </form>
-            <div className="bg-slate-50 p-2 border-t border-slate-100 flex justify-center gap-2">
+            <div className="bg-slate-50 p-2 border-t border-slate-100 flex justify-center gap-2 flex-wrap">
                 <button
+                    type="button"
                     onClick={() => setInput('')}
                     className="px-3 py-1.5 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
                 >
-                    Clear Input
+                    Clear input
                 </button>
                 <button
+                    type="button"
                     onClick={() => {
                         const lastUserMsg = [...messages].reverse().find(m => m.role === 'user')
                         if (lastUserMsg) setInput(lastUserMsg.content)
                     }}
                     className="px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 border border-blue-100 rounded-lg hover:bg-blue-100 transition-colors"
                 >
-                    Check Again
+                    Check again
                 </button>
                 <button
+                    type="button"
                     onClick={() => setShowOnboarding(true)}
-                    className="px-3 py-1.5 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+                    className="px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors inline-flex items-center gap-1"
                 >
-                    Edit Profile
+                    Edit profile
                 </button>
+                <span className="text-xs text-slate-400 self-center px-1">or type /update dietary_preference Jain</span>
             </div>
         </div>
     )

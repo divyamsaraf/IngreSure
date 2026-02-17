@@ -2,7 +2,12 @@ import logging
 import uuid
 from typing import List, Dict, Optional
 from rag_service import RAGService
-from dietary_rules import DietaryRuleEngine
+from core.bridge import (
+    run_new_engine_scan,
+    get_diet_tags_from_verdict_scan,
+    get_allergens_from_ingredients,
+    detect_cuisine,
+)
 from llm_normalizer import IngredientNormalizer
 
 logger = logging.getLogger(__name__)
@@ -50,18 +55,13 @@ class OnboardingService:
                 # Let's use raw for now to save time/resources, assuming input is decent.
                 final_ingredients = raw_ingredients
 
-                # 2. Deterministic Tagging
-                cuisine = DietaryRuleEngine.detect_cuisine(f"{name} {description}")
-                allergens = DietaryRuleEngine.detect_allergens(final_ingredients)
-                diet_scorecard = DietaryRuleEngine.classify(final_ingredients)
-                
-                # Determine primary diet label (simplistic logic)
-                is_vegan = diet_scorecard["Vegan"]["status"] == "green"
-                is_vegetarian = diet_scorecard["Hindu Veg"]["status"] == "green" # Approximation
-                
-                dietary_tags = []
-                if is_vegan: dietary_tags.append("Vegan")
-                elif is_vegetarian: dietary_tags.append("Vegetarian")
+                # 2. Deterministic tagging (compliance engine)
+                cuisine = detect_cuisine(f"{name} {description}")
+                allergens = get_allergens_from_ingredients(final_ingredients)
+                verdict, _ = run_new_engine_scan(final_ingredients)
+                dietary_tags = get_diet_tags_from_verdict_scan(verdict)
+                if not dietary_tags:
+                    dietary_tags = ["Omnivore"]
                 
                 # 3. Generate Embedding
                 # Embed: "Name: ... Description: ... Cuisine: ... Diet: ..."

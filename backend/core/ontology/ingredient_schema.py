@@ -43,11 +43,14 @@ class Ingredient:
 
     @property
     def meat_fish_derived(self) -> bool:
-        """True if animal-derived but not dairy/egg (meat, fish, shellfish, gelatin, etc.)."""
+        """True if animal-derived but not dairy/egg/insect (meat, fish, shellfish, gelatin, etc.).
+        Excludes insect-derived items (honey, beeswax, carmine, shellac) which are
+        handled separately by the insect_derived flag."""
         return (
             self.animal_origin
             and not self.dairy_source
             and not self.egg_source
+            and not self.insect_derived
         )
 
     def to_dict(self) -> dict:

@@ -71,19 +71,16 @@ def verify_menu_item(item_name, description, ingredients, claimed_diet_types):
             else:
                 raise ValueError("Could not parse JSON from LLM response")
 
-        # --- Cross-Check with Deterministic Rule Engine ---
-        from dietary_rules import DietaryRuleEngine
-        rule_scorecard = DietaryRuleEngine.classify(ingredients)
-        
-        # If Rule Engine flags a violation that the LLM missed, add it to issues
+        # Cross-check with deterministic compliance engine
+        from core.bridge import run_new_engine_for_claimed_diets
+        _, scorecard = run_new_engine_for_claimed_diets(ingredients, claimed_diet_types)
         for diet in claimed_diet_types:
-            if diet in rule_scorecard:
-                if rule_scorecard[diet]["status"] == "red":
-                    issue_msg = f"Rule Engine Violation: Claimed {diet} but found forbidden ingredients: {rule_scorecard[diet]['reason']}"
-                    if issue_msg not in parsed_result.get("issues", []):
-                        parsed_result.setdefault("issues", []).append(issue_msg)
-                        parsed_result["is_consistent"] = False
-                        parsed_result["confidence_score"] = 1.0 # High confidence in rule violation
+            if diet in scorecard and scorecard[diet]["status"] == "red":
+                issue_msg = f"Compliance violation: Claimed {diet} but ingredients not suitable — {scorecard[diet]['reason']}"
+                if issue_msg not in parsed_result.get("issues", []):
+                    parsed_result.setdefault("issues", []).append(issue_msg)
+                    parsed_result["is_consistent"] = False
+                    parsed_result["confidence_score"] = 1.0
 
         # Cache the result
         cache_verification(item_data, parsed_result)
