@@ -3,10 +3,9 @@ import json
 import logging
 from typing import List
 
-logger = logging.getLogger(__name__)
+from core.config import get_ollama_url, get_ollama_model
 
-OLLAMA_URL = "http://localhost:11434/api/generate"
-MODEL = "llama3.2:3b"
+logger = logging.getLogger(__name__)
 
 class IngredientNormalizer:
     @staticmethod
@@ -30,8 +29,8 @@ class IngredientNormalizer:
         """
 
         try:
-            response = requests.post(OLLAMA_URL, json={
-                "model": MODEL,
+            response = requests.post(get_ollama_url(), json={
+                "model": get_ollama_model(),
                 "prompt": prompt,
                 "stream": False,
                 "format": "json"

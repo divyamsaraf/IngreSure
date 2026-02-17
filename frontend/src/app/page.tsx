@@ -17,16 +17,6 @@ export default function LandingPage() {
             <Link href="/chat" className="bg-white text-blue-600 px-6 py-3 rounded-full font-bold hover:bg-gray-100 transition-colors flex items-center gap-2">
               Start Grocery Audit <ArrowRight className="w-5 h-5" />
             </Link>
-            {/* Restaurant Assistant hidden temporarily 
-            <Link href="/restaurant/chat" className="bg-indigo-600 border border-white/20 text-white px-6 py-3 rounded-full font-bold hover:bg-indigo-500 transition-colors flex items-center gap-2">
-              Restaurant Assistant <Search className="w-5 h-5" />
-            </Link>
-            */}
-            {/* 
-            <Link href="/dashboard" className="bg-transparent border-2 border-white text-white px-6 py-3 rounded-full font-bold hover:bg-white/10 transition-colors">
-              For Partners
-            </Link>
-            */}
           </div>
         </div>
       </header>
@@ -53,7 +43,7 @@ export default function LandingPage() {
               </div>
               <h3 className="text-xl font-bold mb-3">Safety First</h3>
               <p className="text-gray-600">
-                Determinitsic "Gold Standard" rule engine ensures verdicts are based on facts, not hallucinations.
+                Deterministic &ldquo;Gold Standard&rdquo; rule engine ensures verdicts are based on facts, not hallucinations.
               </p>
             </div>
 

@@ -1,11 +1,7 @@
 import json
 import requests
-import os
 from caching import get_cached_verification, cache_verification
-
-# Configuration
-OLLAMA_API_URL = "http://localhost:11434/api/generate"
-MODEL_NAME = "llama3.2:3b"
+from core.config import get_ollama_url, get_ollama_model
 
 def verify_menu_item(item_name, description, ingredients, claimed_diet_types):
     """
@@ -20,7 +16,6 @@ def verify_menu_item(item_name, description, ingredients, claimed_diet_types):
     }
     cached_result = get_cached_verification(item_data)
     if cached_result:
-        print("Returning cached result")
         return cached_result
 
     prompt = f"""
@@ -47,14 +42,14 @@ def verify_menu_item(item_name, description, ingredients, claimed_diet_types):
     """
     
     payload = {
-        "model": MODEL_NAME,
+        "model": get_ollama_model(),
         "prompt": prompt,
         "stream": False,
         "format": "json"
     }
     
     try:
-        response = requests.post(OLLAMA_API_URL, json=payload, timeout=120)
+        response = requests.post(get_ollama_url(), json=payload, timeout=120)
         response.raise_for_status()
         result = response.json()
         

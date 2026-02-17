@@ -7,10 +7,7 @@ from supabase import create_client, Client
 import requests
 import json
 from core.bridge import extract_query_filters
-
-# Configuration
-OLLAMA_API_URL = "http://localhost:11434/api/generate"
-MODEL_NAME = "llama3.2:3b"
+from core.config import get_ollama_url, get_ollama_model
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +19,7 @@ class RAGService:
         self.supabase_url = os.environ.get("SUPABASE_URL") or os.environ.get("NEXT_PUBLIC_SUPABASE_URL")
         self.supabase_key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY") or os.environ.get("NEXT_PUBLIC_SUPABASE_ANON_KEY")
         
-        print(f"RAG Service Config: URL={self.supabase_url}, KEY={'Found' if self.supabase_key else 'Missing'}")
+        logger.info("RAG Service Config: URL=%s, KEY=%s", self.supabase_url, "set" if self.supabase_key else "missing")
 
         # 1. Load Embedding Model (Local)
         # all-MiniLM-L6-v2 is fast and effective (384 dims)
@@ -115,16 +112,14 @@ class RAGService:
         """
         
         payload = {
-            "model": MODEL_NAME,
+            "model": get_ollama_model(),
             "prompt": prompt,
             "stream": True
         }
         
         try:
-            # logger.info("Starting Ollama stream...")
-            with requests.post(OLLAMA_API_URL, json=payload, stream=True, timeout=300) as response:
+            with requests.post(get_ollama_url(), json=payload, stream=True, timeout=300) as response:
                 response.raise_for_status()
-                # logger.info("Ollama connected. Reading lines...")
                 for line in response.iter_lines():
                     if line:
                         body = json.loads(line)

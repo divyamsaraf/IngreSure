@@ -38,8 +38,9 @@ _RESTRICTION_DISPLAY: Dict[str, str] = {
     "no_garlic": "no-garlic",
 }
 
-# Ingredient → short reason why it fails a given restriction category
-_INGREDIENT_REASONS: Dict[str, str] = {
+# Ingredient -> short reason why it fails a given restriction category
+# Shared with llm_response.py (imported as INGREDIENT_REASONS)
+INGREDIENT_REASONS: Dict[str, str] = {
     "egg": "animal-derived",
     "eggs": "animal-derived",
     "cheese": "dairy product",
@@ -177,11 +178,11 @@ def _diet_label(profile: Any) -> str:
 def _ingredient_reason(ingredient: str) -> str:
     """Return a short reason string for an ingredient, handling plurals."""
     key = ingredient.lower().strip()
-    reason = _INGREDIENT_REASONS.get(key)
+    reason = INGREDIENT_REASONS.get(key)
     if reason:
         return reason
     norm = _normalize_for_match(key)
-    reason = _INGREDIENT_REASONS.get(norm)
+    reason = INGREDIENT_REASONS.get(norm)
     if reason:
         return reason
     return "may conflict with your dietary requirements"

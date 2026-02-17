@@ -2,7 +2,7 @@
 
 import React from 'react'
 import Link from 'next/link'
-import { ShieldCheck, ArrowRight, User } from 'lucide-react'
+import { ShieldCheck, ArrowRight } from 'lucide-react'
 
 export default function Navbar() {
     return (
@@ -18,12 +18,6 @@ export default function Navbar() {
                 <div className="hidden md:flex items-center gap-8 font-medium text-gray-600">
                     <Link href="/" className="hover:text-blue-600 transition-colors">Home</Link>
                     <Link href="/chat" className="hover:text-blue-600 transition-colors">Grocery Assistant</Link>
-                    {/* Restaurant link hidden 
-           <Link href="/restaurant/chat" className="hover:text-blue-600 transition-colors">Find Restaurants</Link>
-           */}
-                    {/* 
-           <Link href="/dashboard" className="hover:text-blue-600 transition-colors">Partner Dashboard</Link>
-           */}
                 </div>
 
                 <div className="flex items-center gap-4">

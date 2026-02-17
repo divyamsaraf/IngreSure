@@ -3,7 +3,7 @@
 import React from 'react';
 import { Box, Card, CardContent, Typography, Chip, Grid, Skeleton } from '@mui/material';
 
-interface MenuItem {
+export interface SearchMenuItem {
     id: string;
     name: string;
     description: string;
@@ -14,7 +14,7 @@ interface MenuItem {
 }
 
 interface SearchResultsProps {
-    results: MenuItem[];
+    results: SearchMenuItem[];
     loading: boolean;
 }
 

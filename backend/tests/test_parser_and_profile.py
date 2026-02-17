@@ -126,7 +126,7 @@ def test_profile_not_saved_on_ingredient_submission():
     """Chat with ingredients only must not call save_profile (profile persists; only /update or dialog save)."""
     from unittest.mock import patch
     from core.profile_storage import get_or_create_profile
-    from safety_analyst import SafetyAnalyst
+    from core.intent_detector import detect_intent
     import app as app_module
     save_calls = []
 
@@ -143,7 +143,8 @@ def test_profile_not_saved_on_ingredient_submission():
                 profile = get_or_create_profile("test_u")
                 field_name, values = app_module._parse_update_command("water, sugar")
                 assert field_name is None and values is None
-                ingredients = SafetyAnalyst._extract_ingredients("water, sugar")
+                parsed = detect_intent("water, sugar")
+                ingredients = parsed.ingredients
                 assert len(ingredients) >= 2
                 from core.bridge import run_new_engine_chat, user_profile_model_to_restriction_ids
                 restriction_ids = user_profile_model_to_restriction_ids(profile)

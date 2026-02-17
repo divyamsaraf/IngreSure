@@ -4,7 +4,8 @@ import React, { useState, useRef, useEffect } from 'react'
 import { Send, User, Bot, Loader2 } from 'lucide-react'
 import OnboardingModal from './OnboardingModal'
 import ProfileHeader from './ProfileHeader'
-import { UserProfile, DEFAULT_PROFILE, backendToProfile, profileToBackend, ALLERGEN_OPTIONS } from '@/types/userProfile'
+import FormattedMessage from './FormattedMessage'
+import { UserProfile, DEFAULT_PROFILE, backendToProfile, profileToBackend } from '@/types/userProfile'
 
 const USER_ID_KEY = 'ingresure_user_id'
 
@@ -33,7 +34,7 @@ interface ChatInterfaceProps {
 export default function ChatInterface({
     apiEndpoint = '/api/chat',
     title = 'IngreSure Assistant',
-    subtitle = 'Powered by SafetyAnalyst',
+    subtitle = 'Deterministic Compliance Engine',
     suggestions = [
         "Is the burger vegan?",
         "I have a peanut allergy."
@@ -141,12 +142,6 @@ export default function ChatInterface({
         setMessages(prev => [...prev, { role: 'assistant', content: '' }])
 
         try {
-            // Include profile in context if available
-            // Note: We need to append it to the message or send as separate context field
-            // Here we basically append it as a system instruction prefix if API accepts raw string
-            // Or ideally, the backend parses this.
-            // For now, let's append it to the body as 'context'
-
             const payload = {
                 message: userMsg,
                 user_id: userId || getOrCreateUserId(),
@@ -165,7 +160,6 @@ export default function ChatInterface({
             if (!reader) return
 
             const decoder = new TextDecoder()
-            let assistantMessage = ''
             let buffer = ''
 
             while (true) {
@@ -299,23 +293,23 @@ export default function ChatInterface({
                 )}
 
                 {messages.map((msg, idx) => (
-                    <div key={idx} className={`flex gap-4 ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-in slide-in-from-bottom-2 duration-300`}>
+                    <div key={idx} className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-in slide-in-from-bottom-2 duration-300`}>
                         {msg.role === 'assistant' && (
-                            <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0 mt-1">
-                                <Bot className="w-5 h-5 text-blue-600" />
+                            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-100 to-blue-50 flex items-center justify-center flex-shrink-0 mt-1 shadow-sm">
+                                <Bot className="w-4.5 h-4.5 text-blue-600" />
                             </div>
                         )}
-                        <div className={`max-w-[85%] p-4 rounded-2xl shadow-sm ${msg.role === 'user'
-                            ? 'bg-blue-600 text-white rounded-br-none'
-                            : 'bg-white border border-slate-100 text-slate-800 rounded-bl-none shadow-md'
+                        <div className={`max-w-[85%] rounded-2xl shadow-sm ${msg.role === 'user'
+                            ? 'bg-blue-600 text-white rounded-br-none px-4 py-3'
+                            : 'bg-white border border-slate-100 text-slate-700 rounded-bl-none px-5 py-4 shadow-md'
                             }`}>
-                            <div className="prose prose-sm max-w-none">
-                                <p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+                            <div className="text-[0.9rem]">
+                                <FormattedMessage content={msg.content} isUser={msg.role === 'user'} />
                             </div>
                         </div>
                         {msg.role === 'user' && (
-                            <div className="w-8 h-8 rounded-lg bg-slate-200 flex items-center justify-center flex-shrink-0 mt-1">
-                                <User className="w-5 h-5 text-slate-600" />
+                            <div className="w-8 h-8 rounded-xl bg-slate-200 flex items-center justify-center flex-shrink-0 mt-1">
+                                <User className="w-4.5 h-4.5 text-slate-600" />
                             </div>
                         )}
                     </div>

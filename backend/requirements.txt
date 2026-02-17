@@ -6,7 +6,7 @@ paddlepaddle==2.6.2
 paddleocr==2.7.0.3
 Pillow==10.2.0
 numpy<2.0.0
-sentence-transformers
-supabase
-python-dotenv
-pytest
+sentence-transformers==2.7.0
+supabase==2.4.0
+python-dotenv==1.0.1
+pytest==8.1.1

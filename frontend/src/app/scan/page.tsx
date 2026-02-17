@@ -54,9 +54,8 @@ export default function ScannerPage() {
             const formData = new FormData()
             formData.append('file', file)
 
-            // Call Python API directly (assuming proxy or CORS allowed)
-            // In production, use Next.js API route to proxy to Python service
-            const response = await fetch('http://localhost:8000/scan', {
+            const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
+            const response = await fetch(`${backendUrl}/scan`, {
                 method: 'POST',
                 body: formData,
             })

@@ -684,6 +684,37 @@
       "regions": [],
       "_enrichment_source": "usda_fdc",
       "_enrichment_confidence": "high"
+    },
+    {
+      "id": "usda_rulebreakin_rustic_veg_pizza_rulebreakin_rustic_veg",
+      "canonical_name": "RULEBREAKIN' RUSTIC VEG PIZZA, RULEBREAKIN' RUSTIC VEG",
+      "aliases": [
+        "veg"
+      ],
+      "derived_from": [],
+      "contains": [],
+      "may_contain": [],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "fungal": false,
+      "insect_derived": false,
+      "animal_species": null,
+      "egg_source": false,
+      "dairy_source": false,
+      "gluten_source": false,
+      "nut_source": null,
+      "soy_source": false,
+      "sesame_source": false,
+      "alcohol_content": null,
+      "root_vegetable": false,
+      "onion_source": false,
+      "garlic_source": false,
+      "fermented": false,
+      "uncertainty_flags": [],
+      "regions": [],
+      "_enrichment_source": "usda_fdc",
+      "_enrichment_confidence": "high"
     }
   ]
 }

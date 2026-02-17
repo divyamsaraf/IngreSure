@@ -49,6 +49,8 @@ _PROFILE_PATTERNS = [
     re.compile(rf"\b(?:my\s+religion\s+is|i\s+practice)\s+({_DIET_REGEX})\b", re.IGNORECASE),
     re.compile(rf"\b(?:i\s+eat)\s+({_DIET_REGEX})\b", re.IGNORECASE),
     re.compile(rf"\bswitch(?:ing)?\s+(?:to|my\s+diet\s+to)\s+({_DIET_REGEX})\b", re.IGNORECASE),
+    # Bare diet keyword: "Jain", "hindu veg", "Halal", "vegan" (whole input)
+    re.compile(rf"^\s*({_DIET_REGEX})\s*(?:diet|lifestyle)?\s*$", re.IGNORECASE),
 ]
 
 # Allergen-update sentence patterns
@@ -131,8 +133,8 @@ _INGREDIENT_QUERY_PATTERNS = [
     re.compile(r"\b(?:what|how)\s+about\s+(.+?)[\?\.\!]?\s*$", re.IGNORECASE),
     # "check eggs" / "analyze cheese"
     re.compile(r"^\s*(?:check|analyze|evaluate|test|verify)\s+(.+?)[\?\.\!]?\s*$", re.IGNORECASE),
-    # "Ingredients: X, Y, Z" (explicit label)
-    re.compile(r"\b(?:ingredients?)\s*[:;]\s*(.+)", re.IGNORECASE),
+    # "Ingredients: X, Y, Z" (explicit label) — stop at sentence-ending period+question
+    re.compile(r"\b(?:ingredients?)\s*[:;]\s*(.+?)(?:\.\s+(?:is|are|does|do|can)\b.*)?$", re.IGNORECASE),
 ]
 
 # Greeting patterns — matches single-word and multi-part greetings
@@ -300,6 +302,8 @@ def _split_ingredients(text: str) -> List[str]:
     conjunction (e.g. 'bread and eggs').
     """
     t = re.sub(r"[?\!]+", "", text).strip()
+    # Strip trailing question/sentence after a period (e.g. "Water. Is this Halal" → "Water")
+    t = re.sub(r"\.\s+(?:is|are|does|do|can|should|what|how|why|will|could|would)\b.*$", "", t, flags=re.IGNORECASE).strip()
     # Replace "and" / "or" with comma (but NOT "with" — handled per-chunk)
     t = re.sub(r"\s+(?:and|&)\s+", ", ", t, flags=re.IGNORECASE)
     t = re.sub(r"\s+or\s+", ", ", t, flags=re.IGNORECASE)
@@ -346,7 +350,7 @@ def _split_ingredients(text: str) -> List[str]:
 def _clean_for_ingredients(text: str) -> str:
     """Strip conversational fluff; return empty string if nothing ingredient-like remains."""
     t = text.strip()
-    t = re.sub(r"^(?:hi|hello|hey|please|kindly)\s*,?\s*", "", t, flags=re.IGNORECASE)
+    t = re.sub(r"^(?:hi|hello|hey|please|kindly)\b\s*,?\s*", "", t, flags=re.IGNORECASE)
     t = re.sub(r"\b(?:please|kindly|could\s+you|would\s+you|can\s+you)\s+(?:check|tell\s+me|let\s+me\s+know)\s*", "", t, flags=re.IGNORECASE)
     t = re.sub(r"\bfor\s+(?:me|my\s+\w+)\b", "", t, flags=re.IGNORECASE)
     t = re.sub(r"\s*\?+\s*$", "", t)
@@ -365,6 +369,45 @@ def _clean_for_ingredients(text: str) -> str:
 
 
 # ---------------------------------------------------------------------------
+# Pre-processing: separate trailing diet-question from ingredient text
+# ---------------------------------------------------------------------------
+_TRAILING_DIET_RE = re.compile(
+    rf"[.]\s*(?:is|are)\s+(?:this|these|it|they)\s+({_DIET_REGEX})"
+    rf"(?:\s+(?:safe|friendly|compatible|compliant|ok|okay))?\s*\??\s*$",
+    re.IGNORECASE,
+)
+
+
+def _split_query_and_trailing_diet(query: str) -> Tuple[str, Optional[str]]:
+    """Split a query like 'Sugar, Water. Is this Halal?' into ('Sugar, Water', 'Halal').
+
+    Returns (cleaned_query, trailing_diet_canonical) where trailing_diet_canonical
+    is None if no trailing diet question was found.
+    """
+    m = _TRAILING_DIET_RE.search(query)
+    if m:
+        diet = DIET_KEYWORDS.get(m.group(1).lower().strip())
+        if diet:
+            cleaned = query[: m.start()].strip().rstrip(".")
+            return cleaned, diet
+    return query, None
+
+
+def _resolve_diet_plural(diet_key: str) -> Optional[str]:
+    """Resolve a diet keyword with plural tolerance: 'vegans' → 'Vegan'."""
+    canonical = DIET_KEYWORDS.get(diet_key)
+    if not canonical and diet_key.endswith("'s"):
+        canonical = DIET_KEYWORDS.get(diet_key[:-2])
+    if not canonical and diet_key.endswith("s"):
+        canonical = DIET_KEYWORDS.get(diet_key[:-1])
+    return canonical
+
+
+# Set of diet name strings for fast filtering
+_DIET_NAMES_LOWER = set(DIET_KEYWORDS.keys())
+
+
+# ---------------------------------------------------------------------------
 # Main entry point
 # ---------------------------------------------------------------------------
 def detect_intent(query: str) -> ParsedIntent:
@@ -376,8 +419,12 @@ def detect_intent(query: str) -> ParsedIntent:
             → MIXED  profile_updates={"dietary_preference": "Jain"}  ingredients=["eggs"]
         "Is cheese okay?"
             → INGREDIENT_QUERY  ingredients=["cheese"]
+        "Ingredients: Sugar, Gelatin, Water. Is this Halal?"
+            → MIXED  profile_updates={"dietary_preference": "Halal"}  ingredients=["Sugar", "Gelatin", "Water"]
         "I follow a vegan diet"
             → PROFILE_UPDATE  profile_updates={"dietary_preference": "Vegan"}
+        "Hindu"
+            → PROFILE_UPDATE  profile_updates={"dietary_preference": "Hindu Veg"}
         "Hello"
             → GREETING
         "eggs, milk, flour"
@@ -387,52 +434,51 @@ def detect_intent(query: str) -> ParsedIntent:
     if not query:
         return ParsedIntent(intent="GENERAL_QUESTION", original_query=query)
 
-    # /update command → delegate to existing handler (intent = PROFILE_UPDATE)
+    # /update command
     if query.lstrip().lower().startswith("/update"):
         return ParsedIntent(intent="PROFILE_UPDATE", original_query=query)
 
-    # Greeting (single-word and multi-part like "hi, how are you?")
-    if _GREETING_RE.match(query):
+    # Greetings & conversational phrases
+    if _GREETING_RE.match(query) or _CONVERSATIONAL_RE.match(query):
         return ParsedIntent(intent="GREETING", original_query=query)
 
-    # Conversational phrase (not an ingredient query)
-    if _CONVERSATIONAL_RE.match(query):
-        return ParsedIntent(intent="GREETING", original_query=query)
+    # ---- Step 1: Separate trailing diet question EARLY ----
+    # "Ingredients: Sugar, Water. Is this Halal?" → base="Ingredients: Sugar, Water", trailing_diet="Halal"
+    base_text, trailing_diet = _split_query_and_trailing_diet(query)
 
-    # ---- Third-person / indirect diet+ingredient queries ----
-    # "can jain eat onion?", "is pork halal?", "does vegan allow honey?"
-    for pat in _THIRD_PERSON_PATTERNS:
-        m = pat.search(query)
-        if m:
-            groups = m.groups()
-            # Pattern 3 ("is X diet?") has ingredient first, diet second
-            if pat.pattern.startswith(r"\b(?:is|are)"):
-                ingredient_raw, diet_raw = groups[0], groups[1]
-            else:
-                diet_raw, ingredient_raw = groups[0], groups[1]
-            diet_key = diet_raw.lower().strip()
-            # Strip trailing 's or s (plural tolerance: vegans→vegan)
-            canonical_diet = DIET_KEYWORDS.get(diet_key)
-            if not canonical_diet and diet_key.endswith("'s"):
-                canonical_diet = DIET_KEYWORDS.get(diet_key[:-2])
-            if not canonical_diet and diet_key.endswith("s"):
-                canonical_diet = DIET_KEYWORDS.get(diet_key[:-1])
-            if canonical_diet:
-                ings = _split_ingredients(ingredient_raw.strip())
-                if ings:
-                    return ParsedIntent(
-                        intent="MIXED",
-                        profile_updates={"dietary_preference": canonical_diet},
-                        ingredients=ings,
-                        original_query=query,
-                    )
+    # ---- Step 2: Third-person / indirect diet+ingredient queries ----
+    # Only on the original query (e.g. "is pork halal?", "can jain eat onion?")
+    # Skip if trailing_diet was found (that pattern already handled the diet part)
+    if not trailing_diet:
+        for pat in _THIRD_PERSON_PATTERNS:
+            m = pat.search(query)
+            if m:
+                groups = m.groups()
+                if pat.pattern.startswith(r"\b(?:is|are)"):
+                    ingredient_raw, diet_raw = groups[0], groups[1]
+                else:
+                    diet_raw, ingredient_raw = groups[0], groups[1]
+                canonical_diet = _resolve_diet_plural(diet_raw.lower().strip())
+                if canonical_diet:
+                    ings = _split_ingredients(ingredient_raw.strip())
+                    if ings:
+                        return ParsedIntent(
+                            intent="MIXED",
+                            profile_updates={"dietary_preference": canonical_diet},
+                            ingredients=ings,
+                            original_query=query,
+                        )
 
-    # ---- Extract profile signals ----
+    # ---- Step 3: Extract profile signals ----
     profile_updates: Dict[str, object] = {}
 
-    diet_name, remaining = _extract_diet(query)
+    # Try sentence-based diet extraction on the base text (without trailing question)
+    diet_name, remaining = _extract_diet(base_text)
     if diet_name:
         profile_updates["dietary_preference"] = diet_name
+    elif trailing_diet:
+        profile_updates["dietary_preference"] = trailing_diet
+        remaining = base_text  # Use only the ingredient portion
 
     allergens, remaining = _extract_allergens(remaining)
     if allergens:
@@ -446,49 +492,42 @@ def detect_intent(query: str) -> ParsedIntent:
     if lifestyle_flags:
         profile_updates["lifestyle"] = lifestyle_flags
 
-    # ---- Check general-question patterns BEFORE ingredient extraction ----
-    is_general = any(p.search(query) for p in _GENERAL_QUESTION_RES)
+    # ---- Step 4: Check general-question patterns ----
+    is_general = any(p.search(base_text) for p in _GENERAL_QUESTION_RES)
 
-    # ---- Extract ingredients ----
+    # ---- Step 5: Extract ingredients from remaining text ----
     ingredients: List[str] = []
     if not is_general:
         ingredients = _extract_ingredients_from_text(remaining)
-        # Only fall back to original query if profile extraction didn't already succeed
-        # (avoids "I am Jain" → "jain" extracted as ingredient)
-        if not ingredients and remaining != query and not profile_updates:
-            ingredients = _extract_ingredients_from_text(query)
+        # Fallback to base_text only if remaining was consumed by profile extraction
+        if not ingredients and remaining != base_text and not profile_updates:
+            ingredients = _extract_ingredients_from_text(base_text)
 
     # Filter out diet names that leaked into ingredients
     if ingredients:
-        diet_names_lower = {k for k in DIET_KEYWORDS}
-        ingredients = [i for i in ingredients if i.lower().strip() not in diet_names_lower]
+        ingredients = [i for i in ingredients if i.lower().strip() not in _DIET_NAMES_LOWER]
 
-    # ---- Classify intent ----
+    # ---- Step 6: Classify intent ----
     has_profile = bool(profile_updates)
     has_ingredients = bool(ingredients)
 
     if has_profile and has_ingredients:
-        intent = "MIXED"
-    elif has_profile:
-        intent = "PROFILE_UPDATE"
-    elif has_ingredients:
-        intent = "INGREDIENT_QUERY"
-    elif is_general:
-        intent = "GENERAL_QUESTION"
-    else:
-        # Last-resort: treat the whole query as potential ingredient text
-        fallback = _extract_ingredients_from_text(query)
-        # Filter diet names again
-        if fallback:
-            diet_names_lower = {k for k in DIET_KEYWORDS}
-            fallback = [i for i in fallback if i.lower().strip() not in diet_names_lower]
-        if fallback:
-            return ParsedIntent(intent="INGREDIENT_QUERY", ingredients=fallback, original_query=query)
-        intent = "GENERAL_QUESTION"
+        return ParsedIntent(intent="MIXED", profile_updates=profile_updates,
+                            ingredients=ingredients, original_query=query)
+    if has_profile:
+        return ParsedIntent(intent="PROFILE_UPDATE", profile_updates=profile_updates,
+                            ingredients=[], original_query=query)
+    if has_ingredients:
+        return ParsedIntent(intent="INGREDIENT_QUERY", profile_updates={},
+                            ingredients=ingredients, original_query=query)
+    if is_general:
+        return ParsedIntent(intent="GENERAL_QUESTION", original_query=query)
 
-    return ParsedIntent(
-        intent=intent,
-        profile_updates=profile_updates,
-        ingredients=ingredients,
-        original_query=query,
-    )
+    # Last-resort: treat the whole query as potential ingredient text
+    fallback = _extract_ingredients_from_text(query)
+    if fallback:
+        fallback = [i for i in fallback if i.lower().strip() not in _DIET_NAMES_LOWER]
+    if fallback:
+        return ParsedIntent(intent="INGREDIENT_QUERY", ingredients=fallback, original_query=query)
+
+    return ParsedIntent(intent="GENERAL_QUESTION", original_query=query)

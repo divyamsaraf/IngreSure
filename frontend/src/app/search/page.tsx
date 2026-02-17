@@ -4,21 +4,10 @@ import React, { useState } from 'react';
 import { Container, Grid, Typography, Box } from '@mui/material';
 import SearchBar from '@/components/SearchBar';
 import SearchFilters from '@/components/SearchFilters';
-import SearchResults from '@/components/SearchResults';
-
-// Define types locally or import from a shared types file
-interface MenuItem {
-    id: string;
-    name: string;
-    description: string;
-    price: number;
-    restaurant_id: string;
-    similarity: number;
-    rank: number;
-}
+import SearchResults, { SearchMenuItem } from '@/components/SearchResults';
 
 export default function SearchPage() {
-    const [results, setResults] = useState<MenuItem[]>([]);
+    const [results, setResults] = useState<SearchMenuItem[]>([]);
     const [loading, setLoading] = useState(false);
     const [selectedDiets, setSelectedDiets] = useState<string[]>([]);
     const [selectedAllergens, setSelectedAllergens] = useState<string[]>([]);
@@ -26,39 +15,10 @@ export default function SearchPage() {
     const handleSearch = async (query: string) => {
         setLoading(true);
         try {
-            // In a real app, use the Supabase client or fetch directly
-            // const supabase = createClientComponentClient();
-            // const { data } = await supabase.functions.invoke('global-search', { ... });
-
-            // Mocking the API call for now since we don't have the full environment set up
+            // TODO: Replace with real Supabase global-search edge function call
             console.log('Searching for:', query, 'Filters:', { selectedDiets, selectedAllergens });
-
-            // Simulate network delay
             await new Promise(resolve => setTimeout(resolve, 1000));
-
-            // Mock results
-            const mockResults: MenuItem[] = [
-                {
-                    id: '1',
-                    name: 'Vegan Burger',
-                    description: 'Plant-based patty with lettuce and tomato.',
-                    price: 12.99,
-                    restaurant_id: 'r1',
-                    similarity: 0.95,
-                    rank: 1
-                },
-                {
-                    id: '2',
-                    name: 'Gluten-Free Pizza',
-                    description: 'Cauliflower crust with cheese and basil.',
-                    price: 15.50,
-                    restaurant_id: 'r2',
-                    similarity: 0.88,
-                    rank: 2
-                }
-            ];
-            setResults(mockResults);
-
+            setResults([]);
         } catch (error) {
             console.error('Search failed:', error);
         } finally {

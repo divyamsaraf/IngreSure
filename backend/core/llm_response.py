@@ -5,8 +5,6 @@ from structured compliance verdict data.
 The LLM NEVER decides safety. It only formats the deterministic verdict
 into natural language. Falls back to template-based response_composer on failure.
 
-KEY DESIGN: We pass the LLM an explicit per-ingredient verdict table
-so it cannot confuse which ingredients are safe vs. not safe.
 Post-generation validation catches contradictions; if found, we fall back
 to the deterministic template response.
 """
@@ -17,55 +15,10 @@ from typing import List, Optional, Dict, Any
 import requests
 
 from core.models.verdict import ComplianceVerdict, VerdictStatus
-from core.config import get_ollama_url, get_ollama_model
+from core.config import get_ollama_url, get_ollama_model, LLM_RESPONSE_TIMEOUT
+from core.response_composer import INGREDIENT_REASONS
 
 logger = logging.getLogger(__name__)
-
-# Per-ingredient reason lookup (mirrors response_composer._INGREDIENT_REASONS)
-_INGREDIENT_REASONS: Dict[str, str] = {
-    "egg": "animal-derived (eggs)",
-    "eggs": "animal-derived (eggs)",
-    "cheese": "dairy product",
-    "milk": "dairy product",
-    "butter": "dairy product",
-    "cream": "dairy product",
-    "yogurt": "dairy product",
-    "ghee": "dairy product",
-    "gelatin": "derived from animal bones/skin (pig)",
-    "honey": "produced by insects",
-    "beef": "meat (cow)",
-    "chicken": "meat",
-    "pork": "meat (pig)",
-    "lamb": "meat",
-    "fish": "seafood",
-    "tuna": "fish",
-    "salmon": "fish",
-    "shrimp": "shellfish",
-    "prawn": "shellfish",
-    "onion": "root vegetable (restricted in Jain diet)",
-    "garlic": "root vegetable (restricted in Jain diet)",
-    "potato": "root vegetable (restricted in Jain diet)",
-    "carrot": "root vegetable (restricted in Jain diet)",
-    "ginger": "root vegetable (restricted in Jain diet)",
-    "beet": "root vegetable",
-    "beetroot": "root vegetable",
-    "radish": "root vegetable",
-    "turnip": "root vegetable",
-    "sweet potato": "root vegetable",
-    "yam": "root vegetable",
-    "shallot": "root vegetable (onion family)",
-    "leek": "root vegetable (onion family)",
-    "alcohol": "contains alcohol",
-    "wine": "contains alcohol",
-    "beer": "contains alcohol",
-    "collagen": "derived from animal tissue",
-    "lard": "animal fat (pig)",
-    "rennet": "animal-derived",
-    "castoreum": "animal secretion",
-    "shellac": "insect-derived",
-    "carmine": "insect-derived",
-    "mushroom": "fungal (restricted in strict Jain diet)",
-}
 
 _RESPONSE_SYSTEM_PROMPT = """You are a friendly grocery safety assistant. You compose natural responses from STRUCTURED VERDICT DATA.
 
@@ -80,10 +33,10 @@ ABSOLUTE RULES — VIOLATION MEANS FAILURE:
 8. Use **bold** for ingredient names. No emojis. No markdown headers.
 9. Do NOT add medical disclaimers unless the verdict is UNCERTAIN.
 10. Mention the user's diet name naturally.
-11. NEVER offer to brainstorm alternatives, suggest recipes, or provide unsolicited follow-up offers like "let me know if you need help" or "I can suggest substitutes". End the response naturally after delivering the answer."""
+11. NEVER offer to brainstorm alternatives, suggest recipes, or provide unsolicited follow-up offers. End the response naturally after delivering the answer."""
 
 
-def _call_ollama(system: str, prompt: str, timeout: int = 30) -> Optional[str]:
+def _call_ollama(system: str, prompt: str, timeout: int = LLM_RESPONSE_TIMEOUT) -> Optional[str]:
     """Call Ollama and return the response text, or None on failure."""
     try:
         resp = requests.post(
@@ -104,28 +57,27 @@ def _call_ollama(system: str, prompt: str, timeout: int = 30) -> Optional[str]:
         return None
 
 
-def _get_reason(ingredient: str) -> str:
-    """Get the reason for an ingredient's classification, handling plurals."""
-    key = ingredient.lower().strip()
-    reason = _INGREDIENT_REASONS.get(key)
-    if reason:
-        return reason
-    # Try singular forms
-    norm = _normalize_for_match(key)
-    reason = _INGREDIENT_REASONS.get(norm)
-    if reason:
-        return reason
-    return "conflicts with dietary requirements"
-
-
 def _normalize_for_match(s: str) -> str:
-    """Normalize ingredient name for matching: lowercase, strip trailing s/es."""
+    """Normalize ingredient name: lowercase, strip trailing s/es."""
     s = s.lower().strip()
     if s.endswith("es") and len(s) > 3:
         return s[:-2]
     if s.endswith("s") and len(s) > 2:
         return s[:-1]
     return s
+
+
+def _get_reason(ingredient: str) -> str:
+    """Get the reason for an ingredient's classification."""
+    key = ingredient.lower().strip()
+    reason = INGREDIENT_REASONS.get(key)
+    if reason:
+        return reason
+    norm = _normalize_for_match(key)
+    reason = INGREDIENT_REASONS.get(norm)
+    if reason:
+        return reason
+    return "conflicts with dietary requirements"
 
 
 def _build_verdict_prompt(
@@ -137,8 +89,8 @@ def _build_verdict_prompt(
 ) -> str:
     """Build a structured per-ingredient verdict table for the LLM."""
     diet = getattr(profile, "dietary_preference", "your preferences") or "your preferences"
-    triggered = set((_normalize_for_match(i) for i in (verdict.triggered_ingredients or [])))
-    uncertain = set((_normalize_for_match(i) for i in (verdict.uncertain_ingredients or [])))
+    triggered = {_normalize_for_match(i) for i in (verdict.triggered_ingredients or [])}
+    uncertain = {_normalize_for_match(i) for i in (verdict.uncertain_ingredients or [])}
 
     lines = [
         "=== VERDICT DATA (you MUST follow this EXACTLY) ===",
@@ -159,7 +111,7 @@ def _build_verdict_prompt(
             lines.append(f"  - {ing}: SAFE")
 
     if profile_was_updated and updated_fields:
-        changes = [f"{k} → {v}" for k, v in updated_fields.items()]
+        changes = [f"{k} -> {v}" for k, v in updated_fields.items()]
         lines.append(f"\nProfile just updated: {'; '.join(changes)}")
         lines.append("Acknowledge the profile update first.")
 
@@ -173,12 +125,8 @@ def _validate_response(
     triggered_ingredients: List[str],
     safe_ingredients: List[str],
 ) -> bool:
-    """
-    Validate the LLM response doesn't contradict the verdict.
-    Returns True if valid, False if contradictions detected.
-    """
+    """Validate the LLM response doesn't contradict the verdict."""
     resp_lower = response.lower()
-
     safe_words = {"fine", "safe", "okay", "compatible", "suitable for", "good for", "no issue", "perfectly"}
     unsafe_words = {"not suitable", "not safe", "restricted", "avoid", "unsuitable", "not compatible",
                     "not okay", "not fine", "cannot", "shouldn't", "should not"}
@@ -187,15 +135,10 @@ def _validate_response(
         ing_lower = ing.lower()
         if ing_lower not in resp_lower:
             continue
-        # Find the sentence(s) containing this ingredient
         for sentence in re.split(r'[.!]', resp_lower):
             if ing_lower in sentence:
-                # This triggered ingredient should NOT be described as safe
                 if any(w in sentence for w in safe_words) and not any(w in sentence for w in unsafe_words):
-                    logger.warning(
-                        "LLM_VALIDATION_FAIL triggered ingredient '%s' described as safe: '%s'",
-                        ing, sentence.strip()[:100],
-                    )
+                    logger.warning("LLM_VALIDATION_FAIL triggered '%s' described as safe", ing)
                     return False
 
     for ing in safe_ingredients:
@@ -205,10 +148,7 @@ def _validate_response(
         for sentence in re.split(r'[.!]', resp_lower):
             if ing_lower in sentence:
                 if any(w in sentence for w in unsafe_words) and not any(w in sentence for w in safe_words):
-                    logger.warning(
-                        "LLM_VALIDATION_FAIL safe ingredient '%s' described as unsafe: '%s'",
-                        ing, sentence.strip()[:100],
-                    )
+                    logger.warning("LLM_VALIDATION_FAIL safe '%s' described as unsafe", ing)
                     return False
 
     return True
@@ -223,8 +163,7 @@ def llm_compose_verdict(
 ) -> Optional[str]:
     """
     Use LLM to compose a natural response from verdict data.
-    Returns None if LLM is unavailable or response fails validation
-    (caller should fall back to templates).
+    Returns None if LLM unavailable or validation fails (caller falls back to templates).
     """
     prompt = _build_verdict_prompt(verdict, profile, ingredients, profile_was_updated, updated_fields)
     response = _call_ollama(_RESPONSE_SYSTEM_PROMPT, prompt)
@@ -232,10 +171,11 @@ def llm_compose_verdict(
     if not response:
         return None
 
-    # Validate: compute safe ingredients and check for contradictions
     triggered_norm = {_normalize_for_match(i) for i in (verdict.triggered_ingredients or [])}
     uncertain_norm = {_normalize_for_match(i) for i in (verdict.uncertain_ingredients or [])}
-    safe_ings = [i for i in ingredients if _normalize_for_match(i) not in triggered_norm and _normalize_for_match(i) not in uncertain_norm]
+    safe_ings = [i for i in ingredients
+                 if _normalize_for_match(i) not in triggered_norm
+                 and _normalize_for_match(i) not in uncertain_norm]
 
     if not _validate_response(response, verdict.triggered_ingredients or [], safe_ings):
         logger.warning("LLM_RESPONSE validation failed, falling back to template")

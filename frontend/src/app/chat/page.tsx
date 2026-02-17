@@ -6,7 +6,7 @@ export default function ChatPage() {
             <ChatInterface
                 apiEndpoint="/api/chat?mode=grocery"
                 title="Grocery Safety Assistant"
-                subtitle="Powered by IngreSure SafetyAnalyst"
+                subtitle="Deterministic Compliance Engine"
                 suggestions={[
                     "Ingredients: Sugar, Gelatin, Water. Is this Halal?",
                     "I am Jain. Can I eat potato chips?",
