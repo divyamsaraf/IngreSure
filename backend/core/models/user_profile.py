@@ -1,12 +1,13 @@
 """
 Single persistent user profile for grocery safety.
-dietary_preference, allergens, lifestyle, religious_preferences.
+dietary_preference covers both dietary AND religious choices (Jain, Halal, Kosher, etc.).
+allergens, lifestyle are separate lists.
 Updates merge without overwriting existing fields (partial updates).
 """
 from dataclasses import dataclass, field, asdict
 from typing import List, Optional
 
-# Canonical display values for dietary preference
+# Canonical display values for dietary preference (includes religious diets)
 DIETARY_PREFERENCE_CHOICES = [
     "No rules",
     "Jain",
@@ -44,22 +45,18 @@ ALLERGEN_CHOICES = [
 # Lifestyle flags
 LIFESTYLE_CHOICES = ["no alcohol", "no insect derived", "no palm oil", "no onion", "no garlic"]
 
-# Religious preference options
-RELIGIOUS_PREFERENCE_CHOICES = ["halal", "kosher", "jain", "hindu vegetarian", "hindu non vegetarian"]
-
 
 @dataclass
 class UserProfile:
     """
     Single persistent profile per user.
-    dietary_preference: primary diet (e.g. Jain, Vegan, No rules).
-    allergens, lifestyle, religious_preferences: lists.
+    dietary_preference: primary diet / religious diet (e.g. Jain, Halal, Vegan, No rules).
+    allergens, lifestyle: lists.
     """
     user_id: str
     dietary_preference: str = "No rules"
     allergens: List[str] = field(default_factory=list)
     lifestyle: List[str] = field(default_factory=list)
-    religious_preferences: List[str] = field(default_factory=list)
 
     def is_empty(self) -> bool:
         """True if profile has no meaningful constraints (first-time user)."""
@@ -67,7 +64,6 @@ class UserProfile:
             (not self.dietary_preference or self.dietary_preference == "No rules")
             and not self.allergens
             and not self.lifestyle
-            and not self.religious_preferences
         )
 
     def update_merge(
@@ -75,7 +71,7 @@ class UserProfile:
         dietary_preference: Optional[str] = None,
         allergens: Optional[List[str]] = None,
         lifestyle: Optional[List[str]] = None,
-        religious_preferences: Optional[List[str]] = None,
+        **_kwargs,
     ) -> None:
         """
         Update only provided fields; never set existing fields to None.
@@ -87,15 +83,16 @@ class UserProfile:
             self.allergens = list(allergens)
         if lifestyle is not None:
             self.lifestyle = list(lifestyle)
-        if religious_preferences is not None:
-            self.religious_preferences = list(religious_preferences)
 
     def to_dict(self) -> dict:
-        return asdict(self)
+        d = asdict(self)
+        # Include religious_preferences=[] for backward compat with frontend
+        d["religious_preferences"] = []
+        return d
 
     @classmethod
     def from_dict(cls, data: dict) -> "UserProfile":
-        """Load from dict; supports both new and legacy keys (dietary_restrictions, lifestyle_flags)."""
+        """Load from dict; supports both new and legacy keys (dietary_restrictions, lifestyle_flags, religious_preferences)."""
         user_id = str(data.get("user_id", ""))
         # New shape
         dietary = data.get("dietary_preference")
@@ -116,11 +113,9 @@ class UserProfile:
         lifestyle = data.get("lifestyle")
         if lifestyle is None:
             lifestyle = data.get("lifestyle_flags") or []
-        religious = data.get("religious_preferences") or []
         return cls(
             user_id=user_id,
             dietary_preference=dietary,
             allergens=allergens or [],
             lifestyle=lifestyle or [],
-            religious_preferences=religious or [],
         )

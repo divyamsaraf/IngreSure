@@ -24,6 +24,38 @@ def _normalize_key(text: str) -> str:
     return normalize_ingredient_key(text)
 
 
+# Words that indicate a string is a sentence/question, not an ingredient name
+_SENTENCE_VERBS = {"eat", "can", "have", "does", "allow", "permit", "is", "are", "do", "will",
+                   "should", "could", "would", "may", "might", "shall", "make", "tell", "check",
+                   "know", "find", "safe", "ok", "okay"}
+_DIET_WORDS = {"jain", "vegan", "vegetarian", "halal", "kosher", "hindu", "pescatarian",
+               "lacto", "ovo", "sikh", "buddhist"}
+
+
+def _is_valid_ingredient_input(s: str) -> bool:
+    """
+    Reject strings that are obviously sentences/questions, not ingredient names.
+    Prevents API pollution with queries like 'can jain eat onion'.
+    Valid ingredients are typically 1-4 words with no verbs.
+    """
+    if not s or not s.strip():
+        return False
+    words = s.lower().split()
+    # More than 5 words is almost certainly not a single ingredient
+    if len(words) > 5:
+        return False
+    # If it contains sentence verbs + diet words together, it's a question
+    has_verb = any(w in _SENTENCE_VERBS for w in words)
+    has_diet = any(w in _DIET_WORDS for w in words)
+    if has_verb and has_diet:
+        return False
+    # If more than half the words are verbs/stopwords, reject
+    stopword_count = sum(1 for w in words if w in _SENTENCE_VERBS or w in {"i", "my", "me", "a", "the", "for", "to"})
+    if len(words) > 2 and stopword_count > len(words) / 2:
+        return False
+    return True
+
+
 class IngredientRegistry:
     """
     O(1) lookup by normalized canonical_name or alias.
@@ -122,6 +154,14 @@ class IngredientRegistry:
         ing, source = self.resolve_with_source(ingredient_str)
         if ing is not None:
             return ing, source, "high"
+
+        # Reject obviously non-ingredient strings BEFORE API lookup
+        if not _is_valid_ingredient_input(key):
+            logger.warning(
+                "INGREDIENT_VALIDATION rejected non-ingredient input raw=%s key=%s",
+                ingredient_str[:60], key,
+            )
+            return None, "static", "low"
 
         if log_unknown:
             from core.enrichment.unknown_log import log_unknown_ingredient

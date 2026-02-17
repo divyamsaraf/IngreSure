@@ -4,316 +4,748 @@
     {
       "id": "halal",
       "category": "religious",
-      "region_scope": ["GLOBAL"],
+      "region_scope": [
+        "GLOBAL"
+      ],
       "severity": "STRICT",
       "rules": [
-        {"field": "alcohol_content", "operator": "greater_than", "value": 0, "action": "FAIL"},
-        {"field": "animal_species", "operator": "equals", "value": "pig", "action": "FAIL"},
-        {"field": "insect_derived", "operator": "equals", "value": true, "action": "FAIL"}
+        {
+          "field": "alcohol_content",
+          "operator": "greater_than",
+          "value": 0,
+          "action": "FAIL"
+        },
+        {
+          "field": "animal_species",
+          "operator": "equals",
+          "value": "pig",
+          "action": "FAIL"
+        },
+        {
+          "field": "insect_derived",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
+        }
       ]
     },
     {
       "id": "kosher",
       "category": "religious",
-      "region_scope": ["GLOBAL"],
+      "region_scope": [
+        "GLOBAL"
+      ],
       "severity": "STRICT",
       "rules": [
-        {"field": "animal_species", "operator": "equals", "value": "pig", "action": "FAIL"},
-        {"field": "animal_species", "operator": "equals", "value": "shellfish", "action": "FAIL"},
-        {"field": "insect_derived", "operator": "equals", "value": true, "action": "FAIL"}
+        {
+          "field": "animal_species",
+          "operator": "equals",
+          "value": "pig",
+          "action": "FAIL"
+        },
+        {
+          "field": "animal_species",
+          "operator": "equals",
+          "value": "shellfish",
+          "action": "FAIL"
+        },
+        {
+          "field": "insect_derived",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
+        }
       ]
     },
     {
       "id": "hindu_vegetarian",
       "category": "religious",
-      "region_scope": ["GLOBAL", "IN"],
+      "region_scope": [
+        "GLOBAL",
+        "IN"
+      ],
       "severity": "STRICT",
       "rules": [
-        {"field": "meat_fish_derived", "operator": "equals", "value": true, "action": "FAIL"},
-        {"field": "egg_source", "operator": "equals", "value": true, "action": "FAIL"},
-        {"field": "insect_derived", "operator": "equals", "value": true, "action": "FAIL"}
+        {
+          "field": "meat_fish_derived",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
+        },
+        {
+          "field": "egg_source",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
+        },
+        {
+          "field": "insect_derived",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
+        }
       ]
     },
     {
       "id": "hindu_non_vegetarian",
       "category": "religious",
-      "region_scope": ["GLOBAL", "IN"],
+      "region_scope": [
+        "GLOBAL",
+        "IN"
+      ],
       "severity": "STRICT",
       "rules": [
-        {"field": "animal_species", "operator": "equals", "value": "cow", "action": "FAIL"},
-        {"field": "insect_derived", "operator": "equals", "value": true, "action": "FAIL"}
+        {
+          "field": "animal_species",
+          "operator": "equals",
+          "value": "cow",
+          "action": "FAIL"
+        },
+        {
+          "field": "insect_derived",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
+        },
+        {
+          "field": "animal_species",
+          "operator": "equals",
+          "value": "pig",
+          "action": "FAIL"
+        }
       ]
     },
     {
       "id": "jain",
       "category": "religious",
-      "region_scope": ["GLOBAL", "IN"],
+      "region_scope": [
+        "GLOBAL",
+        "IN"
+      ],
       "severity": "STRICT",
       "rules": [
-        {"field": "meat_fish_derived", "operator": "equals", "value": true, "action": "FAIL"},
-        {"field": "egg_source", "operator": "equals", "value": true, "action": "FAIL"},
-        {"field": "insect_derived", "operator": "equals", "value": true, "action": "FAIL"},
-        {"field": "root_vegetable", "operator": "equals", "value": true, "action": "FAIL"},
-        {"field": "alcohol_content", "operator": "greater_than", "value": 0, "action": "FAIL"},
-        {"field": "onion_source", "operator": "equals", "value": true, "action": "FAIL"},
-        {"field": "garlic_source", "operator": "equals", "value": true, "action": "FAIL"}
+        {
+          "field": "meat_fish_derived",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
+        },
+        {
+          "field": "egg_source",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
+        },
+        {
+          "field": "insect_derived",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
+        },
+        {
+          "field": "root_vegetable",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
+        },
+        {
+          "field": "alcohol_content",
+          "operator": "greater_than",
+          "value": 0,
+          "action": "FAIL"
+        },
+        {
+          "field": "onion_source",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
+        },
+        {
+          "field": "garlic_source",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
+        },
+        {
+          "field": "fermented",
+          "operator": "equals",
+          "value": true,
+          "action": "WARN"
+        },
+        {
+          "field": "fungal",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
+        }
       ]
     },
     {
       "id": "buddhist_default",
       "category": "religious",
-      "region_scope": ["GLOBAL"],
+      "region_scope": [
+        "GLOBAL"
+      ],
       "severity": "MODERATE",
       "rules": [
-        {"field": "animal_species", "operator": "equals", "value": "pig", "action": "FAIL"},
-        {"field": "meat_fish_derived", "operator": "equals", "value": true, "action": "WARN"}
+        {
+          "field": "animal_species",
+          "operator": "equals",
+          "value": "pig",
+          "action": "FAIL"
+        },
+        {
+          "field": "meat_fish_derived",
+          "operator": "equals",
+          "value": true,
+          "action": "WARN"
+        }
       ]
     },
     {
       "id": "seventh_day_adventist_default",
       "category": "religious",
-      "region_scope": ["GLOBAL"],
+      "region_scope": [
+        "GLOBAL"
+      ],
       "severity": "MODERATE",
       "rules": [
-        {"field": "alcohol_content", "operator": "greater_than", "value": 0, "action": "FAIL"},
-        {"field": "meat_fish_derived", "operator": "equals", "value": true, "action": "WARN"}
+        {
+          "field": "alcohol_content",
+          "operator": "greater_than",
+          "value": 0,
+          "action": "FAIL"
+        },
+        {
+          "field": "meat_fish_derived",
+          "operator": "equals",
+          "value": true,
+          "action": "WARN"
+        }
       ]
     },
     {
       "id": "vegan",
       "category": "lifestyle",
-      "region_scope": ["GLOBAL"],
+      "region_scope": [
+        "GLOBAL"
+      ],
       "severity": "STRICT",
       "rules": [
-        {"field": "animal_origin", "operator": "equals", "value": true, "action": "FAIL"},
-        {"field": "dairy_source", "operator": "equals", "value": true, "action": "FAIL"},
-        {"field": "egg_source", "operator": "equals", "value": true, "action": "FAIL"},
-        {"field": "insect_derived", "operator": "equals", "value": true, "action": "FAIL"}
+        {
+          "field": "animal_origin",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
+        },
+        {
+          "field": "dairy_source",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
+        },
+        {
+          "field": "egg_source",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
+        },
+        {
+          "field": "insect_derived",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
+        }
       ]
     },
     {
       "id": "vegetarian",
       "category": "lifestyle",
-      "region_scope": ["GLOBAL"],
+      "region_scope": [
+        "GLOBAL"
+      ],
       "severity": "STRICT",
       "rules": [
-        {"field": "meat_fish_derived", "operator": "equals", "value": true, "action": "FAIL"}
+        {
+          "field": "meat_fish_derived",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
+        }
       ]
     },
     {
       "id": "lacto_vegetarian",
       "category": "lifestyle",
-      "region_scope": ["GLOBAL"],
+      "region_scope": [
+        "GLOBAL"
+      ],
       "severity": "STRICT",
       "rules": [
-        {"field": "meat_fish_derived", "operator": "equals", "value": true, "action": "FAIL"},
-        {"field": "egg_source", "operator": "equals", "value": true, "action": "FAIL"}
+        {
+          "field": "meat_fish_derived",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
+        },
+        {
+          "field": "egg_source",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
+        }
       ]
     },
     {
       "id": "ovo_vegetarian",
       "category": "lifestyle",
-      "region_scope": ["GLOBAL"],
+      "region_scope": [
+        "GLOBAL"
+      ],
       "severity": "STRICT",
       "rules": [
-        {"field": "meat_fish_derived", "operator": "equals", "value": true, "action": "FAIL"},
-        {"field": "dairy_source", "operator": "equals", "value": true, "action": "FAIL"}
+        {
+          "field": "meat_fish_derived",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
+        },
+        {
+          "field": "dairy_source",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
+        }
       ]
     },
     {
       "id": "pescatarian",
       "category": "lifestyle",
-      "region_scope": ["GLOBAL"],
+      "region_scope": [
+        "GLOBAL"
+      ],
       "severity": "STRICT",
       "rules": [
-        {"field": "animal_species", "operator": "in_list", "value": ["cow", "pig", "chicken", "lamb", "goat"], "action": "FAIL"}
+        {
+          "field": "animal_species",
+          "operator": "in_list",
+          "value": [
+            "cow",
+            "pig",
+            "chicken",
+            "lamb",
+            "goat"
+          ],
+          "action": "FAIL"
+        }
       ]
     },
     {
       "id": "gluten_free",
       "category": "medical",
-      "region_scope": ["GLOBAL"],
+      "region_scope": [
+        "GLOBAL"
+      ],
       "severity": "STRICT",
       "rules": [
-        {"field": "gluten_source", "operator": "equals", "value": true, "action": "FAIL"}
+        {
+          "field": "gluten_source",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
+        }
       ]
     },
     {
       "id": "lactose_free",
       "category": "medical",
-      "region_scope": ["GLOBAL"],
+      "region_scope": [
+        "GLOBAL"
+      ],
       "severity": "STRICT",
       "rules": [
-        {"field": "dairy_source", "operator": "equals", "value": true, "action": "FAIL"}
+        {
+          "field": "dairy_source",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
+        }
       ]
     },
     {
       "id": "dairy_free",
       "category": "medical",
-      "region_scope": ["GLOBAL"],
+      "region_scope": [
+        "GLOBAL"
+      ],
       "severity": "STRICT",
       "rules": [
-        {"field": "dairy_source", "operator": "equals", "value": true, "action": "FAIL"}
+        {
+          "field": "dairy_source",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
+        }
       ]
     },
     {
       "id": "egg_free",
       "category": "medical",
-      "region_scope": ["GLOBAL"],
+      "region_scope": [
+        "GLOBAL"
+      ],
       "severity": "STRICT",
       "rules": [
-        {"field": "egg_source", "operator": "equals", "value": true, "action": "FAIL"}
+        {
+          "field": "egg_source",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
+        }
       ]
     },
     {
       "id": "peanut_allergy",
       "category": "allergy",
-      "region_scope": ["GLOBAL"],
+      "region_scope": [
+        "GLOBAL"
+      ],
       "severity": "STRICT",
       "rules": [
-        {"field": "nut_source", "operator": "equals", "value": "peanut", "action": "FAIL"}
+        {
+          "field": "nut_source",
+          "operator": "equals",
+          "value": "peanut",
+          "action": "FAIL"
+        }
       ]
     },
     {
       "id": "tree_nut_allergy",
       "category": "allergy",
-      "region_scope": ["GLOBAL"],
+      "region_scope": [
+        "GLOBAL"
+      ],
       "severity": "STRICT",
       "rules": [
-        {"field": "nut_source", "operator": "equals", "value": "tree_nut", "action": "FAIL"}
+        {
+          "field": "nut_source",
+          "operator": "equals",
+          "value": "tree_nut",
+          "action": "FAIL"
+        }
       ]
     },
     {
       "id": "soy_allergy",
       "category": "allergy",
-      "region_scope": ["GLOBAL"],
+      "region_scope": [
+        "GLOBAL"
+      ],
       "severity": "STRICT",
       "rules": [
-        {"field": "soy_source", "operator": "equals", "value": true, "action": "FAIL"}
+        {
+          "field": "soy_source",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
+        }
       ]
     },
     {
       "id": "shellfish_allergy",
       "category": "allergy",
-      "region_scope": ["GLOBAL"],
+      "region_scope": [
+        "GLOBAL"
+      ],
       "severity": "STRICT",
       "rules": [
-        {"field": "animal_species", "operator": "equals", "value": "shellfish", "action": "FAIL"}
+        {
+          "field": "animal_species",
+          "operator": "equals",
+          "value": "shellfish",
+          "action": "FAIL"
+        }
       ]
     },
     {
       "id": "fish_allergy",
       "category": "allergy",
-      "region_scope": ["GLOBAL"],
+      "region_scope": [
+        "GLOBAL"
+      ],
       "severity": "STRICT",
       "rules": [
-        {"field": "animal_species", "operator": "equals", "value": "fish", "action": "FAIL"}
+        {
+          "field": "animal_species",
+          "operator": "equals",
+          "value": "fish",
+          "action": "FAIL"
+        }
       ]
     },
     {
       "id": "sesame_allergy",
       "category": "allergy",
-      "region_scope": ["GLOBAL"],
+      "region_scope": [
+        "GLOBAL"
+      ],
       "severity": "STRICT",
       "rules": [
-        {"field": "sesame_source", "operator": "equals", "value": true, "action": "FAIL"}
+        {
+          "field": "sesame_source",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
+        }
       ]
     },
     {
       "id": "mustard_allergy",
       "category": "allergy",
-      "region_scope": ["GLOBAL"],
+      "region_scope": [
+        "GLOBAL"
+      ],
       "severity": "STRICT",
       "rules": []
     },
     {
       "id": "lupin_allergy",
       "category": "allergy",
-      "region_scope": ["GLOBAL"],
+      "region_scope": [
+        "GLOBAL"
+      ],
       "severity": "STRICT",
       "rules": []
     },
     {
       "id": "celery_allergy",
       "category": "allergy",
-      "region_scope": ["GLOBAL"],
+      "region_scope": [
+        "GLOBAL"
+      ],
       "severity": "STRICT",
       "rules": []
     },
     {
       "id": "celiac_strict",
       "category": "medical",
-      "region_scope": ["GLOBAL"],
+      "region_scope": [
+        "GLOBAL"
+      ],
       "severity": "STRICT",
       "rules": [
-        {"field": "gluten_source", "operator": "equals", "value": true, "action": "FAIL"}
+        {
+          "field": "gluten_source",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
+        }
       ]
     },
     {
       "id": "no_alcohol",
       "category": "lifestyle",
-      "region_scope": ["GLOBAL"],
+      "region_scope": [
+        "GLOBAL"
+      ],
       "severity": "STRICT",
       "rules": [
-        {"field": "alcohol_content", "operator": "greater_than", "value": 0, "action": "FAIL"}
+        {
+          "field": "alcohol_content",
+          "operator": "greater_than",
+          "value": 0,
+          "action": "FAIL"
+        }
       ]
     },
     {
       "id": "no_insect_derived",
       "category": "lifestyle",
-      "region_scope": ["GLOBAL"],
+      "region_scope": [
+        "GLOBAL"
+      ],
       "severity": "STRICT",
       "rules": [
-        {"field": "insect_derived", "operator": "equals", "value": true, "action": "FAIL"}
+        {
+          "field": "insect_derived",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
+        }
       ]
     },
     {
       "id": "no_onion",
       "category": "lifestyle",
-      "region_scope": ["GLOBAL"],
+      "region_scope": [
+        "GLOBAL"
+      ],
       "severity": "STRICT",
       "rules": [
-        {"field": "onion_source", "operator": "equals", "value": true, "action": "FAIL"}
+        {
+          "field": "onion_source",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
+        }
       ]
     },
     {
       "id": "no_garlic",
       "category": "lifestyle",
-      "region_scope": ["GLOBAL"],
+      "region_scope": [
+        "GLOBAL"
+      ],
       "severity": "STRICT",
       "rules": [
-        {"field": "garlic_source", "operator": "equals", "value": true, "action": "FAIL"}
+        {
+          "field": "garlic_source",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
+        }
       ]
     },
     {
       "id": "onion_allergy",
       "category": "allergy",
-      "region_scope": ["GLOBAL"],
+      "region_scope": [
+        "GLOBAL"
+      ],
       "severity": "STRICT",
       "rules": [
-        {"field": "onion_source", "operator": "equals", "value": true, "action": "FAIL"}
+        {
+          "field": "onion_source",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
+        }
       ]
     },
     {
       "id": "garlic_allergy",
       "category": "allergy",
-      "region_scope": ["GLOBAL"],
+      "region_scope": [
+        "GLOBAL"
+      ],
       "severity": "STRICT",
       "rules": [
-        {"field": "garlic_source", "operator": "equals", "value": true, "action": "FAIL"}
+        {
+          "field": "garlic_source",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
+        }
       ]
     },
-    {"id": "keto", "category": "lifestyle", "region_scope": ["GLOBAL"], "severity": "MODERATE", "rules": []},
-    {"id": "paleo", "category": "lifestyle", "region_scope": ["GLOBAL"], "severity": "MODERATE", "rules": []},
-    {"id": "low_carb", "category": "medical", "region_scope": ["GLOBAL"], "severity": "MODERATE", "rules": []},
-    {"id": "low_fat", "category": "medical", "region_scope": ["GLOBAL"], "severity": "MODERATE", "rules": []},
-    {"id": "sulfite_sensitive", "category": "medical", "region_scope": ["GLOBAL"], "severity": "STRICT", "rules": []},
-    {"id": "low_fodmap", "category": "medical", "region_scope": ["GLOBAL"], "severity": "MODERATE", "rules": []},
-    {"id": "low_sodium", "category": "medical", "region_scope": ["GLOBAL"], "severity": "MODERATE", "rules": []},
-    {"id": "diabetic_friendly", "category": "medical", "region_scope": ["GLOBAL"], "severity": "MODERATE", "rules": []},
-    {"id": "no_palm_oil", "category": "lifestyle", "region_scope": ["GLOBAL"], "severity": "STRICT", "rules": []},
-    {"id": "no_artificial_colors", "category": "lifestyle", "region_scope": ["GLOBAL"], "severity": "STRICT", "rules": []},
-    {"id": "no_gmos", "category": "lifestyle", "region_scope": ["GLOBAL"], "severity": "STRICT", "rules": []},
-    {"id": "no_seed_oils", "category": "lifestyle", "region_scope": ["GLOBAL"], "severity": "STRICT", "rules": []}
+    {
+      "id": "keto",
+      "category": "lifestyle",
+      "region_scope": [
+        "GLOBAL"
+      ],
+      "severity": "MODERATE",
+      "rules": []
+    },
+    {
+      "id": "paleo",
+      "category": "lifestyle",
+      "region_scope": [
+        "GLOBAL"
+      ],
+      "severity": "MODERATE",
+      "rules": []
+    },
+    {
+      "id": "low_carb",
+      "category": "medical",
+      "region_scope": [
+        "GLOBAL"
+      ],
+      "severity": "MODERATE",
+      "rules": []
+    },
+    {
+      "id": "low_fat",
+      "category": "medical",
+      "region_scope": [
+        "GLOBAL"
+      ],
+      "severity": "MODERATE",
+      "rules": []
+    },
+    {
+      "id": "sulfite_sensitive",
+      "category": "medical",
+      "region_scope": [
+        "GLOBAL"
+      ],
+      "severity": "STRICT",
+      "rules": []
+    },
+    {
+      "id": "low_fodmap",
+      "category": "medical",
+      "region_scope": [
+        "GLOBAL"
+      ],
+      "severity": "MODERATE",
+      "rules": []
+    },
+    {
+      "id": "low_sodium",
+      "category": "medical",
+      "region_scope": [
+        "GLOBAL"
+      ],
+      "severity": "MODERATE",
+      "rules": []
+    },
+    {
+      "id": "diabetic_friendly",
+      "category": "medical",
+      "region_scope": [
+        "GLOBAL"
+      ],
+      "severity": "MODERATE",
+      "rules": []
+    },
+    {
+      "id": "no_palm_oil",
+      "category": "lifestyle",
+      "region_scope": [
+        "GLOBAL"
+      ],
+      "severity": "STRICT",
+      "rules": []
+    },
+    {
+      "id": "no_artificial_colors",
+      "category": "lifestyle",
+      "region_scope": [
+        "GLOBAL"
+      ],
+      "severity": "STRICT",
+      "rules": []
+    },
+    {
+      "id": "no_gmos",
+      "category": "lifestyle",
+      "region_scope": [
+        "GLOBAL"
+      ],
+      "severity": "STRICT",
+      "rules": []
+    },
+    {
+      "id": "no_seed_oils",
+      "category": "lifestyle",
+      "region_scope": [
+        "GLOBAL"
+      ],
+      "severity": "STRICT",
+      "rules": []
+    }
   ]
 }

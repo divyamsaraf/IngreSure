@@ -1,8 +1,8 @@
 """
 Persistent user profile storage keyed by user_id.
 - Backend: JSON file (data/profiles.json) for persistence across sessions.
-- Fields: dietary_preference, allergens, religious_preferences, lifestyle (maps to task's
-  dietary_restrictions, religious_preferences, lifestyle_flags, allergies).
+- Fields: dietary_preference, allergens, lifestyle.
+  dietary_preference covers both dietary AND religious choices.
 - Merge-on-update: only provided fields are written; existing fields never reset to None.
 - Optional: set USE_PROFILE_DB=supabase and configure Supabase to use DB table user_profiles.
 """
@@ -52,7 +52,6 @@ def save_profile(profile: UserProfile) -> None:
         "dietary_preference": profile.dietary_preference,
         "allergens": list(profile.allergens),
         "lifestyle": list(profile.lifestyle),
-        "religious_preferences": list(profile.religious_preferences),
     }
     _save_all(data)
     logger.info("PROFILE_SAVE user_id=%s dietary_preference=%s allergens=%s", profile.user_id, profile.dietary_preference, profile.allergens)
@@ -67,7 +66,7 @@ def update_profile_partial(user_id: str, **kwargs: Any) -> Optional[UserProfile]
     if profile is None:
         profile = UserProfile(user_id=user_id)
     # Only pass non-None kwargs so we don't overwrite with None
-    updates = {k: v for k, v in kwargs.items() if v is not None and k in ("dietary_preference", "allergens", "lifestyle", "religious_preferences")}
+    updates = {k: v for k, v in kwargs.items() if v is not None and k in ("dietary_preference", "allergens", "lifestyle")}
     if not updates:
         return profile
     profile.update_merge(**updates)

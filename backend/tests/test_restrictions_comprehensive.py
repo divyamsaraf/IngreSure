@@ -49,8 +49,15 @@ class TestHalal:
         assert _eval(engine, ingredient, "halal") == VerdictStatus.NOT_SAFE
 
     @pytest.mark.parametrize("ingredient", [
+        "gelatin",
+    ])
+    def test_halal_gelatin_not_safe(self, engine, ingredient):
+        """Gelatin is pig-derived (E441); not halal."""
+        assert _eval(engine, ingredient, "halal") == VerdictStatus.NOT_SAFE
+
+    @pytest.mark.parametrize("ingredient", [
         "beef", "chicken", "lamb", "fish", "tuna", "salmon",
-        "milk", "egg", "butter", "cheese", "gelatin",
+        "milk", "egg", "butter", "cheese",
         "sugar", "rice", "wheat", "tofu",
     ])
     def test_halal_safe(self, engine, ingredient):
@@ -80,8 +87,15 @@ class TestKosher:
         assert _eval(engine, ingredient, "kosher") == VerdictStatus.NOT_SAFE
 
     @pytest.mark.parametrize("ingredient", [
+        "gelatin",
+    ])
+    def test_kosher_gelatin_not_safe(self, engine, ingredient):
+        """Gelatin is pig-derived (E441); not kosher."""
+        assert _eval(engine, ingredient, "kosher") == VerdictStatus.NOT_SAFE
+
+    @pytest.mark.parametrize("ingredient", [
         "beef", "chicken", "lamb", "fish", "salmon", "tuna",
-        "milk", "egg", "gelatin", "sugar",
+        "milk", "egg", "sugar",
     ])
     def test_kosher_safe(self, engine, ingredient):
         assert _eval(engine, ingredient, "kosher") == VerdictStatus.SAFE

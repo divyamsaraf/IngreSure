@@ -20,22 +20,22 @@ export interface BackendProfile {
   user_id: string;
   dietary_preference?: string;
   allergens: string[];
-  religious_preferences: string[];
   lifestyle: string[];
   /** Legacy keys (backend may still return these) */
   dietary_restrictions?: string[];
   lifestyle_flags?: string[];
+  /** Deprecated — kept for backward compat, always empty */
+  religious_preferences?: string[];
 }
 
 export interface UserProfile {
   user_id?: string;
-  /** Primary diet for display and backend (new shape). */
+  /** Primary diet / religious preference for display and backend (covers both). */
   dietary_preference: DietType;
   /** Legacy; maps from dietary_preference for compatibility. */
   diet?: DietType;
   allergies: string[];
   allergens?: string[];
-  religious_preferences: string[];
   lifestyle: string[];
   /** Legacy */
   lifestyle_flags?: string[];
@@ -50,7 +50,6 @@ export const DEFAULT_PROFILE: UserProfile = {
   diet: "No rules",
   allergies: [],
   allergens: [],
-  religious_preferences: [],
   lifestyle: [],
   lifestyle_flags: [],
   dietary_restrictions: [],
@@ -75,8 +74,6 @@ export const DIETARY_PREFERENCE_OPTIONS: { value: string; label: string }[] = [
   { value: "Dairy-Free", label: "Dairy-Free" },
   { value: "Egg-Free", label: "Egg-Free" },
 ];
-
-export const RELIGIOUS_OPTIONS = ["halal", "kosher", "jain", "hindu vegetarian", "hindu non vegetarian"] as const;
 
 export const LIFESTYLE_OPTIONS = ["no alcohol", "no insect derived", "no palm oil", "no onion", "no garlic"] as const;
 
@@ -112,7 +109,6 @@ export function backendToProfile(backend: BackendProfile): UserProfile {
     diet: dietary,
     allergies: displayAllergens,
     allergens: displayAllergens,
-    religious_preferences: backend.religious_preferences ?? [],
     lifestyle,
     lifestyle_flags: lifestyle,
     dietary_restrictions: backend.dietary_restrictions ?? (dietary !== "No rules" ? [dietary] : []),
@@ -126,11 +122,11 @@ function normalizeAllergen(s: string): string {
 
 /**
  * Map a backend (lowercase) allergen name back to the canonical display name
- * from ALLERGEN_OPTIONS (e.g. "milk" → "Milk", "wheat" → "Wheat/Gluten").
+ * from ALLERGEN_OPTIONS (e.g. "milk" -> "Milk", "wheat" -> "Wheat/Gluten").
  * If no match found, return the original string (for custom allergens).
  */
 const _BACKEND_TO_DISPLAY: Record<string, string> = {};
-// Build reverse map: lowercase/normalized → display name
+// Build reverse map: lowercase/normalized -> display name
 for (const opt of ALLERGEN_OPTIONS) {
   _BACKEND_TO_DISPLAY[normalizeAllergen(opt)] = opt;
 }
@@ -149,7 +145,6 @@ export function profileToBackend(
     user_id,
     dietary_preference: p.dietary_preference ?? "No rules",
     allergens: (p.allergens ?? p.allergies ?? []).map(normalizeAllergen),
-    religious_preferences: p.religious_preferences ?? [],
     lifestyle: p.lifestyle ?? p.lifestyle_flags ?? [],
   };
 }

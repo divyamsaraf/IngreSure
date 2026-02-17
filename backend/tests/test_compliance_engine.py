@@ -113,7 +113,6 @@ def test_compliance_engine_user_profile_restriction_ids():
             dietary_preference="Vegan",
             allergens=["peanut"],
             lifestyle=[],
-            religious_preferences=[],
         )
     )
     assert "peanut_allergy" in ids

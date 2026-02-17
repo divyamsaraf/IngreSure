@@ -56,18 +56,18 @@ def test_flatten_ingredients_enriched_wheat_flour_full():
 
 
 def test_user_profile_is_empty():
-    """Empty profile (No rules, no allergens/lifestyle/religious) is_empty()."""
+    """Empty profile (No rules, no allergens/lifestyle) is_empty()."""
     from core.models.user_profile import UserProfile
-    p = UserProfile(user_id="u1", dietary_preference="No rules", allergens=[], lifestyle=[], religious_preferences=[])
+    p = UserProfile(user_id="u1", dietary_preference="No rules", allergens=[], lifestyle=[])
     assert p.is_empty() is True
-    p2 = UserProfile(user_id="u2", dietary_preference="Jain", allergens=[], lifestyle=[], religious_preferences=[])
+    p2 = UserProfile(user_id="u2", dietary_preference="Jain", allergens=[], lifestyle=[])
     assert p2.is_empty() is False
 
 
 def test_user_profile_update_merge():
     """Update_merge only changes provided fields; does not set others to None."""
     from core.models.user_profile import UserProfile
-    p = UserProfile(user_id="u1", dietary_preference="Vegan", allergens=["Milk"], lifestyle=[], religious_preferences=[])
+    p = UserProfile(user_id="u1", dietary_preference="Vegan", allergens=["Milk"], lifestyle=[])
     p.update_merge(allergens=["Egg"])
     assert p.dietary_preference == "Vegan"
     assert p.allergens == ["Egg"]
@@ -81,7 +81,6 @@ def test_user_profile_from_dict_legacy():
         "dietary_restrictions": ["vegan"],
         "allergens": ["Milk"],
         "lifestyle_flags": ["no alcohol"],
-        "religious_preferences": ["halal"],
     })
     assert p.dietary_preference in ("vegan", "Vegan") or "vegan" in p.dietary_preference.lower()
     assert "Milk" in p.allergens or "milk" in [a.lower() for a in p.allergens]
@@ -96,7 +95,7 @@ def test_profile_storage_merge():
     with tempfile.TemporaryDirectory() as tmp:
         path = Path(tmp) / "profiles.json"
         path.write_text(json.dumps({
-            "p1": {"dietary_preference": "Jain", "allergens": ["Nuts"], "lifestyle": [], "religious_preferences": []}
+            "p1": {"dietary_preference": "Jain", "allergens": ["Nuts"], "lifestyle": []}
         }, indent=2))
         with patch("core.profile_storage._PROFILES_PATH", path):
             out = update_profile_partial("p1", lifestyle=["no alcohol"])
@@ -138,7 +137,7 @@ def test_profile_not_saved_on_ingredient_submission():
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "profiles.json"
             path.write_text(json.dumps({
-                "test_u": {"user_id": "test_u", "dietary_preference": "Vegan", "allergens": [], "lifestyle": [], "religious_preferences": []}
+                "test_u": {"user_id": "test_u", "dietary_preference": "Vegan", "allergens": [], "lifestyle": []}
             }, indent=2))
             with patch("core.profile_storage._PROFILES_PATH", path):
                 profile = get_or_create_profile("test_u")
@@ -151,7 +150,6 @@ def test_profile_not_saved_on_ingredient_submission():
                 profile_context = {
                     "dietary_preference": profile.dietary_preference,
                     "allergens": profile.allergens,
-                    "religious_preferences": profile.religious_preferences,
                     "lifestyle": profile.lifestyle,
                 }
                 run_new_engine_chat(

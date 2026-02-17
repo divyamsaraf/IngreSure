@@ -37,6 +37,28 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
+@app.on_event("startup")
+async def _warmup_ollama():
+    """Pre-load the Ollama model so the first user request is fast."""
+    import threading
+
+    def _ping():
+        try:
+            from core.config import get_ollama_url, get_ollama_model
+            import requests as _req
+            _req.post(
+                get_ollama_url(),
+                json={"model": get_ollama_model(), "prompt": "hi", "stream": False,
+                      "options": {"num_predict": 1}},
+                timeout=60,
+            )
+            logger.info("WARMUP Ollama model loaded successfully")
+        except Exception as exc:
+            logger.warning("WARMUP Ollama ping failed (non-fatal): %s", exc)
+
+    threading.Thread(target=_ping, daemon=True).start()
+
+
 # --- Models ---
 class ScanResult(BaseModel):
     raw_text: str
@@ -158,10 +180,9 @@ class ProfileBody(BaseModel):
     dietary_preference: Optional[str] = None
     allergens: Optional[List[str]] = None
     lifestyle: Optional[List[str]] = None
-    religious_preferences: Optional[List[str]] = None
 
 def _parse_update_command(query: str):
-    """Parse /update <field> value1, value2. Returns (field, values) or (None, None). Supports dietary_preference (single), allergens, lifestyle, religious_preferences."""
+    """Parse /update <field> value1, value2. Returns (field, values) or (None, None). Supports dietary_preference (single), allergens, lifestyle."""
     q = query.strip()
     if not q.lower().startswith("/update"):
         return None, None
@@ -170,7 +191,7 @@ def _parse_update_command(query: str):
     if not m:
         return None, None
     field_name = m.group(1).lower()
-    allowed = ("dietary_preference", "allergens", "religious_preferences", "lifestyle")
+    allowed = ("dietary_preference", "allergens", "lifestyle")
     if field_name not in allowed:
         return None, None
     raw = m.group(2).strip()
@@ -191,7 +212,7 @@ async def get_profile(user_id: str):
                 "dietary_preference": "No rules",
                 "allergens": [],
                 "lifestyle": [],
-                "religious_preferences": [],
+                "religious_preferences": [],  # backward compat with frontend
             }
         return profile.to_dict()
     except Exception as e:
@@ -210,7 +231,6 @@ async def create_or_update_profile(body: ProfileBody):
             dietary_preference=body.dietary_preference,
             allergens=body.allergens,
             lifestyle=body.lifestyle,
-            religious_preferences=body.religious_preferences,
         )
         if profile is None:
             profile = get_or_create_profile(body.user_id)
@@ -236,65 +256,334 @@ async def update_profile(request: UpdateProfileRequest):
 @app.post("/chat/grocery")
 async def chat_grocery(request: ChatRequest):
     """
-    Grocery / Food Item Scanner. If user_id is set, profile is loaded from backend and used for compliance.
-    Supports /update <field> value1, value2 in chat to update profile.
+    Conversational Grocery Safety Assistant.
+
+    Architecture (5 layers):
+      1. Intent Detector   – rule-based NLU first, LLM fallback for ambiguous queries
+      2. Profile Service   – persistent, merge-only updates; never reset on chat
+      3. Ingredient Parser  – extract ingredients from natural language or label text
+      4. Compliance Engine  – deterministic evaluation against ontology + restrictions (NEVER LLM)
+      5. Response Composer  – LLM-powered natural responses, template fallback if LLM unavailable
+
+    Supports both:
+      - user_id path   (profile from backend storage)
+      - legacy path    (profile from request body)
     """
     logger.info("Grocery Chat query=%s user_id=%s", request.query, request.user_id)
     try:
-        from core.profile_storage import get_or_create_profile, save_profile, update_profile_partial
+        from core.profile_storage import get_or_create_profile, save_profile
         from core.models.user_profile import UserProfile
         from core.bridge import user_profile_model_to_restriction_ids, run_new_engine_chat, run_legacy_chat
         from core.config import SHADOW_MODE
         from core.models.verdict import VerdictStatus
+        from core.intent_detector import detect_intent, ParsedIntent, DIET_KEYWORDS
+        from core.response_composer import (
+            compose_greeting as template_greeting,
+            compose_profile_update as template_profile_update,
+            compose_verdict as template_verdict,
+            compose_general_question as template_general,
+            compose_no_ingredients as template_no_ingredients,
+        )
+        from core.llm_intent import llm_extract_intent
+        from core.llm_response import (
+            llm_compose_verdict,
+            llm_compose_greeting,
+            llm_compose_profile_update,
+            llm_compose_general,
+        )
+        import json
+        import re as _re
+
+        def _profile_json(profile):
+            return f"\n\n<<<PROFILE_UPDATE>>>{json.dumps(profile.to_dict())}<<<PROFILE_UPDATE>>>"
+
+        # Known restricted ingredient keywords — when found inside a multi-word
+        # product name, these are extracted for compliance evaluation.
+        _RESTRICTED_KEYWORDS_BIGRAM = {
+            "sweet potato", "fish oil", "palm oil",
+        }
+        _RESTRICTED_KEYWORDS_SINGLE = {
+            # Animal-derived
+            "egg", "eggs", "chicken", "beef", "pork", "lamb", "fish",
+            "tuna", "salmon", "shrimp", "prawn", "crab", "lobster",
+            "bacon", "ham", "turkey", "duck", "veal", "mutton",
+            "anchovy", "sardine", "squid", "octopus", "venison", "goat",
+            # Dairy
+            "milk", "cheese", "butter", "cream", "yogurt", "ghee",
+            "paneer", "whey", "curd",
+            # Root vegetables (Jain)
+            "garlic", "onion", "potato", "carrot", "ginger",
+            "beet", "beetroot", "radish", "turnip", "shallot", "leek", "yam",
+            # Fungal (Jain)
+            "mushroom", "truffle",
+            # Other
+            "gelatin", "honey", "lard", "alcohol", "wine", "beer",
+            "peanut", "almond", "walnut", "cashew", "hazelnut", "pecan",
+            "soy", "tofu", "wheat", "barley", "rye", "oat", "oats",
+            "collagen", "rennet", "shellac", "carmine",
+        }
+        # Plant modifiers that neutralize the following dairy/meat word
+        # e.g. "coconut milk" is plant-based, NOT dairy
+        _PLANT_MODIFIERS = {
+            "coconut", "almond", "soy", "oat", "oats", "rice", "cashew",
+            "hemp", "pea", "cocoa", "shea", "sesame", "flax", "hazelnut",
+            "peanut", "walnut", "pistachio", "macadamia", "pecan",
+        }
+
+        def _find_sub_ingredients(name: str) -> list:
+            """Extract known restricted-ingredient keywords from a compound name.
+
+            'garlic pasta'   → ['garlic']
+            'egg noodles'    → ['egg']
+            'coconut milk'   → []   (plant modifier neutralizes 'milk')
+            'butter chicken' → ['butter', 'chicken']
+            """
+            words = name.lower().split()
+            if len(words) <= 1:
+                return []
+            found = []
+            i = 0
+            while i < len(words):
+                # Bigram check first: "sweet potato", "fish oil"
+                if i + 1 < len(words):
+                    bigram = f"{words[i]} {words[i + 1]}"
+                    if bigram in _RESTRICTED_KEYWORDS_BIGRAM:
+                        found.append(bigram)
+                        i += 2
+                        continue
+                # Skip if preceded by a plant modifier (coconut milk → skip milk)
+                if words[i] in _RESTRICTED_KEYWORDS_SINGLE:
+                    if i > 0 and words[i - 1] in _PLANT_MODIFIERS:
+                        i += 1
+                        continue
+                    found.append(words[i])
+                i += 1
+            return found
+
+        def _expand_compounds(ingredients):
+            """Expand compound items for compliance evaluation.
+
+            Handles both explicit ('burger with chicken') and implicit
+            ('garlic pasta', 'egg noodles') compound product names.
+
+            Returns:
+                expanded (list[str]):  ingredient names for the compliance engine
+                display_map (dict):    {eval_name_lower: original_compound_display_name}
+            """
+            expanded = []
+            display_map = {}
+            seen = set()
+            for ing in ingredients:
+                # 1. Explicit "X with Y" pattern
+                m = _re.match(r"^(.+?)\s+with\s+(.+)$", ing, _re.IGNORECASE)
+                if m:
+                    sub = m.group(2).strip()
+                    key = sub.lower()
+                    if key not in seen:
+                        seen.add(key)
+                        expanded.append(sub)
+                        display_map[key] = ing
+                    continue
+
+                # 2. Single-word ingredient → pass through directly
+                if " " not in ing.strip():
+                    key = ing.lower().strip()
+                    if key not in seen:
+                        seen.add(key)
+                        expanded.append(ing)
+                    continue
+
+                # 3. Multi-word: extract known ingredient keywords
+                subs = _find_sub_ingredients(ing)
+                if subs:
+                    # Check if ALL words are ingredient keywords (e.g. "butter chicken")
+                    # vs. a product with ingredient modifiers (e.g. "garlic pasta")
+                    covered = set()
+                    for s in subs:
+                        covered.update(s.split())
+                    all_words = set(ing.lower().split())
+                    is_compound_product = bool(all_words - covered)
+
+                    for sub in subs:
+                        key = sub.lower()
+                        if key not in seen:
+                            seen.add(key)
+                            expanded.append(sub)
+                            if is_compound_product:
+                                display_map[key] = ing
+                else:
+                    # No known keywords found — pass through as-is
+                    key = ing.lower().strip()
+                    if key not in seen:
+                        seen.add(key)
+                        expanded.append(ing)
+            return expanded, display_map
+
+        def _apply_profile_updates(profile, updates: dict) -> dict:
+            """Apply parsed profile updates to the profile model. Returns updated_fields dict."""
+            updated_fields = {}
+            if "dietary_preference" in updates:
+                profile.update_merge(dietary_preference=updates["dietary_preference"])
+                updated_fields["dietary_preference"] = updates["dietary_preference"]
+            if "allergens" in updates:
+                existing = list(profile.allergens or [])
+                for a in updates["allergens"]:
+                    if a.lower() not in [e.lower() for e in existing]:
+                        existing.append(a)
+                profile.update_merge(allergens=existing)
+                updated_fields["allergens"] = updates["allergens"]
+            if "remove_allergens" in updates:
+                existing = list(profile.allergens or [])
+                to_remove = {a.lower() for a in updates["remove_allergens"]}
+                existing = [a for a in existing if a.lower() not in to_remove]
+                profile.update_merge(allergens=existing)
+                updated_fields["remove_allergens"] = updates["remove_allergens"]
+            if "lifestyle" in updates:
+                existing_ls = list(profile.lifestyle or [])
+                for lf in updates["lifestyle"]:
+                    if lf.lower() not in [e.lower() for e in existing_ls]:
+                        existing_ls.append(lf)
+                profile.update_merge(lifestyle=existing_ls)
+                updated_fields["lifestyle"] = updates["lifestyle"]
+            return updated_fields
 
         async def generate_safety():
+            # ----------------------------------------------------------------
+            # Path A: user_id present → use persistent profile + smart intent
+            # ----------------------------------------------------------------
             if request.user_id:
                 profile = get_or_create_profile(request.user_id)
+
+                # 1) /update command (existing slash-command syntax)
                 field_name, values = _parse_update_command(request.query)
                 if field_name and values is not None:
-                    # Merge update: only the given field; never reset others to None
                     if field_name == "dietary_preference":
                         profile.update_merge(dietary_preference=values[0] if values else "No rules")
                     elif field_name == "allergens":
                         profile.update_merge(allergens=values)
                     elif field_name == "lifestyle":
                         profile.update_merge(lifestyle=values)
-                    elif field_name == "religious_preferences":
-                        profile.update_merge(religious_preferences=values)
                     save_profile(profile)
                     logger.info("PROFILE_UPDATE user_id=%s field=%s values=%s", request.user_id, field_name, values)
-                    msg = (
-                        f"Profile updated: {field_name}=[{', '.join(values)}]. "
-                        f"Dietary: {profile.dietary_preference}, Allergens: {profile.allergens}, "
-                        f"Religious: {profile.religious_preferences}, Lifestyle: {profile.lifestyle}."
-                    )
-                    yield msg + "\n\n"
-                    import json
-                    yield f"<<<PROFILE_UPDATE>>>{json.dumps(profile.to_dict())}<<<PROFILE_UPDATE>>>"
+                    updated_fields = {field_name: values}
+                    yield template_profile_update(profile, updated_fields, has_ingredients=False)
+                    yield _profile_json(profile)
                     return
-                ingredients = SafetyAnalyst._extract_ingredients(request.query)
-                # First-time user: no profile and no ingredients → prompt for profile
+
+                # 2) Intent detection: rule-based FIRST, LLM FALLBACK
+                parsed = detect_intent(request.query)
+                logger.info(
+                    "INTENT_DETECT_RULES intent=%s profile_updates=%s ingredients=%s query=%s",
+                    parsed.intent, parsed.profile_updates, parsed.ingredients, request.query,
+                )
+
+                # If rules returned GENERAL_QUESTION with no ingredients,
+                # the query might be ambiguous — try LLM fallback
+                llm_used = False
+                if parsed.intent == "GENERAL_QUESTION" and not parsed.has_ingredients and not parsed.has_profile_update:
+                    llm_data = llm_extract_intent(request.query)
+                    if llm_data:
+                        logger.info(
+                            "INTENT_DETECT_LLM_FALLBACK intent=%s diet=%s ingredients=%s query=%s",
+                            llm_data["intent"], llm_data.get("dietary_preference"), llm_data["ingredients"], request.query,
+                        )
+                        llm_used = True
+                        # Convert LLM result into ParsedIntent-compatible data
+                        llm_profile_updates = {}
+                        if llm_data.get("dietary_preference"):
+                            llm_profile_updates["dietary_preference"] = llm_data["dietary_preference"]
+                        if llm_data.get("allergens"):
+                            llm_profile_updates["allergens"] = llm_data["allergens"]
+                        if llm_data.get("lifestyle"):
+                            llm_profile_updates["lifestyle"] = llm_data["lifestyle"]
+                        if llm_data.get("remove_allergens"):
+                            llm_profile_updates["remove_allergens"] = llm_data["remove_allergens"]
+
+                        parsed = ParsedIntent(
+                            intent=llm_data["intent"],
+                            profile_updates=llm_profile_updates,
+                            ingredients=llm_data["ingredients"],
+                            original_query=request.query,
+                        )
+
+                # 3) Handle GREETING
+                if parsed.intent == "GREETING":
+                    msg = llm_compose_greeting(profile)
+                    yield msg or template_greeting()
+                    yield _profile_json(profile)
+                    return
+
+                # 4) Apply profile updates from natural language
+                profile_was_updated = False
+                updated_fields = {}
+                if parsed.has_profile_update:
+                    updated_fields = _apply_profile_updates(profile, parsed.profile_updates)
+                    if updated_fields:
+                        save_profile(profile)
+                        profile_was_updated = True
+                        logger.info(
+                            "PROFILE_UPDATE_NL user_id=%s updated_fields=%s new_dietary=%s",
+                            request.user_id, list(updated_fields.keys()), profile.dietary_preference,
+                        )
+
+                # 5) If PROFILE_UPDATE only (no ingredients), respond and return
+                if parsed.intent == "PROFILE_UPDATE" and not parsed.has_ingredients:
+                    yield template_profile_update(profile, updated_fields, has_ingredients=False)
+                    yield _profile_json(profile)
+                    return
+
+                # 6) If GENERAL_QUESTION and no ingredients, handle via LLM
+                if parsed.intent == "GENERAL_QUESTION" and not parsed.has_ingredients:
+                    if profile.is_empty():
+                        yield "<<<PROFILE_REQUIRED>>>\n\n"
+                    msg = llm_compose_general(request.query, profile)
+                    yield msg or template_general()
+                    yield _profile_json(profile)
+                    return
+
+                # 7) Extract ingredients
+                ingredients = parsed.ingredients
+
+                # First-time user with empty profile and no ingredients
                 if profile.is_empty() and not ingredients:
-                    yield "<<<PROFILE_REQUIRED>>>\n\nPlease set your dietary preference, allergens, and lifestyle (e.g. use the profile dialog or /update dietary_preference Jain)."
-                    import json
-                    yield f"\n\n<<<PROFILE_UPDATE>>>{json.dumps(profile.to_dict())}<<<PROFILE_UPDATE>>>"
+                    yield "<<<PROFILE_REQUIRED>>>\n\n"
+                    msg = llm_compose_general(request.query, profile)
+                    yield msg or "Please set up your dietary profile first so I can give you personalized advice."
+                    yield _profile_json(profile)
                     return
+
+                # No ingredients found but profile exists
+                if not ingredients:
+                    msg = llm_compose_general(request.query, profile)
+                    yield msg or template_no_ingredients()
+                    yield _profile_json(profile)
+                    return
+
+                # 8) Expand compound items for compliance evaluation
+                eval_ingredients, compound_map = _expand_compounds(ingredients)
+
+                # 9) Run DETERMINISTIC compliance engine (NEVER LLM)
                 restriction_ids = user_profile_model_to_restriction_ids(profile)
                 profile_context = {
                     "dietary_preference": profile.dietary_preference,
                     "allergens": profile.allergens,
-                    "religious_preferences": profile.religious_preferences,
                     "lifestyle": profile.lifestyle,
                 }
+                logger.info(
+                    "COMPLIANCE_RUN ingredients=%s eval_ingredients=%s compounds=%s restriction_ids=%s",
+                    ingredients, eval_ingredients, compound_map, restriction_ids,
+                )
                 verdict = run_new_engine_chat(
-                    ingredients,
+                    eval_ingredients,
                     user_profile=profile,
                     restriction_ids=restriction_ids,
                     profile_context=profile_context,
                     use_api_fallback=True,
                 )
+
+                # 10) Shadow mode comparison
                 if SHADOW_MODE:
-                    legacy_status = run_legacy_chat(ingredients, profile.to_dict())
+                    legacy_status = run_legacy_chat(eval_ingredients, profile.to_dict())
                     logger.info(
                         "SHADOW_CHAT legacy_status=%s new_status=%s user_id=%s confidence=%.2f triggered=%s uncertain_count=%s",
                         legacy_status, verdict.status.value, request.user_id,
@@ -303,39 +592,35 @@ async def chat_grocery(request: ChatRequest):
                     if legacy_status != verdict.status.value:
                         logger.warning(
                             "SHADOW_CHAT diff legacy_status=%s new_status=%s ingredients=%s",
-                            legacy_status, verdict.status.value, ingredients[:15],
+                            legacy_status, verdict.status.value, eval_ingredients[:15],
                         )
                 else:
                     logger.info(
-                        "INGRESURE_ENGINE: USER_PROFILE user_id=%s dietary_preference=%s allergens=%s religious=%s lifestyle=%s | "
-                        "CHAT verdict=%s confidence=%.2f triggered=%s",
+                        "INGRESURE_ENGINE: USER_PROFILE user_id=%s dietary=%s allergens=%s lifestyle=%s | "
+                        "VERDICT=%s confidence=%.2f triggered=%s ingredients=%s",
                         request.user_id, profile.dietary_preference, profile.allergens,
-                        profile.religious_preferences, profile.lifestyle,
-                        verdict.status.value, verdict.confidence_score, verdict.triggered_restrictions,
+                        profile.lifestyle,
+                        verdict.status.value, verdict.confidence_score,
+                        verdict.triggered_restrictions, ingredients,
                     )
-                profile_desc = f"Dietary: {profile.dietary_preference}; Allergens: {profile.allergens}; Religious: {profile.religious_preferences}; Lifestyle: {profile.lifestyle}"
-                if verdict.status == VerdictStatus.NOT_SAFE:
-                    yield f"❌ NOT SAFE — {', '.join(verdict.triggered_ingredients or verdict.triggered_restrictions)}.\n\n"
-                    yield f"Evaluated for: **{profile_desc}**.\n"
-                    if verdict.informational_ingredients and verdict.confidence_score < 1.0:
-                        yield f"Minor ingredients (informational only): {', '.join(verdict.informational_ingredients)}.\n"
-                    yield f"Confidence: {verdict.confidence_score:.2f}"
-                elif verdict.status == VerdictStatus.UNCERTAIN:
-                    yield f"⚠️ UNCLEAR — unknown or ambiguous: {', '.join(verdict.uncertain_ingredients)}.\n\n"
-                    yield f"Evaluated for: **{profile_desc}**.\n"
-                    if verdict.informational_ingredients and verdict.confidence_score < 1.0:
-                        yield f"Minor ingredients (informational only): {', '.join(verdict.informational_ingredients)}.\n"
-                    yield f"Confidence: {verdict.confidence_score:.2f}"
-                elif verdict.status == VerdictStatus.SAFE and ingredients:
-                    yield f"✅ SAFE — Compatible with your profile.\n\n"
-                    if verdict.informational_ingredients and verdict.confidence_score < 1.0:
-                        yield f"Minor ingredients (informational only): {', '.join(verdict.informational_ingredients)}.\n"
-                    yield f"Confidence: {verdict.confidence_score:.2f}"
-                else:
-                    yield f"ℹ️ Please provide ingredients to analyze, or use /update to change your profile."
-                import json
-                yield f"\n\n<<<PROFILE_UPDATE>>>{json.dumps(profile.to_dict())}<<<PROFILE_UPDATE>>>"
+
+                # 11) Compose response: template-first (instant, accurate, no filler)
+                # LLM is reserved for greetings/general questions only
+                response_text = template_verdict(
+                    verdict=verdict,
+                    profile=profile,
+                    ingredients=eval_ingredients,
+                    profile_was_updated=profile_was_updated,
+                    updated_fields=updated_fields if profile_was_updated else None,
+                    display_names=compound_map if compound_map else None,
+                )
+                yield response_text
+                yield _profile_json(profile)
                 return
+
+            # ----------------------------------------------------------------
+            # Path B: no user_id → legacy SafetyAnalyst path
+            # ----------------------------------------------------------------
             for token in SafetyAnalyst.analyze(request.query, request.userProfile):
                 yield token
 

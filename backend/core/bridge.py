@@ -163,15 +163,11 @@ def profile_to_restriction_ids(user_profile: Optional[Dict[str, Any]]) -> List[s
         key = _normalize_key(str(v))
         if key in DIETARY_RELIGIOUS_LIFESTYLE_TO_ID and DIETARY_RELIGIOUS_LIFESTYLE_TO_ID[key] not in ids:
             ids.append(DIETARY_RELIGIOUS_LIFESTYLE_TO_ID[key])
-    for v in user_profile.get("religious_preferences", []):
-        key = _normalize_key(str(v))
-        if key in DIETARY_RELIGIOUS_LIFESTYLE_TO_ID and DIETARY_RELIGIOUS_LIFESTYLE_TO_ID[key] not in ids:
-            ids.append(DIETARY_RELIGIOUS_LIFESTYLE_TO_ID[key])
     return ids
 
 
 def user_profile_model_to_restriction_ids(profile: "UserProfile") -> List[str]:
-    """Build restriction_ids from UserProfile (dietary_preference + allergens + religious_preferences + lifestyle)."""
+    """Build restriction_ids from UserProfile (dietary_preference + allergens + lifestyle)."""
     ids: List[str] = []
     seen: set = set()
 
@@ -180,7 +176,7 @@ def user_profile_model_to_restriction_ids(profile: "UserProfile") -> List[str]:
             seen.add(rid)
             ids.append(rid)
 
-    # Primary dietary preference
+    # Primary dietary preference (covers both dietary and religious diets)
     pref = (profile.dietary_preference or "no rules").lower().strip()
     if pref and pref != "no rules":
         if pref in DIETARY_PREFERENCE_TO_RESTRICTION_ID:
@@ -197,14 +193,6 @@ def user_profile_model_to_restriction_ids(profile: "UserProfile") -> List[str]:
             add(ALLERGEN_TO_RESTRICTION_ID[key])
         elif key in DIETARY_RELIGIOUS_LIFESTYLE_TO_ID:
             add(DIETARY_RELIGIOUS_LIFESTYLE_TO_ID[key])
-
-    # Religious preferences (can add more restrictions)
-    for v in profile.religious_preferences or []:
-        key = _normalize_key(str(v))
-        if key in DIETARY_RELIGIOUS_LIFESTYLE_TO_ID:
-            add(DIETARY_RELIGIOUS_LIFESTYLE_TO_ID[key])
-        elif key in ALLERGEN_TO_RESTRICTION_ID:
-            add(ALLERGEN_TO_RESTRICTION_ID[key])
 
     # Lifestyle
     for v in profile.lifestyle or []:
@@ -287,8 +275,9 @@ def run_new_engine_chat(
         rids = user_profile_model_to_restriction_ids(user_profile)
     else:
         rids = profile_to_restriction_ids(user_profile if isinstance(user_profile, dict) else None)
-    if not rids:
-        rids = ["vegan", "vegetarian", "jain", "halal", "hindu_vegetarian"]
+    # Do NOT default to broad diets when user has no restrictions.
+    # Empty rids = no restrictions = everything is SAFE for this user.
+    # Only the scan path should evaluate against multiple diets unconditionally.
     atomic_names, trace_keys = preprocess_ingredient_list(ingredients)
     logger.info(
         "COMPLIANCE preprocess normalized_count=%d trace_count=%d profile_context=%s",

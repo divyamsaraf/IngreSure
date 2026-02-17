@@ -58,7 +58,7 @@ export default function ChatInterface({
         fetch(`${profileApiBase}/profile?user_id=${encodeURIComponent(uid)}`)
           .then(res => res.ok ? res.json() : null)
           .then(data => {
-            if (data && (data.dietary_preference && data.dietary_preference !== 'No rules' || (data.allergens?.length > 0) || (data.religious_preferences?.length > 0) || (data.lifestyle?.length > 0) || (data.lifestyle_flags?.length > 0))) {
+            if (data && (data.dietary_preference && data.dietary_preference !== 'No rules' || (data.allergens?.length > 0) || (data.lifestyle?.length > 0) || (data.lifestyle_flags?.length > 0))) {
               setProfile(backendToProfile(data))
               setShowOnboarding(false)
             } else {
@@ -114,7 +114,6 @@ export default function ChatInterface({
         const parts: string[] = []
         if (toSave.dietary_preference && toSave.dietary_preference !== 'No rules') parts.push(`Diet: ${toSave.dietary_preference}`)
         if (toSave.allergens?.length || toSave.allergies?.length) parts.push(`Allergens: ${(toSave.allergens ?? toSave.allergies ?? []).join(', ')}`)
-        if (toSave.religious_preferences?.length) parts.push(`Religious: ${toSave.religious_preferences.join(', ')}`)
         if (toSave.lifestyle?.length || toSave.lifestyle_flags?.length) parts.push(`Lifestyle: ${(toSave.lifestyle ?? toSave.lifestyle_flags ?? []).join(', ')}`)
         setMessages(prev => [...prev, {
             role: 'assistant',
@@ -198,11 +197,10 @@ export default function ChatInterface({
                             // Don't overwrite a filled profile with an empty one (prevents reset to "No rules")
                             const isEmpty = !updatedProfile.dietary_preference || updatedProfile.dietary_preference === 'No rules'
                               && (updatedProfile.allergens?.length ?? 0) === 0
-                              && (updatedProfile.religious_preferences?.length ?? 0) === 0
                               && (updatedProfile.lifestyle?.length ?? 0) === 0
                             setProfile(prev => {
                               if (isEmpty && prev.dietary_preference && prev.dietary_preference !== 'No rules') return prev
-                              if (isEmpty && ((prev.allergens?.length ?? 0) > 0 || (prev.religious_preferences?.length ?? 0) > 0 || (prev.lifestyle?.length ?? 0) > 0)) return prev
+                              if (isEmpty && ((prev.allergens?.length ?? 0) > 0 || (prev.lifestyle?.length ?? 0) > 0)) return prev
                               return updatedProfile
                             })
                             if (!isEmpty) localStorage.setItem('ingresure_profile', JSON.stringify(updatedProfile))

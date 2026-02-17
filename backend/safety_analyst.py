@@ -141,18 +141,28 @@ OUTPUT RULES:
 
     @staticmethod
     def _extract_ingredients(query: str) -> List[str]:
+        """
+        Extract ingredients from a query string.
+        Delegates to the intent detector for robust conversational parsing,
+        with fallback to simple comma-split for plain ingredient lists.
+        """
         import re
-        # Clean query
+        try:
+            from core.intent_detector import detect_intent
+            parsed = detect_intent(query)
+            if parsed.ingredients:
+                return [SafetyAnalyst._normalize_ingredient_name(i) for i in parsed.ingredients if i.strip()]
+        except Exception:
+            pass
+
+        # Fallback: simple extraction for plain ingredient lists
         clean_q = query.lower()
-        
-        # Remove common chat phrases (longest first to avoid partial matches)
         if "ingredients:" in clean_q:
             clean_q = clean_q.split("ingredients:")[1]
 
         clean_q = clean_q.split(".")[0]
         clean_q = clean_q.split("\n")[0]
 
-        # Use word-boundary regex so "is" doesn't destroy "fish", "raisins", etc.
         stopword_phrases = [
             r"is\s+this\s+safe",
             r"is\s+this",
@@ -161,29 +171,39 @@ OUTPUT RULES:
             r"ingredients",
             r"for\s+me",
         ]
-        stopword_words = [
-            r"with", r"safe", r"are",
-        ]
+        stopword_words = [r"with", r"safe", r"are"]
         for phrase in stopword_phrases:
             clean_q = re.sub(phrase, " ", clean_q)
         for word in stopword_words:
             clean_q = re.sub(r"\b" + word + r"\b", " ", clean_q)
 
-        # Remove question marks, colons, and extra whitespace
         clean_q = re.sub(r"[?:]+", " ", clean_q)
         clean_q = re.sub(r"\s+", " ", clean_q).strip()
 
         raw_list = [x.strip() for x in clean_q.split(",")]
-        
+
+        # Diet/profile keywords to filter OUT (only filter exact tokens, not substrings)
+        _PROFILE_KEYWORDS = {"hindu", "vegan", "vegetarian", "halal", "kosher", "jain"}
+
         final_list = []
         for x in raw_list:
-            if not x: continue
-            if any(k in x for k in ["hindu", "vegan", "allergy", "allergic", "diet", "i am"]):
-                 continue
-                 
-            norm = SafetyAnalyst._normalize_ingredient_name(x)
-            final_list.append(norm)
-            
+            if not x:
+                continue
+            # Only skip if the ENTIRE token is a profile keyword or profile phrase
+            words = set(x.lower().split())
+            if words <= (_PROFILE_KEYWORDS | {"i", "am", "a", "i'm", "im", "follow", "allergy", "allergic", "diet", "my", "is"}):
+                continue
+            # Remove leading profile words from mixed tokens like "i am jain eggs"
+            cleaned = re.sub(
+                r"^(?:i\s+am|i'm|im)\s+(?:a\s+)?(?:" + "|".join(_PROFILE_KEYWORDS) + r")\s*",
+                "", x, flags=re.IGNORECASE,
+            ).strip()
+            if not cleaned:
+                continue
+            norm = SafetyAnalyst._normalize_ingredient_name(cleaned)
+            if norm:
+                final_list.append(norm)
+
         return final_list
 
     @staticmethod
@@ -201,48 +221,81 @@ OUTPUT RULES:
 
     @staticmethod
     def analyze(query: str, user_profile_dict: Optional[Dict] = None) -> Generator[str, None, None]:
-        if user_profile_dict:
-            current_profile = SafetyAnalyst.create_profile_from_dict(user_profile_dict)
-        else:
-            current_profile = UserProfile("general", True, set())
-        updated_profile = SafetyAnalyst._parse_natural_language_profile(query, current_profile)
-        profile = updated_profile
-        ingredients = SafetyAnalyst._extract_ingredients(query)
-        profile_dict = {
-            "diet": profile.diet,
-            "dairy_allowed": profile.dairy_allowed,
-            "allergens": list(profile.allergens),
-            "allergies": list(profile.allergens),
-            "is_onboarding_completed": True,
-        }
-        dairy_str = "Dairy Allowed" if profile.dairy_allowed else "No Dairy"
-        profile_desc = f"{profile.diet.replace('_', ' ').title()} ({dairy_str})"
-        if profile.allergens:
-            profile_desc += f", Allergies: {', '.join(profile.allergens)}"
-
-        from core.bridge import run_new_engine_chat
-        from core.models.verdict import VerdictStatus
-        verdict = run_new_engine_chat(ingredients, profile_dict)
-        logger.info(
-            "INGRESURE_ENGINE: CHAT verdict=%s confidence=%.2f triggered=%s unknown_ingredients=%s",
-            verdict.status.value, verdict.confidence_score,
-            verdict.triggered_restrictions, verdict.uncertain_ingredients,
-        )
-        if verdict.status == VerdictStatus.NOT_SAFE:
-            yield f"❌ NOT SAFE — {', '.join(verdict.triggered_ingredients or verdict.triggered_restrictions)}.\n\n"
-            yield f"Evaluated for: **{profile_desc}**.\n"
-            yield f"Confidence: {verdict.confidence_score:.2f}"
-        elif verdict.status == VerdictStatus.UNCERTAIN:
-            yield f"⚠️ UNCLEAR — unknown or ambiguous: {', '.join(verdict.uncertain_ingredients)}.\n\n"
-            yield f"Evaluated for: **{profile_desc}**.\n"
-            yield f"Confidence: {verdict.confidence_score:.2f}"
-        elif verdict.status == VerdictStatus.SAFE and ingredients:
-            yield f"✅ SAFE — Compatible with **{profile_desc}**.\n\n"
-            yield f"Confidence: {verdict.confidence_score:.2f}"
-        else:
-            yield f"ℹ️ Updated Profile: **{profile_desc}**.\n"
-            yield "Please provide ingredients to analyze."
+        """Legacy path (no user_id). Uses intent detector + NL profile parsing."""
         try:
+            from core.intent_detector import detect_intent
+            from core.response_composer import compose_verdict, compose_greeting, compose_general_question
+            from core.bridge import run_new_engine_chat, profile_to_restriction_ids
+            from core.models.verdict import VerdictStatus
+
+            parsed = detect_intent(query)
+
+            # Build base profile from dict or defaults
+            if user_profile_dict:
+                current_profile = SafetyAnalyst.create_profile_from_dict(user_profile_dict)
+            else:
+                current_profile = UserProfile("general", True, set())
+
+            # Apply NL profile updates
+            updated_profile = SafetyAnalyst._parse_natural_language_profile(query, current_profile)
+            # Also apply intent-detected diet if present
+            if parsed.has_profile_update and "dietary_preference" in parsed.profile_updates:
+                diet_map = {
+                    "Jain": "jain", "Vegan": "vegan", "Vegetarian": "vegetarian",
+                    "Hindu Veg": "hindu_veg", "Halal": "halal", "Kosher": "kosher",
+                    "Hindu Non Vegetarian": "hindu_non_veg",
+                    "Lacto Vegetarian": "lacto_vegetarian", "Ovo Vegetarian": "ovo_vegetarian",
+                    "Pescatarian": "pescatarian",
+                }
+                detected_diet = parsed.profile_updates["dietary_preference"]
+                mapped = diet_map.get(detected_diet, detected_diet.lower().replace(" ", "_"))
+                updated_profile = UserProfile(
+                    diet=mapped,
+                    dairy_allowed=updated_profile.dairy_allowed,
+                    allergens=updated_profile.allergens,
+                )
+            profile = updated_profile
+
+            # Use intent-detected ingredients (much more robust than old _extract_ingredients)
+            ingredients = parsed.ingredients
+            if not ingredients:
+                ingredients = SafetyAnalyst._extract_ingredients(query)
+            else:
+                ingredients = [SafetyAnalyst._normalize_ingredient_name(i) for i in ingredients if i.strip()]
+
+            profile_dict = {
+                "diet": profile.diet,
+                "dairy_allowed": profile.dairy_allowed,
+                "allergens": list(profile.allergens),
+                "allergies": list(profile.allergens),
+                "is_onboarding_completed": True,
+            }
+
+            # Handle greeting
+            if parsed.intent == "GREETING":
+                yield compose_greeting()
+                yield f"\n\n<<<PROFILE_UPDATE>>>{json.dumps(profile_dict)}<<<PROFILE_UPDATE>>>"
+                return
+
+            verdict = run_new_engine_chat(ingredients, profile_dict)
+            logger.info(
+                "INGRESURE_ENGINE: CHAT intent=%s verdict=%s confidence=%.2f triggered=%s ingredients=%s",
+                parsed.intent, verdict.status.value, verdict.confidence_score,
+                verdict.triggered_restrictions, ingredients,
+            )
+
+            # Use response composer for human-like output
+            response_text = compose_verdict(
+                verdict=verdict,
+                profile={"dietary_preference": profile.diet.replace("_", " ").title()},
+                ingredients=ingredients,
+                profile_was_updated=parsed.has_profile_update,
+                updated_fields=parsed.profile_updates if parsed.has_profile_update else None,
+            )
+            yield response_text
             yield f"\n\n<<<PROFILE_UPDATE>>>{json.dumps(profile_dict)}<<<PROFILE_UPDATE>>>"
+
         except Exception as e:
-            logger.error("Failed to serialize profile: %s", e)
+            logger.error("SafetyAnalyst.analyze failed: %s", e, exc_info=True)
+            # Absolute fallback
+            yield f"I encountered an error processing your request. Please try again or rephrase."

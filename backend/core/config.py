@@ -41,6 +41,13 @@ def get_open_food_facts_enabled() -> bool:
 USDA_FDC_API_KEY = get_usda_fdc_api_key()
 OPEN_FOOD_FACTS_ENABLED = get_open_food_facts_enabled()
 
+# LLM / Ollama configuration
+def get_ollama_url() -> str:
+    return os.environ.get("OLLAMA_API_URL", "http://localhost:11434/api/generate")
+
+def get_ollama_model() -> str:
+    return os.environ.get("OLLAMA_MODEL", "llama3.2:3b")
+
 def log_config() -> None:
     """Call at startup for consistent debugging."""
     key = get_usda_fdc_api_key()

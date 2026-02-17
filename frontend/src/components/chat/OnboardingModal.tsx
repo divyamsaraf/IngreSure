@@ -6,7 +6,6 @@ import {
   UserProfile,
   DEFAULT_PROFILE,
   DIETARY_PREFERENCE_OPTIONS,
-  RELIGIOUS_OPTIONS,
   LIFESTYLE_OPTIONS,
   ALLERGEN_OPTIONS,
 } from '@/types/userProfile'
@@ -62,7 +61,6 @@ export default function OnboardingModal({
         diet: base.diet ?? base.dietary_preference ?? 'No rules',
         allergies: base.allergies ?? base.allergens ?? [],
         allergens: base.allergens ?? base.allergies ?? [],
-        religious_preferences: base.religious_preferences ?? [],
         lifestyle: base.lifestyle ?? base.lifestyle_flags ?? [],
         lifestyle_flags: base.lifestyle_flags ?? base.lifestyle ?? [],
         is_onboarding_completed: base.is_onboarding_completed ?? false,
@@ -100,7 +98,6 @@ export default function OnboardingModal({
       diet: profile.dietary_preference || profile.diet || 'No rules',
       allergens: deduped,
       allergies: deduped,
-      religious_preferences: profile.religious_preferences ?? [],
       lifestyle: profile.lifestyle ?? profile.lifestyle_flags ?? [],
       lifestyle_flags: profile.lifestyle ?? profile.lifestyle_flags ?? [],
     }
@@ -115,7 +112,6 @@ export default function OnboardingModal({
       dietary_preference: 'No rules',
       allergies: [],
       allergens: [],
-      religious_preferences: [],
       lifestyle: [],
       lifestyle_flags: [],
     }
@@ -151,7 +147,7 @@ export default function OnboardingModal({
             </div>
           </div>
           <p className="text-blue-100 text-sm mt-1">
-            One place for diet, allergens, religious & lifestyle — we use this for personalized checks.
+            Set your diet, allergens & lifestyle — we use this for personalized ingredient checks.
           </p>
         </div>
 
@@ -233,33 +229,7 @@ export default function OnboardingModal({
             </div>
           </section>
 
-          {/* 3. Religious preferences */}
-          <section>
-            <h3 className="text-sm font-semibold text-slate-700 mb-2">Religious preferences</h3>
-            <div className="flex flex-wrap gap-2">
-              {RELIGIOUS_OPTIONS.map((opt) => (
-                <button
-                  key={opt}
-                  type="button"
-                  onClick={() =>
-                    setProfile((prev) => ({
-                      ...prev,
-                      religious_preferences: toggleList(prev.religious_preferences ?? [], opt),
-                    }))
-                  }
-                  className={`px-3 py-2 rounded-lg border-2 text-sm ${
-                    (profile.religious_preferences ?? []).includes(opt)
-                      ? 'border-blue-600 bg-blue-50 text-blue-700 font-medium'
-                      : 'border-slate-100 hover:border-blue-200 text-slate-700'
-                  }`}
-                >
-                  {opt.replace(/_/g, ' ')}
-                </button>
-              ))}
-            </div>
-          </section>
-
-          {/* 4. Lifestyle */}
+          {/* 3. Lifestyle */}
           <section>
             <h3 className="text-sm font-semibold text-slate-700 mb-2">Lifestyle</h3>
             <div className="flex flex-wrap gap-2">

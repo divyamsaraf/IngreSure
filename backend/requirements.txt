@@ -3,9 +3,10 @@ uvicorn==0.27.0
 python-multipart==0.0.6
 requests==2.31.0
 paddlepaddle==2.6.2
-# paddleocr==2.7.0.3 (Installed manually)
+paddleocr==2.7.0.3
 Pillow==10.2.0
 numpy<2.0.0
 sentence-transformers
 supabase
 python-dotenv
+pytest

@@ -14,7 +14,6 @@ interface ProfileHeaderProps {
 export default function ProfileHeader({ profile, onEdit, minimal = false }: ProfileHeaderProps) {
   const diet = profile.dietary_preference ?? profile.diet ?? 'No rules'
   const hasAllergens = (profile.allergies?.length ?? profile.allergens?.length ?? 0) > 0
-  const hasReligious = (profile.religious_preferences?.length ?? 0) > 0
   const hasLifestyle = (profile.lifestyle?.length ?? profile.lifestyle_flags?.length ?? 0) > 0
 
   // Always show the header so "Edit profile" is always visible
@@ -24,7 +23,7 @@ export default function ProfileHeader({ profile, onEdit, minimal = false }: Prof
         <div className="bg-green-100 p-1.5 rounded-lg shrink-0">
           <ShieldCheck className="w-4 h-4 text-green-700" />
         </div>
-        {!minimal && (profile.is_onboarding_completed || diet !== 'No rules' || hasAllergens || hasReligious || hasLifestyle) ? (
+        {!minimal && (profile.is_onboarding_completed || diet !== 'No rules' || hasAllergens || hasLifestyle) ? (
           <div className="text-sm flex flex-wrap items-center gap-x-2 gap-y-1 min-w-0">
             <span className="font-bold text-slate-800 truncate">{diet}</span>
             {hasAllergens && (
@@ -32,14 +31,6 @@ export default function ProfileHeader({ profile, onEdit, minimal = false }: Prof
                 <span className="text-slate-300">|</span>
                 <span className="text-red-600 font-medium">
                   Allergies: {(profile.allergens ?? profile.allergies ?? []).length}
-                </span>
-              </>
-            )}
-            {hasReligious && (
-              <>
-                <span className="text-slate-300">|</span>
-                <span className="text-slate-600 text-xs">
-                  Religious: {(profile.religious_preferences ?? []).join(', ')}
                 </span>
               </>
             )}

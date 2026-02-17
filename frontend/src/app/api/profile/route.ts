@@ -15,8 +15,8 @@ export async function GET(req: NextRequest) {
           user_id,
           dietary_preference: 'No rules',
           allergens: [],
-          religious_preferences: [],
           lifestyle: [],
+          religious_preferences: [], // backward compat
         })
       }
       return NextResponse.json({ error: 'Backend error' }, { status: res.status })
@@ -32,14 +32,13 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    const { user_id, dietary_preference, allergens, religious_preferences, lifestyle } = body
+    const { user_id, dietary_preference, allergens, lifestyle } = body
     if (!user_id) {
       return NextResponse.json({ error: 'user_id required' }, { status: 400 })
     }
     const payload: Record<string, unknown> = {
       user_id,
       allergens: allergens ?? [],
-      religious_preferences: religious_preferences ?? [],
       lifestyle: lifestyle ?? [],
     }
     if (dietary_preference != null) payload.dietary_preference = dietary_preference

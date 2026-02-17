@@ -47,7 +47,8 @@ def _is_plant_override(text: str) -> bool:
 
 
 def _word_match(text: str, word: str) -> bool:
-    return bool(re.search(r'\b' + re.escape(word) + r'\b', text))
+    """Word-boundary match with plural tolerance: 'onion' matches 'onion' and 'onions'."""
+    return bool(re.search(r'\b' + re.escape(word) + r'(?:e?s)?\b', text))
 
 
 def _infer_flags_from_product(product: dict, combined_text: str) -> dict:
@@ -110,7 +111,7 @@ def _infer_flags_from_product(product: dict, combined_text: str) -> dict:
         "alcohol_content": 1.0 if any(_word_match(t, w) for w in ["alcohol", "wine", "beer", "spirit"]) else None,
         "onion_source": _word_match(t, "onion") and not override,
         "garlic_source": _word_match(t, "garlic") and not override,
-        "root_vegetable": any(_word_match(t, w) for w in ["potato", "carrot", "beet", "radish", "turnip", "yam"]),
+        "root_vegetable": any(_word_match(t, w) for w in ["potato", "carrot", "beet", "radish", "turnip", "yam", "onion", "garlic", "shallot", "leek"]),
     }
 
 

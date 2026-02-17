@@ -10,13 +10,18 @@ services:
     environment:
       - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
       - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+      - SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
       - OLLAMA_API_URL=http://host.docker.internal:11434/api/generate
+      - USE_NEW_ENGINE=true
+      - SHADOW_MODE=${SHADOW_MODE:-false}
+      - USDA_FDC_API_KEY=${USDA_FDC_API_KEY:-}
+      - OPEN_FOOD_FACTS_ENABLED=${OPEN_FOOD_FACTS_ENABLED:-true}
     volumes:
-      - ./backend:/app  # Hot reload for dev
+      - ./backend:/app
+      - ./data:/app/../data
     extra_hosts:
-      - "host.docker.internal:host-gateway" # Allow access to host Ollama
-    depends_on:
-      - frontend # Just to ensure order, strict dependency not required strictly
+      - "host.docker.internal:host-gateway"
 
   # Next.js Frontend Service
   frontend:
@@ -29,13 +34,11 @@ services:
     environment:
       - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
       - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
-      - NEXT_PUBLIC_LLM_API_URL=http://localhost:8000
-    volumes:
-      - ./frontend:/app # Hot reload? Next standalone might not like this, but for dev usage:
-      # Actually for hot reload in docker we'd need to run 'npm run dev' not build.
-      # Keeping it simple for 'running' the app.
+      - BACKEND_URL=http://backend:8000
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    depends_on:
+      - backend
 
 # Note: Supabase is run separately via 'supabase start' to avoid complex docker-in-docker setups 
 # or duplicating the supabase stack locally. We connect to it via host.docker.internal or public URL.
