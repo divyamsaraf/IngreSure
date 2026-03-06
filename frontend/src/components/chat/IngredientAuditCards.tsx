@@ -115,23 +115,13 @@ export default function IngredientAuditCards({ data }: Props) {
                   groupRefs[status].current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
                 }
               }}
-              aria-label={
-                status === 'safe'
-                  ? 'Jump to safe ingredients'
-                  : status === 'avoid'
-                  ? 'Jump to ingredients to avoid'
-                  : 'Jump to ingredients that depend on source'
-              }
               className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 rounded-full"
             >
-              <StatusPill
-                status={status}
-                className="hover:scale-105 active:scale-95 transition-transform"
-              >
-                {STATUS_ICON[status]}
-                <span className="font-semibold">
-                  {count} {STATUS_LABEL[status]}
-                </span>
+              <StatusPill status={status} className="hover:scale-105 active:scale-95 transition-transform">
+              {STATUS_ICON[status]}
+              <span className="font-semibold">
+                {count} {STATUS_LABEL[status]}
+              </span>
               </StatusPill>
             </button>
           )
@@ -151,7 +141,7 @@ export default function IngredientAuditCards({ data }: Props) {
           const count = group.items.length
           if (count === 0) return null
 
-          const limit = 6
+          const limit = 3
           const showAll = expandedItems[status] || count <= limit
           const visibleItems = showAll ? group.items : group.items.slice(0, limit)
 
@@ -165,7 +155,6 @@ export default function IngredientAuditCards({ data }: Props) {
                 type="button"
                 onClick={() => toggleGroup(status)}
                 className="flex w-full items-center justify-between gap-2"
-                aria-expanded={openGroups[status]}
               >
                 <StatusPill status={status}>
                   {STATUS_ICON[status]}
@@ -193,7 +182,7 @@ export default function IngredientAuditCards({ data }: Props) {
                         {item.name}
                       </span>
                       {item.diets && item.diets.length > 0 && (
-                        <div className="flex flex-wrap gap-1 max-w-full overflow-x-auto">
+                        <div className="flex flex-wrap gap-1">
                           {item.diets.map((diet) => (
                             <span
                               key={diet}
@@ -206,7 +195,7 @@ export default function IngredientAuditCards({ data }: Props) {
                         </div>
                       )}
                       {item.allergens && item.allergens.length > 0 && (
-                        <div className="flex flex-wrap gap-1 max-w-full overflow-x-auto">
+                        <div className="flex flex-wrap gap-1">
                           {item.allergens.map((alg) => (
                             <span
                               key={alg}
@@ -220,7 +209,7 @@ export default function IngredientAuditCards({ data }: Props) {
                         </div>
                       )}
                       {item.alternatives && item.alternatives.length > 0 && (
-                        <div className="mt-1 flex flex-wrap gap-1 max-w-full overflow-x-auto">
+                        <div className="mt-1 flex flex-wrap gap-1">
                           {item.alternatives.map((alt) => (
                             <button
                               key={alt}
