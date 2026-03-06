@@ -1,9 +1,11 @@
 """
 Deterministic normalization only. No LLM, no substring guessing.
 Used to produce a key for ontology lookup; unknown keys are not resolved here.
+Unicode NFKC normalization for regional scripts (e.g. Devanagari, Tamil) and compatibility.
 """
 import re
 import logging
+import unicodedata
 from typing import List
 
 logger = logging.getLogger(__name__)
@@ -44,6 +46,8 @@ KNOWN_VARIANTS: dict[str, str] = {
     "almonds": "almond",
     "walnuts": "walnut",
     "cashews": "cashew",
+    "hazelnuts": "hazelnut",
+    "pecans": "pecan",
     "peanuts": "peanut",
     "prawns": "prawn",
     "shrimps": "shrimp",
@@ -87,13 +91,14 @@ KNOWN_VARIANTS: dict[str, str] = {
 def normalize_ingredient_key(text: str) -> str:
     """
     Normalize a raw ingredient string for lookup.
+    - Unicode NFKC normalization (regional scripts, compatibility).
     - Lowercase, strip, remove excess punctuation and whitespace.
     - Apply known variants (e.g. inglass -> isinglass).
     - No substring or fuzzy matching.
     """
     if not text or not isinstance(text, str):
         return ""
-    t = text.lower().strip()
+    t = unicodedata.normalize("NFKC", text).lower().strip()
     t = t.replace("*", "").replace(".", "")
     t = re.sub(r"[,;:\-\u2013\u2014]+", " ", t)
     t = re.sub(r"\s+", " ", t)

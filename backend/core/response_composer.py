@@ -33,6 +33,7 @@ _RESTRICTION_DISPLAY: Dict[str, str] = {
     "shellfish_allergy": "shellfish allergy",
     "fish_allergy": "fish allergy",
     "sesame_allergy": "sesame allergy",
+    "raisin_allergy": "raisin allergy",
     "no_alcohol": "no-alcohol",
     "no_onion": "no-onion",
     "no_garlic": "no-garlic",
@@ -112,6 +113,8 @@ INGREDIENT_REASONS: Dict[str, str] = {
     "hazelnut": "tree nut",
     "pecan": "tree nut",
     "soy": "soy-derived (allergen)",
+    "raisin": "contains your allergen (raisin)",
+    "raisins": "contains your allergen (raisin)",
 }
 
 # Product/container words that are not real ingredients — skip from safe lists
@@ -153,9 +156,9 @@ def _is_plural(ingredient: str) -> bool:
 
 def _display_name(ingredient: str) -> str:
     """Format ingredient for bold display: capitalize first letter."""
-    s = ingredient.strip()
+    s = ingredient.strip().lower()
     if not s:
-        return s
+        return ingredient.strip()
     return s[0].upper() + s[1:]
 
 
@@ -186,6 +189,45 @@ def _ingredient_reason(ingredient: str) -> str:
     if reason:
         return reason
     return "may conflict with your dietary requirements"
+
+
+def _allergy_triggered(triggered_restrictions: List[str]) -> bool:
+    """True if any triggered restriction is an allergy."""
+    return any(
+        (r or "").endswith("_allergy")
+        for r in (triggered_restrictions or [])
+    )
+
+
+def _ingredient_reason_for_verdict(
+    ingredient: str,
+    triggered_restrictions: List[str],
+) -> str:
+    """
+    Reason for a triggered ingredient. Prefer 'contains your allergen' when
+    the trigger is an allergy restriction.
+    """
+    base = _ingredient_reason(ingredient)
+    if not _allergy_triggered(triggered_restrictions):
+        return base
+    # Map ingredient (normalized) to allergen-type wording where applicable
+    norm = _normalize_for_match(ingredient.lower().strip())
+    if norm in ("peanut", "peanuts"):
+        return "contains your allergen (peanut)"
+    if norm in ("almond", "almonds", "cashew", "cashews", "hazelnut", "hazelnuts", "walnut", "walnuts", "pecan", "pecans"):
+        return "contains your allergen (tree nut)"
+    if norm in ("raisin", "raisins"):
+        return "contains your allergen (raisin)"
+    if norm in ("soy",):
+        return "contains your allergen (soy)"
+    if "sesame" in norm:
+        return "contains your allergen (sesame)"
+    if "shellfish" in base or norm in ("shrimp", "prawn", "crab", "lobster", "squid", "octopus"):
+        return "contains your allergen (shellfish)"
+    if "fish" in base or norm in ("fish", "tuna", "salmon", "anchovy", "sardine"):
+        return "contains your allergen (fish)"
+    # Already has allergen wording in INGREDIENT_REASONS or generic
+    return base
 
 
 def _restriction_label(restriction_id: str) -> str:
@@ -287,6 +329,7 @@ def compose_verdict(
 
     # Compute safe ingredients (not triggered, not uncertain)
     triggered = verdict.triggered_ingredients or []
+    triggered_to_input = verdict.triggered_ingredient_to_input or {}  # canonical -> raw user input (show what user typed)
     uncertain = verdict.uncertain_ingredients or []
     triggered_norm = {_normalize_for_match(i) for i in triggered}
     uncertain_norm = {_normalize_for_match(i) for i in uncertain}
@@ -307,9 +350,12 @@ def compose_verdict(
             key = ingredient.lower().strip()
             return dn.get(key) or dn.get(_normalize_for_match(ingredient))
 
-        triggered_display = {
-            _dn_lookup(i) for i in triggered if _dn_lookup(i)
-        }
+        triggered_display = set()
+        for i in triggered:
+            raw = triggered_to_input.get(i, i)
+            looked = _dn_lookup(raw) or _dn_lookup(i)
+            if looked:
+                triggered_display.add(looked)
         meaningful_safe = [
             s for s in meaningful_safe
             if _dn_lookup(s) not in triggered_display
@@ -318,20 +364,31 @@ def compose_verdict(
     # ------ NOT_SAFE ------
     if verdict.status == VerdictStatus.NOT_SAFE:
         restrictions = verdict.triggered_restrictions or []
+        has_allergy = _allergy_triggered(restrictions)
+        has_diet = any(not (r or "").endswith("_allergy") for r in restrictions)
+
+        def _lead_text() -> str:
+            if has_allergy and has_diet:
+                return f"Based on your **{diet}** diet and **allergens**, the following {'are' if len(triggered) > 1 else 'is'} **not suitable**:\n"
+            if has_allergy:
+                return f"Based on your **allergens**, the following {'are' if len(triggered) > 1 else 'is'} **not suitable** (avoid — contains your allergen):\n"
+            return f"Based on your **{diet}** diet, the following {'are' if len(triggered) > 1 else 'is'} **not suitable**:\n"
 
         if len(triggered) == 1 and not meaningful_safe and not uncertain:
             ing = triggered[0]
-            reason = _ingredient_reason(ing)
-            name = _show(ing)
-            verb = "are" if _is_plural(ing) else "is"
+            reason = _ingredient_reason_for_verdict(ing, restrictions)
+            name = _show(triggered_to_input.get(ing, ing))  # show user's input, not API-resolved name
+            verb = "are" if _is_plural(triggered_to_input.get(ing, ing)) else "is"
+            intro = "Based on your **allergens**," if has_allergy and not has_diet else f"Based on your **{diet}** diet and **allergens**," if has_allergy and has_diet else f"Based on your **{diet}** diet,"
             parts.append(
-                f"Based on your **{diet}** diet, **{name}** {verb} **not suitable** — {reason}."
+                f"{intro} **{name}** {verb} **not suitable** — {reason}."
             )
         elif triggered:
-            parts.append(f"Based on your **{diet}** diet, the following {'are' if len(triggered) > 1 else 'is'} **not suitable**:\n")
+            parts.append(_lead_text())
             for ing in triggered:
-                reason = _ingredient_reason(ing)
-                parts.append(f"- **{_show(ing)}** — {reason}")
+                reason = _ingredient_reason_for_verdict(ing, restrictions)
+                display_name = _show(triggered_to_input.get(ing, ing))  # show user's input, not API-resolved name
+                parts.append(f"- **{display_name}** — {reason}")
         else:
             restriction_names = ", ".join(_restriction_label(r) for r in restrictions[:3])
             parts.append(

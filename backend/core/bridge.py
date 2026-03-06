@@ -91,6 +91,8 @@ ALLERGEN_TO_RESTRICTION_ID: Dict[str, str] = {
     "eggs": "egg_free",
     "mustard": "mustard_allergy",
     "celery": "celery_allergy",
+    "raisin": "raisin_allergy",
+    "raisins": "raisin_allergy",
 }
 
 # Lifestyle flags -> restriction_id

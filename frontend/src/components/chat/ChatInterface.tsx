@@ -9,6 +9,18 @@ import { UserProfile, DEFAULT_PROFILE, backendToProfile, profileToBackend } from
 
 const USER_ID_KEY = 'ingresure_user_id'
 
+/** Ensure chat URL has exactly one mode param (avoids ?mode=grocery?mode=grocery from duplicate appends). */
+function normalizeChatUrl(url: string): string {
+  try {
+    const pathOnly = url.split('?')[0].replace(/\/+$/, '') || '/api/chat'
+    const params = new URLSearchParams(url.includes('?') ? url.split('?').slice(1).join('?') : '')
+    const mode = params.get('mode') || 'grocery'
+    return `${pathOnly}?mode=${mode}`
+  } catch {
+    return url.startsWith('/') ? url : '/api/chat?mode=grocery'
+  }
+}
+
 function getOrCreateUserId(): string {
   if (typeof window === 'undefined') return ''
   let id = localStorage.getItem(USER_ID_KEY)
@@ -148,13 +160,23 @@ export default function ChatInterface({
                 userProfile: profile
             }
 
-            const response = await fetch(apiEndpoint + '?mode=grocery', {
+            const response = await fetch(normalizeChatUrl(apiEndpoint), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             })
 
-            if (!response.ok) throw new Error('Chat failed')
+            if (!response.ok) {
+                let errMsg = 'Chat failed'
+                try {
+                    const errBody = await response.json()
+                    if (errBody?.detail) errMsg = typeof errBody.detail === 'string' ? errBody.detail : errMsg
+                    else if (errBody?.error) errMsg = errBody.error + (errBody.detail ? `: ${errBody.detail}` : '')
+                } catch {
+                    // ignore
+                }
+                throw new Error(errMsg)
+            }
 
             const reader = response.body?.getReader()
             if (!reader) return
@@ -219,9 +241,10 @@ export default function ChatInterface({
 
         } catch (error) {
             console.error('Chat error:', error)
+            const message = error instanceof Error ? error.message : 'Sorry, I encountered an error. Please try again.'
             setMessages(prev => [
                 ...prev.slice(0, -1),
-                { role: 'assistant', content: 'Sorry, I encountered an error. Please try again.' }
+                { role: 'assistant', content: `Sorry, something went wrong. ${message}` }
             ])
         } finally {
             setLoading(false)
@@ -323,7 +346,7 @@ export default function ChatInterface({
                         type="text"
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
-                        placeholder={profile.is_onboarding_completed ? "Paste ingredients or type /update allergens milk, egg to edit profile" : "Set your profile above (Edit profile) or paste ingredients to start."}
+                        placeholder={profile.is_onboarding_completed ? "Paste ingredients, update allergens, or ask anything…" : "Enter your allergens, dietary preferences, or paste ingredients…"}
                         className="w-full px-6 py-4 pr-14 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all placeholder:text-slate-400 font-medium text-slate-700"
                         disabled={loading || !profileLoaded}
                     />
@@ -361,7 +384,7 @@ export default function ChatInterface({
                 >
                     Edit profile
                 </button>
-                <span className="text-xs text-slate-400 self-center px-1">or type /update dietary_preference Jain</span>
+                <span className="text-xs text-slate-400 self-center px-1">or type /update to modify your profile</span>
             </div>
         </div>
     )

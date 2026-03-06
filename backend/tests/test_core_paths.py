@@ -40,6 +40,16 @@ def test_restrictions_path_resolution():
     assert "restrictions.json" in path.name
 
 
+def test_regional_and_learned_paths_resolution():
+    """Regional and learned mappings paths are under repo_root/data."""
+    from core.config import get_regional_ingredient_names_path, get_learned_regional_mappings_path, _REPO_ROOT
+    rpath = get_regional_ingredient_names_path()
+    lpath = get_learned_regional_mappings_path()
+    assert rpath == _REPO_ROOT / "data" / "regional_ingredient_names.json"
+    assert lpath == _REPO_ROOT / "data" / "learned_regional_mappings.json"
+    assert "data" in rpath.parts and "data" in lpath.parts
+
+
 def test_ontology_file_exists_when_data_present():
     """When data/ exists in repo, ontology.json should exist (Phase 2)."""
     from core.config import get_ontology_path, _REPO_ROOT

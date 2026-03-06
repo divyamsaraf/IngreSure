@@ -1,7 +1,7 @@
 import os
 import logging
 from functools import lru_cache
-from typing import List, Dict, Generator
+from typing import List, Dict, Generator, Optional
 from sentence_transformers import SentenceTransformer
 from supabase import create_client, Client
 import requests
@@ -17,7 +17,12 @@ class RAGService:
         
         # Load Config inside init to ensure env vars are loaded
         self.supabase_url = os.environ.get("SUPABASE_URL") or os.environ.get("NEXT_PUBLIC_SUPABASE_URL")
-        self.supabase_key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY") or os.environ.get("NEXT_PUBLIC_SUPABASE_ANON_KEY")
+        # Support multiple key names; prefer service role, but accept SUPABASE_KEY
+        self.supabase_key = (
+            os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
+            or os.environ.get("SUPABASE_KEY")
+            or os.environ.get("NEXT_PUBLIC_SUPABASE_ANON_KEY")
+        )
         
         logger.info("RAG Service Config: URL=%s, KEY=%s", self.supabase_url, "set" if self.supabase_key else "missing")
 
@@ -25,12 +30,16 @@ class RAGService:
         # all-MiniLM-L6-v2 is fast and effective (384 dims)
         self.embed_model = SentenceTransformer('all-MiniLM-L6-v2')
         
-        # 2. Connect to Supabase
+        # 2. Connect to Supabase (optional; RAG works only when client is set)
         if not self.supabase_url or not self.supabase_key:
-            logger.warning("Supabase credentials not found in env. RAG will fail.")
-            self.supabase = None
+            logger.warning("Supabase credentials not found in env. RAG will be disabled.")
+            self.supabase: Optional[Client] = None
         else:
-            self.supabase: Client = create_client(self.supabase_url, self.supabase_key)
+            try:
+                self.supabase = create_client(self.supabase_url, self.supabase_key)
+            except Exception as e:
+                logger.warning("Supabase client init failed (RAG disabled): %s", e)
+                self.supabase = None
 
     def generate_embedding(self, text: str) -> List[float]:
         """Generates a 384-dim embedding for the given text."""

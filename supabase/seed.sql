@@ -23,21 +23,21 @@ VALUES
 ('33333333-3333-3333-3333-333333333333', 'd0d8c19c-3b36-4423-8f5d-8e3607c2d6c6', 'Chicken Tikka Masala', 'Grilled chicken in creamy tomato curry sauce.', 16.00, true)
 ON CONFLICT (id) DO NOTHING;
 
--- 3. Insert Ingredients
-INSERT INTO public.item_ingredients (menu_item_id, ingredient_name, is_allergen)
+-- 3. Insert Ingredients (schema: menu_item_id, ingredient_name, quantity, is_optional)
+INSERT INTO public.item_ingredients (menu_item_id, ingredient_name, quantity, is_optional)
 VALUES
-('11111111-1111-1111-1111-111111111111', 'Quinoa', false),
-('11111111-1111-1111-1111-111111111111', 'Chickpeas', false),
-('11111111-1111-1111-1111-111111111111', 'Avocado', false),
-('11111111-1111-1111-1111-111111111111', 'Tahini', true), -- Sesame
+('11111111-1111-1111-1111-111111111111', 'Quinoa', NULL, false),
+('11111111-1111-1111-1111-111111111111', 'Chickpeas', NULL, false),
+('11111111-1111-1111-1111-111111111111', 'Avocado', NULL, false),
+('11111111-1111-1111-1111-111111111111', 'Tahini', NULL, false),
 
-('22222222-2222-2222-2222-222222222222', 'Beef', false),
-('22222222-2222-2222-2222-222222222222', 'Cheddar Cheese', true), -- Dairy
-('22222222-2222-2222-2222-222222222222', 'Wheat Bun', true), -- Gluten
+('22222222-2222-2222-2222-222222222222', 'Beef', NULL, false),
+('22222222-2222-2222-2222-222222222222', 'Cheddar Cheese', NULL, false),
+('22222222-2222-2222-2222-222222222222', 'Wheat Bun', NULL, false),
 
-('33333333-3333-3333-3333-333333333333', 'Chicken', false),
-('33333333-3333-3333-3333-333333333333', 'Cream', true), -- Dairy
-('33333333-3333-3333-3333-333333333333', 'Tomato', false);
+('33333333-3333-3333-3333-333333333333', 'Chicken', NULL, false),
+('33333333-3333-3333-3333-333333333333', 'Cream', NULL, false),
+('33333333-3333-3333-3333-333333333333', 'Tomato', NULL, false);
 
 -- 4. Insert Tag History (Simulate Auto-Tagging)
 INSERT INTO public.tag_history (menu_item_id, tags, allergens, source)

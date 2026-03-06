@@ -1,0 +1,31 @@
+# Dependencies and env (use env_file at runtime, not baked into image)
+.env
+.env.*
+!.env.example
+venv
+.venv
+__pycache__
+*.py[cod]
+*.pyo
+.pytest_cache
+.coverage
+htmlcov
+*.egg-info
+.eggs
+dist
+build
+
+# Git and IDE
+.git
+.gitignore
+.cursor
+*.md
+!README.md
+
+# Tests and scripts (not needed in runtime image)
+tests/
+scripts/
+*.sh
+
+# Data mounted at runtime
+data/

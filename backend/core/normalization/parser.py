@@ -66,6 +66,50 @@ PROCESSED_FOOD_TO_BASE: dict[str, List[str]] = {
     "coconut milk": ["coconut", "water"],
 }
 
+# Category expansion: "X (A, B, C)" -> ["A suffix", "B suffix", "C suffix"] when X is a known category.
+# Normalized category key -> suffix to append to each parenthetical item (e.g. " oil" -> "sunflower oil").
+CATEGORY_EXPAND: dict[str, str] = {
+    "vegetable oil": " oil",
+    "oil": " oil",
+    "nut": " nut",
+    "nuts": " nut",
+    "starch": " starch",
+    "starches": " starch",
+    "flour": " flour",
+    "flours": " flour",
+    "gum": " gum",
+    "gums": " gum",
+    "protein": " protein",
+    "proteins": " protein",
+    "emulsifier": " emulsifier",
+    "emulsifiers": " emulsifier",
+    "stabilizer": " stabilizer",
+    "stabilizers": " stabilizer",
+}
+
+
+def _expand_category_parenthetical(parts: List[str]) -> List[str]:
+    """
+    If parts is [category, item1, item2, ...] and category is in CATEGORY_EXPAND,
+    return [item1 + suffix, item2 + suffix, ...]. Otherwise return parts as-is.
+    """
+    if not parts or len(parts) < 2:
+        return parts
+    first_norm = normalize_ingredient_key(parts[0])
+    suffix = CATEGORY_EXPAND.get(first_norm)
+    if suffix is None:
+        return parts
+    out: List[str] = []
+    for p in parts[1:]:
+        p = p.strip()
+        if not p:
+            continue
+        # e.g. "sunflower" + " oil" -> "sunflower oil"
+        combined = (p + suffix).strip()
+        if combined:
+            out.append(combined)
+    return out if out else parts
+
 
 def _split_by_parentheses(text: str) -> List[str]:
     """
@@ -140,6 +184,8 @@ def flatten_ingredients(raw_str: str) -> List[str]:
         if not seg:
             continue
         parts = _split_by_parentheses(seg)
+        # Expand "X (A, B, C)" when X is a known category (e.g. vegetable oil (sunflower, canola) -> sunflower oil, canola oil)
+        parts = _expand_category_parenthetical(parts)
         for p in parts:
             p = p.strip()
             if not p:

@@ -16,6 +16,12 @@ _REPO_ROOT = _BACKEND_DIR.parent
 USE_NEW_ENGINE = os.environ.get("USE_NEW_ENGINE", "true").lower() in ("1", "true", "yes")
 SHADOW_MODE = os.environ.get("SHADOW_MODE", "").lower() in ("1", "true", "yes")
 
+# Knowledge DB (Phase 3+): keep off by default until fully wired
+USE_KNOWLEDGE_DB = os.environ.get("USE_KNOWLEDGE_DB", "").lower() in ("1", "true", "yes")
+
+# Redis cache (Phase 3+): optional distributed cache layer
+REDIS_URL = os.environ.get("REDIS_URL", "").strip()
+
 # --- Data paths ---
 def get_ontology_path() -> Path:
     return _REPO_ROOT / "data" / "ontology.json"
@@ -25,6 +31,12 @@ def get_restrictions_path() -> Path:
 
 def get_dynamic_ontology_path() -> Path:
     return _REPO_ROOT / "data" / "dynamic_ontology.json"
+
+def get_regional_ingredient_names_path() -> Path:
+    return _REPO_ROOT / "data" / "regional_ingredient_names.json"
+
+def get_learned_regional_mappings_path() -> Path:
+    return _REPO_ROOT / "data" / "learned_regional_mappings.json"
 
 def get_unknown_ingredients_log_path() -> Path:
     return _REPO_ROOT / "data" / "unknown_ingredients_log.json"
@@ -47,14 +59,30 @@ def get_ollama_model() -> str:
 LLM_INTENT_TIMEOUT = int(os.environ.get("LLM_INTENT_TIMEOUT", "30"))
 LLM_RESPONSE_TIMEOUT = int(os.environ.get("LLM_RESPONSE_TIMEOUT", "30"))
 
+# --- Supabase (Docker-friendly URL) ---
+def get_supabase_url() -> str:
+    """
+    Supabase URL from env. When RUNNING_IN_DOCKER=1, rewrites localhost/127.0.0.1
+    to host.docker.internal so the container can reach Supabase on the host.
+    """
+    import re
+    url = (os.environ.get("SUPABASE_URL") or os.environ.get("NEXT_PUBLIC_SUPABASE_URL") or "").strip()
+    if not url:
+        return ""
+    if os.environ.get("RUNNING_IN_DOCKER", "").lower() in ("1", "true", "yes"):
+        if "127.0.0.1" in url or "localhost" in url.lower():
+            url = re.sub(r"127\.0\.0\.1", "host.docker.internal", url, flags=re.IGNORECASE)
+            url = re.sub(r"\blocalhost\b", "host.docker.internal", url, flags=re.IGNORECASE)
+    return url
+
 # --- Startup logging ---
 def log_config() -> None:
     key = get_usda_fdc_api_key()
     off = get_open_food_facts_enabled()
     logger.info(
-        "CONFIG: use_new_engine=%s shadow_mode=%s ontology=%s restrictions=%s dynamic=%s "
+        "CONFIG: use_new_engine=%s shadow_mode=%s use_knowledge_db=%s ontology=%s restrictions=%s dynamic=%s "
         "usda_key=%s off_enabled=%s ollama_model=%s llm_intent_timeout=%ds llm_response_timeout=%ds",
-        USE_NEW_ENGINE, SHADOW_MODE,
+        USE_NEW_ENGINE, SHADOW_MODE, USE_KNOWLEDGE_DB,
         get_ontology_path().exists(), get_restrictions_path().exists(),
         get_dynamic_ontology_path().exists(),
         bool(key), off, get_ollama_model(),

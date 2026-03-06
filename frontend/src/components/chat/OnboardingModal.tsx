@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { X, Check } from 'lucide-react'
+import { X, Check, RotateCcw } from 'lucide-react'
 import {
   UserProfile,
   DEFAULT_PROFILE,
@@ -119,6 +119,30 @@ export default function OnboardingModal({
     onClose()
   }
 
+  const handleReset = () => {
+    setProfile({
+      ...DEFAULT_PROFILE,
+      user_id: profile.user_id,
+      is_onboarding_completed: profile.is_onboarding_completed,
+      dietary_preference: 'No rules',
+      diet: 'No rules',
+      allergies: [],
+      allergens: [],
+      lifestyle: [],
+      lifestyle_flags: [],
+    })
+    setCustomAllergy('')
+  }
+
+  const removeAllergen = (toRemove: string) => {
+    setProfile((prev) => {
+      const next = (prev.allergens ?? prev.allergies ?? []).filter(
+        (a) => a.toLowerCase() !== toRemove.toLowerCase()
+      )
+      return { ...prev, allergies: next, allergens: next }
+    })
+  }
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col animate-in zoom-in-95 duration-200">
@@ -202,6 +226,31 @@ export default function OnboardingModal({
                 )
               })}
             </div>
+            {/* Custom/Other allergens: show as removable chips */}
+            {(profile.allergens ?? profile.allergies ?? []).filter(
+              (a) => !ALLERGEN_OPTIONS.some((opt) => opt.toLowerCase() === a.toLowerCase())
+            ).length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-2">
+                {(profile.allergens ?? profile.allergies ?? []).filter(
+                  (a) => !ALLERGEN_OPTIONS.some((opt) => opt.toLowerCase() === a.toLowerCase())
+                ).map((alg) => (
+                  <span
+                    key={alg}
+                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border-2 border-red-200 bg-red-50 text-red-700 text-sm"
+                  >
+                    {alg}
+                    <button
+                      type="button"
+                      onClick={() => removeAllergen(alg)}
+                      className="p-0.5 rounded hover:bg-red-200 transition-colors"
+                      aria-label={`Remove ${alg}`}
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
             <div className="mt-2">
               <input
                 type="text"
@@ -258,7 +307,17 @@ export default function OnboardingModal({
         </div>
 
         {/* Footer */}
-        <div className="p-5 border-t border-slate-100 bg-slate-50/50 shrink-0">
+        <div className="p-5 border-t border-slate-100 bg-slate-50/50 shrink-0 space-y-2">
+          {editMode && (
+            <button
+              type="button"
+              onClick={handleReset}
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 border-slate-200 text-slate-600 hover:bg-slate-100 hover:border-slate-300 transition-colors text-sm font-medium"
+            >
+              <RotateCcw className="w-4 h-4" />
+              Reset profile
+            </button>
+          )}
           <button
             onClick={handleSave}
             className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/20"

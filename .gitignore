@@ -8,6 +8,7 @@ docs/
 backend/.env
 backend/.commit_msg
 
-# User-specific runtime data
+# User-specific / runtime data (do not commit secrets or env-specific learned data)
 data/profiles.json
 data/unknown_ingredients_log.json
+data/learned_regional_mappings.json

@@ -13,6 +13,12 @@ logger = logging.getLogger(__name__)
 
 _DEFAULT_PATH = get_unknown_ingredients_log_path()
 
+# Phrases that are profile commands, not ingredients — do not log or upsert as unknown
+_PROFILE_PHRASE_KEYS = frozenset({
+    "allergens none", "allergen none", "allergies none", "allergy none",
+    "no allergies", "no allergens", "allergens clear", "allergens",
+})
+
 
 class UnknownIngredientsLog:
     """
@@ -55,6 +61,9 @@ class UnknownIngredientsLog:
         """Record or update an unknown ingredient."""
         if not normalized_key:
             return
+        key_normalized = " ".join(normalized_key.lower().strip().split())
+        if key_normalized in _PROFILE_PHRASE_KEYS:
+            return
         import time
         now = time.time()
         if normalized_key not in self._entries:
@@ -82,6 +91,19 @@ class UnknownIngredientsLog:
             ent["profile_context_sample"] = profile_context
         if persist:
             self._save()
+        # Route to Supabase unknown_ingredients when knowledge DB is enabled (worker will enrich)
+        try:
+            from core.knowledge.ingredient_db import IngredientKnowledgeDB
+            _db = IngredientKnowledgeDB()
+            if _db.enabled:
+                _db.upsert_unknown_ingredient(
+                    normalized_key=normalized_key,
+                    raw_input=raw_input,
+                    restriction_ids=restriction_ids,
+                    profile_context=profile_context,
+                )
+        except Exception as e:  # pragma: no cover
+            logger.debug("Unknown ingredient DB upsert skipped: %s", e)
         logger.info(
             "UNKNOWN_INGREDIENT logged raw=%s normalized_key=%s frequency=%s",
             raw_input[:50], normalized_key, ent["frequency"],

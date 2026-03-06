@@ -17,6 +17,15 @@ def test_flatten_ingredients_parentheses():
     assert "folic acid" in out
 
 
+def test_flatten_ingredients_category_expand():
+    """X (A, B, C) expands when X is a known category: vegetable oil (sunflower, canola) -> sunflower oil, canola oil."""
+    from core.normalization.parser import flatten_ingredients
+    out = flatten_ingredients("vegetable oil (sunflower, canola), salt")
+    assert "sunflower oil" in out
+    assert "canola oil" in out
+    assert "salt" in out
+
+
 def test_flatten_ingredients_processed_food():
     """Processed foods map to base ingredients (e.g. potato chips -> potato, vegetable oil, salt)."""
     from core.normalization.parser import flatten_ingredients

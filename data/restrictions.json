@@ -501,6 +501,40 @@
       ]
     },
     {
+      "id": "raisin_allergy",
+      "category": "allergy",
+      "region_scope": [
+        "GLOBAL"
+      ],
+      "severity": "STRICT",
+      "rules": [
+        {
+          "field": "id",
+          "operator": "equals",
+          "value": "raisin",
+          "action": "FAIL"
+        },
+        {
+          "field": "canonical_name",
+          "operator": "equals",
+          "value": "raisin",
+          "action": "FAIL"
+        },
+        {
+          "field": "canonical_name",
+          "operator": "equals",
+          "value": "raisins",
+          "action": "FAIL"
+        },
+        {
+          "field": "canonical_name",
+          "operator": "equals",
+          "value": "RAISIN",
+          "action": "FAIL"
+        }
+      ]
+    },
+    {
       "id": "mustard_allergy",
       "category": "allergy",
       "region_scope": [

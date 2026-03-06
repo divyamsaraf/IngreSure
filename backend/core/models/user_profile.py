@@ -105,17 +105,23 @@ class UserProfile:
                 dietary = combined[0] if isinstance(combined[0], str) else "No rules"
             else:
                 dietary = "No rules"
-        if isinstance(dietary, str):
+        if not isinstance(dietary, str):
+            dietary = "No rules"
+        else:
             dietary = dietary.strip() or "No rules"
         allergens = data.get("allergens")
         if allergens is None:
             allergens = data.get("allergies") or []
+        if not isinstance(allergens, (list, tuple)):
+            allergens = [allergens] if allergens else []
         lifestyle = data.get("lifestyle")
         if lifestyle is None:
             lifestyle = data.get("lifestyle_flags") or []
+        if not isinstance(lifestyle, (list, tuple)):
+            lifestyle = [lifestyle] if lifestyle else []
         return cls(
             user_id=user_id,
             dietary_preference=dietary,
-            allergens=allergens or [],
-            lifestyle=lifestyle or [],
+            allergens=list(allergens),
+            lifestyle=list(lifestyle),
         )

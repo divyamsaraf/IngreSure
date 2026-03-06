@@ -7133,6 +7133,33 @@
       "alcohol_content": null,
       "uncertainty_flags": [],
       "regions": []
+    },
+    {
+      "id": "raisin",
+      "canonical_name": "raisin",
+      "aliases": ["raisins"],
+      "derived_from": [],
+      "contains": [],
+      "may_contain": [],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "fungal": false,
+      "insect_derived": false,
+      "animal_species": null,
+      "egg_source": false,
+      "dairy_source": false,
+      "gluten_source": false,
+      "nut_source": null,
+      "soy_source": false,
+      "sesame_source": false,
+      "alcohol_content": null,
+      "root_vegetable": false,
+      "onion_source": false,
+      "garlic_source": false,
+      "fermented": false,
+      "uncertainty_flags": [],
+      "regions": []
     }
   ]
 }

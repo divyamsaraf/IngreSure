@@ -38,11 +38,15 @@ def _save_all(data: dict) -> None:
 
 def get_profile(user_id: str) -> Optional[UserProfile]:
     """Load profile by user_id. Returns None if not found."""
-    data = _load_all()
-    raw = data.get(user_id)
-    if raw is None:
+    try:
+        data = _load_all()
+        raw = data.get(user_id)
+        if raw is None:
+            return None
+        return UserProfile.from_dict({"user_id": user_id, **raw})
+    except Exception as e:
+        logger.warning("Failed to load profile for user_id=%s: %s", user_id, e)
         return None
-    return UserProfile.from_dict({"user_id": user_id, **raw})
 
 
 def save_profile(profile: UserProfile) -> None:

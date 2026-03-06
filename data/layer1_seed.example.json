@@ -1,0 +1,16 @@
+[
+  {
+    "canonical_name": "chickpea",
+    "aliases": ["chana", "garbanzo", "ceci", "chick pea"],
+    "source": "usda_fdc",
+    "plant_origin": true,
+    "animal_origin": false
+  },
+  {
+    "canonical_name": "sunflower oil",
+    "aliases": ["sunflower oil", "sunflower seed oil"],
+    "source": "open_food_facts",
+    "plant_origin": true,
+    "animal_origin": false
+  }
+]

@@ -10,13 +10,13 @@ export async function GET(req: NextRequest) {
   try {
     const res = await fetch(`${BACKEND_URL}/profile/${encodeURIComponent(user_id)}`)
     if (!res.ok) {
-      if (res.status === 404) {
+      if (res.status === 404 || res.status >= 500) {
         return NextResponse.json({
           user_id,
           dietary_preference: 'No rules',
           allergens: [],
           lifestyle: [],
-          religious_preferences: [], // backward compat
+          religious_preferences: [],
         })
       }
       return NextResponse.json({ error: 'Backend error' }, { status: res.status })
@@ -24,8 +24,14 @@ export async function GET(req: NextRequest) {
     const data = await res.json()
     return NextResponse.json(data)
   } catch (e) {
-    console.error('Profile GET error:', e)
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
+    console.error('Profile GET error (backend unreachable?):', e)
+    return NextResponse.json({
+      user_id,
+      dietary_preference: 'No rules',
+      allergens: [],
+      lifestyle: [],
+      religious_preferences: [],
+    })
   }
 }
 
@@ -49,12 +55,17 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify(payload),
     })
     if (!res.ok) {
-      return NextResponse.json({ error: 'Backend error' }, { status: res.status })
+      const text = await res.text()
+      console.error('Profile POST backend error:', res.status, text)
+      return NextResponse.json({ error: 'Backend error', detail: text || res.statusText }, { status: res.status })
     }
     const data = await res.json()
     return NextResponse.json(data)
   } catch (e) {
     console.error('Profile POST error:', e)
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
+    return NextResponse.json({
+      error: 'Profile save failed',
+      detail: e instanceof Error ? e.message : 'Unknown error',
+    }, { status: 500 })
   }
 }

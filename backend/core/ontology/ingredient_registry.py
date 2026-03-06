@@ -189,17 +189,21 @@ class IngredientRegistry:
         if result.confidence == "high":
             append_to_dynamic_ontology(result.ingredient, result.source, result.confidence)
             self.add_ingredient(result.ingredient)
+            self._by_key[key] = result.ingredient  # so "bajra" resolves next time without re-querying
             logger.info(
                 "ONTOLOGY_ENRICHMENT added raw=%s normalized_key=%s canonical_name=%s id=%s source=%s",
                 ingredient_str[:50], key, canonical[:60], result.ingredient.id, result.source,
             )
             return result.ingredient, "api", "high"
         if result.confidence == "medium":
+            # Auto-expand knowledge base: persist medium-confidence API results so we don't need to re-query
+            append_to_dynamic_ontology(result.ingredient, result.source, result.confidence)
+            self.add_ingredient(result.ingredient)
+            self._by_key[key] = result.ingredient  # so regional name resolves next time
             logger.info(
-                "EXTERNAL_LOOKUP human_in_the_loop raw=%s canonical_name=%s source=%s (not auto-added)",
-                ingredient_str[:50], canonical[:60], result.source,
+                "ONTOLOGY_ENRICHMENT added (medium) raw=%s normalized_key=%s canonical_name=%s source=%s",
+                ingredient_str[:50], key, canonical[:60], result.source,
             )
-            # Still use the ingredient for this request but don't auto-add
             return result.ingredient, "api", "medium"
         return None, "api", "low"
 

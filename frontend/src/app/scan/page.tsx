@@ -175,7 +175,7 @@ export default function ScannerPage() {
 
                     <Grid container spacing={2} mb={4}>
                         {Object.entries(result.dietary_scorecard).map(([diet, info]) => (
-                            <Grid item xs={12} sm={6} md={4} key={diet}>
+                            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={diet}>
                                 <Card variant="outlined" sx={{
                                     borderColor: `${getStatusColor(info.status)}.main`,
                                     borderWidth: 2

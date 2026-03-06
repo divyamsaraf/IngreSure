@@ -1,0 +1,24 @@
+# Dependencies (reinstalled in builder)
+node_modules
+npm-debug.log*
+.npm
+
+# Env (use env_file at runtime)
+.env
+.env.*
+!.env.example
+
+# Build output (rebuilt in Docker)
+.next
+out
+
+# Git and IDE
+.git
+.gitignore
+.cursor
+*.md
+!README.md
+
+# Misc
+Dockerfile
+.dockerignore

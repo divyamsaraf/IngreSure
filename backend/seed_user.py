@@ -12,7 +12,11 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL") or os.environ.get("NEXT_PUBLIC_SUPABASE_URL")
-SUPABASE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY") or os.environ.get("NEXT_PUBLIC_SUPABASE_ANON_KEY")
+SUPABASE_KEY = (
+    os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
+    or os.environ.get("SUPABASE_KEY")
+    or os.environ.get("NEXT_PUBLIC_SUPABASE_ANON_KEY")
+)
 
 def seed_user():
     if not SUPABASE_URL or not SUPABASE_KEY:
@@ -30,9 +34,11 @@ def seed_user():
         # Note: With Service Role Key, we can use admin methods.
         # supabase-py v2: supabase.auth.admin.create_user(params)
         
+        # Use env for demo password so no hardcoded secret in repo; default only for local dev
+        demo_password = os.environ.get("DEMO_USER_PASSWORD", "password123")
         user_attributes = {
             "email": email,
-            "password": "password123",
+            "password": demo_password,
             "email_confirm": True,
             "user_metadata": {"name": "Demo Restaurant"}
         }

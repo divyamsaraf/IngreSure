@@ -67,6 +67,17 @@ _ALLERGEN_REMOVE_PATTERNS = [
     re.compile(r"\b(?:i'm\s+not|i\s+am\s+not|i'm\s+no\s+longer)\s+allergic\s+to\s+(.+?)[\?\.\!]?\s*$", re.IGNORECASE),
 ]
 
+# Clear-all-allergens / no-allergies patterns (set allergens to empty list)
+_ALLERGENS_CLEAR_PATTERNS = [
+    re.compile(r"^\s*allergens?\s*(?:none|clear|nothing)?\s*$", re.IGNORECASE),
+    re.compile(r"^\s*allergies?\s*(?:none|clear|nothing)?\s*$", re.IGNORECASE),
+    re.compile(r"^\s*allergens?\s*[:\-]\s*none\s*$", re.IGNORECASE),
+    re.compile(r"^\s*no\s+allerg(?:ens?|ies?)\s*$", re.IGNORECASE),
+    re.compile(r"^\s*(?:i\s+have\s+)?no\s+allergies\s*$", re.IGNORECASE),
+    re.compile(r"^\s*clear\s+(?:my\s+|all\s+)?allerg(?:ens?|ies?)\s*$", re.IGNORECASE),
+    re.compile(r"^\s*remove\s+(?:all\s+)?(?:my\s+)?allerg(?:ens?|ies?)\s*$", re.IGNORECASE),
+]
+
 # Lifestyle-update patterns
 _LIFESTYLE_PATTERNS = [
     re.compile(r"\b(?:i\s+don't|i\s+do\s+not|i\s+can't|no)\s+(?:eat|drink|consume|have)\s+(alcohol|onion|garlic|onions|garlics?)\b", re.IGNORECASE),
@@ -480,9 +491,15 @@ def detect_intent(query: str) -> ParsedIntent:
         profile_updates["dietary_preference"] = trailing_diet
         remaining = base_text  # Use only the ingredient portion
 
-    allergens, remaining = _extract_allergens(remaining)
-    if allergens:
-        profile_updates["allergens"] = allergens
+    # Check for "allergens none" / "no allergies" / "clear allergens" → set allergens to []
+    q_stripped = remaining.strip()
+    if any(p.match(q_stripped) for p in _ALLERGENS_CLEAR_PATTERNS):
+        profile_updates["allergens"] = []
+        remaining = ""
+    else:
+        allergens, remaining = _extract_allergens(remaining)
+        if allergens:
+            profile_updates["allergens"] = allergens
 
     allergen_removals, remaining = _extract_allergen_removals(remaining)
     if allergen_removals:

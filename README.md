@@ -141,8 +141,11 @@ OPEN_FOOD_FACTS_ENABLED=true
 ### Frontend (`frontend/.env.local`)
 
 ```bash
-# Backend URL (defaults to http://127.0.0.1:8000 if not set)
+# Backend URL for server-side API routes (chat, profile proxy). Default: http://127.0.0.1:8000
 BACKEND_URL=http://127.0.0.1:8000
+
+# Backend URL for client-side requests (scan upload). Must be reachable from the browser (e.g. http://localhost:8000).
+NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
 
 # Supabase (optional)
 # NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
@@ -150,6 +153,16 @@ BACKEND_URL=http://127.0.0.1:8000
 ```
 
 ## Running with Docker
+
+**Before first run:** Create env files so Compose can start. From repo root:
+
+```bash
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env.local
+# Edit backend/.env and frontend/.env.local if needed (see Environment Variables).
+```
+
+Then:
 
 ```bash
 # Build and start all services
@@ -160,11 +173,34 @@ docker compose up --build -d
 ```
 
 This starts:
-- **Backend** on port 8000
-- **Frontend** on port 3000
-- Both connect to host Ollama via `host.docker.internal:11434`
+- **Backend** on port 8000 — healthcheck `GET /health` (5 min start period for OCR/embedding models); auto-restart if it exits
+- **Redis** on 6379 — healthcheck `redis-cli ping`; used by Celery
+- **Celery worker** — starts after backend and Redis are healthy
+- **Frontend** on port 3000 — starts after backend is healthy; has its own healthcheck
 
-> Note: Ollama must be running on the host machine. Supabase is run separately via `supabase start`.
+**Docker health:** Backend is marked healthy only after it responds to `/health` (allow up to ~5 min on first start). If the backend stays unhealthy, run `docker compose logs backend` to see startup errors; increase Docker Desktop memory if you see OOM.
+
+Ollama must be running on the host; backend uses `host.docker.internal:11434`. For browser-based scan, set `NEXT_PUBLIC_BACKEND_URL=http://localhost:8000` in `frontend/.env.local`. Supabase is run separately via `supabase start`.
+
+**Single project name:** The Compose file sets `name: ingresure`, so all containers belong to one project regardless of the repo folder name (IngreSure vs ingresure). You should see only one project when you run `docker compose ps` or `docker ps` (project prefix `ingresure`).
+
+**Verify all four services:**
+
+| Service   | Container name        | Port  | Role                          |
+|-----------|------------------------|-------|-------------------------------|
+| backend   | ingresure-backend      | 8000  | API, OCR, compliance, chat    |
+| redis     | ingresure-redis        | 6379  | Celery broker                 |
+| worker    | ingresure-worker       | —     | Background enrichment         |
+| frontend  | ingresure-frontend     | 3000  | Next.js UI                    |
+
+```bash
+docker compose ps          # list services (project: ingresure)
+docker ps -a --filter "name=ingresure"   # same by container name
+```
+
+**What you see in Docker Desktop:**  
+- **IngreSure app** (our stack): 4 containers — `ingresure-backend`, `ingresure-frontend`, `ingresure-redis`, `ingresure-worker`. Project name: **ingresure**.  
+- **Supabase local** (from `supabase start`): many containers named `supabase_<service>_IngreSure` (e.g. `supabase_studio_IngreSure`, `supabase_kong_IngreSure`, `supabase_auth_IngreSure`). Supabase CLI uses your project/folder name “IngreSure” as the suffix. Both groups are expected when you run the app and Supabase; you can stop Supabase with `supabase stop` if you don’t need RAG/restaurant features.
 
 ## Running Tests
 

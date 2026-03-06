@@ -58,33 +58,67 @@ def test_open_food_facts_mock_success(mock_get):
 
 
 def test_fetcher_cache():
-    """Enrichment fetcher uses cache (second call returns cached without request)."""
+    """Enrichment fetcher caches only successful results; second call uses cache (no extra API call)."""
     from core.external_apis.fetcher import fetch_ingredient_from_apis, clear_enrichment_cache
+    from core.ontology.ingredient_schema import Ingredient
+    from core.external_apis.base import EnrichmentResult
     clear_enrichment_cache()
+    success_ing = Ingredient(
+        id="off_test_1", canonical_name="cached flour", aliases=[], derived_from=[], contains=[], may_contain=[],
+        animal_origin=False, plant_origin=True, synthetic=False, fungal=False, insect_derived=False,
+        animal_species=None, egg_source=False, dairy_source=False, gluten_source=False, nut_source=None,
+        soy_source=False, sesame_source=False, alcohol_content=None, root_vegetable=False, onion_source=False,
+        garlic_source=False, fermented=False, uncertainty_flags=[], regions=[],
+    )
     with patch("core.external_apis.fetcher.get_usda_fdc_api_key", return_value=""):
         with patch("core.external_apis.fetcher.fetch_open_food_facts") as mock_off:
-            mock_off.return_value = __import__("core.external_apis.base", fromlist=["EnrichmentResult"]).EnrichmentResult(
-                None, "low", "open_food_facts", "no_results"
-            )
+            mock_off.return_value = EnrichmentResult(success_ing, "high", "open_food_facts", "ok")
             fetch_ingredient_from_apis("cached_query_xyz", use_cache=True)
             fetch_ingredient_from_apis("cached_query_xyz", use_cache=True)
             assert mock_off.call_count == 1
 
 
+def test_fetcher_no_cache_for_no_result():
+    """No-result is not cached so unknowns always trigger API search on each request."""
+    from core.external_apis.fetcher import fetch_ingredient_from_apis, clear_enrichment_cache
+    from core.external_apis.base import EnrichmentResult
+    clear_enrichment_cache()
+    no_res = EnrichmentResult(None, "low", "open_food_facts", "no_results")
+    with patch("core.external_apis.fetcher.get_usda_fdc_api_key", return_value=""):
+        with patch("core.external_apis.fetcher.fetch_open_food_facts") as mock_off:
+            mock_off.return_value = no_res
+            with patch("core.external_apis.fetcher.fetch_pubchem", return_value=no_res):
+                with patch("core.external_apis.fetcher.fetch_chebi", return_value=no_res):
+                    with patch("core.external_apis.fetcher.fetch_wikidata", return_value=no_res):
+                        fetch_ingredient_from_apis("unknown_xyz_none", use_cache=True)
+                        fetch_ingredient_from_apis("unknown_xyz_none", use_cache=True)
+            assert mock_off.call_count == 2
+
+
 def test_api_health_check_script():
-    """Script check_external_apis: at least one API ok -> exit 0; both fail -> exit 1."""
+    """Script check_external_apis: at least one API ok -> exit 0; all 5 fail -> exit 1."""
     from scripts.check_external_apis import main
-    with patch("scripts.check_external_apis.check_usda", return_value=(True, "ok")):
-        with patch("scripts.check_external_apis.check_open_food_facts", return_value=(False, "no result")):
-            assert main() == 0
-    with patch("scripts.check_external_apis.check_usda", return_value=(False, "no key")):
-        with patch("scripts.check_external_apis.check_open_food_facts", return_value=(True, "ok")):
-            assert main() == 0
-    # Both fail: need OFF to be tried so we patch config and both check results
-    with patch("core.config.OPEN_FOOD_FACTS_ENABLED", True):
-        with patch("scripts.check_external_apis.check_usda", return_value=(False, "timeout")):
-            with patch("scripts.check_external_apis.check_open_food_facts", return_value=(False, "no result")):
-                assert main() == 1
+    fail = (False, "no result")
+    ok = (True, "ok")
+    with patch("scripts.check_external_apis.check_usda", return_value=ok):
+        with patch("scripts.check_external_apis.check_open_food_facts", return_value=fail):
+            with patch("scripts.check_external_apis.check_pubchem", return_value=fail):
+                with patch("scripts.check_external_apis.check_chebi", return_value=fail):
+                    with patch("scripts.check_external_apis.check_wikidata", return_value=fail):
+                        assert main() == 0
+    with patch("scripts.check_external_apis.check_usda", return_value=fail):
+        with patch("scripts.check_external_apis.check_open_food_facts", return_value=ok):
+            with patch("scripts.check_external_apis.check_pubchem", return_value=fail):
+                with patch("scripts.check_external_apis.check_chebi", return_value=fail):
+                    with patch("scripts.check_external_apis.check_wikidata", return_value=fail):
+                        assert main() == 0
+    # All 5 fail -> exit 1
+    with patch("scripts.check_external_apis.check_usda", return_value=(False, "timeout")):
+        with patch("scripts.check_external_apis.check_open_food_facts", return_value=fail):
+            with patch("scripts.check_external_apis.check_pubchem", return_value=fail):
+                with patch("scripts.check_external_apis.check_chebi", return_value=fail):
+                    with patch("scripts.check_external_apis.check_wikidata", return_value=fail):
+                        assert main() == 1
 
 
 def test_http_retry_on_timeout():

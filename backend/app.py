@@ -88,6 +88,14 @@ normalizer = IngredientNormalizer()
 rag_service = RAGService()
 onboarding_service = OnboardingService(rag_service)
 
+# Public API (v1) - additive only
+try:
+    from core.api.v1 import v1_router
+    app.include_router(v1_router)
+except Exception as _exc:
+    # Never break the main app if optional API modules fail to import.
+    logger.warning("API v1 router failed to load (non-fatal): %s", _exc)
+
 
 # --- Startup ---
 @app.on_event("startup")
@@ -176,10 +184,14 @@ def _apply_profile_updates(profile: UserProfile, updates: dict) -> dict:
         profile.update_merge(dietary_preference=updates["dietary_preference"])
         updated_fields["dietary_preference"] = updates["dietary_preference"]
     if "allergens" in updates:
-        existing = list(profile.allergens or [])
-        for a in updates["allergens"]:
-            if a.lower() not in [e.lower() for e in existing]:
-                existing.append(a)
+        new_allergens = updates["allergens"]
+        if new_allergens is not None and len(new_allergens) == 0:
+            existing = []
+        else:
+            existing = list(profile.allergens or [])
+            for a in (new_allergens or []):
+                if a and a.lower() not in [e.lower() for e in existing]:
+                    existing.append(a)
         profile.update_merge(allergens=existing)
         updated_fields["allergens"] = updates["allergens"]
     if "remove_allergens" in updates:
@@ -201,7 +213,13 @@ def _apply_profile_updates(profile: UserProfile, updates: dict) -> dict:
 # --- Endpoints ---
 
 @app.get("/")
+def root():
+    return {"status": "ok", "service": "IngreSure AI Scanner"}
+
+
+@app.get("/health")
 def health_check():
+    """Dedicated health endpoint for Docker/K8s healthchecks."""
     return {"status": "ok", "service": "IngreSure AI Scanner"}
 
 
@@ -260,6 +278,16 @@ async def verify_item(request: VerificationRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+def _default_profile_response(user_id: str):
+    return {
+        "user_id": user_id,
+        "dietary_preference": "No rules",
+        "allergens": [],
+        "lifestyle": [],
+        "religious_preferences": [],
+    }
+
+
 @app.get("/profile/{user_id}")
 async def get_profile(user_id: str):
     """Get persisted profile by user_id."""
@@ -267,17 +295,11 @@ async def get_profile(user_id: str):
         from core.profile_storage import get_profile as get_stored
         profile = get_stored(user_id)
         if profile is None:
-            return {
-                "user_id": user_id,
-                "dietary_preference": "No rules",
-                "allergens": [],
-                "lifestyle": [],
-                "religious_preferences": [],
-            }
+            return _default_profile_response(user_id)
         return profile.to_dict()
     except Exception as e:
         logger.error("Get profile failed: %s", e)
-        raise HTTPException(status_code=500, detail=str(e))
+        return _default_profile_response(user_id)
 
 
 @app.post("/profile")
@@ -312,7 +334,8 @@ async def chat_grocery(request: ChatRequest):
       4. Compliance Engine  - deterministic evaluation against ontology + restrictions
       5. Response Composer  - template-based responses, LLM for greetings/general only
     """
-    logger.info("Grocery Chat query=%s user_id=%s", request.query, request.user_id)
+    query = request.query if request.query is not None else ""
+    logger.info("Grocery Chat query=%s user_id=%s", query, request.user_id)
     try:
         async def generate_safety():
             # Auto-assign user_id if not provided (eliminates legacy fallback path)
@@ -320,7 +343,7 @@ async def chat_grocery(request: ChatRequest):
             profile = get_or_create_profile(user_id)
 
             # 1) /update slash-command
-            field_name, values = _parse_update_command(request.query)
+            field_name, values = _parse_update_command(query)
             if field_name and values is not None:
                 if field_name == "dietary_preference":
                     profile.update_merge(dietary_preference=values[0] if values else "No rules")
@@ -335,7 +358,7 @@ async def chat_grocery(request: ChatRequest):
                 return
 
             # 2) Intent detection: rule-based first, LLM fallback
-            parsed = detect_intent(request.query)
+            parsed = detect_intent(query)
             logger.info(
                 "INTENT_DETECT_RULES intent=%s profile_updates=%s ingredients=%s",
                 parsed.intent, parsed.profile_updates, parsed.ingredients,
@@ -343,7 +366,7 @@ async def chat_grocery(request: ChatRequest):
 
             # LLM fallback for ambiguous queries
             if parsed.intent == "GENERAL_QUESTION" and not parsed.has_ingredients and not parsed.has_profile_update:
-                llm_data = llm_extract_intent(request.query)
+                llm_data = llm_extract_intent(query)
                 if llm_data:
                     logger.info("INTENT_DETECT_LLM_FALLBACK intent=%s", llm_data["intent"])
                     llm_profile_updates = {}
@@ -354,7 +377,7 @@ async def chat_grocery(request: ChatRequest):
                         intent=llm_data["intent"],
                         profile_updates=llm_profile_updates,
                         ingredients=llm_data["ingredients"],
-                        original_query=request.query,
+                        original_query=query,
                     )
 
             # 3) Handle GREETING
@@ -387,7 +410,7 @@ async def chat_grocery(request: ChatRequest):
             if parsed.intent == "GENERAL_QUESTION" and not parsed.has_ingredients:
                 if profile.is_empty():
                     yield "<<<PROFILE_REQUIRED>>>\n\n"
-                msg = llm_compose_general(request.query, profile)
+                msg = llm_compose_general(query, profile)
                 yield msg or template_general()
                 yield _profile_json(profile)
                 return
@@ -397,13 +420,13 @@ async def chat_grocery(request: ChatRequest):
 
             if profile.is_empty() and not ingredients:
                 yield "<<<PROFILE_REQUIRED>>>\n\n"
-                msg = llm_compose_general(request.query, profile)
+                msg = llm_compose_general(query, profile)
                 yield msg or "Please set up your dietary profile first so I can give you personalized advice."
                 yield _profile_json(profile)
                 return
 
             if not ingredients:
-                msg = llm_compose_general(request.query, profile)
+                msg = llm_compose_general(query, profile)
                 yield msg or template_no_ingredients()
                 yield _profile_json(profile)
                 return

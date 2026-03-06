@@ -3,7 +3,7 @@ Deterministic compliance engine. Single pipeline for scan and chat.
 Resolve: 1) static ontology 2) dynamic ontology 3) external API if enabled.
 Unknown ingredient -> UNCERTAIN; trace/minor ingredients optionally informational only.
 """
-from typing import List, Optional, Set
+from typing import Dict, List, Optional, Set
 import logging
 
 from core.ontology.ingredient_registry import IngredientRegistry
@@ -11,6 +11,7 @@ from core.ontology.ingredient_schema import Ingredient
 from core.restrictions.restriction_registry import RestrictionRegistry
 from core.models.verdict import ComplianceVerdict, VerdictStatus
 from core.evaluation.confidence import compute_confidence
+from core.knowledge.canonicalizer import CanonicalResolver
 
 logger = logging.getLogger(__name__)
 
@@ -27,6 +28,7 @@ class ComplianceEngine:
         restriction_registry: Optional[RestrictionRegistry] = None,
     ):
         self._ingredients = ingredient_registry or IngredientRegistry()
+        self._resolver = CanonicalResolver(self._ingredients)
         self._restrictions = restriction_registry or RestrictionRegistry()
 
     def evaluate(
@@ -57,6 +59,7 @@ class ComplianceEngine:
 
         trace_set = trace_ingredient_keys or set()
         resolved: List[Ingredient] = []
+        resolved_raw: List[str] = []  # parallel to resolved: user input that resolved to each
         resolved_is_trace: List[bool] = []  # parallel to resolved: True if ingredient was <2% minor
         uncertain_raw: List[str] = []
         informational_raw: List[str] = []  # minor <2%; display "informational only" when confidence < 1.0
@@ -69,15 +72,20 @@ class ComplianceEngine:
             is_trace = key in trace_set
 
             if hasattr(self._ingredients, "resolve_with_fallback") and use_api_fallback:
-                ing, source, level = self._ingredients.resolve_with_fallback(
+                res = self._resolver.resolve_with_fallback(
                     raw,
                     try_api=True,
                     log_unknown=not is_trace,
                     restriction_ids=restriction_ids,
                     profile_context=profile_context,
                 )
+                ing = res.ingredient
+                source = res.source_layer
+                level = res.confidence_band or "low"
+
                 if ing is not None:
                     resolved.append(ing)
+                    resolved_raw.append(raw)
                     resolved_is_trace.append(is_trace)
                     resolution_levels.append(level)
                     if is_trace:
@@ -124,6 +132,7 @@ class ComplianceEngine:
                         )
                 else:
                     resolved.append(ing)
+                    resolved_raw.append(raw)
                     resolved_is_trace.append(is_trace)
                     resolution_levels.append("high")
                     if is_trace:
@@ -153,6 +162,7 @@ class ComplianceEngine:
 
         triggered_restrictions: List[str] = []
         triggered_ingredients: List[str] = []
+        triggered_ingredient_to_input: Dict[str, str] = {}  # canonical -> raw user input for display
         triggered_restrictions_from_minor: set = set()
         triggered_ingredients_from_minor: set = set()
         warning_count = 0
@@ -166,6 +176,8 @@ class ComplianceEngine:
                 if result == "FAIL":
                     triggered_restrictions.append(restriction_id)
                     triggered_ingredients.append(ing.canonical_name)
+                    if ing.canonical_name not in triggered_ingredient_to_input and idx < len(resolved_raw):
+                        triggered_ingredient_to_input[ing.canonical_name] = resolved_raw[idx]
                     if idx < len(resolved_is_trace) and resolved_is_trace[idx]:
                         triggered_restrictions_from_minor.add(restriction_id)
                         triggered_ingredients_from_minor.add(ing.canonical_name)
@@ -204,6 +216,7 @@ class ComplianceEngine:
             status=status,
             triggered_restrictions=triggered_restrictions,
             triggered_ingredients=triggered_ingredients,
+            triggered_ingredient_to_input=triggered_ingredient_to_input or None,
             uncertain_ingredients=uncertain_raw,
             informational_ingredients=informational_raw,
             confidence_score=round(confidence, 4),

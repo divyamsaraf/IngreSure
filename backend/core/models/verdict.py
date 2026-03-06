@@ -17,6 +17,7 @@ class ComplianceVerdict:
     status: VerdictStatus
     triggered_restrictions: list[str] = field(default_factory=list)
     triggered_ingredients: list[str] = field(default_factory=list)
+    triggered_ingredient_to_input: dict[str, str] | None = None  # canonical -> raw user input (for display)
     uncertain_ingredients: list[str] = field(default_factory=list)
     informational_ingredients: list[str] = field(default_factory=list)  # minor <2%, do not reduce confidence
     confidence_score: float = 0.0
@@ -27,6 +28,7 @@ class ComplianceVerdict:
             "status": self.status.value,
             "triggered_restrictions": list(self.triggered_restrictions),
             "triggered_ingredients": list(self.triggered_ingredients),
+            "triggered_ingredient_to_input": dict(self.triggered_ingredient_to_input or {}),
             "uncertain_ingredients": list(self.uncertain_ingredients),
             "informational_ingredients": list(self.informational_ingredients),
             "confidence_score": self.confidence_score,

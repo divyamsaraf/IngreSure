@@ -1,29 +1,74 @@
+# IngreSure Docker stack: single project name "ingresure" (avoids duplicate IngreSure/ingresure projects)
+name: ingresure
+
 services:
-  # Python Backend Service
+  # 1/4 Python Backend (FastAPI, OCR, compliance, chat)
   backend:
-    build: 
+    build:
       context: ./backend
       dockerfile: Dockerfile
     container_name: ingresure-backend
     ports:
       - "8000:8000"
+    env_file:
+      - ./backend/.env
     environment:
-      - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
-      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
-      - SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
-      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
       - OLLAMA_API_URL=http://host.docker.internal:11434/api/generate
-      - USE_NEW_ENGINE=true
+      - USE_NEW_ENGINE=${USE_NEW_ENGINE:-true}
       - SHADOW_MODE=${SHADOW_MODE:-false}
-      - USDA_FDC_API_KEY=${USDA_FDC_API_KEY:-}
-      - OPEN_FOOD_FACTS_ENABLED=${OPEN_FOOD_FACTS_ENABLED:-true}
+      - RUNNING_IN_DOCKER=1
     volumes:
       - ./backend:/app
       - ./data:/app/../data
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; r=urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=10); c=r.getcode(); r.read(); r.close(); exit(0 if c==200 else 1)"]
+      interval: 20s
+      timeout: 15s
+      retries: 6
+      start_period: 300s
 
-  # Next.js Frontend Service
+  # 2/4 Redis (broker for Celery)
+  redis:
+    image: redis:7-alpine
+    container_name: ingresure-redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  # 3/4 Celery worker (background ingredient enrichment)
+  worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ingresure-worker
+    depends_on:
+      backend:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - ./backend/.env
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - RUNNING_IN_DOCKER=1
+    command: ["celery", "-A", "worker.celery_app:celery_app", "worker", "--loglevel=info"]
+    volumes:
+      - ./backend:/app
+      - ./data:/app/../data
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+  # 4/4 Next.js Frontend (UI, proxy to backend)
   frontend:
     build:
       context: ./frontend
@@ -31,14 +76,22 @@ services:
     container_name: ingresure-frontend
     ports:
       - "3000:3000"
+    env_file:
+      - ./frontend/.env.local
     environment:
-      - NEXT_PUBLIC_SUPABASE_URL=${NEXT_PUBLIC_SUPABASE_URL}
-      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
       - BACKEND_URL=http://backend:8000
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://127.0.0.1:3000/', r=>{r.resume();process.exit(r.statusCode===200?0:1)}).on('error',()=>process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
 
 # Note: Supabase is run separately via 'supabase start' to avoid complex docker-in-docker setups 
 # or duplicating the supabase stack locally. We connect to it via host.docker.internal or public URL.
