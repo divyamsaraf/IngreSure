@@ -1,79 +1,15 @@
-import Link from 'next/link'
-import { ArrowRight, CheckCircle, ShieldCheck, Search } from 'lucide-react'
+import HeroSection from '@/components/home/HeroSection'
+import FeaturesSection from '@/components/home/FeaturesSection'
+import ChatDemoSection from '@/components/home/ChatDemoSection'
+import HomepageFooter from '@/components/home/HomepageFooter'
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-white">
-      {/* Hero Section */}
-      <header className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-20 px-6">
-        <div className="container mx-auto max-w-5xl text-center">
-          <h1 className="text-5xl font-bold mb-6 leading-tight">
-            Eat with Confidence.<br />Know What&apos;s Inside.
-          </h1>
-          <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
-            IngreSure uses AI to verify menu ingredients, detect allergens, and ensure your food matches your dietary needs.
-          </p>
-          <div className="flex gap-4 justify-center flex-wrap">
-            <Link href="/chat" className="bg-white text-blue-600 px-6 py-3 rounded-full font-bold hover:bg-gray-100 transition-colors flex items-center gap-2">
-              Start Grocery Audit <ArrowRight className="w-5 h-5" />
-            </Link>
-          </div>
-        </div>
-      </header>
-
-      {/* Features Section */}
-      <section className="py-20 px-6">
-        <div className="container mx-auto max-w-6xl">
-          <h2 className="text-3xl font-bold text-center mb-16 text-gray-800">Why Choose IngreSure?</h2>
-
-          <div className="grid md:grid-cols-3 gap-12">
-            <div className="text-center p-6 rounded-xl bg-blue-50">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6 text-blue-600">
-                <ShieldCheck className="w-8 h-8" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">AI Verification</h3>
-              <p className="text-gray-600">
-                Our Llama 3.2 powered engine cross-references ingredients against strict global dietary rules.
-              </p>
-            </div>
-
-            <div className="text-center p-6 rounded-xl bg-green-50">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 text-green-600">
-                <CheckCircle className="w-8 h-8" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">Safety First</h3>
-              <p className="text-gray-600">
-                Deterministic &ldquo;Gold Standard&rdquo; rule engine ensures verdicts are based on facts, not hallucinations.
-              </p>
-            </div>
-
-            <div className="text-center p-6 rounded-xl bg-purple-50">
-              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6 text-purple-600">
-                <Search className="w-8 h-8" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">Smart Search</h3>
-              <p className="text-gray-600">
-                Instantly audit complex ingredient lists for hidden animal derivatives or allergens.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="bg-gray-900 text-white py-20 px-6 text-center">
-        <div className="container mx-auto">
-          <h2 className="text-3xl font-bold mb-6">Unsure about an ingredient?</h2>
-          <Link href="/chat" className="bg-blue-600 text-white px-8 py-3 rounded-full font-bold hover:bg-blue-700 transition-colors inline-block">
-            Check Food Safety Now
-          </Link>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-gray-100 py-8 text-center text-gray-500 text-sm">
-        <p>&copy; {new Date().getFullYear()} IngreSure. All rights reserved.</p>
-      </footer>
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-900">
+      <HeroSection />
+      <FeaturesSection />
+      <ChatDemoSection />
+      <HomepageFooter />
     </div>
   )
 }
