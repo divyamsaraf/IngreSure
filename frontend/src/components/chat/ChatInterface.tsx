@@ -5,6 +5,9 @@ import { Send, User, Bot, Loader2 } from 'lucide-react'
 import OnboardingModal from './OnboardingModal'
 import ProfileHeader from './ProfileHeader'
 import FormattedMessage from './FormattedMessage'
+import IngredientAuditCards, {
+  IngredientAuditData,
+} from './IngredientAuditCards'
 import { UserProfile, DEFAULT_PROFILE, backendToProfile, profileToBackend } from '@/types/userProfile'
 
 const USER_ID_KEY = 'ingresure_user_id'
@@ -34,6 +37,7 @@ function getOrCreateUserId(): string {
 interface Message {
     role: 'user' | 'assistant'
     content: string
+    audit?: IngredientAuditData
 }
 
 interface ChatInterfaceProps {
@@ -227,12 +231,36 @@ export default function ChatInterface({
                     }
                 }
 
+                // Check for ingredient audit block: <<<INGREDIENT_AUDIT>>>{...json...}<<<INGREDIENT_AUDIT>>>
+                const AUDIT_TAG = '<<<INGREDIENT_AUDIT>>>'
+                if (buffer.includes(AUDIT_TAG)) {
+                    const parts = buffer.split(AUDIT_TAG)
+                    if (parts.length >= 3) {
+                        const jsonStr = parts[1]
+                        try {
+                            const raw = JSON.parse(jsonStr) as IngredientAuditData
+                            setMessages(prev => {
+                                const next = [...prev]
+                                const last = next[next.length - 1]
+                                if (last && last.role === 'assistant') {
+                                    last.audit = raw
+                                }
+                                return next
+                            })
+                            buffer = (parts[0] + (parts[2] || '')).trim()
+                        } catch (e) {
+                            console.error('Failed to parse ingredient audit payload', e)
+                        }
+                    }
+                }
+
                 // Update UI with the CLEAN buffer (strip protocol tags)
                 setMessages(prev => {
                     const newMsgs = [...prev]
                     let content = buffer
                         .replace(/<<<PROFILE_UPDATE>>>[\s\S]*?<<<PROFILE_UPDATE>>>/g, '')
                         .replace(/<<<PROFILE_REQUIRED>>>[\s\S]*?(?=<<<PROFILE_UPDATE>>>|$)/g, '')
+                        .replace(/<<<INGREDIENT_AUDIT>>>[\s\S]*?<<<INGREDIENT_AUDIT>>>/g, '')
                         .trim()
                     newMsgs[newMsgs.length - 1].content = content || newMsgs[newMsgs.length - 1].content
                     return newMsgs
@@ -250,6 +278,21 @@ export default function ChatInterface({
             setLoading(false)
         }
     }
+
+    const hasProfileRules =
+        profile.is_onboarding_completed &&
+        (profile.dietary_preference && profile.dietary_preference !== 'No rules'
+            || (profile.allergies?.length ?? profile.allergens?.length ?? 0) > 0)
+
+    // Recent user queries for suggestion chips
+    const recentQueries: string[] = Array.from(
+        new Set(
+            [...messages]
+                .filter((m) => m.role === 'user')
+                .map((m) => m.content)
+                .reverse(),
+        ),
+    ).slice(0, 5)
 
     return (
         <div className="flex flex-col h-[85vh] max-h-[900px] border border-slate-100 rounded-2xl bg-white shadow-xl overflow-hidden backdrop-blur-sm relative">
@@ -340,7 +383,17 @@ export default function ChatInterface({
                             : 'bg-white border border-slate-100 text-slate-800 rounded-bl-none px-5 py-4 shadow-md'
                             }`}>
                             <div className="text-[0.9rem]">
-                                <FormattedMessage content={msg.content} isUser={msg.role === 'user'} />
+                                {msg.role === 'assistant' && msg.audit ? (
+                                    <IngredientAuditCards data={msg.audit} />
+                                ) : msg.role === 'assistant' && !msg.content.trim() ? (
+                                    <div className="flex items-center gap-1 text-slate-400">
+                                        <span className="h-1.5 w-1.5 rounded-full bg-slate-300 animate-bounce [animation-delay:-0.2s]" />
+                                        <span className="h-1.5 w-1.5 rounded-full bg-slate-300 animate-bounce [animation-delay:-0.1s]" />
+                                        <span className="h-1.5 w-1.5 rounded-full bg-slate-300 animate-bounce" />
+                                    </div>
+                                ) : (
+                                    <FormattedMessage content={msg.content} isUser={msg.role === 'user'} />
+                                )}
                             </div>
                         </div>
                         {msg.role === 'user' && (
@@ -353,6 +406,27 @@ export default function ChatInterface({
                 <div ref={messagesEndRef} />
             </div>
 
+            {/* Dynamic suggestion chips (recent queries) */}
+            {recentQueries.length > 0 && (
+                <div className="px-4 pb-1 pt-2 bg-white border-t border-slate-100">
+                    <div className="mb-1 text-[11px] font-medium text-slate-500">
+                        Recent checks
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                        {recentQueries.map((q) => (
+                            <button
+                                key={q}
+                                type="button"
+                                onClick={() => setInput(q)}
+                                className="text-[11px] bg-slate-50 border border-slate-200 px-3 py-1 rounded-full hover:border-emerald-300 hover:text-emerald-700 hover:bg-emerald-50/60 transition-colors"
+                            >
+                                {q.length > 60 ? q.slice(0, 57) + '…' : q}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            )}
+
             <form onSubmit={handleSubmit} className="p-4 bg-white border-t border-slate-100">
                 <div className="relative flex items-center">
                     <input
@@ -360,9 +434,9 @@ export default function ChatInterface({
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         placeholder={
-                            profile.is_onboarding_completed
-                                ? 'Type an ingredient or list…'
-                                : 'Enter your allergens, dietary preferences, or paste ingredients…'
+                            hasProfileRules
+                                ? 'Ask me about any ingredient in your diet…'
+                                : 'Type an ingredient or list to check safety…'
                         }
                         className="w-full px-6 py-4 pr-16 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all placeholder:text-slate-400 font-medium text-slate-700"
                         disabled={loading || !profileLoaded}
@@ -392,7 +466,7 @@ export default function ChatInterface({
                     }}
                     className="px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 border border-blue-100 rounded-lg hover:bg-blue-100 transition-colors"
                 >
-                    Re-check last ingredient
+                    Repeat last audit
                 </button>
                 <button
                     type="button"

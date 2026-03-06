@@ -20,8 +20,8 @@ export default function HeroSection() {
             <span className="md:ml-1">Know What&apos;s Inside.</span>
           </h1>
           <p className="max-w-xl text-base font-medium text-slate-600 md:text-lg">
-            Check any ingredient instantly, personalized to your diet and allergies. No login,
-            no forms — just paste, scan, and get a clear answer.
+            Get personalized ingredient audits for your diet and lifestyle. No login, no forms —
+            just paste your label or menu and get a clear, human explanation.
           </p>
 
           <div className="flex flex-wrap items-center gap-4">
