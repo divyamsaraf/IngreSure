@@ -7,6 +7,9 @@ docs/
 # Local env (flags, secrets)
 backend/.env
 backend/.commit_msg
+frontend/.env
+frontend/.env.local
+frontend/.env.*.local
 
 # User-specific / runtime data (do not commit secrets or env-specific learned data)
 data/profiles.json

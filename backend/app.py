@@ -35,7 +35,7 @@ try:
 except ImportError:
     pass
 
-# CORS
+# CORS (set CORS_ORIGINS env to restrict in production)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
