@@ -3,6 +3,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { ShieldCheck, ArrowRight } from 'lucide-react'
+import { Button } from '@/components/ui/Button'
 
 export default function Navbar() {
     return (
@@ -21,9 +22,10 @@ export default function Navbar() {
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <Link href="/chat" className="bg-blue-600 text-white px-5 py-2 rounded-full font-bold text-sm hover:bg-blue-700 transition-all flex items-center gap-2 shadow-lg shadow-blue-600/20">
-                        Start Audit <ArrowRight className="w-4 h-4" />
-                    </Link>
+                    <Button href="/chat" size="sm">
+                        Start Audit
+                        <ArrowRight className="w-4 h-4 ml-1" />
+                    </Button>
                 </div>
             </div>
         </nav>

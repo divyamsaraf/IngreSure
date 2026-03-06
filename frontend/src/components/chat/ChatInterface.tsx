@@ -34,6 +34,63 @@ function getOrCreateUserId(): string {
   return id
 }
 
+function normalizeAuditData(raw: any): IngredientAuditData {
+  // Normalize groups: accept either array or { safe: [], avoid: [], depends: [] }
+  const groupsArray: IngredientAuditGroup[] = []
+  const keys: IngredientStatus[] = ['safe', 'avoid', 'depends']
+
+  if (Array.isArray(raw.groups)) {
+    for (const g of raw.groups as any[]) {
+      if (!g || !keys.includes(g.status)) continue
+      groupsArray.push({
+        status: g.status,
+        items: (g.items || []).map((item: any) => ({
+          name: String(item.name ?? ''),
+          status: g.status,
+          diets: item.diets ?? item.diet ?? [],
+          allergens: item.allergens ?? [],
+          alternatives: item.alternatives ?? [],
+        })),
+      })
+    }
+  } else if (raw.groups && typeof raw.groups === 'object') {
+    for (const status of keys) {
+      const arr = raw.groups[status]
+      if (!Array.isArray(arr) || arr.length === 0) continue
+      groupsArray.push({
+        status,
+        items: arr.map((item: any) => ({
+          name: String(item.name ?? ''),
+          status,
+          diets: item.diets ?? item.diet ?? [],
+          allergens: item.allergens ?? [],
+          alternatives: item.alternatives ?? [],
+        })),
+      })
+    }
+  }
+
+  // Compute counts for summary string
+  const counts = groupsArray.reduce(
+    (acc, g) => {
+      acc[g.status] += g.items.length
+      return acc
+    },
+    { safe: 0, avoid: 0, depends: 0 } as Record<IngredientStatus, number>,
+  )
+
+  const summary =
+    raw.summary && typeof raw.summary === 'string'
+      ? raw.summary
+      : `${counts.safe} Safe, ${counts.avoid} Avoid, ${counts.depends} Depends`
+
+  return {
+    summary,
+    groups: groupsArray,
+    explanation: raw.explanation,
+  }
+}
+
 interface Message {
     role: 'user' | 'assistant'
     content: string
@@ -63,6 +120,7 @@ export default function ChatInterface({
     const [showOnboarding, setShowOnboarding] = useState(false)
     const [userId, setUserId] = useState<string>('')
     const [profileLoaded, setProfileLoaded] = useState(false)
+    const [latestAudit, setLatestAudit] = useState<IngredientAuditData | null>(null)
     const messagesEndRef = useRef<HTMLDivElement>(null)
 
     // Profile API base: /api (no double /api). apiEndpoint is e.g. /api/chat so base = /api, then /api/profile
@@ -238,15 +296,17 @@ export default function ChatInterface({
                     if (parts.length >= 3) {
                         const jsonStr = parts[1]
                         try {
-                            const raw = JSON.parse(jsonStr) as IngredientAuditData
+                            const raw = JSON.parse(jsonStr) as any
+                            const normalized = normalizeAuditData(raw)
                             setMessages(prev => {
                                 const next = [...prev]
                                 const last = next[next.length - 1]
                                 if (last && last.role === 'assistant') {
-                                    last.audit = raw
+                                    last.audit = normalized
                                 }
                                 return next
                             })
+                            setLatestAudit(normalized)
                             buffer = (parts[0] + (parts[2] || '')).trim()
                         } catch (e) {
                             console.error('Failed to parse ingredient audit payload', e)
@@ -295,7 +355,7 @@ export default function ChatInterface({
     ).slice(0, 5)
 
     return (
-        <div className="flex flex-col h-[85vh] max-h-[900px] border border-slate-100 rounded-2xl bg-white shadow-xl overflow-hidden backdrop-blur-sm relative">
+        <div className="h-[85vh] max-h-[900px] border border-slate-100 rounded-2xl bg-white shadow-xl overflow-hidden backdrop-blur-sm relative">
 
             {/* Onboarding Modal */}
             <OnboardingModal
@@ -306,176 +366,206 @@ export default function ChatInterface({
                 editMode={profile.is_onboarding_completed}
             />
 
-            {/* Header Area */}
-            <div className="sticky top-0 z-10 bg-slate-50/95 backdrop-blur border-b border-slate-100">
-                {/* Main Title Bar */}
-                <div className="p-4 flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 bg-slate-900 text-white rounded-xl shadow-sm">
-                            <Bot className="w-5 h-5" />
+            <div className="flex h-full">
+                {/* Left: Chat column */}
+                <div className="flex h-full w-full flex-col md:w-[55%]">
+                    {/* Header Area */}
+                    <div className="sticky top-0 z-10 bg-slate-50/95 backdrop-blur border-b border-slate-100">
+                        {/* Main Title Bar */}
+                        <div className="p-4 flex items-center justify-between gap-3">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-slate-900 text-white rounded-xl shadow-sm">
+                                    <Bot className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <h2 className="font-serif text-lg font-semibold text-slate-900">
+                                        {title}
+                                    </h2>
+                                    <p className="text-[11px] text-slate-500 font-medium">
+                                        {subtitle}
+                                    </p>
+                                </div>
+                            </div>
+                            <span className="hidden text-[11px] text-slate-500 md:inline">
+                                Paste any ingredient list – no login required.
+                            </span>
                         </div>
-                        <div>
-                            <h2 className="font-serif text-lg font-semibold text-slate-900">
-                                {title}
-                            </h2>
-                            <p className="text-[11px] text-slate-500 font-medium">
-                                {subtitle}
-                            </p>
-                        </div>
+
+                        {/* Inline Edit profile: always visible */}
+                        <ProfileHeader
+                            profile={profile}
+                            onEdit={() => setShowOnboarding(true)}
+                            minimal={!profileLoaded}
+                        />
                     </div>
-                    <span className="hidden text-[11px] text-slate-500 md:inline">
-                        Paste any ingredient list – no login required.
-                    </span>
-                </div>
 
-                {/* Inline Edit profile: always visible */}
-                <ProfileHeader
-                    profile={profile}
-                    onEdit={() => setShowOnboarding(true)}
-                    minimal={!profileLoaded}
-                />
-            </div>
+                    {/* Messages */}
+                    <div className="flex-1 overflow-y-auto p-4 space-y-6 scroll-smooth">
+                        {messages.length === 0 && (
+                            <div className="h-full flex flex-col items-center justify-center p-8 text-center space-y-6">
+                                <div className="w-20 h-20 bg-blue-50 rounded-2xl flex items-center justify-center mb-2 shadow-sm animate-in fade-in zoom-in duration-500">
+                                    <Bot className="w-10 h-10 text-blue-600" />
+                                </div>
+                                <div className="max-w-md space-y-2">
+                                    <h3 className="font-bold text-2xl text-slate-800">What's on your mind?</h3>
+                                    <p className="text-slate-500">Check ingredients for allergies, religious diets (Halal, Jain, Hindu), or hidden additives.</p>
+                                </div>
 
-            <div className="flex-1 overflow-y-auto p-4 space-y-6 scroll-smooth">
-                {messages.length === 0 && (
-                    <div className="h-full flex flex-col items-center justify-center p-8 text-center space-y-6">
-                        <div className="w-20 h-20 bg-blue-50 rounded-2xl flex items-center justify-center mb-2 shadow-sm animate-in fade-in zoom-in duration-500">
-                            <Bot className="w-10 h-10 text-blue-600" />
-                        </div>
-                        <div className="max-w-md space-y-2">
-                            <h3 className="font-bold text-2xl text-slate-800">What's on your mind?</h3>
-                            <p className="text-slate-500">Check ingredients for allergies, religious diets (Halal, Jain, Hindu), or hidden additives.</p>
-                        </div>
+                                {/* Profile CTA if not set */}
+                                {!profile.is_onboarding_completed && (
+                                    <button
+                                        onClick={() => setShowOnboarding(true)}
+                                        className="text-blue-600 font-bold bg-blue-50 px-6 py-3 rounded-full hover:bg-blue-100 transition-colors"
+                                    >
+                                        Setup my Safety Profile
+                                    </button>
+                                )}
 
-                        {/* Profile CTA if not set */}
-                        {!profile.is_onboarding_completed && (
-                            <button
-                                onClick={() => setShowOnboarding(true)}
-                                className="text-blue-600 font-bold bg-blue-50 px-6 py-3 rounded-full hover:bg-blue-100 transition-colors"
-                            >
-                                Setup my Safety Profile
-                            </button>
-                        )}
-
-                        <div className="flex flex-wrap justify-center gap-2 max-w-lg">
-                            {suggestions.map((s, i) => (
-                                <button
-                                    key={i}
-                                    onClick={() => setInput(s)}
-                                    className="text-sm bg-white border border-slate-200 px-4 py-2 rounded-xl hover:border-blue-300 hover:text-blue-600 hover:bg-blue-50/50 transition-all duration-200 shadow-sm"
-                                >
-                                    {s}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                )}
-
-                {messages.map((msg, idx) => (
-                    <div key={idx} className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-in slide-in-from-bottom-2 duration-300`}>
-                        {msg.role === 'assistant' && (
-                            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-100 to-blue-50 flex items-center justify-center flex-shrink-0 mt-1 shadow-sm">
-                                <Bot className="w-4.5 h-4.5 text-blue-600" />
+                                <div className="flex flex-wrap justify-center gap-2 max-w-lg">
+                                    {suggestions.map((s, i) => (
+                                        <button
+                                            key={i}
+                                            onClick={() => setInput(s)}
+                                            className="text-sm bg-white border border-slate-200 px-4 py-2 rounded-xl hover:border-blue-300 hover:text-blue-600 hover:bg-blue-50/50 transition-all duration-200 shadow-sm"
+                                        >
+                                            {s}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
                         )}
-                        <div className={`max-w-[85%] rounded-2xl shadow-sm ${msg.role === 'user'
-                            ? 'bg-[#0F172A] text-white rounded-br-none px-4 py-3'
-                            : 'bg-white border border-slate-100 text-slate-800 rounded-bl-none px-5 py-4 shadow-md'
-                            }`}>
-                            <div className="text-[0.9rem]">
-                                {msg.role === 'assistant' && msg.audit ? (
-                                    <IngredientAuditCards data={msg.audit} />
-                                ) : msg.role === 'assistant' && !msg.content.trim() ? (
-                                    <div className="flex items-center gap-1 text-slate-400">
-                                        <span className="h-1.5 w-1.5 rounded-full bg-slate-300 animate-bounce [animation-delay:-0.2s]" />
-                                        <span className="h-1.5 w-1.5 rounded-full bg-slate-300 animate-bounce [animation-delay:-0.1s]" />
-                                        <span className="h-1.5 w-1.5 rounded-full bg-slate-300 animate-bounce" />
+
+                        {messages.map((msg, idx) => (
+                            <div key={idx} className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-in slide-in-from-bottom-2 duration-300`}>
+                                {msg.role === 'assistant' && (
+                                    <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-100 to-blue-50 flex items-center justify-center flex-shrink-0 mt-1 shadow-sm">
+                                        <Bot className="w-4.5 h-4.5 text-blue-600" />
                                     </div>
-                                ) : (
-                                    <FormattedMessage content={msg.content} isUser={msg.role === 'user'} />
+                                )}
+                                <div className={`max-w-[85%] rounded-2xl shadow-sm ${msg.role === 'user'
+                                    ? 'bg-[#0F172A] text-white rounded-br-none px-4 py-3'
+                                    : 'bg-white border border-slate-100 text-slate-800 rounded-bl-none px-5 py-4 shadow-md'
+                                    }`}>
+                                    <div className="text-[0.9rem]">
+                                        {msg.role === 'assistant' && msg.audit ? (
+                                            <div className="md:hidden">
+                                                <IngredientAuditCards data={msg.audit} />
+                                            </div>
+                                        ) : msg.role === 'assistant' && !msg.content.trim() ? (
+                                            <div className="flex items-center gap-1 text-slate-400">
+                                                <span className="h-1.5 w-1.5 rounded-full bg-slate-300 animate-bounce [animation-delay:-0.2s]" />
+                                                <span className="h-1.5 w-1.5 rounded-full bg-slate-300 animate-bounce [animation-delay:-0.1s]" />
+                                                <span className="h-1.5 w-1.5 rounded-full bg-slate-300 animate-bounce" />
+                                            </div>
+                                        ) : (
+                                            <FormattedMessage content={msg.content} isUser={msg.role === 'user'} />
+                                        )}
+                                    </div>
+                                </div>
+                                {msg.role === 'user' && (
+                                    <div className="w-8 h-8 rounded-xl bg-slate-200 flex items-center justify-center flex-shrink-0 mt-1">
+                                        <User className="w-4.5 h-4.5 text-slate-600" />
+                                    </div>
                                 )}
                             </div>
-                        </div>
-                        {msg.role === 'user' && (
-                            <div className="w-8 h-8 rounded-xl bg-slate-200 flex items-center justify-center flex-shrink-0 mt-1">
-                                <User className="w-4.5 h-4.5 text-slate-600" />
-                            </div>
-                        )}
-                    </div>
-                ))}
-                <div ref={messagesEndRef} />
-            </div>
-
-            {/* Dynamic suggestion chips (recent queries) */}
-            {recentQueries.length > 0 && (
-                <div className="px-4 pb-1 pt-2 bg-white border-t border-slate-100">
-                    <div className="mb-1 text-[11px] font-medium text-slate-500">
-                        Recent checks
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                        {recentQueries.map((q) => (
-                            <button
-                                key={q}
-                                type="button"
-                                onClick={() => setInput(q)}
-                                className="text-[11px] bg-slate-50 border border-slate-200 px-3 py-1 rounded-full hover:border-emerald-300 hover:text-emerald-700 hover:bg-emerald-50/60 transition-colors"
-                            >
-                                {q.length > 60 ? q.slice(0, 57) + '…' : q}
-                            </button>
                         ))}
+                        <div ref={messagesEndRef} />
+                    </div>
+
+                    {/* Dynamic suggestion chips (recent queries) */}
+                    {recentQueries.length > 0 && (
+                        <div className="px-4 pb-1 pt-2 bg-white border-t border-slate-100">
+                            <div className="mb-1 text-[11px] font-medium text-slate-500">
+                                Recent checks
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                                {recentQueries.map((q) => (
+                                    <button
+                                        key={q}
+                                        type="button"
+                                        onClick={() => setInput(q)}
+                                        className="text-[11px] bg-slate-50 border border-slate-200 px-3 py-1 rounded-full hover:border-emerald-300 hover:text-emerald-700 hover:bg-emerald-50/60 transition-colors"
+                                    >
+                                        {q.length > 60 ? q.slice(0, 57) + '…' : q}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Input + actions */}
+                    <form onSubmit={handleSubmit} className="p-4 bg-white border-t border-slate-100">
+                        <div className="relative flex items-center">
+                            <input
+                                type="text"
+                                value={input}
+                                onChange={(e) => setInput(e.target.value)}
+                                placeholder={
+                                    hasProfileRules
+                                        ? 'Ask me about any ingredient in your diet…'
+                                        : 'Type an ingredient or list to check safety…'
+                                }
+                                className="w-full px-6 py-4 pr-16 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all placeholder:text-slate-400 font-medium text-slate-700"
+                                disabled={loading || !profileLoaded}
+                            />
+                            <button
+                                type="submit"
+                                disabled={loading || !input.trim() || (!profile.is_onboarding_completed && !profileLoaded)}
+                                className="absolute right-2 inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-emerald-500 to-lime-400 p-2.5 text-white shadow-md shadow-emerald-500/30 transition-transform transition-shadow hover:-translate-y-0.5 hover:shadow-emerald-500/50 disabled:translate-y-0 disabled:bg-slate-300 disabled:from-slate-300 disabled:to-slate-400 disabled:shadow-none disabled:opacity-60"
+                            >
+                                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
+                            </button>
+                        </div>
+                    </form>
+                    <div className="bg-slate-50 p-2 border-t border-slate-100 flex justify-center gap-2 flex-wrap">
+                        <button
+                            type="button"
+                            onClick={() => setInput('')}
+                            className="px-3 py-1.5 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+                        >
+                            Clear input
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                const lastUserMsg = [...messages].reverse().find(m => m.role === 'user')
+                                if (lastUserMsg) setInput(lastUserMsg.content)
+                            }}
+                            className="px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 border border-blue-100 rounded-lg hover:bg-blue-100 transition-colors"
+                        >
+                            Repeat last audit
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setShowOnboarding(true)}
+                            className="px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors inline-flex items-center gap-1"
+                        >
+                            Edit profile
+                        </button>
+                        <span className="text-xs text-slate-400 self-center px-1">or type /update to modify your profile</span>
                     </div>
                 </div>
-            )}
 
-            <form onSubmit={handleSubmit} className="p-4 bg-white border-t border-slate-100">
-                <div className="relative flex items-center">
-                    <input
-                        type="text"
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        placeholder={
-                            hasProfileRules
-                                ? 'Ask me about any ingredient in your diet…'
-                                : 'Type an ingredient or list to check safety…'
-                        }
-                        className="w-full px-6 py-4 pr-16 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all placeholder:text-slate-400 font-medium text-slate-700"
-                        disabled={loading || !profileLoaded}
-                    />
-                    <button
-                        type="submit"
-                        disabled={loading || !input.trim() || (!profile.is_onboarding_completed && !profileLoaded)}
-                        className="absolute right-2 inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-emerald-500 to-lime-400 p-2.5 text-white shadow-md shadow-emerald-500/30 transition-transform transition-shadow hover:-translate-y-0.5 hover:shadow-emerald-500/50 disabled:translate-y-0 disabled:bg-slate-300 disabled:from-slate-300 disabled:to-slate-400 disabled:shadow-none disabled:opacity-60"
-                    >
-                        {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
-                    </button>
-                </div>
-            </form>
-            <div className="bg-slate-50 p-2 border-t border-slate-100 flex justify-center gap-2 flex-wrap">
-                <button
-                    type="button"
-                    onClick={() => setInput('')}
-                    className="px-3 py-1.5 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
-                >
-                    Clear input
-                </button>
-                <button
-                    type="button"
-                    onClick={() => {
-                        const lastUserMsg = [...messages].reverse().find(m => m.role === 'user')
-                        if (lastUserMsg) setInput(lastUserMsg.content)
-                    }}
-                    className="px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 border border-blue-100 rounded-lg hover:bg-blue-100 transition-colors"
-                >
-                    Repeat last audit
-                </button>
-                <button
-                    type="button"
-                    onClick={() => setShowOnboarding(true)}
-                    className="px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors inline-flex items-center gap-1"
-                >
-                    Edit profile
-                </button>
-                <span className="text-xs text-slate-400 self-center px-1">or type /update to modify your profile</span>
+                {/* Right: Audit column (desktop only) */}
+                <aside className="hidden md:flex h-full w-[45%] flex-col border-l border-slate-100 bg-slate-50/80">
+                    {latestAudit ? (
+                        <>
+                            <div className="sticky top-0 z-10 border-b border-slate-200 bg-slate-50/95 px-4 py-3">
+                                <h3 className="text-xs font-semibold text-slate-700 mb-1">
+                                    Ingredient audit overview
+                                </h3>
+                                {/* Summary pills will render at top of cards */}
+                            </div>
+                            <div className="flex-1 overflow-y-auto px-4 py-3">
+                                <IngredientAuditCards data={latestAudit} />
+                            </div>
+                        </>
+                    ) : (
+                        <div className="flex flex-1 items-center justify-center px-6 text-center text-[12px] text-slate-500">
+                            Ingredient audits will appear here after you paste an ingredient list.
+                        </div>
+                    )}
+                </aside>
             </div>
         </div>
     )

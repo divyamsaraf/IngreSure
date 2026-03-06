@@ -1,14 +1,17 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { CheckCircle2, AlertTriangle, XCircle, ChevronDown, ChevronUp } from 'lucide-react'
 import FormattedMessage from './FormattedMessage'
+import { statusColors } from '@/theme/tokens'
+import { StatusPill } from '@/components/ui/Pill'
 
 export type IngredientStatus = 'safe' | 'avoid' | 'depends'
 
 export interface IngredientAuditItem {
   name: string
   status: IngredientStatus
+  diets?: string[]
   allergens?: string[]
   alternatives?: string[]
 }
@@ -40,27 +43,6 @@ const STATUS_ICON: Record<IngredientStatus, React.ReactNode> = {
   depends: <AlertTriangle className="h-3.5 w-3.5" />,
 }
 
-const STATUS_COLORS: Record<
-  IngredientStatus,
-  { pill: string; text: string; card: string }
-> = {
-  safe: {
-    pill: 'bg-emerald-100 text-emerald-800 border-emerald-200',
-    text: 'text-emerald-700',
-    card: 'from-emerald-50 to-emerald-100',
-  },
-  avoid: {
-    pill: 'bg-rose-100 text-rose-800 border-rose-200',
-    text: 'text-rose-700',
-    card: 'from-rose-50 to-rose-100',
-  },
-  depends: {
-    pill: 'bg-amber-100 text-amber-800 border-amber-200',
-    text: 'text-amber-700',
-    card: 'from-amber-50 to-amber-100',
-  },
-}
-
 function severityRank(status: IngredientStatus): number {
   if (status === 'avoid') return 3
   if (status === 'depends') return 2
@@ -73,7 +55,18 @@ export default function IngredientAuditCards({ data }: Props) {
     depends: true,
     safe: false,
   })
+  const [expandedItems, setExpandedItems] = useState<Record<IngredientStatus, boolean>>({
+    avoid: false,
+    depends: false,
+    safe: false,
+  })
   const [showFullExplanation, setShowFullExplanation] = useState(false)
+
+  const groupRefs: Record<IngredientStatus, React.RefObject<HTMLDivElement>> = {
+    safe: useRef<HTMLDivElement>(null),
+    avoid: useRef<HTMLDivElement>(null),
+    depends: useRef<HTMLDivElement>(null),
+  }
 
   const allStatuses = data.groups.map((g) => g.status)
   const worstStatus =
@@ -83,12 +76,20 @@ export default function IngredientAuditCards({ data }: Props) {
           severityRank(current) > severityRank(worst) ? current : worst,
         )
 
-  const summaryColor = STATUS_COLORS[worstStatus].text
+  const summaryColor = statusColors[worstStatus].text
 
   // Ensure consistent order: Avoid → Depends → Safe
   const orderedGroups: IngredientAuditGroup[] = ['avoid', 'depends', 'safe']
     .map((status) => data.groups.find((g) => g.status === status as IngredientStatus))
     .filter(Boolean) as IngredientAuditGroup[]
+
+  const counts = orderedGroups.reduce(
+    (acc, g) => {
+      acc[g.status] += g.items.length
+      return acc
+    },
+    { safe: 0, avoid: 0, depends: 0 } as Record<IngredientStatus, number>,
+  )
 
   const toggleGroup = (status: IngredientStatus) => {
     setOpenGroups((prev) => ({ ...prev, [status]: !prev[status] }))
@@ -96,9 +97,48 @@ export default function IngredientAuditCards({ data }: Props) {
 
   return (
     <div className="space-y-3">
-      {/* Summary line */}
+      {/* Summary line: pills per status */}
+      <div className="flex flex-wrap items-center gap-2">
+        {(['safe', 'avoid', 'depends'] as IngredientStatus[]).map((status) => {
+          const count = counts[status]
+          if (!count) return null
+          return (
+            <button
+              key={status}
+              type="button"
+              onClick={() => {
+                groupRefs[status].current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  groupRefs[status].current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                }
+              }}
+              aria-label={
+                status === 'safe'
+                  ? 'Jump to safe ingredients'
+                  : status === 'avoid'
+                  ? 'Jump to ingredients to avoid'
+                  : 'Jump to ingredients that depend on source'
+              }
+              className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 rounded-full"
+            >
+              <StatusPill
+                status={status}
+                className="hover:scale-105 active:scale-95 transition-transform"
+              >
+                {STATUS_ICON[status]}
+                <span className="font-semibold">
+                  {count} {STATUS_LABEL[status]}
+                </span>
+              </StatusPill>
+            </button>
+          )
+        })}
+      </div>
       {data.summary && (
-        <p className={`text-sm font-semibold ${summaryColor}`}>
+        <p className={`text-xs font-medium ${summaryColor}`}>
           {data.summary}
         </p>
       )}
@@ -107,27 +147,31 @@ export default function IngredientAuditCards({ data }: Props) {
       <div className="space-y-3">
         {orderedGroups.map((group) => {
           const status = group.status
-          const colors = STATUS_COLORS[status]
+          const colors = statusColors[status]
           const count = group.items.length
           if (count === 0) return null
+
+          const limit = 6
+          const showAll = expandedItems[status] || count <= limit
+          const visibleItems = showAll ? group.items : group.items.slice(0, limit)
 
           return (
             <div
               key={status}
-              className="rounded-2xl border border-slate-100 bg-[#F8FAFC] p-3 shadow-sm"
+              ref={groupRefs[status]}
+              className="rounded-2xl border border-slate-100 bg-[#F8FAFC] p-3 shadow-sm transition-all duration-200"
             >
               <button
                 type="button"
                 onClick={() => toggleGroup(status)}
                 className="flex w-full items-center justify-between gap-2"
+                aria-expanded={openGroups[status]}
               >
-                <span
-                  className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 text-[11px] font-medium ${colors.pill}`}
-                >
+                <StatusPill status={status}>
                   {STATUS_ICON[status]}
                   <span>{STATUS_LABEL[status]}</span>
                   <span className="text-[10px] opacity-80">· {count}</span>
-                </span>
+                </StatusPill>
                 <span className="text-[11px] text-slate-500 flex items-center gap-1">
                   {openGroups[status] ? 'Hide' : 'Show'}
                   {openGroups[status] ? (
@@ -139,17 +183,30 @@ export default function IngredientAuditCards({ data }: Props) {
               </button>
 
               {openGroups[status] && (
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {group.items.map((item) => (
+                <div className="mt-3 flex flex-wrap gap-2 transition-all duration-200">
+                  {visibleItems.map((item) => (
                     <div
                       key={item.name}
-                      className={`inline-flex flex-col gap-1 rounded-2xl bg-gradient-to-br ${colors.card} px-3 py-2 text-[11px] text-slate-800 shadow-sm`}
+                      className={`inline-flex flex-col gap-1 rounded-2xl bg-gradient-to-br ${colors.card} px-3 py-2 text-[11px] text-slate-800 shadow-sm transition-transform duration-150 hover:-translate-y-0.5`}
                     >
                       <span className="font-semibold text-[12px]">
                         {item.name}
                       </span>
+                      {item.diets && item.diets.length > 0 && (
+                        <div className="flex flex-wrap gap-1 max-w-full overflow-x-auto">
+                          {item.diets.map((diet) => (
+                            <span
+                              key={diet}
+                              className="rounded-full bg-slate-900/5 px-2 py-0.5 text-[10px] font-medium text-slate-700"
+                              title={`Relevant for ${diet} diet`}
+                            >
+                              {diet}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                       {item.allergens && item.allergens.length > 0 && (
-                        <div className="flex flex-wrap gap-1">
+                        <div className="flex flex-wrap gap-1 max-w-full overflow-x-auto">
                           {item.allergens.map((alg) => (
                             <span
                               key={alg}
@@ -163,7 +220,7 @@ export default function IngredientAuditCards({ data }: Props) {
                         </div>
                       )}
                       {item.alternatives && item.alternatives.length > 0 && (
-                        <div className="mt-1 flex flex-wrap gap-1">
+                        <div className="mt-1 flex flex-wrap gap-1 max-w-full overflow-x-auto">
                           {item.alternatives.map((alt) => (
                             <button
                               key={alt}
@@ -183,6 +240,22 @@ export default function IngredientAuditCards({ data }: Props) {
                       )}
                     </div>
                   ))}
+                  {count > limit && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setExpandedItems((prev) => ({
+                          ...prev,
+                          [status]: !prev[status],
+                        }))
+                      }
+                      className="mt-1 text-[11px] font-medium text-blue-600 hover:text-blue-700"
+                    >
+                      {showAll
+                        ? 'Show less'
+                        : `Show ${count - limit} more`}
+                    </button>
+                  )}
                 </div>
               )}
             </div>
@@ -192,27 +265,29 @@ export default function IngredientAuditCards({ data }: Props) {
 
       {/* Residual explanation */}
       {data.explanation && (
-        <div className="pt-1 text-[12px] text-slate-600">
-          {data.explanation.length > 220 ? (
-            <>
-              <FormattedMessage
-                content={
-                  showFullExplanation
-                    ? data.explanation
-                    : data.explanation.slice(0, 220).trimEnd() + '…'
-                }
-              />
-              <button
-                type="button"
-                onClick={() => setShowFullExplanation((v) => !v)}
-                className="mt-1 text-[11px] font-medium text-blue-600 hover:text-blue-700"
-              >
-                {showFullExplanation ? 'Show less' : 'Read more'}
-              </button>
-            </>
-          ) : (
-            <FormattedMessage content={data.explanation} />
-          )}
+        <div className="mt-2 rounded-2xl bg-[#F8FAFC] p-3 shadow-sm">
+          <div className="text-sm text-slate-700 leading-relaxed">
+            {data.explanation.length > 260 ? (
+              <>
+                <FormattedMessage
+                  content={
+                    showFullExplanation
+                      ? data.explanation
+                      : data.explanation.slice(0, 260).trimEnd() + '…'
+                  }
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowFullExplanation((v) => !v)}
+                  className="mt-1 text-[11px] font-medium text-blue-600 hover:text-blue-700"
+                >
+                  {showFullExplanation ? 'Show less' : 'Read more'}
+                </button>
+              </>
+            ) : (
+              <FormattedMessage content={data.explanation} />
+            )}
+          </div>
         </div>
       )}
     </div>

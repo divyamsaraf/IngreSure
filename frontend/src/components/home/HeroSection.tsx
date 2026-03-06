@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { ArrowRight, ShieldCheck, CheckCircle, MessageCircle } from 'lucide-react'
+import { Button } from '@/components/ui/Button'
 
 export default function HeroSection() {
   return (
@@ -25,23 +26,21 @@ export default function HeroSection() {
           </p>
 
           <div className="flex flex-wrap items-center gap-4">
-            <Link
-              href="/chat"
-              className="inline-flex items-center gap-2 rounded-[16px] bg-gradient-to-r from-emerald-500 to-lime-400 px-6 py-3 text-base font-semibold text-white shadow-lg shadow-emerald-500/30 transition-transform transition-shadow hover:-translate-y-0.5 hover:shadow-emerald-500/50 active:translate-y-0"
-            >
+            <Button href="/chat" variant="primary">
               Start Grocery Audit
-              <ArrowRight className="h-5 w-5" />
-            </Link>
-            <button
+              <ArrowRight className="h-5 w-5 ml-2" />
+            </Button>
+            <Button
+              variant="secondary"
+              size="sm"
               type="button"
-              className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50"
               onClick={() => {
                 const el = document.getElementById('how-it-works')
                 el?.scrollIntoView({ behavior: 'smooth' })
               }}
             >
               See how it works
-            </button>
+            </Button>
           </div>
 
           <div className="mt-4 flex flex-wrap items-center gap-3 text-xs text-slate-500">
