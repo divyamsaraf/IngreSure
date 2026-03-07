@@ -1,6 +1,5 @@
-# Database Module
+# Database
 
-Legacy schema files for reference. **Source of truth: `supabase/migrations/`** — use `supabase db reset` or `supabase db push` to apply.
+**Source of truth:** `supabase/migrations/`. Use `supabase start`, `supabase db reset`, or `supabase db push` to apply.
 
-## Tech Stack
-- Supabase (PostgreSQL)
+- **Tech:** Supabase (PostgreSQL)

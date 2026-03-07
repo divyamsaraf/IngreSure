@@ -24,8 +24,5 @@ We use Supabase for our PostgreSQL database. Migrations are managed to ensure co
   supabase db push
   ```
 
-### 3. Manual Execution
-For quick prototyping or if CLI is not used, SQL scripts in `database/schema.sql` can be executed directly in the Supabase Dashboard SQL Editor.
-
-## Initial Setup
-Run the contents of `database/schema.sql` to initialize the database tables and indexes.
+### 3. Manual execution
+For one-off changes on the remote DB (e.g. after linking), run SQL in the Supabase Dashboard. Prefer adding a new migration under `supabase/migrations/` and using `supabase db push` for repeatable changes.

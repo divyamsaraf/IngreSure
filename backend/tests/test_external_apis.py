@@ -84,15 +84,18 @@ def test_fetcher_no_cache_for_no_result():
     from core.external_apis.base import EnrichmentResult
     clear_enrichment_cache()
     no_res = EnrichmentResult(None, "low", "open_food_facts", "no_results")
-    with patch("core.external_apis.fetcher.get_usda_fdc_api_key", return_value=""):
-        with patch("core.external_apis.fetcher.fetch_open_food_facts") as mock_off:
-            mock_off.return_value = no_res
-            with patch("core.external_apis.fetcher.fetch_pubchem", return_value=no_res):
-                with patch("core.external_apis.fetcher.fetch_chebi", return_value=no_res):
-                    with patch("core.external_apis.fetcher.fetch_wikidata", return_value=no_res):
-                        fetch_ingredient_from_apis("unknown_xyz_none", use_cache=True)
-                        fetch_ingredient_from_apis("unknown_xyz_none", use_cache=True)
-            assert mock_off.call_count == 2
+    # Single query variant so OFF is called once per fetch_ingredient_from_apis (2 total)
+    with patch("core.external_apis.fetcher.get_canonical_queries", return_value=["unknown xyz none"]):
+        with patch("core.external_apis.fetcher.resolve_to_english_label", return_value=None):
+            with patch("core.external_apis.fetcher.get_usda_fdc_api_key", return_value=""):
+                with patch("core.external_apis.fetcher.fetch_open_food_facts") as mock_off:
+                    mock_off.return_value = no_res
+                    with patch("core.external_apis.fetcher.fetch_pubchem", return_value=no_res):
+                        with patch("core.external_apis.fetcher.fetch_chebi", return_value=no_res):
+                            with patch("core.external_apis.fetcher.fetch_wikidata", return_value=no_res):
+                                fetch_ingredient_from_apis("unknown_xyz_none", use_cache=True)
+                                fetch_ingredient_from_apis("unknown_xyz_none", use_cache=True)
+                    assert mock_off.call_count == 2
 
 
 def test_api_health_check_script():

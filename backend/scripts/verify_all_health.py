@@ -75,7 +75,7 @@ def check_external_apis() -> bool:
 
 
 def check_supabase() -> bool:
-    print("\n3. Supabase (knowledge DB / RAG / unknowns)")
+    print("\n3. Supabase (knowledge DB, unknowns)")
     try:
         from scripts.verify_supabase import main as supabase_main
         code = supabase_main()

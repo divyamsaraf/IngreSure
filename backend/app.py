@@ -5,9 +5,6 @@ Endpoints:
     GET  /                  Health check
     POST /scan              OCR -> normalize -> compliance -> scorecard
     POST /chat/grocery      Conversational grocery safety assistant
-    POST /chat/restaurant   Restaurant menu assistant (RAG)
-    POST /onboard-menu      Process restaurant menu for RAG
-    POST /verify-menu-item  Verify menu item against claimed diets
     GET  /profile/{user_id} Get user profile
     POST /profile           Create or update profile
 """
@@ -52,13 +49,10 @@ logger = logging.getLogger(__name__)
 from core.config import get_ollama_url, get_ollama_model
 from core.profile_storage import get_or_create_profile, save_profile, update_profile_partial
 from core.models.user_profile import UserProfile
-from core.models.verdict import VerdictStatus
 from core.bridge import (
     user_profile_model_to_restriction_ids,
     run_new_engine_chat,
     run_new_engine_scan,
-    SCAN_DIET_LABELS,
-    DIET_LABEL_TO_RESTRICTION_ID,
 )
 from core.intent_detector import detect_intent, ParsedIntent
 from core.llm_intent import llm_extract_intent
@@ -80,14 +74,8 @@ from core.compound_expansion import expand_compounds
 # Service imports (flat modules in backend/)
 from ocr_engine import OCREngine
 from llm_normalizer import IngredientNormalizer
-from verification_service import verify_menu_item
-from rag_service import RAGService
-from onboarding_service import OnboardingService
-
 ocr_engine = OCREngine()
 normalizer = IngredientNormalizer()
-rag_service = RAGService()
-onboarding_service = OnboardingService(rag_service)
 
 # Public API (v1) - additive only
 try:
@@ -128,23 +116,10 @@ class ScanResult(BaseModel):
     confidence_scores: Dict[str, float]
 
 
-class VerificationRequest(BaseModel):
-    item_name: str
-    description: str
-    ingredients: List[str]
-    claimed_diet_types: List[str]
-
-
 class ChatRequest(BaseModel):
     query: str
     user_id: Optional[str] = None
-    context_filter: Optional[Dict] = None
     userProfile: Optional[Dict] = None
-
-
-class MenuOnboardRequest(BaseModel):
-    restaurant_id: str
-    menu_items: List[Dict]
 
 
 class ProfileBody(BaseModel):
@@ -224,16 +199,6 @@ def health_check():
     return {"status": "ok", "service": "IngreSure AI Scanner", "ingredient_audit_emitter": True}
 
 
-@app.post("/onboard-menu")
-async def onboard_menu(request: MenuOnboardRequest):
-    logger.info("Onboarding menu for restaurant: %s", request.restaurant_id)
-    try:
-        return onboarding_service.process_menu(request.restaurant_id, request.menu_items)
-    except Exception as e:
-        logger.error("Onboarding failed: %s", e)
-        raise HTTPException(status_code=500, detail=str(e))
-
-
 @app.post("/scan", response_model=ScanResult)
 async def scan_image(file: UploadFile = File(...)):
     """OCR -> normalize ingredients -> compliance engine -> scorecard."""
@@ -260,22 +225,6 @@ async def scan_image(file: UploadFile = File(...)):
         }
     except Exception as e:
         logger.error("Scan failed: %s", e, exc_info=True)
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.post("/verify-menu-item")
-async def verify_item(request: VerificationRequest):
-    """Verify a menu item against its ingredients and claimed diet types."""
-    logger.info("Verifying item: %s", request.item_name)
-    try:
-        return verify_menu_item(
-            item_name=request.item_name,
-            description=request.description,
-            ingredients=request.ingredients,
-            claimed_diet_types=request.claimed_diet_types,
-        )
-    except Exception as e:
-        logger.error("Verification failed: %s", e)
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -500,23 +449,6 @@ async def chat_grocery(request: ChatRequest):
         return StreamingResponse(generate_safety(), media_type="text/plain")
     except Exception as e:
         logger.error("Grocery Chat failed: %s", e, exc_info=True)
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.post("/chat/restaurant")
-async def chat_restaurant(request: ChatRequest):
-    """Restaurant Menu Assistant (RAG)."""
-    logger.info("Restaurant Chat query: %s", request.query)
-    try:
-        context_items = rag_service.retrieve(request.query)
-
-        async def generate_rag():
-            for token in rag_service.generate_answer_stream(request.query, context_items):
-                yield token
-
-        return StreamingResponse(generate_rag(), media_type="text/plain")
-    except Exception as e:
-        logger.error("Restaurant Chat failed: %s", e)
         raise HTTPException(status_code=500, detail=str(e))
 
 

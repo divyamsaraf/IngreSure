@@ -101,7 +101,7 @@ The frontend runs at **http://localhost:3000**.
 
 ### Step 4 (Optional): Start Supabase
 
-Only needed if using the RAG/restaurant features:
+Only needed if using the ingredient knowledge DB or Supabase-backed features:
 
 ```bash
 # Install Supabase CLI
@@ -133,7 +133,7 @@ OPEN_FOOD_FACTS_ENABLED=true
 # OLLAMA_API_URL=http://localhost:11434/api/generate
 # OLLAMA_MODEL=llama3.2:3b
 
-# Supabase (optional — for RAG/restaurant features)
+# Supabase (optional — for ingredient knowledge DB and other features)
 # SUPABASE_URL=http://127.0.0.1:54321
 # SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 ```
@@ -200,7 +200,7 @@ docker ps -a --filter "name=ingresure"   # same by container name
 
 **What you see in Docker Desktop:**  
 - **IngreSure app** (our stack): 4 containers — `ingresure-backend`, `ingresure-frontend`, `ingresure-redis`, `ingresure-worker`. Project name: **ingresure**.  
-- **Supabase local** (from `supabase start`): many containers named `supabase_<service>_IngreSure` (e.g. `supabase_studio_IngreSure`, `supabase_kong_IngreSure`, `supabase_auth_IngreSure`). Supabase CLI uses your project/folder name “IngreSure” as the suffix. Both groups are expected when you run the app and Supabase; you can stop Supabase with `supabase stop` if you don’t need RAG/restaurant features.
+- **Supabase local** (from `supabase start`): many containers named `supabase_<service>_IngreSure` (e.g. `supabase_studio_IngreSure`, `supabase_kong_IngreSure`, `supabase_auth_IngreSure`). Supabase CLI uses your project/folder name “IngreSure” as the suffix. Both groups are expected when you run the app and Supabase; you can stop Supabase with `supabase stop` if you don’t need the knowledge DB or other Supabase features.
 
 ## Running Tests
 

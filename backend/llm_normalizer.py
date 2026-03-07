@@ -11,7 +11,8 @@ class IngredientNormalizer:
     @staticmethod
     def normalize(raw_text: str) -> List[str]:
         """
-        Uses Mistral to extract a clean list of ingredients from raw OCR text.
+        Uses Ollama (configured model, e.g. llama3.2:3b) to extract a clean list of
+        ingredients from raw OCR text. Returns [] on failure or if Ollama is unavailable.
         """
         prompt = f"""
         Task: Extract a clean list of ingredients from the following text.
@@ -40,7 +41,13 @@ class IngredientNormalizer:
                 result = response.json()
                 # Parse the 'response' field which contains the generated text
                 generated_json = result.get("response", "[]")
-                return json.loads(generated_json)
+                parsed = json.loads(generated_json)
+                # API expects List[str]; LLM may return a dict (e.g. name -> list), so coerce
+                if isinstance(parsed, list):
+                    return [str(x).strip() for x in parsed if str(x).strip()]
+                if isinstance(parsed, dict):
+                    return [str(k).strip() for k in parsed if str(k).strip()]
+                return []
             else:
                 logger.error(f"Ollama Error: {response.status_code}")
                 return []

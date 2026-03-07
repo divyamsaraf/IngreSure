@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 from core.evaluation.compliance_engine import ComplianceEngine
 from core.models.verdict import ComplianceVerdict, VerdictStatus
-from core.parsing.ingredient_parser import preprocess_ingredients, get_trace_keys
+from core.parsing.ingredient_parser import preprocess_ingredients
 from core.normalization.parser import flatten_ingredients
 
 logger = logging.getLogger(__name__)
@@ -27,7 +27,7 @@ DIET_LABEL_TO_RESTRICTION_ID: Dict[str, str] = {
     "Hindu Veg": "hindu_vegetarian",
 }
 
-# Claimed diet types (verification, onboarding) -> restriction_id
+# Claimed diet types (profile/tagging) -> restriction_id
 CLAIMED_DIET_TO_RESTRICTION_ID: Dict[str, str] = {
     "Vegan": "vegan",
     "Vegetarian": "vegetarian",
@@ -286,115 +286,3 @@ def run_new_engine_chat(
         profile_context=profile_context,
     )
 
-
-def run_new_engine_for_claimed_diets(
-    ingredients: List[str], claimed_diet_types: List[str],
-) -> Tuple[ComplianceVerdict, Dict[str, Dict[str, str]]]:
-    """Run compliance engine for verification."""
-    restriction_ids = []
-    for label in claimed_diet_types:
-        rid = CLAIMED_DIET_TO_RESTRICTION_ID.get((label or "").strip())
-        if rid and rid not in restriction_ids:
-            restriction_ids.append(rid)
-    if not restriction_ids:
-        restriction_ids = list(CLAIMED_DIET_TO_RESTRICTION_ID.values())[:4]
-
-    atomic_names, trace_keys = preprocess_ingredient_list(ingredients)
-    engine = ComplianceEngine()
-    verdict = engine.evaluate(
-        atomic_names,
-        restriction_ids=restriction_ids,
-        trace_ingredient_keys=trace_keys or None,
-    )
-    scorecard = {}
-    for label in claimed_diet_types:
-        rid = CLAIMED_DIET_TO_RESTRICTION_ID.get((label or "").strip())
-        if rid:
-            scorecard[label] = (
-                {"status": "red", "reason": f"Contains ingredients not suitable for {label}."}
-                if rid in verdict.triggered_restrictions
-                else {"status": "green", "reason": "No forbidden ingredients detected."}
-            )
-    return verdict, scorecard
-
-
-# ---------------------------------------------------------------------------
-# Utility functions (used by onboarding/tagging)
-# ---------------------------------------------------------------------------
-
-def get_diet_tags_from_verdict_scan(verdict: ComplianceVerdict) -> List[str]:
-    """From scan verdict, return diet tags like ['Vegan'] or ['Vegetarian']."""
-    if "vegan" not in verdict.triggered_restrictions:
-        return ["Vegan"]
-    if "hindu_vegetarian" not in verdict.triggered_restrictions:
-        return ["Vegetarian"]
-    return []
-
-
-def extract_query_filters(query: str) -> Dict[str, List[str]]:
-    """Extract dietary and allergen filters from natural language query for RAG."""
-    q = query.lower()
-    dietary = []
-    allergens = []
-
-    for diet_key, label in [("vegan", "Vegan"), ("vegetarian", "Vegetarian"), ("jain", "Jain"), ("halal", "Halal")]:
-        if diet_key in q:
-            dietary.append(label)
-
-    trigger = "allerg" in q or "free" in q or "no " in q or "without" in q
-    if "gluten" in q and ("free" in q or "allerg" in q or "no " in q):
-        allergens.append("Wheat/Gluten")
-    if "peanut" in q and trigger:
-        allergens.append("Peanuts")
-    if "nut" in q and trigger:
-        if "Tree Nuts" not in allergens:
-            allergens.append("Tree Nuts")
-        if "Peanuts" not in allergens and "peanut" not in q:
-            allergens.append("Peanuts")
-    for term, label in [("dairy", "Dairy"), ("milk", "Dairy"), ("egg", "Eggs"),
-                        ("soy", "Soy"), ("fish", "Fish"), ("shellfish", "Shellfish")]:
-        if term in q and trigger and label not in allergens:
-            allergens.append(label)
-
-    return {"dietary": dietary, "allergens": list(dict.fromkeys(allergens))}
-
-
-# Cuisine detection (keyword-based)
-CUISINE_KEYWORDS: Dict[str, List[str]] = {
-    "Italian": ["pasta", "pizza", "risotto", "spaghetti", "lasagna", "mozzarella", "basil", "oregano"],
-    "Mexican": ["taco", "burrito", "quesadilla", "salsa", "tortilla", "jalapeno", "cilantro"],
-    "Indian": ["curry", "masala", "tikka", "naan", "paneer", "biryani", "tandoori", "samosa", "chutney", "dal"],
-    "Chinese": ["noodle", "fried rice", "dim sum", "soy sauce", "tofu", "wok", "dumpling"],
-    "American": ["burger", "fries", "steak", "bbq", "sandwich", "wings"],
-    "Japanese": ["sushi", "ramen", "tempura", "miso", "teriyaki", "sashimi", "udon", "wasabi"],
-    "Mediterranean": ["hummus", "falafel", "pita", "olive", "feta", "gyro", "tzatziki", "kebab"],
-    "Thai": ["pad thai", "curry", "lemongrass", "coconut milk", "satay", "tom yum"],
-}
-
-
-def detect_cuisine(text: str) -> str:
-    """Detect cuisine from name + description. Returns cuisine name or 'Global'."""
-    t = text.lower()
-    best, best_count = "Global", 0
-    for cuisine, keywords in CUISINE_KEYWORDS.items():
-        n = sum(1 for k in keywords if k in t)
-        if n > best_count:
-            best_count = n
-            best = cuisine
-    return best
-
-
-def get_allergens_from_ingredients(ingredients: List[str]) -> List[str]:
-    """Run compliance engine with allergy restrictions; return triggered allergen labels."""
-    allergy_rids = [
-        "peanut_allergy", "tree_nut_allergy", "soy_allergy", "shellfish_allergy",
-        "fish_allergy", "sesame_allergy", "onion_allergy", "garlic_allergy",
-    ]
-    engine = ComplianceEngine()
-    verdict = engine.evaluate(ingredients, restriction_ids=allergy_rids)
-    rid_to_label = {
-        "peanut_allergy": "Peanuts", "tree_nut_allergy": "Tree Nuts", "soy_allergy": "Soy",
-        "shellfish_allergy": "Shellfish", "fish_allergy": "Fish", "sesame_allergy": "Sesame",
-        "onion_allergy": "Onion", "garlic_allergy": "Garlic",
-    }
-    return [rid_to_label[r] for r in verdict.triggered_restrictions if r in rid_to_label]

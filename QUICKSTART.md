@@ -13,16 +13,16 @@
     ```bash
     supabase start
     ```
-    *Note: This spins up the local database and vector store.*
+    *Note: This spins up the local database (ingredient knowledge, optional users).*
 
 ## Step 2: Start Backend (Python)
-1.  **Navigate to root**:
+1.  **Navigate to backend**:
     ```bash
-    cd /path/to/IngreSure
+    cd /path/to/IngreSure/backend
     ```
 2.  **Run FastAPI**:
     ```bash
-    python3 ai/app.py
+    python3 -m uvicorn app:app --reload --host 0.0.0.0 --port 8000
     ```
     *Server will start on `http://localhost:8000`.*
 
@@ -39,8 +39,7 @@
 
 ## Step 4: Access the App
 - **Grocery Assistant**: [http://localhost:3000/chat](http://localhost:3000/chat)
-- **Restaurant Assistant**: [http://localhost:3000/restaurant/chat](http://localhost:3000/restaurant/chat)
-- **Partner Dashboard**: [http://localhost:3000/dashboard](http://localhost:3000/dashboard)
+- **Scan**: [http://localhost:3000/scan](http://localhost:3000/scan)
 
 ## Trouble? 
 - **DB Connection Error?** Check if `supabase start` finished successfully.

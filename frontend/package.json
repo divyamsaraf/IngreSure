@@ -14,8 +14,6 @@
     "@mui/icons-material": "^7.3.6",
     "@mui/material": "^7.3.6",
     "@mui/material-nextjs": "^7.3.6",
-    "@supabase/supabase-js": "^2.39.0",
-    "@tanstack/react-query": "^5.0.0",
     "lucide-react": "^0.460.0",
     "next": "16.0.7",
     "react": "19.2.0",

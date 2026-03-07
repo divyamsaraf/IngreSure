@@ -149,25 +149,3 @@ def preprocess_ingredients_to_strings(
     """
     items = preprocess_ingredients(raw_str, normalizer_fn=normalizer_fn)
     return [x["name"] for x in items]
-
-
-def get_trace_keys(preprocessed: List[Dict[str, Any]]) -> set:
-    """Return set of normalized ingredient keys that are marked as trace (<2%)."""
-    return {x["name"] for x in preprocessed if x.get("trace")}
-
-
-def filter_trace_by_profile(
-    preprocessed: List[Dict[str, Any]],
-    profile_allergens: List[str],
-    profile_restriction_ids: List[str],
-) -> List[Dict[str, Any]]:
-    """
-    Optional: keep trace ingredients in the list only if they might conflict with profile.
-    E.g. user allergic to peanuts -> keep trace peanut for evaluation.
-    Otherwise trace items can be excluded from evaluation (informational only).
-    """
-    if not profile_allergens and not profile_restriction_ids:
-        return preprocessed
-    # For now we keep all trace in the list; engine will evaluate and only NOT_SAFE on conflict.
-    # Informational logging for trace+unknown is in the engine.
-    return preprocessed

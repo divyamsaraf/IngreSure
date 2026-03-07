@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Verify Supabase connectivity (used by knowledge DB, RAG, unknowns).
+Verify Supabase connectivity (knowledge DB, unknown_ingredients).
 Run from repo root: python backend/scripts/verify_supabase.py
 Or from backend:  python scripts/verify_supabase.py
 
@@ -79,7 +79,7 @@ def main() -> int:
         print("\n  Table usage (required vs optional):")
         print("    Required for knowledge base: ingredient_groups, ingredients, ingredient_aliases, unknown_ingredients")
         print("    Optional: enrichment_metrics (analytics only; can drop if not used)")
-        print("    Required for RAG/menu: users, menu_items, item_ingredients, verified_items, embeddings, tag_history, verification_logs, restaurant_submissions")
+        print("    Optional: users (auth/demo). Menu/restaurant tables removed in 20260306100000.")
         print("  To fix 'RLS disabled': run  supabase db reset  or  supabase db push  (applies 20260306000000_enable_rls).")
         return 0
     except OSError as e:

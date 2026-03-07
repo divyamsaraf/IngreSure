@@ -40,7 +40,7 @@ def seed_user():
             "email": email,
             "password": demo_password,
             "email_confirm": True,
-            "user_metadata": {"name": "Demo Restaurant"}
+            "user_metadata": {"name": "Demo User"}
         }
         
         # We want to specify the ID if possible, but create_user usually generates it.
@@ -64,7 +64,7 @@ def seed_user():
              # 2. Insert into public.users
              public_user = {
                 "id": new_user_id,
-                "name": "Demo Restaurant",
+                "name": "Demo User",
                 "email": email,
                 "diet_type": "Omnivore"
              }

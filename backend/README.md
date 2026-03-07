@@ -130,7 +130,7 @@ If you don't use Supabase, leave `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` 
 - **Ollama** (llama3.2:3b) — local LLM for intent extraction and response generation
 - **USDA FDC API** (optional) — external ingredient lookup
 - **Open Food Facts** (optional) — additional ingredient data source
-- **Supabase** (optional) — for RAG/restaurant features and ingredient knowledge DB
+- **Supabase** (optional) — for ingredient knowledge DB and other features
 
 ## Production readiness (ingredient knowledge)
 
