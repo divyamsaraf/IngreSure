@@ -7,7 +7,7 @@ export default function ChatPage() {
                 <ChatInterface
                     apiEndpoint="/api/chat?mode=grocery"
                     title="Grocery Safety Assistant"
-                    subtitle="AI & rule-based ingredient checker"
+                    subtitle="AI-powered ingredient checker"
                     suggestions={[
                         "Ingredients: Sugar, Gelatin, Water. Is this Halal?",
                         "I am Jain. Can I eat potato chips?",

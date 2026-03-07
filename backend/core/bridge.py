@@ -77,6 +77,7 @@ ALLERGEN_TO_RESTRICTION_ID: Dict[str, str] = {
     "nut": "tree_nut_allergy",
     "nuts": "tree_nut_allergy",
     "tree_nut": "tree_nut_allergy",
+    "tree_nuts": "tree_nut_allergy",
     "soy": "soy_allergy",
     "shellfish": "shellfish_allergy",
     "fish": "fish_allergy",

@@ -6,8 +6,9 @@ import {
   UserProfile,
   DEFAULT_PROFILE,
   DIETARY_PREFERENCE_OPTIONS,
-  LIFESTYLE_OPTIONS,
+  ADDITIONAL_RESTRICTIONS,
   ALLERGEN_OPTIONS,
+  DIET_ICON,
 } from '@/types/userProfile'
 
 interface OnboardingModalProps {
@@ -171,41 +172,79 @@ export default function OnboardingModal({
             </div>
           </div>
           <p className="text-white/90 text-sm mt-1">
-            Set your diet, allergens & lifestyle — we use this for personalized ingredient checks.
+            Set your diet and restrictions so we can check ingredients accurately.
           </p>
         </div>
 
         {/* Single scrollable form */}
         <div className="p-5 overflow-y-auto space-y-6 min-h-0">
-          {/* 1. Dietary preference */}
+          {/* 1. Dietary Preference (primary — choose ONE) */}
           <section>
-            <h3 className="text-sm font-semibold text-slate-700 mb-2">Dietary preference</h3>
-            <div className="grid grid-cols-2 gap-2">
-              {DIETARY_PREFERENCE_OPTIONS.map(({ value, label }) => (
-                <button
-                  key={value}
-                  type="button"
-                  onClick={() =>
-                    setProfile((p) => ({ ...p, dietary_preference: value as UserProfile['dietary_preference'], diet: value }))
-                  }
-                  className={`p-3 rounded-xl border-2 text-left text-sm transition-all ${
-                    (profile.dietary_preference ?? profile.diet) === value
-                      ? 'border-blue-600 bg-blue-50 text-blue-700 font-medium'
-                      : 'border-slate-100 hover:border-blue-200 text-slate-700'
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
+            <h3 className="text-sm font-semibold text-slate-700 mb-2">Dietary Preference</h3>
+            <p className="text-xs text-slate-500 mb-2">Choose your main diet.</p>
+            <div className="flex flex-wrap gap-2">
+              {DIETARY_PREFERENCE_OPTIONS.map(({ value, label }) => {
+                const selected = (profile.dietary_preference ?? profile.diet ?? 'No rules') === value
+                const icon = DIET_ICON[value] ?? '🍽️'
+                return (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() =>
+                      setProfile((p) => ({ ...p, dietary_preference: value as UserProfile['dietary_preference'], diet: value }))
+                    }
+                    className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-full border-2 text-sm transition-all ${
+                      selected
+                        ? 'border-emerald-600 bg-emerald-50 text-emerald-800 font-medium'
+                        : 'border-slate-200 hover:border-emerald-200 text-slate-700'
+                    }`}
+                  >
+                    <span aria-hidden>{icon}</span>
+                    {label}
+                  </button>
+                )
+              })}
             </div>
           </section>
 
-          {/* 2. Allergens */}
+          {/* 2. Additional Restrictions (optional) */}
+          <section>
+            <h3 className="text-sm font-semibold text-slate-700 mb-2">Additional Restrictions</h3>
+            <p className="text-xs text-slate-500 mb-2">Optional filters on top of your diet.</p>
+            <div className="flex flex-wrap gap-2">
+              {ADDITIONAL_RESTRICTIONS.map(({ value, label }) => {
+                const selected = includesCI(profile.lifestyle ?? profile.lifestyle_flags ?? [], value)
+                return (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() =>
+                      setProfile((prev) => ({
+                        ...prev,
+                        lifestyle: toggleListCI(prev.lifestyle ?? prev.lifestyle_flags ?? [], value),
+                        lifestyle_flags: toggleListCI(prev.lifestyle_flags ?? prev.lifestyle ?? [], value),
+                      }))
+                    }
+                    className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-full border-2 text-sm transition-all ${
+                      selected
+                        ? 'border-blue-600 bg-blue-50 text-blue-700 font-medium'
+                        : 'border-slate-200 hover:border-blue-100 text-slate-700'
+                    }`}
+                  >
+                    {selected && <Check className="w-3.5 h-3.5" />}
+                    {label}
+                  </button>
+                )
+              })}
+            </div>
+          </section>
+
+          {/* 3. Allergens */}
           <section>
             <h3 className="text-sm font-semibold text-slate-700 mb-2">Allergens</h3>
             <p className="text-xs text-slate-500 mb-2">Select any that apply.</p>
             <div className="flex flex-wrap gap-2">
-              {ALLERGEN_OPTIONS.map((alg) => {
+              {[...ALLERGEN_OPTIONS].map((alg) => {
                 const selected = includesCI(profile.allergies ?? profile.allergens ?? [], alg)
                 return (
                   <button
@@ -278,32 +317,6 @@ export default function OnboardingModal({
             </div>
           </section>
 
-          {/* 3. Lifestyle */}
-          <section>
-            <h3 className="text-sm font-semibold text-slate-700 mb-2">Lifestyle</h3>
-            <div className="flex flex-wrap gap-2">
-              {LIFESTYLE_OPTIONS.map((opt) => (
-                <button
-                  key={opt}
-                  type="button"
-                  onClick={() =>
-                    setProfile((prev) => ({
-                      ...prev,
-                      lifestyle: toggleList(prev.lifestyle ?? prev.lifestyle_flags ?? [], opt),
-                      lifestyle_flags: toggleList(prev.lifestyle_flags ?? prev.lifestyle ?? [], opt),
-                    }))
-                  }
-                  className={`px-3 py-2 rounded-lg border-2 text-sm ${
-                    (profile.lifestyle ?? profile.lifestyle_flags ?? []).includes(opt)
-                      ? 'border-blue-600 bg-blue-50 text-blue-700 font-medium'
-                      : 'border-slate-100 hover:border-blue-200 text-slate-700'
-                  }`}
-                >
-                  {opt}
-                </button>
-              ))}
-            </div>
-          </section>
         </div>
 
         {/* Footer - sticky */}
@@ -315,14 +328,14 @@ export default function OnboardingModal({
               className="w-full flex items-center justify-center gap-2 py-2.5 rounded-[12px] border-2 border-slate-200 text-slate-600 hover:bg-slate-100 hover:border-slate-300 transition-colors text-sm font-medium"
             >
               <RotateCcw className="w-4 h-4" />
-              Reset profile
+              Reset Profile
             </button>
           )}
           <button
             onClick={handleSave}
             className="w-full bg-gradient-to-r from-[#0F172A] to-[#10B981] text-white py-3 rounded-[12px] font-bold hover:opacity-95 transition-opacity shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
           >
-            {editMode ? 'Save changes' : 'Save & start chatting'}
+            {editMode ? 'Save Changes' : 'Save & start chatting'}
           </button>
         </div>
       </div>

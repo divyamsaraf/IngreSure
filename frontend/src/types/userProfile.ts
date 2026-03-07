@@ -58,29 +58,57 @@ export const DEFAULT_PROFILE: UserProfile = {
   is_onboarding_completed: false,
 };
 
+/** Diet display name → icon for scanability. */
+export const DIET_ICON: Record<string, string> = {
+  "No rules": "🍽️",
+  Vegan: "🌱",
+  Vegetarian: "🥗",
+  Pescatarian: "🐟",
+  Jain: "🙏",
+  Halal: "☪️",
+  Kosher: "✡️",
+  "Hindu Vegetarian": "🪔",
+  "Hindu Non Vegetarian": "🍗",
+  "Hindu Veg": "🥗",
+};
+
+/** Primary diet only (choose ONE). No Lacto/Ovo — use Additional Restrictions for Gluten-Free etc. */
 export const DIETARY_PREFERENCE_OPTIONS: { value: string; label: string }[] = [
-  { value: "No rules", label: "No rules" },
-  { value: "Jain", label: "Jain" },
+  { value: "No rules", label: "No preference" },
   { value: "Vegan", label: "Vegan" },
   { value: "Vegetarian", label: "Vegetarian" },
-  { value: "Hindu Veg", label: "Hindu Veg" },
-  { value: "Hindu Non Vegetarian", label: "Hindu Non Vegetarian" },
+  { value: "Pescatarian", label: "Pescatarian" },
+  { value: "Jain", label: "Jain" },
   { value: "Halal", label: "Halal" },
   { value: "Kosher", label: "Kosher" },
-  { value: "Lacto Vegetarian", label: "Lacto Vegetarian" },
-  { value: "Ovo Vegetarian", label: "Ovo Vegetarian" },
-  { value: "Pescatarian", label: "Pescatarian" },
+  { value: "Hindu Vegetarian", label: "Hindu Vegetarian" },
+  { value: "Hindu Non Vegetarian", label: "Hindu Non Vegetarian" },
+];
+
+/** Additional restrictions (optional, multi-select). Stored in lifestyle. */
+export const ADDITIONAL_RESTRICTIONS: { value: string; label: string }[] = [
   { value: "Gluten-Free", label: "Gluten-Free" },
   { value: "Dairy-Free", label: "Dairy-Free" },
   { value: "Egg-Free", label: "Egg-Free" },
+  { value: "no onion", label: "No Onion" },
+  { value: "no garlic", label: "No Garlic" },
+  { value: "no alcohol", label: "No Alcohol" },
+  { value: "no palm oil", label: "No Palm Oil" },
+  { value: "no insect derived", label: "No Insect-Derived Ingredients" },
 ];
 
-export const LIFESTYLE_OPTIONS = ["no alcohol", "no insect derived", "no palm oil", "no onion", "no garlic"] as const;
+/** Legacy: same as ADDITIONAL_RESTRICTIONS values for backward compat. */
+export const LIFESTYLE_OPTIONS = [
+  "no alcohol",
+  "no insect derived",
+  "no palm oil",
+  "no onion",
+  "no garlic",
+] as const;
 
 export const ALLERGEN_OPTIONS = [
   "Milk",
-  "Egg",
-  "Nuts",
+  "Eggs",
   "Peanuts",
   "Tree Nuts",
   "Soy",
@@ -126,10 +154,10 @@ function normalizeAllergen(s: string): string {
  * If no match found, return the original string (for custom allergens).
  */
 const _BACKEND_TO_DISPLAY: Record<string, string> = {};
-// Build reverse map: lowercase/normalized -> display name
 for (const opt of ALLERGEN_OPTIONS) {
   _BACKEND_TO_DISPLAY[normalizeAllergen(opt)] = opt;
 }
+_BACKEND_TO_DISPLAY["egg"] = "Eggs"; // backend may return "egg"
 
 function allergenToDisplay(backendName: string): string {
   const key = normalizeAllergen(backendName);

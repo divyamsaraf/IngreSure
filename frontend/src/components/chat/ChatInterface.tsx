@@ -9,7 +9,7 @@ import IngredientAuditCards, {
   IngredientAuditGroup,
   IngredientStatus,
 } from './IngredientAuditCards'
-import { UserProfile, DEFAULT_PROFILE, backendToProfile, profileToBackend } from '@/types/userProfile'
+import { UserProfile, DEFAULT_PROFILE, backendToProfile, profileToBackend, DIET_ICON } from '@/types/userProfile'
 
 const USER_ID_KEY = 'ingresure_user_id'
 
@@ -103,6 +103,13 @@ interface ChatInterfaceProps {
     title?: string
     subtitle?: string
     suggestions?: string[]
+}
+
+function getDietIcon(diet: string | undefined): string {
+    if (!diet || diet === 'No rules') return DIET_ICON['No rules'] ?? '🍽️'
+    const key = diet.trim()
+    const found = DIET_ICON[key] ?? Object.entries(DIET_ICON).find(([k]) => k.toLowerCase() === key.toLowerCase())?.[1]
+    return found ?? '🥗'
 }
 
 function RecentChecksSection({ queries, onSelect }: { queries: string[]; onSelect: (q: string) => void }) {
@@ -418,24 +425,33 @@ export default function ChatInterface({
                 editMode={profile.is_onboarding_completed}
             />
 
-            {/* Header (sticky within container) */}
+            {/* Header: left = product identity, right = profile context (sticky when chat scrolls) */}
             <div className="sticky top-0 z-10 bg-white border-b border-slate-100 shrink-0 px-6 py-4">
-                <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center justify-between gap-4">
                     <div className="min-w-0">
                         <h1 className="font-serif text-lg font-semibold text-slate-900 truncate">{title}</h1>
                         <p className="text-sm text-slate-500 truncate">{subtitle}</p>
                     </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                        <span className="text-xs font-medium text-slate-600 truncate max-w-[100px]">
-                            {profileLoaded && profile.dietary_preference && profile.dietary_preference !== 'No rules' ? profile.dietary_preference : ''}
-                        </span>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                        {profileLoaded && profile.dietary_preference && profile.dietary_preference !== 'No rules' ? (
+                            <span
+                                className="inline-flex items-center gap-1.5 rounded-full border font-semibold text-[13px] px-2.5 py-1"
+                                style={{ background: '#ecfdf5', borderColor: '#bbf7d0', color: '#065f46' }}
+                                title="Active diet profile"
+                            >
+                                {getDietIcon(profile.dietary_preference)} {profile.dietary_preference}
+                            </span>
+                        ) : (
+                            <span className="text-[13px] text-slate-500">No diet set</span>
+                        )}
                         <button
                             type="button"
                             onClick={() => setShowOnboarding(true)}
-                            className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+                            className="ml-1.5 text-[13px] font-medium cursor-pointer transition-colors hover:underline"
+                            style={{ color: '#2563eb' }}
                             aria-label="Edit profile"
                         >
-                            Edit Profile
+                            Edit
                         </button>
                     </div>
                 </div>
@@ -502,6 +518,11 @@ export default function ChatInterface({
                                     </div>
                                 ) : msg.role === 'assistant' && msg.audit ? (
                                     <div className="space-y-3">
+                                        {profile.dietary_preference && profile.dietary_preference !== 'No rules' && (
+                                            <p className="text-xs font-medium text-slate-500">
+                                                Checked using: {getDietIcon(profile.dietary_preference)} {profile.dietary_preference} profile
+                                            </p>
+                                        )}
                                         {msg.content.trim() ? (
                                             <FormattedMessage content={msg.content.trim()} isUser={false} />
                                         ) : null}

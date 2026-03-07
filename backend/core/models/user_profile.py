@@ -7,29 +7,23 @@ Updates merge without overwriting existing fields (partial updates).
 from dataclasses import dataclass, field, asdict
 from typing import List, Optional
 
-# Canonical display values for dietary preference (includes religious diets)
+# Canonical display values for dietary preference (primary diet only; aligned with frontend)
 DIETARY_PREFERENCE_CHOICES = [
     "No rules",
-    "Jain",
     "Vegan",
     "Vegetarian",
-    "Hindu Veg",
-    "Hindu Non Vegetarian",
+    "Pescatarian",
+    "Jain",
     "Halal",
     "Kosher",
-    "Lacto Vegetarian",
-    "Ovo Vegetarian",
-    "Pescatarian",
-    "Gluten-Free",
-    "Dairy-Free",
-    "Egg-Free",
+    "Hindu Vegetarian",
+    "Hindu Non Vegetarian",
 ]
 
-# Allergen options (display names)
+# Allergen options (display names; aligned with frontend)
 ALLERGEN_CHOICES = [
     "Milk",
-    "Egg",
-    "Nuts",
+    "Eggs",
     "Peanuts",
     "Tree Nuts",
     "Soy",
@@ -42,8 +36,17 @@ ALLERGEN_CHOICES = [
     "Other",
 ]
 
-# Lifestyle flags
-LIFESTYLE_CHOICES = ["no alcohol", "no insect derived", "no palm oil", "no onion", "no garlic"]
+# Additional restrictions / lifestyle flags (stored in lifestyle; aligned with frontend ADDITIONAL_RESTRICTIONS)
+LIFESTYLE_CHOICES = [
+    "no alcohol",
+    "no insect derived",
+    "no palm oil",
+    "no onion",
+    "no garlic",
+    "Gluten-Free",
+    "Dairy-Free",
+    "Egg-Free",
+]
 
 
 @dataclass
