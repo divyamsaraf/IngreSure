@@ -471,3 +471,126 @@ def compose_no_ingredients() -> str:
         "It looks like you didn't mention any specific ingredients. "
         "Try something like **\"Can I eat eggs?\"** or paste an ingredient list from a product label."
     )
+
+
+# ---------------------------------------------------------------------------
+# Structured audit payload for frontend (<<<INGREDIENT_AUDIT>>> JSON)
+# ---------------------------------------------------------------------------
+# Common alternatives for avoid items (ingredient key -> list of alternatives)
+INGREDIENT_ALTERNATIVES: Dict[str, List[str]] = {
+    "gelatin": ["Agar", "Pectin"],
+    "potato": ["Corn chips", "Rice-based snacks"],
+    "potato chips": ["Corn chips", "Rice chips"],
+    "onion": ["Asafoetida (hing)", "Fennel"],
+    "garlic": ["Asafoetida (hing)", "Ginger"],
+    "egg": ["Flax egg", "Chia egg", "Aquafaba"],
+    "eggs": ["Flax egg", "Chia egg", "Aquafaba"],
+    "honey": ["Maple syrup", "Agave", "Date syrup"],
+    "milk": ["Oat milk", "Almond milk", "Soy milk"],
+    "butter": ["Vegan butter", "Coconut oil"],
+    "cream": ["Coconut cream", "Cashew cream"],
+    "cheese": ["Nutritional yeast", "Vegan cheese"],
+    "fish": ["Tempeh", "Tofu"],
+    "chicken": ["Tofu", "Seitan", "Jackfruit"],
+    "pork": ["Tofu", "Seitan", "Mushrooms"],
+    "beef": ["Tofu", "Seitan", "Lentils"],
+}
+
+
+def build_ingredient_audit_payload(
+    verdict: ComplianceVerdict,
+    profile: Any,
+    ingredients: List[str],
+    display_names: Optional[Dict[str, str]] = None,
+    explanation_text: str = "",
+) -> Dict[str, Any]:
+    """
+    Build the structured payload for <<<INGREDIENT_AUDIT>>> for the frontend.
+    Returns a dict with keys: summary, groups (list of {status, items}), explanation.
+    """
+    dn = display_names or {}
+    triggered = verdict.triggered_ingredients or []
+    triggered_to_input = verdict.triggered_ingredient_to_input or {}
+    restrictions = verdict.triggered_restrictions or []
+    uncertain = verdict.uncertain_ingredients or []
+
+    def _display(ing: str) -> str:
+        key = ing.lower().strip()
+        if key in dn:
+            return (dn[key] or ing).strip().title()
+        norm = _normalize_for_match(key)
+        if norm in dn:
+            return (dn[norm] or ing).strip().title()
+        return (ing or "").strip().title() or "Unknown"
+
+    def _alternatives(ing: str) -> List[str]:
+        key = ing.lower().strip()
+        alts = INGREDIENT_ALTERNATIVES.get(key)
+        if alts:
+            return alts
+        norm = _normalize_for_match(key)
+        return INGREDIENT_ALTERNATIVES.get(norm, [])
+
+    triggered_norm = {_normalize_for_match(i) for i in triggered}
+    uncertain_norm = {_normalize_for_match(i) for i in uncertain}
+    safe_list = [
+        i for i in ingredients
+        if _normalize_for_match(i) not in triggered_norm and _normalize_for_match(i) not in uncertain_norm
+    ]
+    # Filter product words from safe list
+    safe_list = [i for i in safe_list if not _is_product_word(i)]
+
+    allergy_restrictions = [r for r in restrictions if (r or "").endswith("_allergy")]
+    diet_restrictions = [r for r in restrictions if r and not r.endswith("_allergy")]
+
+    groups: List[Dict[str, Any]] = []
+
+    # Avoid
+    avoid_items: List[Dict[str, Any]] = []
+    for ing in triggered:
+        display_name = _display(triggered_to_input.get(ing, ing))
+        diets = [_restriction_label(r) for r in diet_restrictions]
+        allergens = [_restriction_label(r) for r in allergy_restrictions]
+        avoid_items.append({
+            "name": display_name,
+            "diets": diets if diets else None,
+            "allergens": allergens if allergens else None,
+            "alternatives": _alternatives(ing) or None,
+        })
+    if avoid_items:
+        groups.append({"status": "avoid", "items": avoid_items})
+
+    # Depends
+    depends_items: List[Dict[str, Any]] = []
+    for ing in uncertain:
+        display_name = _display(ing)
+        depends_items.append({
+            "name": display_name,
+            "diets": [_restriction_label(r) for r in diet_restrictions] if diet_restrictions else None,
+            "allergens": [_restriction_label(r) for r in allergy_restrictions] if allergy_restrictions else None,
+            "alternatives": None,
+        })
+    if depends_items:
+        groups.append({"status": "depends", "items": depends_items})
+
+    # Safe
+    safe_items: List[Dict[str, Any]] = []
+    for ing in safe_list:
+        display_name = _display(ing)
+        safe_items.append({
+            "name": display_name,
+            "diets": None,
+            "allergens": None,
+            "alternatives": None,
+        })
+    if safe_items:
+        groups.append({"status": "safe", "items": safe_items})
+
+    counts = {"safe": len(safe_items), "avoid": len(avoid_items), "depends": len(depends_items)}
+    summary = f"{counts['safe']} Safe, {counts['avoid']} Avoid, {counts['depends']} Depends"
+
+    return {
+        "summary": summary,
+        "groups": groups,
+        "explanation": explanation_text.strip() or None,
+    }

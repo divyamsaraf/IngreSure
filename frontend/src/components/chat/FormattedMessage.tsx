@@ -18,7 +18,7 @@ export default function FormattedMessage({ content, isUser = false }: FormattedM
   if (!content) return null
 
   if (isUser) {
-    return <p className="leading-relaxed">{content}</p>
+    return <p className="text-base leading-[1.5] text-white">{content}</p>
   }
 
   const blocks = content.split('\n')
@@ -29,11 +29,11 @@ export default function FormattedMessage({ content, isUser = false }: FormattedM
   const flushBullets = () => {
     if (bulletBuffer.length === 0) return
     elements.push(
-      <ul key={`ul-${keyIdx++}`} className="space-y-1.5 my-2">
+      <ul key={`ul-${keyIdx++}`} className="space-y-1.5 my-2 list-none">
         {bulletBuffer.map((item, i) => (
           <li key={i} className="flex items-start gap-2">
-            <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-red-400 flex-shrink-0" />
-            <span className="leading-relaxed">{renderInline(item)}</span>
+            <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-[#10B981] flex-shrink-0" aria-hidden />
+            <span className="leading-[1.5] text-[#0F172A]">{renderInline(item)}</span>
           </li>
         ))}
       </ul>
@@ -57,7 +57,7 @@ export default function FormattedMessage({ content, isUser = false }: FormattedM
     }
 
     elements.push(
-      <p key={`p-${keyIdx++}`} className="leading-relaxed">
+      <p key={`p-${keyIdx++}`} className="leading-[1.5] text-[#0F172A]">
         {renderInline(trimmed)}
       </p>
     )
@@ -65,7 +65,7 @@ export default function FormattedMessage({ content, isUser = false }: FormattedM
 
   flushBullets()
 
-  return <div className="space-y-1">{elements}</div>
+  return <div className="space-y-2 text-base">{elements}</div>
 }
 
 /**
@@ -81,22 +81,22 @@ function renderInline(text: string): React.ReactNode[] {
   let key = 0
 
   while ((match = regex.exec(text)) !== null) {
-    // Push text before the match
+    // Push text before the match (inherit color from parent)
     if (match.index > lastIndex) {
-      nodes.push(<span key={`t-${key++}`}>{text.slice(lastIndex, match.index)}</span>)
+      nodes.push(<span key={`t-${key++}`} className="text-inherit">{text.slice(lastIndex, match.index)}</span>)
     }
 
     if (match[1]) {
-      // **bold**
+      // **bold** – key ingredients / warnings
       nodes.push(
-        <strong key={`b-${key++}`} className="font-semibold text-slate-900">
+        <strong key={`b-${key++}`} className="font-semibold text-[#0F172A]">
           {match[2]}
         </strong>
       )
     } else if (match[3]) {
-      // _italic_
+      // _italic_ – conditional notes
       nodes.push(
-        <em key={`i-${key++}`} className="text-slate-500 italic text-[0.85em]">
+        <em key={`i-${key++}`} className="text-slate-600 italic text-[0.95em]">
           {match[4]}
         </em>
       )
@@ -107,7 +107,7 @@ function renderInline(text: string): React.ReactNode[] {
 
   // Push remaining text
   if (lastIndex < text.length) {
-    nodes.push(<span key={`t-${key++}`}>{text.slice(lastIndex)}</span>)
+    nodes.push(<span key={`t-${key++}`} className="text-inherit">{text.slice(lastIndex)}</span>)
   }
 
   return nodes

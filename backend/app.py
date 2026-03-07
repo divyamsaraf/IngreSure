@@ -68,6 +68,7 @@ from core.response_composer import (
     compose_verdict as template_verdict,
     compose_general_question as template_general,
     compose_no_ingredients as template_no_ingredients,
+    build_ingredient_audit_payload,
 )
 from core.llm_response import (
     llm_compose_greeting,
@@ -219,8 +220,8 @@ def root():
 
 @app.get("/health")
 def health_check():
-    """Dedicated health endpoint for Docker/K8s healthchecks."""
-    return {"status": "ok", "service": "IngreSure AI Scanner"}
+    """Health for Docker/K8s. ingredient_audit_emitter: true means chat emits <<<INGREDIENT_AUDIT>>>."""
+    return {"status": "ok", "service": "IngreSure AI Scanner", "ingredient_audit_emitter": True}
 
 
 @app.post("/onboard-menu")
@@ -341,6 +342,18 @@ async def chat_grocery(request: ChatRequest):
             # Auto-assign user_id if not provided (eliminates legacy fallback path)
             user_id = request.user_id or f"anon-{uuid.uuid4().hex[:12]}"
             profile = get_or_create_profile(user_id)
+            # Merge client-sent profile so backend has latest (e.g. Jain from onboarding)
+            if getattr(request, "userProfile", None) and isinstance(request.userProfile, dict):
+                try:
+                    client = UserProfile.from_dict({**request.userProfile, "user_id": user_id})
+                    if client.dietary_preference and client.dietary_preference != "No rules":
+                        profile.update_merge(dietary_preference=client.dietary_preference)
+                    if client.allergens:
+                        profile.update_merge(allergens=client.allergens)
+                    if client.lifestyle:
+                        profile.update_merge(lifestyle=client.lifestyle)
+                except Exception as e:
+                    logger.warning("Could not merge request.userProfile: %s", e)
 
             # 1) /update slash-command
             field_name, values = _parse_update_command(query)
@@ -467,7 +480,17 @@ async def chat_grocery(request: ChatRequest):
                 updated_fields=updated_fields if profile_was_updated else None,
                 display_names=compound_map if compound_map else None,
             )
-            yield response_text
+            # 11) Emit structured <<<INGREDIENT_AUDIT>>> JSON for premium frontend cards
+            audit_payload = build_ingredient_audit_payload(
+                verdict=verdict,
+                profile=profile,
+                ingredients=eval_ingredients,
+                display_names=compound_map if compound_map else None,
+                explanation_text=response_text,
+            )
+            audit_block = f"<<<INGREDIENT_AUDIT>>>{json.dumps(audit_payload)}<<<INGREDIENT_AUDIT>>>"
+            logger.info("INGREDIENT_AUDIT_EMITTED groups=%s", [g.get("status") for g in audit_payload.get("groups", [])])
+            yield audit_block
             yield _profile_json(profile)
 
         return StreamingResponse(generate_safety(), media_type="text/plain")

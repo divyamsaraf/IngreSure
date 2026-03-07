@@ -19,6 +19,8 @@ cp .env.example .env
 
 ## Running
 
+The frontend chat page proxies to this backend. For the **premium ingredient audit UI** (summary pills, grouped cards, “Read more” explanation), the backend must be running so it can emit `<<<INGREDIENT_AUDIT>>>` JSON in the stream.
+
 ```bash
 # Development (with hot reload)
 USE_NEW_ENGINE=true uvicorn app:app --reload --host 0.0.0.0 --port 8000

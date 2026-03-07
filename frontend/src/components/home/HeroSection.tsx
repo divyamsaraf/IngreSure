@@ -27,7 +27,7 @@ export default function HeroSection() {
 
           <div className="flex flex-wrap items-center gap-4">
             <Button href="/chat" variant="primary">
-              Start Grocery Audit
+              Start Audit
               <ArrowRight className="h-5 w-5 ml-2" />
             </Button>
             <Button

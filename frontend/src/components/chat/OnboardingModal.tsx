@@ -144,10 +144,10 @@ export default function OnboardingModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col animate-in zoom-in-95 duration-200">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-5 text-white shrink-0">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+      <div className="bg-white rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,0.08)] w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col animate-in zoom-in-95 duration-200">
+        {/* Header - sticky */}
+        <div className="bg-gradient-to-r from-[#0F172A] to-[#10B981] p-5 text-white shrink-0 sticky top-0">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold">
               {editMode ? 'Edit profile' : 'Set your safety profile'}
@@ -170,7 +170,7 @@ export default function OnboardingModal({
               </button>
             </div>
           </div>
-          <p className="text-blue-100 text-sm mt-1">
+          <p className="text-white/90 text-sm mt-1">
             Set your diet, allergens & lifestyle — we use this for personalized ingredient checks.
           </p>
         </div>
@@ -306,13 +306,13 @@ export default function OnboardingModal({
           </section>
         </div>
 
-        {/* Footer */}
-        <div className="p-5 border-t border-slate-100 bg-slate-50/50 shrink-0 space-y-2">
+        {/* Footer - sticky */}
+        <div className="p-5 border-t border-slate-100 bg-slate-50/50 shrink-0 sticky bottom-0 space-y-2">
           {editMode && (
             <button
               type="button"
               onClick={handleReset}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border-2 border-slate-200 text-slate-600 hover:bg-slate-100 hover:border-slate-300 transition-colors text-sm font-medium"
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-[12px] border-2 border-slate-200 text-slate-600 hover:bg-slate-100 hover:border-slate-300 transition-colors text-sm font-medium"
             >
               <RotateCcw className="w-4 h-4" />
               Reset profile
@@ -320,7 +320,7 @@ export default function OnboardingModal({
           )}
           <button
             onClick={handleSave}
-            className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/20"
+            className="w-full bg-gradient-to-r from-[#0F172A] to-[#10B981] text-white py-3 rounded-[12px] font-bold hover:opacity-95 transition-opacity shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
           >
             {editMode ? 'Save changes' : 'Save & start chatting'}
           </button>

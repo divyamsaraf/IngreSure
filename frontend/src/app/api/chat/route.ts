@@ -8,6 +8,7 @@ export async function POST(req: NextRequest) {
         const modeParam = req.nextUrl.searchParams.get('mode')
         const mode = (typeof modeParam === 'string' && modeParam.split('?')[0] === 'restaurant') ? 'restaurant' : 'grocery'
 
+        // Backend must be running (e.g. cd backend && uvicorn app:app --reload) and emit <<<INGREDIENT_AUDIT>>> JSON for premium cards
         const backendUrl = process.env.BACKEND_URL || 'http://127.0.0.1:8000'
         const endpoint = mode === 'restaurant' ? '/chat/restaurant' : '/chat/grocery'
 

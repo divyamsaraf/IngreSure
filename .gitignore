@@ -3,6 +3,11 @@ PROJECT_DETAILS.md
 
 # Documentation (phase reports, technical/refactor/arch/tech stack)
 docs/
+backend/docs/
+
+# Local-only scripts (verification, restart; not required in repo)
+backend/scripts/verify_chat_audit.py
+backend/scripts/restart_backend.sh
 
 # Local env (flags, secrets)
 backend/.env

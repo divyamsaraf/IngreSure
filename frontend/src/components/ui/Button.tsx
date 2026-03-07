@@ -26,7 +26,7 @@ export function Button(props: ButtonProps) {
     children,
     href,
     ...rest
-  } = props as any
+  } = props
 
   const base =
     'inline-flex items-center justify-center font-semibold transition-transform transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40 disabled:opacity-60 disabled:pointer-events-none'
@@ -43,7 +43,7 @@ export function Button(props: ButtonProps) {
     md: 'px-5 py-2.5 text-sm rounded-[16px]',
   }
 
-  const composed = [base, variantClasses[variant], sizeClasses[size], className]
+  const composed = [base, variantClasses[variant as Variant], sizeClasses[size as Size], className]
     .filter(Boolean)
     .join(' ')
 

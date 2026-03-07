@@ -1,12 +1,13 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
-import { Send, User, Bot, Loader2 } from 'lucide-react'
+import { Send, User, Bot, Loader2, ChevronDown, ShieldCheck } from 'lucide-react'
 import OnboardingModal from './OnboardingModal'
-import ProfileHeader from './ProfileHeader'
 import FormattedMessage from './FormattedMessage'
 import IngredientAuditCards, {
   IngredientAuditData,
+  IngredientAuditGroup,
+  IngredientStatus,
 } from './IngredientAuditCards'
 import { UserProfile, DEFAULT_PROFILE, backendToProfile, profileToBackend } from '@/types/userProfile'
 
@@ -104,6 +105,44 @@ interface ChatInterfaceProps {
     suggestions?: string[]
 }
 
+function RecentChecksSection({ queries, onSelect }: { queries: string[]; onSelect: (q: string) => void }) {
+    const [open, setOpen] = useState(true)
+    return (
+        <div className="px-4 pb-1 pt-2 bg-white border-t border-slate-100">
+            <button
+                type="button"
+                onClick={() => setOpen((v) => !v)}
+                className="flex items-center gap-2 w-full text-left py-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 rounded"
+                aria-expanded={open}
+            >
+                <span className="text-[11px] font-medium text-slate-500">
+                    Recent checks:
+                </span>
+                <span className="text-slate-400 text-[10px]">
+                    {queries.length} {queries.length === 1 ? 'query' : 'queries'}
+                </span>
+                <span className={`ml-auto inline-block transition-transform duration-200 ${open ? 'rotate-180' : ''}`}>
+                    <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                </span>
+            </button>
+            {open && (
+                <div className="flex flex-wrap gap-2 pt-1 pb-2 animate-in fade-in slide-in-from-top-1 duration-200">
+                    {queries.map((q) => (
+                        <button
+                            key={q}
+                            type="button"
+                            onClick={() => onSelect(q)}
+                            className="text-[11px] bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-full hover:border-emerald-300 hover:text-emerald-700 hover:bg-emerald-50/60 hover:shadow-[0_2px_8px_rgba(0,0,0,0.08)] transition-all"
+                        >
+                            {q.length > 60 ? q.slice(0, 57) + '…' : q}
+                        </button>
+                    ))}
+                </div>
+            )}
+        </div>
+    )
+}
+
 export default function ChatInterface({
     apiEndpoint = '/api/chat',
     title = 'IngreSure Assistant',
@@ -169,11 +208,26 @@ export default function ChatInterface({
           })
     }, [apiEndpoint])
 
+    // Open profile modal when navigating with ?openProfile=1 (e.g. from navbar avatar)
+    useEffect(() => {
+        if (typeof window === 'undefined') return
+        const params = new URLSearchParams(window.location.search)
+        if (params.get('openProfile') === '1') {
+            setShowOnboarding(true)
+            const url = new URL(window.location.href)
+            url.searchParams.delete('openProfile')
+            window.history.replaceState({}, '', url.pathname + (url.search || ''))
+        }
+    }, [])
+
     const saveProfile = (newProfile: UserProfile) => {
         const uid = userId || getOrCreateUserId()
         const toSave = { ...newProfile, user_id: uid, is_onboarding_completed: true }
         setProfile(toSave)
         localStorage.setItem('ingresure_profile', JSON.stringify(toSave))
+        if (typeof window !== 'undefined') {
+            window.dispatchEvent(new CustomEvent('ingresure-profile-updated'))
+        }
 
         const payload = profileToBackend(toSave, uid)
         fetch(`${profileApiBase}/profile`, {
@@ -353,7 +407,7 @@ export default function ChatInterface({
     ).slice(0, 5)
 
     return (
-        <div className="flex flex-col h-[85vh] max-h-[900px] border border-slate-100 rounded-2xl bg-white shadow-xl overflow-hidden backdrop-blur-sm relative">
+        <div className="flex flex-col flex-1 min-h-0 w-full max-w-[700px] mx-auto border border-slate-100 rounded-2xl bg-[#F8FAFC] shadow-[0_2px_8px_rgba(0,0,0,0.08)] overflow-hidden">
 
             {/* Onboarding Modal */}
             <OnboardingModal
@@ -364,37 +418,33 @@ export default function ChatInterface({
                 editMode={profile.is_onboarding_completed}
             />
 
-            {/* Header Area */}
-            <div className="sticky top-0 z-10 bg-slate-50/95 backdrop-blur border-b border-slate-100">
-                {/* Main Title Bar */}
-                <div className="p-4 flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 bg-slate-900 text-white rounded-xl shadow-sm">
-                            <Bot className="w-5 h-5" />
-                        </div>
-                        <div>
-                            <h2 className="font-serif text-lg font-semibold text-slate-900">
-                                {title}
-                            </h2>
-                            <p className="text-[11px] text-slate-500 font-medium">
-                                {subtitle}
-                            </p>
-                        </div>
+            {/* Sticky header: avatar, user name (diet), Edit Profile */}
+            <div className="sticky top-0 z-10 bg-white/98 backdrop-blur-sm border-b border-slate-100 shrink-0 pt-[env(safe-area-inset-top)]">
+                <div className="px-4 py-3 flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3 min-w-0">
+                        <span className="flex items-center justify-center w-9 h-9 rounded-full bg-[#10B981]/10 text-[#10B981] shrink-0" aria-hidden>
+                            <ShieldCheck className="w-5 h-5" />
+                        </span>
+                        <p className="text-sm font-sans font-medium text-slate-700 truncate">
+                            {!profileLoaded
+                                ? '…'
+                                : profile.dietary_preference && profile.dietary_preference !== 'No rules'
+                                ? profile.dietary_preference
+                                : 'Set your diet for personalized checks'}
+                        </p>
                     </div>
-                    <span className="hidden text-[11px] text-slate-500 md:inline">
-                        Paste any ingredient list – no login required.
-                    </span>
+                    <button
+                        type="button"
+                        onClick={() => setShowOnboarding(true)}
+                        className="shrink-0 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-sans font-medium text-slate-700 shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:bg-slate-50 transition-colors"
+                        aria-label="Edit profile"
+                    >
+                        Edit Profile
+                    </button>
                 </div>
-
-                {/* Inline Edit profile: always visible */}
-                <ProfileHeader
-                    profile={profile}
-                    onEdit={() => setShowOnboarding(true)}
-                    minimal={!profileLoaded}
-                />
             </div>
 
-            <div className="flex-1 overflow-y-auto p-4 space-y-6 scroll-smooth">
+            <div className="flex-1 overflow-y-auto py-6 px-4 space-y-6 scroll-smooth min-h-0">
                 {messages.length === 0 && (
                     <div className="h-full flex flex-col items-center justify-center p-8 text-center space-y-6">
                         <div className="w-20 h-20 bg-blue-50 rounded-2xl flex items-center justify-center mb-2 shadow-sm animate-in fade-in zoom-in duration-500">
@@ -432,22 +482,29 @@ export default function ChatInterface({
                 {messages.map((msg, idx) => (
                     <div key={idx} className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-in slide-in-from-bottom-2 duration-300`}>
                         {msg.role === 'assistant' && (
-                            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-100 to-blue-50 flex items-center justify-center flex-shrink-0 mt-1 shadow-sm">
-                                <Bot className="w-4.5 h-4.5 text-blue-600" />
+                            <div className="w-8 h-8 rounded-full bg-white border border-slate-100 flex items-center justify-center flex-shrink-0 mt-1 shadow-[0_2px_8px_rgba(0,0,0,0.08)]">
+                                <Bot className="w-4 h-4 text-slate-600" />
                             </div>
                         )}
-                        <div className={`max-w-[85%] rounded-2xl shadow-sm ${msg.role === 'user'
-                            ? 'bg-[#0F172A] text-white rounded-br-none px-4 py-3'
-                            : 'bg-white border border-slate-100 text-slate-800 rounded-bl-none px-5 py-4 shadow-md'
-                            }`}>
-                            <div className="text-[0.9rem]">
-                                {msg.role === 'assistant' && msg.audit ? (
-                                    <IngredientAuditCards data={msg.audit} />
-                                ) : msg.role === 'assistant' && !msg.content.trim() ? (
-                                    <div className="flex items-center gap-1 text-slate-400">
+                        <div
+                            className={`max-w-[80%] sm:max-w-[75%] rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,0.08)] font-sans ${msg.role === 'user'
+                                ? 'bg-[#0F172A] text-white rounded-br-none px-4 py-4'
+                                : 'bg-white border border-slate-100 text-[#0F172A] rounded-bl-none px-4 py-4'
+                                }`}
+                        >
+                            <div className="text-[15px] leading-[1.5]">
+                                {msg.role === 'assistant' && !msg.content.trim() && !msg.audit ? (
+                                    <div className="flex items-center gap-1 text-slate-400 animate-in fade-in duration-200" role="status" aria-label="Loading">
                                         <span className="h-1.5 w-1.5 rounded-full bg-slate-300 animate-bounce [animation-delay:-0.2s]" />
                                         <span className="h-1.5 w-1.5 rounded-full bg-slate-300 animate-bounce [animation-delay:-0.1s]" />
                                         <span className="h-1.5 w-1.5 rounded-full bg-slate-300 animate-bounce" />
+                                    </div>
+                                ) : msg.role === 'assistant' && msg.audit ? (
+                                    <div className="space-y-3">
+                                        {msg.content.trim() ? (
+                                            <FormattedMessage content={msg.content.trim()} isUser={false} />
+                                        ) : null}
+                                        <IngredientAuditCards data={msg.audit} />
                                     </div>
                                 ) : (
                                     <FormattedMessage content={msg.content} isUser={msg.role === 'user'} />
@@ -455,8 +512,8 @@ export default function ChatInterface({
                             </div>
                         </div>
                         {msg.role === 'user' && (
-                            <div className="w-8 h-8 rounded-xl bg-slate-200 flex items-center justify-center flex-shrink-0 mt-1">
-                                <User className="w-4.5 h-4.5 text-slate-600" />
+                            <div className="w-8 h-8 rounded-full bg-[#0F172A] flex items-center justify-center flex-shrink-0 mt-1 shadow-[0_2px_8px_rgba(0,0,0,0.08)]">
+                                <User className="w-4 h-4 text-white" />
                             </div>
                         )}
                     </div>
@@ -464,57 +521,40 @@ export default function ChatInterface({
                 <div ref={messagesEndRef} />
             </div>
 
-            {/* Dynamic suggestion chips (recent queries) */}
+            {/* Recent checks - collapsible */}
             {recentQueries.length > 0 && (
-                <div className="px-4 pb-1 pt-2 bg-white border-t border-slate-100">
-                    <div className="mb-1 text-[11px] font-medium text-slate-500">
-                        Recent checks
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                        {recentQueries.map((q) => (
-                            <button
-                                key={q}
-                                type="button"
-                                onClick={() => setInput(q)}
-                                className="text-[11px] bg-slate-50 border border-slate-200 px-3 py-1 rounded-full hover:border-emerald-300 hover:text-emerald-700 hover:bg-emerald-50/60 transition-colors"
-                            >
-                                {q.length > 60 ? q.slice(0, 57) + '…' : q}
-                            </button>
-                        ))}
-                    </div>
-                </div>
+                <RecentChecksSection
+                    queries={recentQueries}
+                    onSelect={(q) => setInput(q)}
+                />
             )}
 
-            <form onSubmit={handleSubmit} className="p-4 bg-white border-t border-slate-100">
-                <div className="relative flex items-center">
+            <form onSubmit={handleSubmit} className="sticky bottom-0 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] bg-white border-t border-slate-100 shrink-0">
+                <div className="relative flex items-center gap-2">
                     <input
                         type="text"
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
-                        placeholder={
-                            hasProfileRules
-                                ? 'Ask me about any ingredient in your diet…'
-                                : 'Type an ingredient or list to check safety…'
-                        }
-                        className="w-full px-6 py-4 pr-16 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all placeholder:text-slate-400 font-medium text-slate-700"
+                        placeholder="Type ingredient or question…"
+                        className="w-full px-4 py-3.5 pr-4 bg-slate-50 border border-slate-200 rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,0.08)] focus:outline-none focus:ring-2 focus:ring-[#10B981]/30 focus:border-[#10B981] transition-all placeholder:text-slate-400 font-sans font-medium text-slate-700"
                         disabled={loading || !profileLoaded}
                     />
                     <button
                         type="submit"
                         disabled={loading || !input.trim() || (!profile.is_onboarding_completed && !profileLoaded)}
-                        className="absolute right-2 inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-emerald-500 to-lime-400 p-2.5 text-white shadow-md shadow-emerald-500/30 transition-transform transition-shadow hover:-translate-y-0.5 hover:shadow-emerald-500/50 disabled:translate-y-0 disabled:bg-slate-300 disabled:from-slate-300 disabled:to-slate-400 disabled:shadow-none disabled:opacity-60"
+                        className="shrink-0 inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-[#0F172A] to-[#10B981] p-3.5 text-white shadow-[0_2px_8px_rgba(0,0,0,0.08)] transition-all hover:opacity-95 hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed"
                     >
                         {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
                     </button>
                 </div>
             </form>
-            <div className="bg-slate-50 p-2 border-t border-slate-100 flex justify-center gap-2 flex-wrap">
+            <div className="px-4 pb-4 pt-2 bg-white border-t border-slate-100 flex justify-center gap-2 flex-wrap shrink-0">
                 <button
                     type="button"
                     onClick={() => setInput('')}
-                    className="px-3 py-1.5 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+                    className="px-3 py-1.5 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded-[12px] hover:bg-slate-50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.08)] transition-all"
                 >
-                    Clear input
+                    Clear Input
                 </button>
                 <button
                     type="button"
@@ -522,18 +562,17 @@ export default function ChatInterface({
                         const lastUserMsg = [...messages].reverse().find(m => m.role === 'user')
                         if (lastUserMsg) setInput(lastUserMsg.content)
                     }}
-                    className="px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 border border-blue-100 rounded-lg hover:bg-blue-100 transition-colors"
+                    className="px-3 py-1.5 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded-[12px] hover:bg-slate-50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.08)] transition-all"
                 >
-                    Repeat last audit
+                    Check Again
                 </button>
                 <button
                     type="button"
                     onClick={() => setShowOnboarding(true)}
-                    className="px-3 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors inline-flex items-center gap-1"
+                    className="px-3 py-1.5 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded-[12px] hover:bg-slate-50 hover:shadow-[0_2px_8px_rgba(0,0,0,0.08)] transition-all inline-flex items-center gap-1"
                 >
-                    Edit profile
+                    Edit Profile
                 </button>
-                <span className="text-xs text-slate-400 self-center px-1">or type /update to modify your profile</span>
             </div>
         </div>
     )
