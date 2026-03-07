@@ -388,7 +388,7 @@ def compose_verdict(
             for ing in triggered:
                 reason = _ingredient_reason_for_verdict(ing, restrictions)
                 display_name = _show(triggered_to_input.get(ing, ing))  # show user's input, not API-resolved name
-                parts.append(f"- **{display_name}** — {reason}")
+                parts.append(f"- ❌ **{display_name}** — {reason}")
         else:
             restriction_names = ", ".join(_restriction_label(r) for r in restrictions[:3])
             parts.append(
@@ -401,15 +401,15 @@ def compose_verdict(
             if len(meaningful_safe) == 1:
                 s = meaningful_safe[0]
                 verb = "are" if _is_plural(s) else "is"
-                parts.append(f"\n**{_show(s)}** {verb} fine for your diet.")
+                parts.append(f"\n✅ **{_show(s)}** {verb} fine for your diet.")
             else:
                 safe_str = ", ".join(f"**{_show(s)}**" for s in meaningful_safe)
-                parts.append(f"\nThe rest — {safe_str} — are fine for your diet.")
+                parts.append(f"\nThe rest are ✅ safe: {safe_str}.")
 
-        # Show UNCERTAIN ingredients
+        # Show UNCERTAIN / Depends ingredients
         if uncertain:
             items = ", ".join(f"**{_show(u)}**" for u in uncertain)
-            parts.append(f"\nCouldn't verify {items} — may need manual checking.")
+            parts.append(f"\n🟧 {items} — may need manual checking.")
 
         # Minor/informational note
         if verdict.informational_ingredients and verdict.confidence_score < 1.0:
@@ -425,11 +425,11 @@ def compose_verdict(
         if len(meaningful_ings) == 1:
             ing = meaningful_ings[0]
             verb = "are" if _is_plural(ing) else "is"
-            parts.append(f"**{_show(ing)}** {verb} perfectly fine for your **{diet}** diet.")
+            parts.append(f"✅ **{_show(ing)}** {verb} perfectly fine for your **{diet}** diet.")
         else:
             ing_str = ", ".join(f"**{_show(i)}**" for i in meaningful_ings)
             parts.append(
-                f"All good — {ing_str} are compatible with your **{diet}** diet."
+                f"✅ All good — {ing_str} are compatible with your **{diet}** diet."
             )
         if verdict.informational_ingredients and verdict.confidence_score < 1.0:
             minors = ", ".join(verdict.informational_ingredients)
@@ -440,12 +440,12 @@ def compose_verdict(
         if uncertain:
             items = ", ".join(f"**{_show(u)}**" for u in uncertain)
             parts.append(
-                f"Couldn't find reliable information about {items} — "
+                f"🟧 Couldn't find reliable information about {items} — "
                 f"may require manual verification before consumption."
             )
             if meaningful_safe:
                 safe_str = ", ".join(f"**{_show(s)}**" for s in meaningful_safe)
-                parts.append(f"\nThe rest — {safe_str} — are fine for your diet.")
+                parts.append(f"\nThe rest are ✅ safe: {safe_str}.")
         else:
             ingredient_str = ", ".join(f"**{_show(i)}**" for i in ingredients)
             parts.append(

@@ -26,16 +26,26 @@ export default function FormattedMessage({ content, isUser = false }: FormattedM
   let bulletBuffer: string[] = []
   let keyIdx = 0
 
+  const bulletDot = (item: string): { color: string; text: string } => {
+    if (item.startsWith('❌ ')) return { color: 'bg-[#EF4444]', text: item.slice(2).trim() }
+    if (item.startsWith('✅ ')) return { color: 'bg-[#10B981]', text: item.slice(2).trim() }
+    if (item.startsWith('🟧 ') || item.startsWith('⚠ ')) return { color: 'bg-[#F59E0B]', text: (item.startsWith('🟧 ') ? item.slice(2) : item.slice(1)).trim() }
+    return { color: 'bg-[#10B981]', text: item }
+  }
+
   const flushBullets = () => {
     if (bulletBuffer.length === 0) return
     elements.push(
       <ul key={`ul-${keyIdx++}`} className="space-y-1.5 my-2 list-none">
-        {bulletBuffer.map((item, i) => (
-          <li key={i} className="flex items-start gap-2">
-            <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-[#10B981] flex-shrink-0" aria-hidden />
-            <span className="leading-[1.5] text-[#0F172A]">{renderInline(item)}</span>
-          </li>
-        ))}
+        {bulletBuffer.map((item, i) => {
+          const { color, text } = bulletDot(item)
+          return (
+            <li key={i} className="flex items-start gap-2">
+              <span className={`mt-1.5 h-1.5 w-1.5 rounded-full flex-shrink-0 ${color}`} aria-hidden />
+              <span className="leading-[1.5] text-[#0F172A]">{renderInline(text)}</span>
+            </li>
+          )
+        })}
       </ul>
     )
     bulletBuffer = []
