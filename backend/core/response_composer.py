@@ -468,8 +468,8 @@ def compose_general_question() -> str:
 
 def compose_no_ingredients() -> str:
     return (
-        "It looks like you didn't mention any specific ingredients. "
-        "Try something like **\"Can I eat eggs?\"** or paste an ingredient list from a product label."
+        "Please paste the ingredient list. "
+        "You can use a comma-separated list (e.g. **milk, onion, potato**) or start with **Ingredients:** followed by the list."
     )
 
 
@@ -506,7 +506,9 @@ def build_ingredient_audit_payload(
 ) -> Dict[str, Any]:
     """
     Build the structured payload for <<<INGREDIENT_AUDIT>>> for the frontend.
-    Returns a dict with keys: summary, groups (list of {status, items}), explanation.
+    Spec-aligned shape: summary, groups (one card per status: avoid / depends / safe),
+    explanation. Multiple ingredients merged into single list per status; colors
+    are applied on frontend (✅ green Safe, ❌ red Avoid, ⚠️ amber Depends).
     """
     dn = display_names or {}
     triggered = verdict.triggered_ingredients or []

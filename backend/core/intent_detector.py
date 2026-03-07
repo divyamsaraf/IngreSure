@@ -1,7 +1,15 @@
 """
 Rule-based intent detector for conversational grocery safety queries.
-Detects: PROFILE_UPDATE, INGREDIENT_QUERY, MIXED, GREETING, GENERAL_QUESTION
-No LLM dependency – fully deterministic pattern matching.
+
+Intent types (spec-aligned):
+  - Profile Update: "I am Jain", "Set my diet to Halal" → update userProfile.diet, confirm.
+  - Ingredient Check: "Can I eat mushrooms?", "Is gelatin safe?" → check vs profile, return audit.
+  - Multiple Ingredients: "Milk, sugar, gelatin" → parse list, check each, grouped Safe/Avoid/Depends.
+  - Profile + Question: "I am Jain. Can I eat mushrooms?" → update profile then run audit (MIXED).
+  - Clarification: "Check this for gluten" → extract ingredient, check vs profile (or ask for list).
+  - Repeated/typos: normalize spelling, diet synonyms, deduplicate ingredients.
+
+Flow: Normalize input → map diet synonyms → extract entities → classify intent → run audit.
 """
 import re
 import logging
@@ -11,7 +19,21 @@ from typing import List, Dict, Optional, Tuple
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
+# Typo normalization (applied before diet detection)
+# ---------------------------------------------------------------------------
+NORMALIZATION: Dict[str, str] = {
+    "vegeterian": "vegetarian",
+    "vegitarian": "vegetarian",
+    "vegatarian": "vegetarian",
+    "i'm": "i am",
+    "im": "i am",
+    "vegan diet": "vegan",
+    "veg diet": "vegetarian",
+}
+
+# ---------------------------------------------------------------------------
 # Diet keywords → canonical display names (sorted longest-first for matching)
+# Single map for detection; any mention of a key updates profile to that diet.
 # ---------------------------------------------------------------------------
 DIET_KEYWORDS: Dict[str, str] = {
     "hindu non vegetarian": "Hindu Non Vegetarian",
@@ -35,11 +57,53 @@ DIET_KEYWORDS: Dict[str, str] = {
     "halal": "Halal",
     "kosher": "Kosher",
     "jain": "Jain",
+    "strict jain": "Jain",
     "hindu": "Hindu Veg",
+    "veg": "Vegetarian",
+}
+
+# Diet synonyms: canonical diet -> list of input variants (for docs and consistency with spec).
+# Detection uses DIET_KEYWORDS (variant -> canonical); this is the inverse view.
+DIET_SYNONYMS: Dict[str, List[str]] = {
+    "Vegetarian": ["vegetarian", "veg", "vegeterian", "vegitarian", "vegatarian"],
+    "Vegan": ["vegan"],
+    "Jain": ["jain", "strict jain"],
+    "Halal": ["halal"],
+    "Kosher": ["kosher"],
+    "Hindu Veg": ["hindu veg", "hindu vegetarian", "hindu"],
+    "Hindu Non Vegetarian": ["hindu non vegetarian", "hindu non veg", "hindu nonveg"],
+    "Pescatarian": ["pescatarian"],
+    "Gluten-Free": ["gluten free", "gluten-free"],
+    "Dairy-Free": ["dairy free", "dairy-free"],
+    "Egg-Free": ["egg free", "egg-free"],
 }
 
 _DIET_PATTERN_KEYS = sorted(DIET_KEYWORDS.keys(), key=len, reverse=True)
 _DIET_REGEX = "|".join(re.escape(k) for k in _DIET_PATTERN_KEYS)
+
+
+def normalize_query_for_typos(text: str) -> str:
+    """Apply typo normalization so diet detection works on common misspellings."""
+    if not text:
+        return text
+    t = text.lower().strip()
+    for wrong, right in NORMALIZATION.items():
+        t = re.sub(re.escape(wrong), right, t, flags=re.IGNORECASE)
+    return t
+
+
+def detect_diet(message: str) -> Optional[str]:
+    """
+    If the message contains any diet keyword, return the canonical diet name.
+    Uses longest-first matching so 'hindu veg' wins over 'hindu'.
+    """
+    msg = (message or "").lower().strip()
+    if not msg:
+        return None
+    for key in _DIET_PATTERN_KEYS:
+        if key in msg:
+            return DIET_KEYWORDS.get(key)
+    return None
 
 # Profile-update sentence patterns (captures the diet keyword)
 _PROFILE_PATTERNS = [
@@ -269,19 +333,56 @@ def _extract_lifestyle(query: str) -> Tuple[List[str], str]:
     return flags, remaining
 
 
+def _has_ingredient_list_indicator(text: str) -> bool:
+    """
+    Only treat content as ingredients if there is a clear list signal:
+    - 'ingredients:' (or 'ingredient:') appears, or
+    - a comma-separated list exists (at least one comma in a substantive segment).
+    Avoids treating e.g. 'Check these ingredients for gluten' as an ingredient list.
+    """
+    t = (text or "").strip()
+    if re.search(r"\bingredients?\s*[:;]", t, re.IGNORECASE):
+        return True
+    if "," in t:
+        # Require comma and some content either side (not just "word, word" as phrase)
+        parts = [p.strip() for p in t.split(",")]
+        if len(parts) >= 2 and any(len(p) >= 2 for p in parts):
+            return True
+    return False
+
+
+def _is_meta_ingredient_phrase(raw: str) -> bool:
+    """Treat 'these ingredients for X' / 'ingredients for X' as request for list, not an ingredient list."""
+    r = (raw or "").strip()
+    if re.search(r"these?\s+ingredients?\s+for\b", r, re.IGNORECASE):
+        return True
+    if re.search(r"^ingredients?\s+for\b", r, re.IGNORECASE):
+        return True
+    return False
+
+
 def _extract_ingredients_from_text(text: str) -> List[str]:
-    """Extract ingredient names from conversational text."""
+    """
+    Extract ingredients from conversational text.
+    - Do NOT treat 'these ingredients for X' / 'ingredients for X' as a list → return [] and ask for list.
+    - When a pattern matches (e.g. 'can I eat eggs?', 'ingredients: X, Y'), extract from the captured part.
+    - Fallback (whole query as list) only when comma-separated list or 'ingredients:' appears.
+    """
     text = text.strip()
     if not text:
         return []
     for pat in _INGREDIENT_QUERY_PATTERNS:
         m = pat.search(text)
         if m:
-            return _split_ingredients(m.group(1).strip())
-    # Fallback: if the text looks like a plain ingredient list (no verbs)
-    cleaned = _clean_for_ingredients(text)
-    if cleaned:
-        return _split_ingredients(cleaned)
+            raw = m.group(1).strip()
+            if _is_meta_ingredient_phrase(raw):
+                return []
+            return _split_ingredients(raw)
+    # Fallback: only when text clearly has a list (comma or "ingredients:")
+    if _has_ingredient_list_indicator(text):
+        cleaned = _clean_for_ingredients(text)
+        if cleaned:
+            return _split_ingredients(cleaned)
     return []
 
 
@@ -445,6 +546,9 @@ def detect_intent(query: str) -> ParsedIntent:
     if not query:
         return ParsedIntent(intent="GENERAL_QUESTION", original_query=query)
 
+    # Typo normalization so diet detection works on e.g. "vegeterian", "im veg"
+    query = normalize_query_for_typos(query)
+
     # /update command
     if query.lstrip().lower().startswith("/update"):
         return ParsedIntent(intent="PROFILE_UPDATE", original_query=query)
@@ -490,6 +594,11 @@ def detect_intent(query: str) -> ParsedIntent:
     elif trailing_diet:
         profile_updates["dietary_preference"] = trailing_diet
         remaining = base_text  # Use only the ingredient portion
+    else:
+        # Simple rule: if user mentions any diet keyword, update profile to that diet
+        detected = detect_diet(query)
+        if detected:
+            profile_updates["dietary_preference"] = detected
 
     # Check for "allergens none" / "no allergies" / "clear allergens" → set allergens to []
     q_stripped = remaining.strip()

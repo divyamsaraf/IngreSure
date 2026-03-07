@@ -11,7 +11,7 @@ export default function ChatPage() {
                     suggestions={[
                         "Ingredients: Sugar, Gelatin, Water. Is this Halal?",
                         "I am Jain. Can I eat potato chips?",
-                        "Check these ingredients for gluten..."
+                        "Sugar, Milk, Egg, Gelatin, Soy, Wheat, Peanut, Tree Nuts, Fish?"
                     ]}
                 />
             </div>

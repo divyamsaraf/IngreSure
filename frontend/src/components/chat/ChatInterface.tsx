@@ -518,11 +518,6 @@ export default function ChatInterface({
                                     </div>
                                 ) : msg.role === 'assistant' && msg.audit ? (
                                     <div className="space-y-3">
-                                        {profile.dietary_preference && profile.dietary_preference !== 'No rules' && (
-                                            <p className="text-xs font-medium text-slate-500">
-                                                Checked using: {getDietIcon(profile.dietary_preference)} {profile.dietary_preference} profile
-                                            </p>
-                                        )}
                                         {msg.content.trim() ? (
                                             <FormattedMessage content={msg.content.trim()} isUser={false} />
                                         ) : null}

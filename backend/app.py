@@ -480,7 +480,10 @@ async def chat_grocery(request: ChatRequest):
                 updated_fields=updated_fields if profile_was_updated else None,
                 display_names=compound_map if compound_map else None,
             )
-            # 11) Emit structured <<<INGREDIENT_AUDIT>>> JSON for premium frontend cards
+            # 11) Emit profile first when updated so frontend header shows current diet before audit
+            if profile_was_updated:
+                yield _profile_json(profile)
+            # 12) Emit structured <<<INGREDIENT_AUDIT>>> JSON for premium frontend cards
             audit_payload = build_ingredient_audit_payload(
                 verdict=verdict,
                 profile=profile,
@@ -491,7 +494,8 @@ async def chat_grocery(request: ChatRequest):
             audit_block = f"<<<INGREDIENT_AUDIT>>>{json.dumps(audit_payload)}<<<INGREDIENT_AUDIT>>>"
             logger.info("INGREDIENT_AUDIT_EMITTED groups=%s", [g.get("status") for g in audit_payload.get("groups", [])])
             yield audit_block
-            yield _profile_json(profile)
+            if not profile_was_updated:
+                yield _profile_json(profile)
 
         return StreamingResponse(generate_safety(), media_type="text/plain")
     except Exception as e:

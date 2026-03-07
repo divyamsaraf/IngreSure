@@ -87,6 +87,12 @@ class TestIngredientQuery:
         assert result.intent == "INGREDIENT_QUERY"
         assert len(result.ingredients) >= 4
 
+    def test_check_these_ingredients_for_gluten_no_list(self):
+        """Phrases like 'Check these ingredients for gluten' must not be treated as an ingredient list."""
+        result = detect_intent("Check these ingredients for gluten")
+        assert not result.ingredients, "Should not extract ingredients from meta phrase"
+        # User should get prompt to paste the list (no ingredients -> no INGREDIENT_QUERY with items)
+
     def test_what_about_gelatin(self):
         result = detect_intent("What about gelatin?")
         assert result.intent == "INGREDIENT_QUERY"
@@ -109,9 +115,14 @@ class TestIngredientQuery:
         assert any("bread" in i for i in lower) or any("egg" in i for i in lower)
 
     def test_single_ingredient(self):
+        # With no comma or "ingredients:", a bare word is not treated as a list (ask for list)
         result = detect_intent("tuna")
-        assert result.intent == "INGREDIENT_QUERY"
-        assert any("tuna" in i.lower() for i in result.ingredients)
+        assert result.intent == "GENERAL_QUESTION"
+        assert not result.ingredients
+        # With comma or explicit list, we extract
+        result2 = detect_intent("tuna, salmon")
+        assert result2.intent == "INGREDIENT_QUERY"
+        assert any("tuna" in i.lower() for i in result2.ingredients)
 
 
 # ===== PROFILE_UPDATE ========================================================
