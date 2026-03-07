@@ -2,17 +2,19 @@ import ChatInterface from '@/components/chat/ChatInterface'
 
 export default function ChatPage() {
     return (
-        <div className="flex flex-col min-h-[calc(100vh-4rem)] md:min-h-[calc(100vh-5rem)] px-4 py-4 md:py-6">
-            <ChatInterface
-                apiEndpoint="/api/chat?mode=grocery"
-                title="Grocery Safety Assistant"
-                subtitle="AI & rule-based ingredient checker"
-                suggestions={[
-                    "Ingredients: Sugar, Gelatin, Water. Is this Halal?",
-                    "I am Jain. Can I eat potato chips?",
-                    "Check these ingredients for gluten..."
-                ]}
-            />
+        <div className="h-[calc(100vh-64px)] overflow-hidden flex justify-center bg-slate-50">
+            <div className="w-full max-w-3xl flex flex-col flex-1 min-h-0 px-2 py-2 md:px-4 md:py-4">
+                <ChatInterface
+                    apiEndpoint="/api/chat?mode=grocery"
+                    title="Grocery Safety Assistant"
+                    subtitle="AI & rule-based ingredient checker"
+                    suggestions={[
+                        "Ingredients: Sugar, Gelatin, Water. Is this Halal?",
+                        "I am Jain. Can I eat potato chips?",
+                        "Check these ingredients for gluten..."
+                    ]}
+                />
+            </div>
         </div>
     )
 }

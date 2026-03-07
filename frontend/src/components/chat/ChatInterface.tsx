@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
-import { Send, User, Bot, Loader2, ChevronDown, ShieldCheck } from 'lucide-react'
+import { Send, User, Bot, Loader2, ChevronDown } from 'lucide-react'
 import OnboardingModal from './OnboardingModal'
 import FormattedMessage from './FormattedMessage'
 import IngredientAuditCards, {
@@ -160,6 +160,7 @@ export default function ChatInterface({
     const [userId, setUserId] = useState<string>('')
     const [profileLoaded, setProfileLoaded] = useState(false)
     const messagesEndRef = useRef<HTMLDivElement>(null)
+    const messagesRef = useRef<HTMLDivElement>(null)
 
     // Profile API base: /api (no double /api). apiEndpoint is e.g. /api/chat so base = /api, then /api/profile
     const profileApiBase = apiEndpoint.replace(/\/chat.*$/, '') || '/api'
@@ -249,12 +250,11 @@ export default function ChatInterface({
         }])
     }
 
-    const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-    }
-
     useEffect(() => {
-        scrollToBottom()
+        const el = messagesRef.current
+        if (el) {
+            el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' })
+        }
     }, [messages])
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -407,7 +407,7 @@ export default function ChatInterface({
     ).slice(0, 5)
 
     return (
-        <div className="flex flex-col flex-1 min-h-0 w-full max-w-[700px] mx-auto border border-slate-100 rounded-2xl bg-[#F8FAFC] shadow-[0_2px_8px_rgba(0,0,0,0.08)] overflow-hidden">
+        <div className="flex flex-col h-full rounded-2xl bg-white shadow-sm border border-slate-100 overflow-hidden">
 
             {/* Onboarding Modal */}
             <OnboardingModal
@@ -418,33 +418,34 @@ export default function ChatInterface({
                 editMode={profile.is_onboarding_completed}
             />
 
-            {/* Sticky header: avatar, user name (diet), Edit Profile */}
-            <div className="sticky top-0 z-10 bg-white/98 backdrop-blur-sm border-b border-slate-100 shrink-0 pt-[env(safe-area-inset-top)]">
-                <div className="px-4 py-3 flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-3 min-w-0">
-                        <span className="flex items-center justify-center w-9 h-9 rounded-full bg-[#10B981]/10 text-[#10B981] shrink-0" aria-hidden>
-                            <ShieldCheck className="w-5 h-5" />
-                        </span>
-                        <p className="text-sm font-sans font-medium text-slate-700 truncate">
-                            {!profileLoaded
-                                ? '…'
-                                : profile.dietary_preference && profile.dietary_preference !== 'No rules'
-                                ? profile.dietary_preference
-                                : 'Set your diet for personalized checks'}
-                        </p>
+            {/* Header (sticky within container) */}
+            <div className="sticky top-0 z-10 bg-white border-b border-slate-100 shrink-0 px-6 py-4">
+                <div className="flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                        <h1 className="font-serif text-lg font-semibold text-slate-900 truncate">{title}</h1>
+                        <p className="text-sm text-slate-500 truncate">{subtitle}</p>
                     </div>
-                    <button
-                        type="button"
-                        onClick={() => setShowOnboarding(true)}
-                        className="shrink-0 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-sans font-medium text-slate-700 shadow-[0_2px_8px_rgba(0,0,0,0.08)] hover:bg-slate-50 transition-colors"
-                        aria-label="Edit profile"
-                    >
-                        Edit Profile
-                    </button>
+                    <div className="flex items-center gap-2 shrink-0">
+                        <span className="text-xs font-medium text-slate-600 truncate max-w-[100px]">
+                            {profileLoaded && profile.dietary_preference && profile.dietary_preference !== 'No rules' ? profile.dietary_preference : ''}
+                        </span>
+                        <button
+                            type="button"
+                            onClick={() => setShowOnboarding(true)}
+                            className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+                            aria-label="Edit profile"
+                        >
+                            Edit Profile
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto py-6 px-4 space-y-6 scroll-smooth min-h-0">
+            {/* Messages (only this section scrolls) */}
+            <div
+                ref={messagesRef}
+                className="flex-1 overflow-y-auto overflow-x-hidden min-h-0 px-6 py-6 space-y-6 scroll-smooth"
+            >
                 {messages.length === 0 && (
                     <div className="h-full flex flex-col items-center justify-center p-8 text-center space-y-6">
                         <div className="w-20 h-20 bg-blue-50 rounded-2xl flex items-center justify-center mb-2 shadow-sm animate-in fade-in zoom-in duration-500">
@@ -521,7 +522,7 @@ export default function ChatInterface({
                 <div ref={messagesEndRef} />
             </div>
 
-            {/* Recent checks - collapsible */}
+            {/* Recent checks (above input, does not scroll) */}
             {recentQueries.length > 0 && (
                 <RecentChecksSection
                     queries={recentQueries}
@@ -529,8 +530,9 @@ export default function ChatInterface({
                 />
             )}
 
-            <form onSubmit={handleSubmit} className="sticky bottom-0 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] bg-white border-t border-slate-100 shrink-0">
-                <div className="relative flex items-center gap-2">
+            {/* Input area (sticky bottom) */}
+            <form onSubmit={handleSubmit} className="border-t border-slate-100 bg-white px-4 py-3 shrink-0">
+                <div className="flex gap-3 items-center">
                     <input
                         type="text"
                         value={input}
@@ -548,7 +550,7 @@ export default function ChatInterface({
                     </button>
                 </div>
             </form>
-            <div className="px-4 pb-4 pt-2 bg-white border-t border-slate-100 flex justify-center gap-2 flex-wrap shrink-0">
+            <div className="px-4 pb-3 pt-2 bg-white flex justify-center gap-2 flex-wrap shrink-0">
                 <button
                     type="button"
                     onClick={() => setInput('')}
