@@ -9,11 +9,11 @@ export default function HomepageFooter() {
           </p>
         </div>
         <div className="flex flex-wrap items-center justify-center gap-4 text-[12px] text-slate-400 md:justify-end">
-          <span className="cursor-default hover:text-slate-200">About</span>
+          <span className="cursor-default hover:text-slate-200" title="Coming soon">About</span>
           <a href="mailto:hello@ingresure.com" className="hover:text-slate-200">
             Contact
           </a>
-          <span className="cursor-default hover:text-slate-200">Privacy Policy</span>
+          <span className="cursor-default hover:text-slate-200" title="Coming soon">Privacy Policy</span>
         </div>
         <p className="text-[12px] text-slate-500">
           &copy; {new Date().getFullYear()} IngreSure. All rights reserved.

@@ -27,10 +27,10 @@ export default function FormattedMessage({ content, isUser = false }: FormattedM
   let keyIdx = 0
 
   const bulletDot = (item: string): { color: string; text: string } => {
-    if (item.startsWith('❌ ')) return { color: 'bg-[#EF4444]', text: item.slice(2).trim() }
-    if (item.startsWith('✅ ')) return { color: 'bg-[#10B981]', text: item.slice(2).trim() }
-    if (item.startsWith('🟧 ') || item.startsWith('⚠ ')) return { color: 'bg-[#F59E0B]', text: (item.startsWith('🟧 ') ? item.slice(2) : item.slice(1)).trim() }
-    return { color: 'bg-[#10B981]', text: item }
+    if (item.startsWith('❌ ')) return { color: 'bg-avoid', text: item.slice(2).trim() }
+    if (item.startsWith('✅ ')) return { color: 'bg-safe', text: item.slice(2).trim() }
+    if (item.startsWith('🟧 ') || item.startsWith('⚠ ')) return { color: 'bg-depends', text: (item.startsWith('🟧 ') ? item.slice(2) : item.slice(1)).trim() }
+    return { color: 'bg-safe', text: item }
   }
 
   const flushBullets = () => {
@@ -42,7 +42,7 @@ export default function FormattedMessage({ content, isUser = false }: FormattedM
           return (
             <li key={i} className="flex items-start gap-2">
               <span className={`mt-1.5 h-1.5 w-1.5 rounded-full flex-shrink-0 ${color}`} aria-hidden />
-              <span className="leading-[1.5] text-[#0F172A]">{renderInline(text)}</span>
+              <span className="leading-[1.5] text-primary">{renderInline(text)}</span>
             </li>
           )
         })}
@@ -67,7 +67,7 @@ export default function FormattedMessage({ content, isUser = false }: FormattedM
     }
 
     elements.push(
-      <p key={`p-${keyIdx++}`} className="leading-[1.5] text-[#0F172A]">
+      <p key={`p-${keyIdx++}`} className="leading-[1.5] text-primary">
         {renderInline(trimmed)}
       </p>
     )
@@ -99,7 +99,7 @@ function renderInline(text: string): React.ReactNode[] {
     if (match[1]) {
       // **bold** – key ingredients / warnings
       nodes.push(
-        <strong key={`b-${key++}`} className="font-semibold text-[#0F172A]">
+        <strong key={`b-${key++}`} className="font-semibold text-primary">
           {match[2]}
         </strong>
       )

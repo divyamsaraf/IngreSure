@@ -26,7 +26,7 @@ function HowItWorksStep({ icon, title, body, step }: StepProps) {
 
 export default function HowItWorksSection() {
   return (
-    <section className="px-6 py-16 md:py-20 bg-[#F8FAFC]">
+    <section className="px-6 py-16 md:py-20 bg-surface">
       <div className="mx-auto max-w-5xl text-center">
         <h2 className="font-serif text-3xl font-bold text-slate-900 md:text-4xl">
           How IngreSure works

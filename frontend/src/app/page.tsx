@@ -7,7 +7,7 @@ import HomepageFooter from '@/components/home/HomepageFooter'
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-slate-900">
+    <div className="min-h-screen bg-surface text-slate-900">
       <HeroSection />
       <FeaturesSection />
       <HowItWorksSection />

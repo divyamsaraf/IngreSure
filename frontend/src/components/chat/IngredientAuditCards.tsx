@@ -3,6 +3,7 @@
 import React, { useRef } from 'react'
 import { CheckCircle2, AlertTriangle, XCircle } from 'lucide-react'
 import FormattedMessage from './FormattedMessage'
+import { statusColors, colors, cardBg } from '@/theme/tokens'
 
 export type IngredientStatus = 'safe' | 'avoid' | 'depends'
 
@@ -25,6 +26,15 @@ export interface IngredientAuditData {
   explanation?: string
 }
 
+/** Backend audit payload: groups may be array or keyed object; item shape is permissive. */
+export interface BackendAuditPayload {
+  summary?: string
+  explanation?: string
+  groups?:
+    | Array<{ status?: IngredientStatus; items?: Array<Record<string, unknown>> }>
+    | Record<IngredientStatus, Array<Record<string, unknown>>>
+}
+
 interface Props {
   data: IngredientAuditData
 }
@@ -45,27 +55,6 @@ const STATUS_ICON: Record<IngredientStatus, React.ReactNode> = {
   safe: <CheckCircle2 className="h-3.5 w-3.5" />,
   avoid: <XCircle className="h-3.5 w-3.5" />,
   depends: <AlertTriangle className="h-3.5 w-3.5" />,
-}
-
-// Summary pills (top): green / red / amber
-const PILL_CLASS: Record<IngredientStatus, string> = {
-  safe: 'bg-[#10B981] text-white',
-  avoid: 'bg-[#EF4444] text-white',
-  depends: 'bg-[#F59E0B] text-white',
-}
-
-// Single card per category: left bar + bg
-const CARD_BAR: Record<IngredientStatus, string> = {
-  safe: 'border-l-[#10B981] bg-[#F0FDF4]',
-  avoid: 'border-l-[#EF4444] bg-[#FEF2F2]',
-  depends: 'border-l-[#F59E0B] bg-[#FFFBEB]',
-}
-
-// Ingredient pills: green Safe, red Avoid, amber Depends
-const INGREDIENT_PILL: Record<IngredientStatus, string> = {
-  safe: 'bg-[#10B981]/90 text-white border border-[#10B981]',
-  avoid: 'bg-[#EF4444]/90 text-white border border-[#EF4444]',
-  depends: 'bg-[#F59E0B]/90 text-white border border-[#F59E0B]',
 }
 
 function buildItemTooltip(item: IngredientAuditItem, status: IngredientStatus): string {
@@ -124,7 +113,7 @@ export default function IngredientAuditCards({ data }: Props) {
                   groupRefs[status].current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
                 }
               }}
-              className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-bold text-white shadow-[0_2px_8px_rgba(0,0,0,0.08)] transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-slate-400 ${PILL_CLASS[status]}`}
+              className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-bold transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-slate-400 ${statusColors[status].pill}`}
             >
               {STATUS_ICON[status]}
               <span className="font-sans">{STATUS_LABEL[status]} ({count})</span>
@@ -150,7 +139,8 @@ export default function IngredientAuditCards({ data }: Props) {
               ref={groupRefs[status]}
               role="region"
               aria-label={`${STATUS_LABEL[status]} ingredients: ${count} items`}
-              className={`rounded-r-[12px] border-l-4 pl-4 pr-4 pt-3 pb-3 shadow-[0_2px_8px_rgba(0,0,0,0.08)] ${CARD_BAR[status]}`}
+              className="rounded-r-[12px] border-l-4 pl-4 pr-4 pt-3 pb-3 shadow-card"
+              style={{ borderLeftColor: colors[status], backgroundColor: cardBg[status] }}
             >
               <div className="font-serif text-xs font-semibold text-slate-600 uppercase tracking-wider mb-3">
                 {STATUS_LABEL[status]} ({count})
@@ -160,7 +150,8 @@ export default function IngredientAuditCards({ data }: Props) {
                   <span
                     key={item.name}
                     title={buildItemTooltip(item, status)}
-                    className={`inline-flex items-center rounded-full px-3 py-1.5 text-sm font-sans font-medium transition-shadow hover:shadow-md cursor-default ${INGREDIENT_PILL[status]}`}
+                    className="inline-flex items-center rounded-full px-3 py-1.5 text-sm font-sans font-medium text-white border transition-shadow hover:shadow-md cursor-default"
+                    style={{ backgroundColor: `${colors[status]}E6`, borderColor: colors[status] }}
                   >
                     {item.name}
                   </span>
@@ -173,8 +164,8 @@ export default function IngredientAuditCards({ data }: Props) {
 
       {/* Explanation clearly below all categories */}
       {data.explanation && (
-        <div className="mt-4 rounded-[12px] bg-[#F8FAFC] p-4 shadow-[0_2px_8px_rgba(0,0,0,0.08)]">
-          <div className="text-sm font-sans text-[#0F172A] leading-[1.5] md:text-[15px]">
+        <div className="mt-4 rounded-[12px] bg-surface p-4 shadow-card">
+          <div className="text-sm font-sans text-primary leading-[1.5] md:text-[15px]">
             <FormattedMessage content={data.explanation} />
           </div>
         </div>

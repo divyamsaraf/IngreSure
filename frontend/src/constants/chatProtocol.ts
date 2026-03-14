@@ -1,0 +1,3 @@
+export const PROFILE_REQUIRED_TAG = '<<<PROFILE_REQUIRED>>>'
+export const PROFILE_UPDATE_TAG = '<<<PROFILE_UPDATE>>>'
+export const INGREDIENT_AUDIT_TAG = '<<<INGREDIENT_AUDIT>>>'

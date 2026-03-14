@@ -15,6 +15,17 @@ export type DietType =
   | "Egg-Free"
   | string;
 
+/** JSON payload inside <<<PROFILE_UPDATE>>>…<<<PROFILE_UPDATE>>> in chat stream. */
+export interface ProfileUpdateStreamPayload {
+  user_id?: string
+  dietary_preference?: string
+  allergens?: string[]
+  lifestyle?: string[]
+  lifestyle_flags?: string[]
+  allergies?: string[]
+  [key: string]: unknown
+}
+
 /** Backend profile shape (user_id + dietary_preference + lists). */
 export interface BackendProfile {
   user_id: string;
@@ -97,14 +108,7 @@ export const ADDITIONAL_RESTRICTIONS: { value: string; label: string }[] = [
   { value: "no insect derived", label: "No Insect-Derived Ingredients" },
 ];
 
-/** Legacy: same as ADDITIONAL_RESTRICTIONS values for backward compat. */
-export const LIFESTYLE_OPTIONS = [
-  "no alcohol",
-  "no insect derived",
-  "no palm oil",
-  "no onion",
-  "no garlic",
-] as const;
+// Lifestyle values in profile come from ADDITIONAL_RESTRICTIONS (multi-select).
 
 export const ALLERGEN_OPTIONS = [
   "Milk",
@@ -120,6 +124,18 @@ export const ALLERGEN_OPTIONS = [
   "Celery",
   "Other",
 ] as const;
+
+/** True when profile has at least one rule (diet other than "No rules", or allergens, or lifestyle). */
+export function hasProfileRules(profile: UserProfile): boolean {
+  return (
+    (profile.dietary_preference != null && profile.dietary_preference !== "No rules") ||
+    (profile.diet != null && profile.diet !== "No rules") ||
+    (profile.allergens?.length ?? 0) > 0 ||
+    (profile.allergies?.length ?? 0) > 0 ||
+    (profile.lifestyle?.length ?? 0) > 0 ||
+    (profile.lifestyle_flags?.length ?? 0) > 0
+  )
+}
 
 /** Convert backend profile to UserProfile for UI. */
 export function backendToProfile(backend: BackendProfile): UserProfile {

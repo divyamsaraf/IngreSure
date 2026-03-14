@@ -1,6 +1,5 @@
 'use client'
 
-import Link from 'next/link'
 import { ArrowRight, ShieldCheck, CheckCircle, MessageCircle } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 
@@ -16,7 +15,7 @@ export default function HeroSection() {
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-700">
             Ingredient intelligence for real people
           </p>
-          <h1 className="font-serif text-4xl font-bold leading-tight text-[#0F172A] md:text-5xl">
+          <h1 className="font-serif text-4xl font-bold leading-tight text-primary md:text-5xl">
             Eat with Confidence.<br className="hidden md:block" />
             <span className="md:ml-1">Know What&apos;s Inside.</span>
           </h1>

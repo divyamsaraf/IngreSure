@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { X, Check, RotateCcw } from 'lucide-react'
 import {
   UserProfile,
@@ -20,11 +20,6 @@ interface OnboardingModalProps {
   editMode?: boolean
 }
 
-function toggleList(prev: string[], key: string): string[] {
-  if (prev.includes(key)) return prev.filter((x) => x !== key)
-  return [...prev, key]
-}
-
 /** Case-insensitive toggle: removes any casing variant before adding/removing the canonical key. */
 function toggleListCI(prev: string[], key: string): string[] {
   const keyLower = key.toLowerCase()
@@ -41,36 +36,37 @@ function includesCI(arr: string[], key: string): boolean {
   return arr.some((x) => x.toLowerCase() === keyLower)
 }
 
-export default function OnboardingModal({
-  isOpen,
+function mergeInitialProfile(base: UserProfile | undefined): UserProfile {
+  const p = base ?? DEFAULT_PROFILE
+  return {
+    ...DEFAULT_PROFILE,
+    ...p,
+    user_id: p.user_id,
+    dietary_preference: p.dietary_preference ?? p.diet ?? 'No rules',
+    diet: p.diet ?? p.dietary_preference ?? 'No rules',
+    allergies: p.allergies ?? p.allergens ?? [],
+    allergens: p.allergens ?? p.allergies ?? [],
+    lifestyle: p.lifestyle ?? p.lifestyle_flags ?? [],
+    lifestyle_flags: p.lifestyle_flags ?? p.lifestyle ?? [],
+    is_onboarding_completed: p.is_onboarding_completed ?? false,
+  }
+}
+
+interface OnboardingModalInnerProps {
+  initialProfile?: UserProfile
+  onClose: () => void
+  onSave: (profile: UserProfile) => void
+  editMode: boolean
+}
+
+function OnboardingModalInner({
+  initialProfile,
   onClose,
   onSave,
-  initialProfile,
-  editMode = false,
-}: OnboardingModalProps) {
-  const [profile, setProfile] = useState<UserProfile>(DEFAULT_PROFILE)
+  editMode,
+}: OnboardingModalInnerProps) {
+  const [profile, setProfile] = useState<UserProfile>(() => mergeInitialProfile(initialProfile))
   const [customAllergy, setCustomAllergy] = useState('')
-
-  useEffect(() => {
-    if (isOpen) {
-      const base = initialProfile ?? DEFAULT_PROFILE
-      setProfile({
-        ...DEFAULT_PROFILE,
-        ...base,
-        user_id: base.user_id,
-        dietary_preference: base.dietary_preference ?? base.diet ?? 'No rules',
-        diet: base.diet ?? base.dietary_preference ?? 'No rules',
-        allergies: base.allergies ?? base.allergens ?? [],
-        allergens: base.allergens ?? base.allergies ?? [],
-        lifestyle: base.lifestyle ?? base.lifestyle_flags ?? [],
-        lifestyle_flags: base.lifestyle_flags ?? base.lifestyle ?? [],
-        is_onboarding_completed: base.is_onboarding_completed ?? false,
-      })
-      setCustomAllergy('')
-    }
-  }, [isOpen, initialProfile])
-
-  if (!isOpen) return null
 
   const toggleAllergy = (label: string) => {
     setProfile((prev) => ({
@@ -146,9 +142,9 @@ export default function OnboardingModal({
 
   return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,0.08)] w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col animate-in zoom-in-95 duration-200">
+      <div className="bg-white rounded-2xl shadow-card w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col animate-in zoom-in-95 duration-200">
         {/* Header - sticky */}
-        <div className="bg-gradient-to-r from-[#0F172A] to-[#10B981] p-5 text-white shrink-0 sticky top-0">
+        <div className="bg-gradient-to-r from-primary to-secondary p-5 text-white shrink-0 sticky top-0">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold">
               {editMode ? 'Edit profile' : 'Set your safety profile'}
@@ -333,12 +329,31 @@ export default function OnboardingModal({
           )}
           <button
             onClick={handleSave}
-            className="w-full bg-gradient-to-r from-[#0F172A] to-[#10B981] text-white py-3 rounded-[12px] font-bold hover:opacity-95 transition-opacity shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
+            className="w-full bg-gradient-to-r from-primary to-secondary text-white py-3 rounded-[12px] font-bold hover:opacity-95 transition-opacity shadow-card"
           >
             {editMode ? 'Save Changes' : 'Save & start chatting'}
           </button>
         </div>
       </div>
     </div>
+  )
+}
+
+export default function OnboardingModal({
+  isOpen,
+  onClose,
+  onSave,
+  initialProfile,
+  editMode = false,
+}: OnboardingModalProps) {
+  if (!isOpen) return null
+  return (
+    <OnboardingModalInner
+      key={`onboarding-${initialProfile?.user_id ?? 'new'}`}
+      initialProfile={initialProfile}
+      onClose={onClose}
+      onSave={onSave}
+      editMode={editMode}
+    />
   )
 }

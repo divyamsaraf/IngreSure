@@ -1,3 +1,8 @@
+/**
+ * Design tokens. Single source for JS-only use (e.g. inline styles, cardBg hex).
+ * Brand colors (primary, secondary, safe, avoid, depends) match globals.css; prefer Tailwind classes (bg-primary, bg-secondary, etc.) in components so globals stay the single source for UI.
+ * In use: `gradients` (statusColors.card), `statusColors`, `colors`, `cardBg` (IngredientAuditCards).
+ */
 export const colors = {
   primary: '#0F172A',       // deep slate blue
   secondary: '#10B981',     // emerald green
@@ -37,24 +42,32 @@ export const gradients = {
   depends: 'from-amber-50 to-amber-100',
 }
 
+/** Light background for status cards (left bar + tint). */
+export const cardBg = {
+  safe: '#F0FDF4',
+  avoid: '#FEF2F2',
+  depends: '#FFFBEB',
+} as const
+
+/** statusColors use Tailwind theme classes (globals.css) for pill/bar so one source of truth. */
 export const statusColors = {
   safe: {
     text: 'text-emerald-700',
-    pill: 'bg-[#10B981] text-white border-0 shadow-[0_2px_8px_rgba(0,0,0,0.08)] font-medium',
+    pill: 'bg-secondary text-white border-0 shadow-card font-medium',
     card: gradients.safe,
-    bar: 'border-[#10B981]',
+    bar: 'border-secondary',
   },
   avoid: {
     text: 'text-rose-700',
-    pill: 'bg-[#EF4444] text-white border-0 shadow-[0_2px_8px_rgba(0,0,0,0.08)] font-medium',
+    pill: 'bg-avoid text-white border-0 shadow-card font-medium',
     card: gradients.avoid,
-    bar: 'border-[#EF4444]',
+    bar: 'border-avoid',
   },
   depends: {
     text: 'text-amber-700',
-    pill: 'bg-[#F59E0B] text-white border-0 shadow-[0_2px_8px_rgba(0,0,0,0.08)] font-medium',
+    pill: 'bg-depends text-white border-0 shadow-card font-medium',
     card: gradients.depends,
-    bar: 'border-[#F59E0B]',
+    bar: 'border-depends',
   },
 } as const
 

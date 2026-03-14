@@ -2,9 +2,21 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export const dynamic = 'force-dynamic'
 
+const MAX_CHAT_BODY_BYTES = 512 * 1024 // 512KB
+
 export async function POST(req: NextRequest) {
     try {
-        const { message, userProfile, user_id } = await req.json()
+        const raw = await req.text()
+        if (raw.length > MAX_CHAT_BODY_BYTES) {
+            return NextResponse.json({ error: 'Payload too large' }, { status: 413 })
+        }
+        let body: { message?: string; userProfile?: unknown; user_id?: string }
+        try {
+            body = JSON.parse(raw)
+        } catch {
+            return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
+        }
+        const { message, userProfile, user_id } = body
         // Backend must be running (e.g. cd backend && uvicorn app:app --reload) and emit <<<INGREDIENT_AUDIT>>> JSON for premium cards
         const backendUrl = process.env.BACKEND_URL || 'http://127.0.0.1:8000'
         const endpoint = '/chat/grocery'
@@ -19,25 +31,38 @@ export async function POST(req: NextRequest) {
                 body: JSON.stringify({ query: message, userProfile, user_id }),
             })
         } catch (fetchError) {
-            console.error('Chat proxy: backend unreachable', fetchError)
-            return NextResponse.json(
-                { error: 'Backend unreachable', detail: fetchError instanceof Error ? fetchError.message : 'Unknown' },
-                { status: 503 }
-            )
+            if (process.env.NODE_ENV === 'production') {
+                console.error('Chat proxy: backend unreachable')
+            } else {
+                console.error('Chat proxy: backend unreachable', fetchError)
+            }
+            const safeDetail =
+                process.env.NODE_ENV === 'production' ? 'Service unavailable' : (fetchError instanceof Error ? fetchError.message : 'Unknown')
+            return NextResponse.json({ error: 'Backend unreachable', detail: safeDetail }, { status: 503 })
         }
 
         if (!response.ok) {
-            const body = await response.text()
-            console.error('Backend error:', response.status, response.statusText, body)
-            try {
-                const json = body ? JSON.parse(body) : {}
-                return NextResponse.json(
-                    { error: 'Backend Error', detail: json.detail ?? body },
-                    { status: response.status }
-                )
-            } catch {
-                return NextResponse.json({ error: 'Backend Error', detail: body }, { status: response.status })
+            const resText = await response.text()
+            if (process.env.NODE_ENV !== 'production') {
+                console.error('Backend error:', response.status, response.statusText, resText)
+            } else {
+                console.error('Backend error:', response.status, response.statusText)
             }
+            const safeDetail =
+                process.env.NODE_ENV === 'production'
+                    ? 'Request failed'
+                    : (() => {
+                          try {
+                              const json = resText ? JSON.parse(resText) : {}
+                              return json.detail ?? resText
+                          } catch {
+                              return resText
+                          }
+                      })()
+            return NextResponse.json(
+                { error: 'Backend Error', detail: safeDetail },
+                { status: response.status }
+            )
         }
 
         // Stream the response back to the client
