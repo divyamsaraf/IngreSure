@@ -245,14 +245,32 @@ def _normalize_for_match(s: str) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Greeting
+# Greeting (ingredient safety checker — not a store)
 # ---------------------------------------------------------------------------
-def compose_greeting() -> str:
-    return (
-        "Hello! I'm your grocery safety assistant. "
-        "Tell me your dietary preferences and ask about any ingredient — "
-        "I'll let you know if it's suitable for you."
-    )
+_GREETING_BY_DIET = {
+    "No rules": (
+        "Hello! I'm your ingredient safety assistant. "
+        "Set your dietary preferences or paste ingredients — I'll tell you if they're suitable for you."
+    ),
+    "Vegan": "Hello! I'm here to check ingredients for your vegan diet. Paste a list or ask about any ingredient and I'll tell you if it's safe for you.",
+    "Vegetarian": "Hello! I'm here to check ingredients for your vegetarian diet. Paste a list or ask about any ingredient and I'll tell you if it's safe for you.",
+    "Pescatarian": "Hello! I'm here to check ingredients for your pescatarian diet. Paste a list or ask about any ingredient and I'll tell you if it's safe for you.",
+    "Jain": "Namaste! I'm here to check ingredients for your Jain diet. Paste a list or ask about any ingredient and I'll tell you if it's safe for you.",
+    "Halal": "Hello! I'm here to check ingredients for your Halal diet. Paste a list or ask about any ingredient and I'll tell you if it's safe for you.",
+    "Kosher": "Hello! I'm here to check ingredients for your Kosher diet. Paste a list or ask about any ingredient and I'll tell you if it's safe for you.",
+    "Hindu Vegetarian": "Namaste! I'm here to check ingredients for your Hindu vegetarian diet. Paste a list or ask about any ingredient and I'll tell you if it's safe for you.",
+    "Hindu Non Vegetarian": "Namaste! I'm here to check ingredients for your Hindu non-vegetarian diet. Paste a list or ask about any ingredient and I'll tell you if it's safe for you.",
+}
+
+
+def compose_greeting(profile: Any = None) -> str:
+    """Greet the user. Never imply we are a grocery store."""
+    diet = ""
+    if profile and hasattr(profile, "dietary_preference"):
+        diet = (profile.dietary_preference or "").strip()
+    if diet and diet != "No rules" and diet in _GREETING_BY_DIET:
+        return _GREETING_BY_DIET[diet]
+    return _GREETING_BY_DIET["No rules"]
 
 
 # ---------------------------------------------------------------------------

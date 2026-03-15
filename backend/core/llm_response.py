@@ -12,8 +12,7 @@ from core.config import get_ollama_url, get_ollama_model, LLM_RESPONSE_TIMEOUT
 
 logger = logging.getLogger(__name__)
 
-_RESPONSE_SYSTEM_PROMPT = """You are a friendly grocery safety assistant. Give brief, warm, conversational replies.
-Keep to 1-3 sentences. Do NOT offer recipes, alternatives, or unsolicited follow-ups. No emojis."""
+_RESPONSE_SYSTEM_PROMPT = """You are a friendly ingredient safety assistant. You help people check if ingredients are safe for their diet, allergens, and lifestyle. You are NOT a grocery store, shop, or retailer. Give brief, warm, conversational replies. Keep to 1-3 sentences. Do NOT say "grocery store", "welcome to our store", "we have", or anything that implies you are a store. Do NOT offer recipes, alternatives, or unsolicited follow-ups. No emojis."""
 
 
 def _call_ollama(system: str, prompt: str, timeout: int = LLM_RESPONSE_TIMEOUT) -> Optional[str]:
@@ -38,14 +37,24 @@ def _call_ollama(system: str, prompt: str, timeout: int = LLM_RESPONSE_TIMEOUT) 
 
 
 def llm_compose_greeting(profile: Any = None) -> Optional[str]:
-    """Use LLM for greeting response."""
+    """Use LLM for greeting response. You are an ingredient checker, NOT a store."""
     diet = ""
     if profile and hasattr(profile, "dietary_preference"):
         diet = profile.dietary_preference or ""
     if diet and diet != "No rules":
-        prompt = f"The user said hello. Their dietary profile is: {diet}. Greet them warmly and mention you can check ingredients for their {diet} diet. Keep it to 1-2 sentences. Do NOT offer recipes or alternatives."
+        prompt = (
+            f"The user said hello. Their dietary profile is: {diet}. "
+            "Greet them warmly and say you can check whether ingredients are safe for their diet. "
+            "You are an ingredient safety checker — do NOT say grocery store, welcome to our store, or that we have products. "
+            "Keep it to 1-2 sentences. Do NOT offer recipes or alternatives."
+        )
     else:
-        prompt = "The user said hello. They haven't set up a dietary profile yet. Greet them warmly and invite them to tell you their dietary preferences or ask about any ingredient. Keep it to 1-2 sentences. Do NOT offer recipes or alternatives."
+        prompt = (
+            "The user said hello. They haven't set up a dietary profile yet. "
+            "Greet them warmly and invite them to set dietary preferences or paste ingredients to check. "
+            "You are an ingredient safety checker — do NOT say grocery store or welcome to a store. "
+            "Keep it to 1-2 sentences. Do NOT offer recipes or alternatives."
+        )
     return _call_ollama(_RESPONSE_SYSTEM_PROMPT, prompt)
 
 

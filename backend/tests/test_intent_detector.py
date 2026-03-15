@@ -87,6 +87,32 @@ class TestIngredientQuery:
         assert result.intent == "INGREDIENT_QUERY"
         assert len(result.ingredients) >= 4
 
+    def test_ingredients_strip_active_ingredient_name_duplicate(self):
+        """Pasted labels often repeat 'Active Ingredient Name' block; we parse only the first list."""
+        q = (
+            "Ingredients: Vegetable Juice (Water And Concentrated Juices Of Sweet Potatoes, Carrots, Beets), "
+            "Fruit Juice (Water And Concentrated Juice Of Apples), Natural Flavoring. "
+            "Active Ingredient Name Vegetable Juice (Water and Concentrated Juices of Sweet Potatoes, Carrots, Beets)."
+        )
+        result = detect_intent(q)
+        assert result.has_ingredients, "Should extract ingredients from first block only"
+        assert result.intent in ("INGREDIENT_QUERY", "MIXED")
+        # No ingredient should be the duplicate block starting with "Active Ingredient Name"
+        for ing in result.ingredients:
+            assert "active ingredient name" not in ing.lower(), f"Duplicate block leaked: {ing!r}"
+        # Should have at least Vegetable Juice (one chunk), Fruit Juice, Natural Flavoring
+        assert len(result.ingredients) >= 2
+
+    def test_ingredients_parentheses_single_chunks(self):
+        """Commas inside parentheses do not split; e.g. 'X (A, B, C)' stays one ingredient chunk."""
+        result = detect_intent("Ingredients: Vegetable Juice (Water, Carrots, Beets), Fruit Juice (Apples)")
+        assert result.has_ingredients
+        assert result.intent in ("INGREDIENT_QUERY", "MIXED")
+        lower = [i.lower() for i in result.ingredients]
+        # Should have "vegetable juice (water, carrots, beets)" as one and "fruit juice (apples)" as one
+        assert any("vegetable juice" in i and "carrots" in i for i in lower)
+        assert any("fruit juice" in i for i in lower)
+
     def test_check_these_ingredients_for_gluten_no_list(self):
         """Phrases like 'Check these ingredients for gluten' must not be treated as an ingredient list."""
         result = detect_intent("Check these ingredients for gluten")

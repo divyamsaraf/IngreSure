@@ -25,6 +25,11 @@ from core.knowledge.lifecycle import KnowledgeMetadata, KnowledgeState, Resoluti
 from core.knowledge.ingredient_db import IngredientKnowledgeDB
 from core.normalization.normalizer import normalize_ingredient_key
 from core.config import USE_KNOWLEDGE_DB
+from core.cache.redis_resolution import (
+    resolution_cache_available,
+    resolution_cache_get,
+    resolution_cache_set,
+)
 
 
 @dataclass(frozen=True)
@@ -188,6 +193,18 @@ class CanonicalResolver:
                 if cache_key in self._resolution_cache:
                     return self._resolution_cache[cache_key]
 
+        # Optional Redis L2: only when REDIS_URL is set; any error falls back to impl
+        if cache_key is not None and resolution_cache_available():
+            redis_res = resolution_cache_get(norm_key, try_api)
+            if redis_res is not None:
+                with self._cache_lock:
+                    if cache_key not in self._resolution_cache:
+                        self._resolution_cache[cache_key] = redis_res
+                        if len(self._resolution_cache) > self._RESOLUTION_CACHE_MAX:
+                            first_key = next(iter(self._resolution_cache))
+                            del self._resolution_cache[first_key]
+                return redis_res
+
         res = self._resolve_with_fallback_impl(
             raw, try_api=try_api, log_unknown=log_unknown,
             restriction_ids=restriction_ids, profile_context=profile_context,
@@ -200,6 +217,8 @@ class CanonicalResolver:
                     if len(self._resolution_cache) > self._RESOLUTION_CACHE_MAX:
                         first_key = next(iter(self._resolution_cache))
                         del self._resolution_cache[first_key]
+            if resolution_cache_available():
+                resolution_cache_set(norm_key, try_api, res)
         return res
 
     def _resolve_with_fallback_impl(

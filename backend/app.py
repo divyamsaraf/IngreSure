@@ -372,18 +372,6 @@ async def chat_grocery(request: Request, body: ChatRequest):
             # Identity: Authorization Bearer token > body user_id > new anon- id
             user_id = resolved_user_id or body.user_id or f"anon-{uuid.uuid4().hex[:12]}"
             profile = get_or_create_profile(user_id)
-            # Merge client-sent profile so backend has latest (e.g. Jain from onboarding)
-            if getattr(body, "userProfile", None) and isinstance(body.userProfile, dict):
-                try:
-                    client = UserProfile.from_dict({**body.userProfile, "user_id": user_id})
-                    if client.dietary_preference and client.dietary_preference != "No rules":
-                        profile.update_merge(dietary_preference=client.dietary_preference)
-                    if client.allergens:
-                        profile.update_merge(allergens=client.allergens)
-                    if client.lifestyle:
-                        profile.update_merge(lifestyle=client.lifestyle)
-                except Exception as e:
-                    logger.warning("Could not merge body.userProfile: %s", e)
 
             # 1) /update slash-command
             field_name, values = _parse_update_command(query)
@@ -402,6 +390,19 @@ async def chat_grocery(request: Request, body: ChatRequest):
 
             # 2) Intent detection: rule-based first, LLM fallback
             parsed = detect_intent(query)
+
+            # Merge client-sent profile only when not a simple greeting (keeps server-authoritative for "hi")
+            if parsed.intent != "GREETING" and getattr(body, "userProfile", None) and isinstance(body.userProfile, dict):
+                try:
+                    client = UserProfile.from_dict({**body.userProfile, "user_id": user_id})
+                    if client.dietary_preference and client.dietary_preference != "No rules":
+                        profile.update_merge(dietary_preference=client.dietary_preference)
+                    if client.allergens:
+                        profile.update_merge(allergens=client.allergens)
+                    if client.lifestyle:
+                        profile.update_merge(lifestyle=client.lifestyle)
+                except Exception as e:
+                    logger.warning("Could not merge body.userProfile: %s", e)
             logger.info(
                 "INTENT_DETECT_RULES intent=%s profile_updates=%s ingredients=%s",
                 parsed.intent, redact_pii(parsed.profile_updates), redact_pii(parsed.ingredients),
@@ -426,7 +427,7 @@ async def chat_grocery(request: Request, body: ChatRequest):
             # 3) Handle GREETING
             if parsed.intent == "GREETING":
                 msg = llm_compose_greeting(profile)
-                yield msg or template_greeting()
+                yield msg or template_greeting(profile)
                 yield _profile_json(profile)
                 return
 

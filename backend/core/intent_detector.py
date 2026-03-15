@@ -333,6 +333,29 @@ def _extract_lifestyle(query: str) -> Tuple[List[str], str]:
     return flags, remaining
 
 
+def _strip_duplicate_ingredient_label_block(text: str) -> str:
+    """
+    Remove duplicate label blocks that often appear in pasted labels, e.g.:
+    "...Strawberry Juice Concentrate. Active Ingredient Name Vegetable Juice (Water..."
+    Keep only the first ingredient list; strip ". Active Ingredient Name ..." or
+    a second "Ingredients:" block so we don't parse the same list twice.
+    """
+    if not text or not text.strip():
+        return text
+    t = text.strip()
+    # Strip ". Active Ingredient Name ..." (common in US labels)
+    m = re.search(r"\.\s+Active\s+Ingredient\s+Name\b.*", t, re.IGNORECASE | re.DOTALL)
+    if m:
+        t = t[: m.start()].strip().rstrip(".")
+    # If there are two "Ingredients:" blocks, keep only the first
+    first_ing = re.search(r"\bingredients?\s*[:;]", t, re.IGNORECASE)
+    if first_ing:
+        second_ing = re.search(r"\bingredients?\s*[:;]", t[first_ing.end() :], re.IGNORECASE)
+        if second_ing:
+            t = t[: first_ing.end() + second_ing.start()].strip().rstrip(".,")
+    return t
+
+
 def _has_ingredient_list_indicator(text: str) -> bool:
     """
     Only treat content as ingredients if there is a clear list signal:
@@ -374,12 +397,13 @@ def _extract_ingredients_from_text(text: str) -> List[str]:
     for pat in _INGREDIENT_QUERY_PATTERNS:
         m = pat.search(text)
         if m:
-            raw = m.group(1).strip()
+            raw = _strip_duplicate_ingredient_label_block(m.group(1).strip())
             if _is_meta_ingredient_phrase(raw):
                 return []
             return _split_ingredients(raw)
     # Fallback: only when text clearly has a list (comma or "ingredients:")
     if _has_ingredient_list_indicator(text):
+        text = _strip_duplicate_ingredient_label_block(text)
         cleaned = _clean_for_ingredients(text)
         if cleaned:
             return _split_ingredients(cleaned)
@@ -406,12 +430,37 @@ _PRODUCT_CONTAINER_WORDS = {
 }
 
 
+def _split_by_comma_outside_parens(text: str) -> List[str]:
+    """Split text by commas that are outside parentheses. Keeps e.g. 'X (A, B, C)' as one chunk."""
+    if not text or not text.strip():
+        return []
+    t = text.strip()
+    depth = 0
+    start = 0
+    chunks: List[str] = []
+    for i, c in enumerate(t):
+        if c == "(":
+            depth += 1
+        elif c == ")":
+            depth -= 1
+        elif c == "," and depth == 0:
+            chunk = t[start:i].strip()
+            if chunk:
+                chunks.append(chunk)
+            start = i + 1
+    if start < len(t):
+        chunk = t[start:].strip()
+        if chunk:
+            chunks.append(chunk)
+    return chunks
+
+
 def _split_ingredients(text: str) -> List[str]:
     """Split ingredient text into a deduplicated list.
 
-    Preserves compound items like 'burger with chicken' when the left side
-    is a known product/container word.  Otherwise splits on 'with' as a
-    conjunction (e.g. 'bread and eggs').
+    Splits on comma only when outside parentheses (so "Vegetable Juice (Water, Carrots, Beets)"
+    stays as one ingredient for the bridge to expand). Preserves compound items like
+    'burger with chicken' when the left side is a known product/container word.
     """
     t = re.sub(r"[?\!]+", "", text).strip()
     # Strip trailing question/sentence after a period (e.g. "Water. Is this Halal" → "Water")
@@ -423,7 +472,7 @@ def _split_ingredients(text: str) -> List[str]:
     result: List[str] = []
     seen: set = set()
 
-    for chunk in t.split(","):
+    for chunk in _split_by_comma_outside_parens(t):
         chunk = chunk.strip().rstrip(".")
         if not chunk or len(chunk) < 2:
             continue
