@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export const dynamic = 'force-dynamic'
 
-import { MAX_CHAT_MESSAGE_LENGTH } from '@/constants/chatProtocol'
+import { getMaxChatMessageLength } from '@/lib/backendConfig'
 
 const MAX_CHAT_BODY_BYTES = 512 * 1024 // 512KB
 
@@ -20,23 +20,24 @@ export async function POST(req: NextRequest) {
         }
         const { message, userProfile, user_id } = body
         const messageStr = typeof message === 'string' ? message : ''
-        if (messageStr.length > MAX_CHAT_MESSAGE_LENGTH) {
+        const maxLength = await getMaxChatMessageLength()
+        if (messageStr.length > maxLength) {
             return NextResponse.json(
-                { error: 'Message too long', detail: `Maximum ${MAX_CHAT_MESSAGE_LENGTH} characters allowed.` },
+                { error: 'Message too long', detail: `Maximum ${maxLength} characters allowed.` },
                 { status: 400 }
             )
         }
-        // Backend must be running (e.g. cd backend && uvicorn app:app --reload) and emit <<<INGREDIENT_AUDIT>>> JSON for premium cards
         const backendUrl = process.env.BACKEND_URL || 'http://127.0.0.1:8000'
         const endpoint = '/chat/grocery'
+        const auth = req.headers.get('authorization')
+        const backendHeaders: Record<string, string> = { 'Content-Type': 'application/json' }
+        if (auth) backendHeaders['Authorization'] = auth
 
         let response: Response
         try {
             response = await fetch(`${backendUrl}${endpoint}`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: backendHeaders,
                 body: JSON.stringify({ query: messageStr, userProfile, user_id }),
             })
         } catch (fetchError) {

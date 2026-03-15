@@ -15,8 +15,9 @@ Future phases will:
 
 from __future__ import annotations
 
+import threading
 from dataclasses import dataclass
-from typing import Literal, Optional
+from typing import Literal, Optional, Tuple
 
 from core.ontology.ingredient_schema import Ingredient
 from core.ontology.ingredient_registry import IngredientRegistry
@@ -66,10 +67,15 @@ class CanonicalResolver:
     engine and bridge code do not need to change.
     """
 
+    # In-process resolution cache by (normalized_key, try_api); max size to avoid unbounded growth.
+    _RESOLUTION_CACHE_MAX = 1000
+
     def __init__(self, registry: Optional[IngredientRegistry] = None) -> None:
         self._registry = registry or IngredientRegistry()
         # Optional knowledge DB; used only when USE_KNOWLEDGE_DB is enabled.
         self._db = IngredientKnowledgeDB() if USE_KNOWLEDGE_DB else None
+        self._resolution_cache: dict[Tuple[str, bool], CanonicalResolution] = {}
+        self._cache_lock = threading.Lock()
 
     def _resolve_via_db(self, raw: str) -> Optional[CanonicalResolution]:
         """
@@ -172,19 +178,45 @@ class CanonicalResolver:
     ) -> CanonicalResolution:
         """
         Full resolution pipeline: static -> dynamic -> external APIs.
-
-        This is a direct wrapper over IngredientRegistry.resolve_with_fallback
-        so that behavior and confidence characteristics remain identical
-        to the existing implementation.
+        Results are cached by (normalized_key, try_api) to avoid repeated ontology/API lookups.
         """
+        norm_key = normalize_ingredient_key((raw or "").strip())
+        cache_key = (norm_key, try_api) if norm_key else None
+
+        if cache_key is not None:
+            with self._cache_lock:
+                if cache_key in self._resolution_cache:
+                    return self._resolution_cache[cache_key]
+
+        res = self._resolve_with_fallback_impl(
+            raw, try_api=try_api, log_unknown=log_unknown,
+            restriction_ids=restriction_ids, profile_context=profile_context,
+        )
+
+        if cache_key is not None:
+            with self._cache_lock:
+                if cache_key not in self._resolution_cache:
+                    self._resolution_cache[cache_key] = res
+                    if len(self._resolution_cache) > self._RESOLUTION_CACHE_MAX:
+                        first_key = next(iter(self._resolution_cache))
+                        del self._resolution_cache[first_key]
+        return res
+
+    def _resolve_with_fallback_impl(
+        self,
+        raw: str,
+        try_api: bool = True,
+        log_unknown: bool = True,
+        restriction_ids: Optional[list] = None,
+        profile_context: Optional[dict] = None,
+    ) -> CanonicalResolution:
+        """Internal resolution without cache lookup (used by resolve_with_fallback)."""
         # Optional DB-first resolution when enabled.
         db_res = self._resolve_via_db(raw)
         if db_res is not None:
             return db_res
 
         if not hasattr(self._registry, "resolve_with_fallback"):
-            # Fallback to static-only behavior if the registry does not
-            # support external enrichment (e.g. in tests).
             return self.resolve_static(raw)
 
         ing, source, level = self._registry.resolve_with_fallback(

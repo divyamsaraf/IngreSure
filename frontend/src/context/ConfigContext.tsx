@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import fallbackProfileOptions from '@/constants/profile_options.json'
+import { FALLBACK_MAX_CHAT_MESSAGE_LENGTH } from '@/constants/configDefaults'
 
 /** Shape from backend GET /config */
 export interface AppConfig {
@@ -14,7 +15,7 @@ export interface AppConfig {
   max_chat_message_length: number
 }
 
-const FALLBACK_MAX_LENGTH = 8192
+const FALLBACK_MAX_LENGTH = FALLBACK_MAX_CHAT_MESSAGE_LENGTH
 
 const defaultConfig: AppConfig = {
   profile_options: fallbackProfileOptions as AppConfig['profile_options'],

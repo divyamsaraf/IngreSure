@@ -202,6 +202,16 @@ docker ps -a --filter "name=ingresure"   # same by container name
 - **IngreSure app** (our stack): 4 containers — `ingresure-backend`, `ingresure-frontend`, `ingresure-redis`, `ingresure-worker`. Project name: **ingresure**.  
 - **Supabase local** (from `supabase start`): many containers named `supabase_<service>_IngreSure` (e.g. `supabase_studio_IngreSure`, `supabase_kong_IngreSure`, `supabase_auth_IngreSure`). Supabase CLI uses your project/folder name “IngreSure” as the suffix. Both groups are expected when you run the app and Supabase; you can stop Supabase with `supabase stop` if you don’t need the knowledge DB or other Supabase features.
 
+## Maintainability checks
+
+**Profile options sync:** The backend uses `data/profile_options.json` (served via `GET /config`). The frontend keeps a fallback copy at `frontend/src/constants/profile_options.json`. Keep them identical. From repo root:
+
+```bash
+python3 backend/scripts/check_profile_options_sync.py
+```
+
+Exit 0 = in sync; exit 1 = files differ (update the frontend copy to match `data/profile_options.json`, or add a CI step that runs this script). See [docs/BACKEND_AND_FRONTEND_ANALYSIS_REPORT.md](docs/BACKEND_AND_FRONTEND_ANALYSIS_REPORT.md) (P3 #14).
+
 ## Running Tests
 
 ```bash
@@ -216,6 +226,14 @@ python3 -m pytest tests/test_restrictions_comprehensive.py -v  # All dietary res
 python3 -m pytest tests/test_compliance_engine.py -v       # Core compliance engine
 python3 -m pytest tests/test_external_apis.py -v           # USDA/OFF API connectors
 ```
+
+## Documentation
+
+- [Stream protocol](docs/stream-protocol.md) — Chat stream tags; single source in backend, frontend must match.
+- [API v1 and frontend endpoints](docs/api-v1-and-frontend-endpoints.md) — Which endpoints the frontend uses vs programmatic `/api/v1/*`.
+- [Auth and identity](docs/auth-and-identity.md) — Anonymous usage; server-issued identity (GET /anon-session, `ANON_SESSION_SECRET`).
+- [Diet and restriction IDs](docs/diet-and-restriction-ids.md) — Where to add or change diets (profile_options, bridge, intent_detector, restrictions).
+- [Backend & frontend analysis](docs/BACKEND_AND_FRONTEND_ANALYSIS_REPORT.md) — Architecture, improvements, and priorities.
 
 ## API Endpoints
 

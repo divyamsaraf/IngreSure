@@ -21,6 +21,7 @@ sys.path.insert(0, str(backend_dir))
 
 def main() -> int:
     from fastapi.testclient import TestClient
+    from core.stream_tags import PROFILE_UPDATE_TAG, INGREDIENT_AUDIT_TAG
     from app import app
 
     client = TestClient(app)
@@ -39,8 +40,8 @@ def main() -> int:
         failures.append(f"POST /chat/grocery greeting: {r.status_code} {r.text[:200]}")
     else:
         body = r.text
-        if "<<<PROFILE_UPDATE>>>" not in body:
-            failures.append("Chat greeting stream missing <<<PROFILE_UPDATE>>>")
+        if PROFILE_UPDATE_TAG not in body:
+            failures.append(f"Chat greeting stream missing {PROFILE_UPDATE_TAG}")
         if len(body.strip()) < 20:
             failures.append("Chat greeting stream too short (no reply text)")
         if not failures:
@@ -59,10 +60,10 @@ def main() -> int:
         failures.append(f"POST /chat/grocery ingredient: {r.status_code} {r.text[:200]}")
     else:
         body = r.text
-        if "<<<INGREDIENT_AUDIT>>>" not in body:
-            failures.append("Chat ingredient stream missing <<<INGREDIENT_AUDIT>>>")
-        if "<<<PROFILE_UPDATE>>>" not in body:
-            failures.append("Chat ingredient stream missing <<<PROFILE_UPDATE>>>")
+        if INGREDIENT_AUDIT_TAG not in body:
+            failures.append(f"Chat ingredient stream missing {INGREDIENT_AUDIT_TAG}")
+        if PROFILE_UPDATE_TAG not in body:
+            failures.append(f"Chat ingredient stream missing {PROFILE_UPDATE_TAG}")
         # Verdict text (template-based) should mention milk/vegan/dairy
         if "milk" not in body.lower() and "dairy" not in body.lower():
             failures.append("Chat ingredient reply should mention milk/dairy for vegan check")

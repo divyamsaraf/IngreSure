@@ -20,8 +20,11 @@ export async function GET(req: NextRequest) {
   if (!user_id) {
     return NextResponse.json({ error: 'user_id required' }, { status: 400 })
   }
+  const auth = req.headers.get('authorization')
+  const headers: Record<string, string> = {}
+  if (auth) headers['Authorization'] = auth
   try {
-    const res = await fetch(`${BACKEND_URL}/profile/${encodeURIComponent(user_id)}`)
+    const res = await fetch(`${BACKEND_URL}/profile/${encodeURIComponent(user_id)}`, { headers })
     if (!res.ok) {
       if (res.status === 404 || res.status >= 500) {
         return NextResponse.json<BackendProfile>(defaultProfilePayload(user_id))
@@ -69,9 +72,12 @@ export async function POST(req: NextRequest) {
     }
     if (dietary_preference != null) payload.dietary_preference = dietary_preference
 
+    const auth = req.headers.get('authorization')
+    const backendHeaders: Record<string, string> = { 'Content-Type': 'application/json' }
+    if (auth) backendHeaders['Authorization'] = auth
     const res = await fetch(`${BACKEND_URL}/profile`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: backendHeaders,
       body: JSON.stringify(payload),
     })
     if (!res.ok) {

@@ -11,7 +11,7 @@ import { UserProfile, profileToBackend, hasProfileRules } from '@/types/userProf
 import { useProfileContext } from '@/context/ProfileContext'
 import { useConfig } from '@/context/ConfigContext'
 import { PROFILE_STORAGE_KEY } from '@/constants/profileStorage'
-import { getOrCreateUserId, persistProfileToStorage } from '@/lib/profileStorage'
+import { getOrCreateUserId, getAnonSessionToken, persistProfileToStorage } from '@/lib/profileStorage'
 
 /** Ensure chat URL has exactly one mode param (avoids ?mode=grocery?mode=grocery from duplicate appends). */
 function normalizeChatUrl(url: string): string {
@@ -155,19 +155,23 @@ export default function ChatInterface({
         setInput('')
         setMessages(prev => [...prev, { role: 'user', content: userMsg }])
         setLoading(true)
-
-        setMessages(prev => [...prev, { role: 'assistant', content: '' }])
+        // Show "Analyzing…" immediately so user sees progress before first stream chunk
+        setMessages(prev => [...prev, { role: 'assistant', content: 'Analyzing…' }])
 
         try {
+            const uid = userId || getOrCreateUserId()
             const payload = {
                 message: userMsg,
-                user_id: userId || getOrCreateUserId(),
+                user_id: uid,
                 userProfile: profile
             }
+            const token = getAnonSessionToken()
+            const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+            if (token) headers['Authorization'] = `Bearer ${token}`
 
             const response = await fetch(normalizeChatUrl(apiEndpoint), {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers,
                 body: JSON.stringify(payload)
             })
 

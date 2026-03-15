@@ -333,9 +333,16 @@ def compose_verdict(
     uncertain = verdict.uncertain_ingredients or []
     triggered_norm = {_normalize_for_match(i) for i in triggered}
     uncertain_norm = {_normalize_for_match(i) for i in uncertain}
+    # Raw inputs that mapped to triggered canonicals should not be shown as safe.
+    triggered_raw_norm = {
+        _normalize_for_match(raw)
+        for raw in (triggered_to_input.values() or [])
+        if isinstance(raw, str)
+    }
     safe_ingredients = [
         i for i in ingredients
         if _normalize_for_match(i) not in triggered_norm
+        and _normalize_for_match(i) not in triggered_raw_norm
         and _normalize_for_match(i) not in uncertain_norm
     ]
 
@@ -535,9 +542,18 @@ def build_ingredient_audit_payload(
 
     triggered_norm = {_normalize_for_match(i) for i in triggered}
     uncertain_norm = {_normalize_for_match(i) for i in uncertain}
+    # Treat as triggered any raw input that mapped to a triggered canonical (so the same user input
+    # cannot appear in both Avoid and Safe). Normalize values from triggered_ingredient_to_input.
+    triggered_raw_norm = {
+        _normalize_for_match(raw)
+        for raw in (triggered_to_input.values() or [])
+        if isinstance(raw, str)
+    }
     safe_list = [
         i for i in ingredients
-        if _normalize_for_match(i) not in triggered_norm and _normalize_for_match(i) not in uncertain_norm
+        if _normalize_for_match(i) not in triggered_norm
+        and _normalize_for_match(i) not in triggered_raw_norm
+        and _normalize_for_match(i) not in uncertain_norm
     ]
     # Filter product words from safe list
     safe_list = [i for i in safe_list if not _is_product_word(i)]

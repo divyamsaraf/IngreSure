@@ -18,28 +18,6 @@ logger = logging.getLogger(__name__)
 # Mapping dictionaries (single source of truth)
 # ---------------------------------------------------------------------------
 
-# Scan scorecard diet labels -> restriction_ids (canonical display: "Hindu Vegetarian")
-SCAN_DIET_LABELS = ["Vegan", "Jain", "Halal", "Hindu Vegetarian"]
-DIET_LABEL_TO_RESTRICTION_ID: Dict[str, str] = {
-    "Vegan": "vegan",
-    "Jain": "jain",
-    "Halal": "halal",
-    "Hindu Vegetarian": "hindu_vegetarian",
-}
-
-# Claimed diet types (profile/tagging) -> restriction_id
-CLAIMED_DIET_TO_RESTRICTION_ID: Dict[str, str] = {
-    "Vegan": "vegan",
-    "Vegetarian": "vegetarian",
-    "Jain": "jain",
-    "Halal": "halal",
-    "Kosher": "kosher",
-    "Hindu Vegetarian": "hindu_vegetarian",
-    "Gluten-Free": "gluten_free",
-    "Dairy-Free": "dairy_free",
-    "Egg-Free": "egg_free",
-}
-
 # Dietary preference (display name, lowered) -> restriction_id
 # Covers both dietary and religious diets. Used for user profiles.
 DIETARY_PREFERENCE_TO_RESTRICTION_ID: Dict[str, str] = {

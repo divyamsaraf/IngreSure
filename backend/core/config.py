@@ -23,6 +23,20 @@ USE_KNOWLEDGE_DB = os.environ.get("USE_KNOWLEDGE_DB", "").lower() in ("1", "true
 # Redis cache (Phase 3+): optional distributed cache layer
 REDIS_URL = os.environ.get("REDIS_URL", "").strip()
 
+# When set (e.g. LOG_REDACT_PII=1), log helpers redact query/user_id and other PII in log lines.
+LOG_REDACT_PII = os.environ.get("LOG_REDACT_PII", "").lower() in ("1", "true", "yes")
+
+
+def redact_pii(val):
+    """If LOG_REDACT_PII is set, return '[REDACTED]' for non-empty values; else return value. Use when logging query, user_id, etc."""
+    if not LOG_REDACT_PII:
+        return val
+    if val is None:
+        return val
+    s = str(val).strip()
+    return "[REDACTED]" if s else val
+
+
 # --- Data paths ---
 def get_ontology_path() -> Path:
     return _REPO_ROOT / "data" / "ontology.json"

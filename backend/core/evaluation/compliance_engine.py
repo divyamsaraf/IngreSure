@@ -2,8 +2,10 @@
 Deterministic compliance engine. Single pipeline for scan and chat.
 Resolve: 1) static ontology 2) dynamic ontology 3) external API if enabled.
 Unknown ingredient -> UNCERTAIN; trace/minor ingredients optionally informational only.
+Ingredients are resolved in parallel when multiple are present.
 """
-from typing import Dict, List, Optional, Set
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from typing import Dict, List, Optional, Set, Tuple
 import logging
 
 from core.ontology.ingredient_registry import IngredientRegistry
@@ -58,20 +60,17 @@ class ComplianceEngine:
             )
 
         trace_set = trace_ingredient_keys or set()
-        resolved: List[Ingredient] = []
-        resolved_raw: List[str] = []  # parallel to resolved: user input that resolved to each
-        resolved_is_trace: List[bool] = []  # parallel to resolved: True if ingredient was <2% minor
-        uncertain_raw: List[str] = []
-        informational_raw: List[str] = []  # minor <2%; display "informational only" when confidence < 1.0
-        resolution_levels: List[str] = []
-
-        for raw in ingredient_strings:
+        # Build list of (index, raw, key, is_trace) for items we will resolve
+        items: List[Tuple[int, str, str, bool]] = []
+        for i, raw in enumerate(ingredient_strings):
             key = (raw or "").lower().strip()
             if not key:
                 continue
-            is_trace = key in trace_set
+            items.append((i, raw, key, key in trace_set))
 
-            if hasattr(self._ingredients, "resolve_with_fallback") and use_api_fallback:
+        def resolve_one(item: Tuple[int, str, str, bool]) -> Tuple[int, str, str, bool, Optional[Ingredient], str, str]:
+            idx, raw, key, is_trace = item
+            if use_api_fallback:
                 res = self._resolver.resolve_with_fallback(
                     raw,
                     try_api=True,
@@ -80,9 +79,33 @@ class ComplianceEngine:
                     profile_context=profile_context,
                 )
                 ing = res.ingredient
-                source = res.source_layer
-                level = res.confidence_band or "low"
+                source = getattr(res, "source_layer", "unknown")
+                level = (res.confidence_band or "low") if hasattr(res, "confidence_band") else "low"
+                return (idx, raw, key, is_trace, ing, source, level)
+            ing = self._ingredients.resolve(raw)
+            return (idx, raw, key, is_trace, ing, "static" if ing else "unknown", "high" if ing else "low")
 
+        resolved: List[Ingredient] = []
+        resolved_raw: List[str] = []
+        resolved_is_trace: List[bool] = []
+        uncertain_raw: List[str] = []
+        informational_raw: List[str] = []
+        resolution_levels: List[str] = []
+
+        max_workers = min(8, max(1, len(items)))
+        if len(items) <= 1:
+            results_ordered = [resolve_one(it) for it in items]
+        else:
+            with ThreadPoolExecutor(max_workers=max_workers) as executor:
+                futures = {executor.submit(resolve_one, it): it for it in items}
+                results_by_idx: Dict[int, Tuple[int, str, str, bool, Optional[object], str, str]] = {}
+                for fut in as_completed(futures):
+                    t = fut.result()
+                    results_by_idx[t[0]] = t
+                results_ordered = [results_by_idx[i] for i in sorted(results_by_idx)]
+
+        for idx, raw, key, is_trace, ing, source, level in results_ordered:
+            if use_api_fallback:
                 if ing is not None:
                     resolved.append(ing)
                     resolved_raw.append(raw)
@@ -97,9 +120,8 @@ class ComplianceEngine:
                             raw, key,
                         )
                         informational_raw.append(raw)
-                        resolution_levels.append("high")  # do not reduce confidence
+                        resolution_levels.append("high")
                     elif source == "api":
-                        # All external APIs failed: do NOT mark SAFE; mark UNCERTAIN, confidence 0.0-0.4
                         logger.info(
                             "COMPLIANCE_ENGINE api_failed uncertain raw=%s key=%s (all external lookups failed)",
                             raw, key,
@@ -114,7 +136,6 @@ class ComplianceEngine:
                             raw, key, (restriction_ids or [])[:10],
                         )
             else:
-                ing = self._ingredients.resolve(raw)
                 if ing is None:
                     if is_trace:
                         logger.info(

@@ -7,15 +7,17 @@ Endpoints:
     GET  /profile/{user_id} Get user profile
     POST /profile           Create or update profile
 """
-from fastapi import FastAPI, HTTPException
-from fastapi.responses import StreamingResponse
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import StreamingResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
 from pydantic import BaseModel
 from typing import List, Dict, Optional
 import logging
 import json
 import re as _re
 import uuid
+import os
 from dotenv import load_dotenv
 from pathlib import Path
 
@@ -31,10 +33,56 @@ try:
 except ImportError:
     pass
 
-# CORS (set CORS_ORIGINS env to restrict in production)
+# Rate limiting (per-IP)
+try:
+    from slowapi import Limiter, _rate_limit_exceeded_handler
+    from slowapi.util import get_remote_address
+    from slowapi.errors import RateLimitExceeded
+    from slowapi.middleware import SlowAPIMiddleware
+    limiter = Limiter(key_func=get_remote_address)
+    app.state.limiter = limiter
+    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+    app.add_middleware(SlowAPIMiddleware)
+except ImportError:
+    limiter = None  # optional: slowapi not installed
+
+
+def _rate_limit(limit: str):
+    """Apply rate limit decorator when slowapi is available; no-op otherwise."""
+    return limiter.limit(limit) if limiter else lambda f: f
+
+
+# Request body size limits (aligned with frontend BFF)
+MAX_CHAT_BODY_BYTES = 512 * 1024   # 512KB for POST /chat/grocery
+MAX_PROFILE_BODY_BYTES = 64 * 1024  # 64KB for POST /profile (aligned with BFF)
+_BODY_LIMIT_BY_PATH = {"/chat/grocery": MAX_CHAT_BODY_BYTES, "/profile": MAX_PROFILE_BODY_BYTES}
+
+
+class BodySizeLimitMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        if request.method == "POST" and request.url.path in _BODY_LIMIT_BY_PATH:
+            limit = _BODY_LIMIT_BY_PATH[request.url.path]
+            content_length = request.headers.get("content-length")
+            if content_length:
+                try:
+                    if int(content_length) > limit:
+                        return JSONResponse(
+                            {"detail": "Request body too large"},
+                            status_code=413,
+                        )
+                except ValueError:
+                    pass
+        return await call_next(request)
+
+
+app.add_middleware(BodySizeLimitMiddleware)
+
+# CORS: use CORS_ORIGINS env (comma-separated) when set; otherwise allow all (dev)
+_cors_origins_raw = os.environ.get("CORS_ORIGINS", "").strip()
+CORS_ORIGINS = [o.strip() for o in _cors_origins_raw.split(",") if o.strip()] if _cors_origins_raw else ["*"]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -45,7 +93,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # --- Eagerly import core modules (avoid repeated lazy imports) ---
-from core.config import get_ollama_url, get_ollama_model, PRODUCTION, MAX_CHAT_MESSAGE_LENGTH
+from core.config import get_ollama_url, get_ollama_model, PRODUCTION, MAX_CHAT_MESSAGE_LENGTH, redact_pii
 from core.profile_options import get_profile_options_raw
 from core.profile_storage import get_or_create_profile, save_profile, update_profile_partial
 from core.models.user_profile import UserProfile
@@ -68,6 +116,8 @@ from core.llm_response import (
     llm_compose_general,
 )
 from core.compound_expansion import expand_compounds
+from core.stream_tags import PROFILE_REQUIRED_TAG, PROFILE_UPDATE_TAG, INGREDIENT_AUDIT_TAG
+from core.anon_session import sign_anon_token, verify_anon_token
 
 # Public API (v1) - additive only
 try:
@@ -107,6 +157,15 @@ MAX_CHAT_QUERY_LENGTH = MAX_CHAT_MESSAGE_LENGTH
 # user_id: max length and allowed characters (alphanumeric, hyphen, underscore only)
 USER_ID_MAX_LENGTH = 256
 _USER_ID_RE = _re.compile(r"^[a-zA-Z0-9_-]+$")
+
+
+def _user_id_from_auth(request: Request) -> Optional[str]:
+    """If Authorization: Bearer <token> is present and valid, return user_id from token; else None."""
+    auth = request.headers.get("authorization") or request.headers.get("Authorization")
+    if not auth or not auth.startswith("Bearer "):
+        return None
+    token = auth[7:].strip()
+    return verify_anon_token(token) if token else None
 
 
 def _validate_user_id(user_id: str) -> None:
@@ -149,7 +208,7 @@ class ProfileBody(BaseModel):
 # --- Helper Functions ---
 
 def _profile_json(profile: UserProfile) -> str:
-    return f"\n\n<<<PROFILE_UPDATE>>>{json.dumps(profile.to_dict())}<<<PROFILE_UPDATE>>>"
+    return f"\n\n{PROFILE_UPDATE_TAG}{json.dumps(profile.to_dict())}{PROFILE_UPDATE_TAG}"
 
 
 def _parse_update_command(query: str):
@@ -212,7 +271,7 @@ def root():
 
 @app.get("/health")
 def health_check():
-    """Health for Docker/K8s. ingredient_audit_emitter: true means chat emits <<<INGREDIENT_AUDIT>>>."""
+    """Health for Docker/K8s. ingredient_audit_emitter: true means chat emits INGREDIENT_AUDIT blocks."""
     return {"status": "ok", "service": "IngreSure AI Scanner", "ingredient_audit_emitter": True}
 
 
@@ -225,6 +284,19 @@ def get_config():
     }
 
 
+@app.get("/anon-session")
+def anon_session():
+    """
+    Issue a server-issued anonymous identity (see docs/auth-and-identity.md).
+    Returns { user_id, token }. When ANON_SESSION_SECRET is set, token is a signed
+    token to send in Authorization: Bearer; when unset, token is null and client
+    may use user_id only (current behaviour).
+    """
+    user_id = f"anon-{uuid.uuid4().hex[:12]}"
+    token = sign_anon_token(user_id)
+    return {"user_id": user_id, "token": token}
+
+
 def _default_profile_response(user_id: str):
     return {
         "user_id": user_id,
@@ -235,7 +307,8 @@ def _default_profile_response(user_id: str):
 
 
 @app.get("/profile/{user_id}")
-async def get_profile(user_id: str):
+@_rate_limit("120/minute")
+async def get_profile(request: Request, user_id: str):
     """Get persisted profile by user_id."""
     _validate_user_id(user_id)
     try:
@@ -250,27 +323,30 @@ async def get_profile(user_id: str):
 
 
 @app.post("/profile")
-async def create_or_update_profile(body: ProfileBody):
-    """Create or update profile. Merge: only provided fields are updated."""
-    _validate_user_id(body.user_id)
+@_rate_limit("60/minute")
+async def create_or_update_profile(request: Request, body: ProfileBody):
+    """Create or update profile. Merge: only provided fields are updated. When Authorization Bearer is valid, its user_id is used."""
+    resolved_user_id = _user_id_from_auth(request) or body.user_id
+    _validate_user_id(resolved_user_id)
     try:
         profile = update_profile_partial(
-            body.user_id,
+            resolved_user_id,
             dietary_preference=body.dietary_preference,
             allergens=body.allergens,
             lifestyle=body.lifestyle,
         )
         if profile is None:
-            profile = get_or_create_profile(body.user_id)
+            profile = get_or_create_profile(resolved_user_id)
             save_profile(profile)
-        logger.info("PROFILE_UPDATE user_id=%s dietary_preference=%s", body.user_id, profile.dietary_preference)
+        logger.info("PROFILE_UPDATE user_id=%s dietary_preference=%s", redact_pii(resolved_user_id), redact_pii(profile.dietary_preference))
         return {"status": "ok", "profile": profile.to_dict()}
     except Exception as e:
         raise HTTPException(status_code=500, detail=_500_detail(e))
 
 
 @app.post("/chat/grocery")
-async def chat_grocery(request: ChatRequest):
+@_rate_limit("60/minute")
+async def chat_grocery(request: Request, body: ChatRequest):
     """
     Conversational Grocery Safety Assistant.
 
@@ -281,24 +357,25 @@ async def chat_grocery(request: ChatRequest):
       4. Compliance Engine  - deterministic evaluation against ontology + restrictions
       5. Response Composer  - template-based responses, LLM for greetings/general only
     """
-    query = request.query if request.query is not None else ""
+    query = body.query if body.query is not None else ""
     if len(query) > MAX_CHAT_QUERY_LENGTH:
         raise HTTPException(
             status_code=400,
             detail=f"Query too long. Maximum {MAX_CHAT_QUERY_LENGTH} characters allowed.",
         )
-    if request.user_id is not None:
-        _validate_user_id(request.user_id)
-    logger.info("Grocery Chat query=%s user_id=%s", query, request.user_id)
+    resolved_user_id = _user_id_from_auth(request)
+    if not resolved_user_id and body.user_id is not None:
+        _validate_user_id(body.user_id)
+    logger.info("Grocery Chat query=%s user_id=%s", redact_pii(query), redact_pii(body.user_id or resolved_user_id))
     try:
         async def generate_safety():
-            # Auto-assign user_id if not provided (server-issued anonymous id)
-            user_id = request.user_id or f"anon-{uuid.uuid4().hex[:12]}"
+            # Identity: Authorization Bearer token > body user_id > new anon- id
+            user_id = resolved_user_id or body.user_id or f"anon-{uuid.uuid4().hex[:12]}"
             profile = get_or_create_profile(user_id)
             # Merge client-sent profile so backend has latest (e.g. Jain from onboarding)
-            if getattr(request, "userProfile", None) and isinstance(request.userProfile, dict):
+            if getattr(body, "userProfile", None) and isinstance(body.userProfile, dict):
                 try:
-                    client = UserProfile.from_dict({**request.userProfile, "user_id": user_id})
+                    client = UserProfile.from_dict({**body.userProfile, "user_id": user_id})
                     if client.dietary_preference and client.dietary_preference != "No rules":
                         profile.update_merge(dietary_preference=client.dietary_preference)
                     if client.allergens:
@@ -306,7 +383,7 @@ async def chat_grocery(request: ChatRequest):
                     if client.lifestyle:
                         profile.update_merge(lifestyle=client.lifestyle)
                 except Exception as e:
-                    logger.warning("Could not merge request.userProfile: %s", e)
+                    logger.warning("Could not merge body.userProfile: %s", e)
 
             # 1) /update slash-command
             field_name, values = _parse_update_command(query)
@@ -318,7 +395,7 @@ async def chat_grocery(request: ChatRequest):
                 elif field_name == "lifestyle":
                     profile.update_merge(lifestyle=values)
                 save_profile(profile)
-                logger.info("PROFILE_UPDATE user_id=%s field=%s values=%s", user_id, field_name, values)
+                logger.info("PROFILE_UPDATE user_id=%s field=%s values=%s", redact_pii(user_id), field_name, redact_pii(values) if values else values)
                 yield template_profile_update(profile, {field_name: values}, has_ingredients=False)
                 yield _profile_json(profile)
                 return
@@ -327,7 +404,7 @@ async def chat_grocery(request: ChatRequest):
             parsed = detect_intent(query)
             logger.info(
                 "INTENT_DETECT_RULES intent=%s profile_updates=%s ingredients=%s",
-                parsed.intent, parsed.profile_updates, parsed.ingredients,
+                parsed.intent, redact_pii(parsed.profile_updates), redact_pii(parsed.ingredients),
             )
 
             # LLM fallback for ambiguous queries
@@ -363,7 +440,7 @@ async def chat_grocery(request: ChatRequest):
                     profile_was_updated = True
                     logger.info(
                         "PROFILE_UPDATE_NL user_id=%s updated_fields=%s",
-                        user_id, list(updated_fields.keys()),
+                        redact_pii(user_id), list(updated_fields.keys()),
                     )
 
             # 5) Profile-only update (no ingredients)
@@ -375,7 +452,7 @@ async def chat_grocery(request: ChatRequest):
             # 6) General question (no ingredients)
             if parsed.intent == "GENERAL_QUESTION" and not parsed.has_ingredients:
                 if profile.is_empty():
-                    yield "<<<PROFILE_REQUIRED>>>\n\n"
+                    yield f"{PROFILE_REQUIRED_TAG}\n\n"
                 msg = llm_compose_general(query, profile)
                 yield msg or template_general()
                 yield _profile_json(profile)
@@ -385,7 +462,7 @@ async def chat_grocery(request: ChatRequest):
             ingredients = parsed.ingredients
 
             if profile.is_empty() and not ingredients:
-                yield "<<<PROFILE_REQUIRED>>>\n\n"
+                yield f"{PROFILE_REQUIRED_TAG}\n\n"
                 msg = llm_compose_general(query, profile)
                 yield msg or "Please set up your dietary profile first so I can give you personalized advice."
                 yield _profile_json(profile)
@@ -400,6 +477,9 @@ async def chat_grocery(request: ChatRequest):
             # 8) Expand compound items
             eval_ingredients, compound_map = expand_compounds(ingredients)
 
+            # Eager first byte: show progress before compliance run (improves perceived latency)
+            yield "Checking ingredients…\n\n"
+
             # 9) Run DETERMINISTIC compliance engine
             restriction_ids = user_profile_model_to_restriction_ids(profile)
             profile_context = {
@@ -409,7 +489,7 @@ async def chat_grocery(request: ChatRequest):
             }
             logger.info(
                 "COMPLIANCE_RUN eval_ingredients=%s compounds=%s restriction_ids=%s",
-                eval_ingredients, compound_map, restriction_ids,
+                redact_pii(eval_ingredients), redact_pii(compound_map), restriction_ids,
             )
             verdict = run_new_engine_chat(
                 eval_ingredients,
@@ -421,7 +501,7 @@ async def chat_grocery(request: ChatRequest):
             logger.info(
                 "VERDICT=%s confidence=%.2f triggered=%s ingredients=%s",
                 verdict.status.value, verdict.confidence_score,
-                verdict.triggered_restrictions, ingredients,
+                verdict.triggered_restrictions, redact_pii(ingredients),
             )
 
             # 10) Compose response (template-based: instant, accurate)
@@ -436,7 +516,7 @@ async def chat_grocery(request: ChatRequest):
             # 11) Emit profile first when updated so frontend header shows current diet before audit
             if profile_was_updated:
                 yield _profile_json(profile)
-            # 12) Emit structured <<<INGREDIENT_AUDIT>>> JSON for premium frontend cards
+            # 12) Emit structured INGREDIENT_AUDIT JSON for premium frontend cards
             audit_payload = build_ingredient_audit_payload(
                 verdict=verdict,
                 profile=profile,
@@ -444,7 +524,7 @@ async def chat_grocery(request: ChatRequest):
                 display_names=compound_map if compound_map else None,
                 explanation_text=response_text,
             )
-            audit_block = f"<<<INGREDIENT_AUDIT>>>{json.dumps(audit_payload)}<<<INGREDIENT_AUDIT>>>"
+            audit_block = f"{INGREDIENT_AUDIT_TAG}{json.dumps(audit_payload)}{INGREDIENT_AUDIT_TAG}"
             logger.info("INGREDIENT_AUDIT_EMITTED groups=%s", [g.get("status") for g in audit_payload.get("groups", [])])
             yield audit_block
             if not profile_was_updated:
