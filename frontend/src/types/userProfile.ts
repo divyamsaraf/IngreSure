@@ -1,9 +1,10 @@
+/** Canonical diet values; use "Hindu Vegetarian" (single source in profile_options). */
 export type DietType =
   | "No rules"
   | "Jain"
   | "Vegan"
   | "Vegetarian"
-  | "Hindu Veg"
+  | "Hindu Vegetarian"
   | "Hindu Non Vegetarian"
   | "Halal"
   | "Kosher"
@@ -26,136 +27,58 @@ export interface ProfileUpdateStreamPayload {
   [key: string]: unknown
 }
 
-/** Backend profile shape (user_id + dietary_preference + lists). */
+/** Backend profile shape (user_id + dietary_preference + allergens + lifestyle). */
 export interface BackendProfile {
   user_id: string;
   dietary_preference?: string;
   allergens: string[];
   lifestyle: string[];
-  /** Legacy keys (backend may still return these) */
-  dietary_restrictions?: string[];
-  lifestyle_flags?: string[];
-  /** Deprecated — kept for backward compat, always empty */
-  religious_preferences?: string[];
 }
 
 export interface UserProfile {
   user_id?: string;
-  /** Primary diet / religious preference for display and backend (covers both). */
   dietary_preference: DietType;
-  /** Legacy; maps from dietary_preference for compatibility. */
-  diet?: DietType;
-  allergies: string[];
-  allergens?: string[];
+  allergens: string[];
   lifestyle: string[];
-  /** Legacy */
-  lifestyle_flags?: string[];
-  dietary_restrictions?: string[];
-  dairy_allowed?: boolean;
-  meat_allowed?: boolean;
   is_onboarding_completed: boolean;
 }
 
 export const DEFAULT_PROFILE: UserProfile = {
   dietary_preference: "No rules",
-  diet: "No rules",
-  allergies: [],
   allergens: [],
   lifestyle: [],
-  lifestyle_flags: [],
-  dietary_restrictions: [],
-  dairy_allowed: true,
-  meat_allowed: true,
   is_onboarding_completed: false,
 };
 
-/** Diet display name → icon for scanability. */
-export const DIET_ICON: Record<string, string> = {
-  "No rules": "🍽️",
-  Vegan: "🌱",
-  Vegetarian: "🥗",
-  Pescatarian: "🐟",
-  Jain: "🙏",
-  Halal: "☪️",
-  Kosher: "✡️",
-  "Hindu Vegetarian": "🪔",
-  "Hindu Non Vegetarian": "🍗",
-  "Hindu Veg": "🥗",
-};
-
-/** Primary diet only (choose ONE). No Lacto/Ovo — use Additional Restrictions for Gluten-Free etc. */
-export const DIETARY_PREFERENCE_OPTIONS: { value: string; label: string }[] = [
-  { value: "No rules", label: "No preference" },
-  { value: "Vegan", label: "Vegan" },
-  { value: "Vegetarian", label: "Vegetarian" },
-  { value: "Pescatarian", label: "Pescatarian" },
-  { value: "Jain", label: "Jain" },
-  { value: "Halal", label: "Halal" },
-  { value: "Kosher", label: "Kosher" },
-  { value: "Hindu Vegetarian", label: "Hindu Vegetarian" },
-  { value: "Hindu Non Vegetarian", label: "Hindu Non Vegetarian" },
-];
-
-/** Additional restrictions (optional, multi-select). Stored in lifestyle. */
-export const ADDITIONAL_RESTRICTIONS: { value: string; label: string }[] = [
-  { value: "Gluten-Free", label: "Gluten-Free" },
-  { value: "Dairy-Free", label: "Dairy-Free" },
-  { value: "Egg-Free", label: "Egg-Free" },
-  { value: "no onion", label: "No Onion" },
-  { value: "no garlic", label: "No Garlic" },
-  { value: "no alcohol", label: "No Alcohol" },
-  { value: "no palm oil", label: "No Palm Oil" },
-  { value: "no insect derived", label: "No Insect-Derived Ingredients" },
-];
-
-// Lifestyle values in profile come from ADDITIONAL_RESTRICTIONS (multi-select).
-
-export const ALLERGEN_OPTIONS = [
-  "Milk",
-  "Eggs",
-  "Peanuts",
-  "Tree Nuts",
-  "Soy",
-  "Wheat/Gluten",
-  "Fish",
-  "Shellfish",
-  "Sesame",
-  "Mustard",
-  "Celery",
-  "Other",
-] as const;
+/** Single source: data/profile_options.json (backend) / frontend src/constants/profile_options.json */
+import {
+  DIET_ICON,
+  DIETARY_PREFERENCE_OPTIONS,
+  ADDITIONAL_RESTRICTIONS,
+  ALLERGEN_OPTIONS,
+} from '@/constants/profileOptions'
+export { DIET_ICON, DIETARY_PREFERENCE_OPTIONS, ADDITIONAL_RESTRICTIONS, ALLERGEN_OPTIONS }
 
 /** True when profile has at least one rule (diet other than "No rules", or allergens, or lifestyle). */
 export function hasProfileRules(profile: UserProfile): boolean {
   return (
     (profile.dietary_preference != null && profile.dietary_preference !== "No rules") ||
-    (profile.diet != null && profile.diet !== "No rules") ||
     (profile.allergens?.length ?? 0) > 0 ||
-    (profile.allergies?.length ?? 0) > 0 ||
-    (profile.lifestyle?.length ?? 0) > 0 ||
-    (profile.lifestyle_flags?.length ?? 0) > 0
+    (profile.lifestyle?.length ?? 0) > 0
   )
 }
 
 /** Convert backend profile to UserProfile for UI. */
 export function backendToProfile(backend: BackendProfile): UserProfile {
-  const dietary =
-    backend.dietary_preference ??
-    (backend.dietary_restrictions && backend.dietary_restrictions[0]) ??
-    "No rules";
-  const lifestyle = backend.lifestyle ?? backend.lifestyle_flags ?? [];
-  // Map backend lowercase allergens back to display names and deduplicate
+  const dietary = backend.dietary_preference ?? "No rules";
+  const lifestyle = backend.lifestyle ?? [];
   const rawAllergens = backend.allergens ?? [];
   const displayAllergens = [...new Set(rawAllergens.map(allergenToDisplay))];
   return {
     user_id: backend.user_id,
     dietary_preference: dietary,
-    diet: dietary,
-    allergies: displayAllergens,
     allergens: displayAllergens,
     lifestyle,
-    lifestyle_flags: lifestyle,
-    dietary_restrictions: backend.dietary_restrictions ?? (dietary !== "No rules" ? [dietary] : []),
     is_onboarding_completed: true,
   };
 }
@@ -180,7 +103,7 @@ function allergenToDisplay(backendName: string): string {
   return _BACKEND_TO_DISPLAY[key] ?? backendName;
 }
 
-/** Convert UserProfile to backend payload. Send full profile on save so backend can persist correctly (no accidental reset). */
+/** Convert UserProfile to backend payload. */
 export function profileToBackend(
   p: UserProfile,
   user_id: string
@@ -188,7 +111,7 @@ export function profileToBackend(
   return {
     user_id,
     dietary_preference: p.dietary_preference ?? "No rules",
-    allergens: (p.allergens ?? p.allergies ?? []).map(normalizeAllergen),
-    lifestyle: p.lifestyle ?? p.lifestyle_flags ?? [],
+    allergens: (p.allergens ?? []).map(normalizeAllergen),
+    lifestyle: p.lifestyle ?? [],
   };
 }

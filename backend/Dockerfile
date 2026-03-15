@@ -1,8 +1,7 @@
 # Use python 3.10 slim
 FROM python:3.10-slim
 
-# Install system dependencies (for PaddleOCR/OpenCV)
-# On newer Debian (trixie), libgl1-mesa-glx is replaced by libgl1.
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
     libgl1 \

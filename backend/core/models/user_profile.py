@@ -3,50 +3,21 @@ Single persistent user profile for grocery safety.
 dietary_preference covers both dietary AND religious choices (Jain, Halal, Kosher, etc.).
 allergens, lifestyle are separate lists.
 Updates merge without overwriting existing fields (partial updates).
+Canonical options loaded from data/profile_options.json (single source of truth).
 """
 from dataclasses import dataclass, field, asdict
 from typing import List, Optional
 
-# Canonical display values for dietary preference (primary diet only; aligned with frontend)
-DIETARY_PREFERENCE_CHOICES = [
-    "No rules",
-    "Vegan",
-    "Vegetarian",
-    "Pescatarian",
-    "Jain",
-    "Halal",
-    "Kosher",
-    "Hindu Vegetarian",
-    "Hindu Non Vegetarian",
-]
+from core.profile_options import (
+    get_dietary_preference_choices,
+    get_allergen_choices,
+    get_lifestyle_choices,
+)
 
-# Allergen options (display names; aligned with frontend)
-ALLERGEN_CHOICES = [
-    "Milk",
-    "Eggs",
-    "Peanuts",
-    "Tree Nuts",
-    "Soy",
-    "Wheat/Gluten",
-    "Fish",
-    "Shellfish",
-    "Sesame",
-    "Mustard",
-    "Celery",
-    "Other",
-]
-
-# Additional restrictions / lifestyle flags (stored in lifestyle; aligned with frontend ADDITIONAL_RESTRICTIONS)
-LIFESTYLE_CHOICES = [
-    "no alcohol",
-    "no insect derived",
-    "no palm oil",
-    "no onion",
-    "no garlic",
-    "Gluten-Free",
-    "Dairy-Free",
-    "Egg-Free",
-]
+# Re-export for code that imports from user_profile (loaded from profile_options.json)
+DIETARY_PREFERENCE_CHOICES = get_dietary_preference_choices()
+ALLERGEN_CHOICES = get_allergen_choices()
+LIFESTYLE_CHOICES = get_lifestyle_choices()
 
 
 @dataclass
@@ -88,38 +59,21 @@ class UserProfile:
             self.lifestyle = list(lifestyle)
 
     def to_dict(self) -> dict:
-        d = asdict(self)
-        # Include religious_preferences=[] for backward compat with frontend
-        d["religious_preferences"] = []
-        return d
+        return asdict(self)
 
     @classmethod
     def from_dict(cls, data: dict) -> "UserProfile":
-        """Load from dict; supports both new and legacy keys (dietary_restrictions, lifestyle_flags, religious_preferences)."""
+        """Load from dict (user_id, dietary_preference, allergens, lifestyle only)."""
         user_id = str(data.get("user_id", ""))
-        # New shape
         dietary = data.get("dietary_preference")
-        if dietary is None:
-            # Legacy: infer from dietary_restrictions or religious_preferences
-            dr = data.get("dietary_restrictions") or []
-            rp = data.get("religious_preferences") or []
-            combined = (dr or []) + (rp or [])
-            if combined:
-                dietary = combined[0] if isinstance(combined[0], str) else "No rules"
-            else:
-                dietary = "No rules"
         if not isinstance(dietary, str):
             dietary = "No rules"
         else:
             dietary = dietary.strip() or "No rules"
         allergens = data.get("allergens")
-        if allergens is None:
-            allergens = data.get("allergies") or []
         if not isinstance(allergens, (list, tuple)):
             allergens = [allergens] if allergens else []
         lifestyle = data.get("lifestyle")
-        if lifestyle is None:
-            lifestyle = data.get("lifestyle_flags") or []
         if not isinstance(lifestyle, (list, tuple)):
             lifestyle = [lifestyle] if lifestyle else []
         return cls(

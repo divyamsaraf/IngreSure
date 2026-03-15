@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # User-side E2E tests: profile, chat (grocery), and optional scan.
-# Prereqs: Backend at BACKEND_URL (default http://127.0.0.1:8000), optional frontend at FRONTEND_URL (default http://localhost:3000).
+# Prereqs: Backend at BACKEND_URL (default http://127.0.0.1:8000), optional frontend at FRONTEND_URL (default http://localhost:3000). Text/chat only (no image scan).
 set -e
 BACKEND_URL="${BACKEND_URL:-http://127.0.0.1:8000}"
 FRONTEND_URL="${FRONTEND_URL:-http://localhost:3000}"
@@ -41,16 +41,6 @@ echo "OK (stream received)"
 echo -n "5. Frontend proxy /api/profile: "
 F=$(curl -s -o /dev/null -w "%{http_code}" "$FRONTEND_URL/api/profile?user_id=$USER_ID" 2>/dev/null || echo "000")
 echo "$F"
-if [ "$F" = "200" ]; then echo "OK"; else echo "SKIP (ensure frontend and backend are up; in Docker, backend may take 1–2 min on first start for PaddleOCR)"; fi
-
-# 6) Optional: scan (requires valid image file)
-if [ -n "${SCAN_IMAGE:-}" ] && [ -f "$SCAN_IMAGE" ]; then
-  echo -n "6. POST /scan: "
-  S=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$BACKEND_URL/scan" -F "file=@$SCAN_IMAGE")
-  echo "$S"
-  test "$S" = "200" || echo "WARN: scan returned $S"
-else
-  echo "6. POST /scan: SKIP (set SCAN_IMAGE to a path to test scan)"
-fi
+if [ "$F" = "200" ]; then echo "OK"; else echo "SKIP (ensure frontend and backend are up)"; fi
 
 echo "=== User-side E2E done ==="

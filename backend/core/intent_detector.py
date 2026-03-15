@@ -35,16 +35,17 @@ NORMALIZATION: Dict[str, str] = {
 # Diet keywords → canonical display names (sorted longest-first for matching)
 # Single map for detection; any mention of a key updates profile to that diet.
 # ---------------------------------------------------------------------------
+# Canonical display for Hindu veg is "Hindu Vegetarian" (single source of truth).
 DIET_KEYWORDS: Dict[str, str] = {
     "hindu non vegetarian": "Hindu Non Vegetarian",
     "hindu non veg": "Hindu Non Vegetarian",
     "hindu nonveg": "Hindu Non Vegetarian",
-    "hindu vegetarian": "Hindu Veg",
+    "hindu vegetarian": "Hindu Vegetarian",
     "lacto vegetarian": "Lacto Vegetarian",
     "lacto-vegetarian": "Lacto Vegetarian",
     "ovo vegetarian": "Ovo Vegetarian",
     "ovo-vegetarian": "Ovo Vegetarian",
-    "hindu veg": "Hindu Veg",
+    "hindu veg": "Hindu Vegetarian",
     "pescatarian": "Pescatarian",
     "gluten free": "Gluten-Free",
     "gluten-free": "Gluten-Free",
@@ -58,19 +59,18 @@ DIET_KEYWORDS: Dict[str, str] = {
     "kosher": "Kosher",
     "jain": "Jain",
     "strict jain": "Jain",
-    "hindu": "Hindu Veg",
+    "hindu": "Hindu Vegetarian",
     "veg": "Vegetarian",
 }
 
 # Diet synonyms: canonical diet -> list of input variants (for docs and consistency with spec).
-# Detection uses DIET_KEYWORDS (variant -> canonical); this is the inverse view.
 DIET_SYNONYMS: Dict[str, List[str]] = {
     "Vegetarian": ["vegetarian", "veg", "vegeterian", "vegitarian", "vegatarian"],
     "Vegan": ["vegan"],
     "Jain": ["jain", "strict jain"],
     "Halal": ["halal"],
     "Kosher": ["kosher"],
-    "Hindu Veg": ["hindu veg", "hindu vegetarian", "hindu"],
+    "Hindu Vegetarian": ["hindu veg", "hindu vegetarian", "hindu"],
     "Hindu Non Vegetarian": ["hindu non vegetarian", "hindu non veg", "hindu nonveg"],
     "Pescatarian": ["pescatarian"],
     "Gluten-Free": ["gluten free", "gluten-free"],
@@ -536,7 +536,7 @@ def detect_intent(query: str) -> ParsedIntent:
         "I follow a vegan diet"
             → PROFILE_UPDATE  profile_updates={"dietary_preference": "Vegan"}
         "Hindu"
-            → PROFILE_UPDATE  profile_updates={"dietary_preference": "Hindu Veg"}
+            → PROFILE_UPDATE  profile_updates={"dietary_preference": "Hindu Vegetarian"}
         "Hello"
             → GREETING
         "eggs, milk, flour"

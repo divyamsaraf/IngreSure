@@ -75,7 +75,7 @@ cp .env.example .env
 # Edit .env and add your API keys (see Environment Variables below)
 
 # Start the backend server
-USE_NEW_ENGINE=true uvicorn app:app --reload --host 0.0.0.0 --port 8000
+uvicorn app:app --reload --host 0.0.0.0 --port 8000
 ```
 
 The backend runs at **http://localhost:8000**.
@@ -116,12 +116,6 @@ supabase start
 ### Backend (`backend/.env`)
 
 ```bash
-# Compliance engine (required)
-USE_NEW_ENGINE=true
-
-# Shadow mode: run legacy engine alongside for comparison logging
-SHADOW_MODE=false
-
 # USDA FoodData Central API key (free: https://fdc.nal.usda.gov/api-key-signup)
 # Enables external ingredient lookup for unknown ingredients
 USDA_FDC_API_KEY=your_key_here
@@ -144,13 +138,19 @@ OPEN_FOOD_FACTS_ENABLED=true
 # Backend URL for server-side API routes (chat, profile proxy). Default: http://127.0.0.1:8000
 BACKEND_URL=http://127.0.0.1:8000
 
-# Backend URL for client-side requests (scan upload). Must be reachable from the browser (e.g. http://localhost:8000).
+# Optional: backend URL for client-side use (e.g. http://localhost:8000). Server-side proxy uses BACKEND_URL.
 NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
 
 # Supabase (optional)
 # NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
 # NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
 ```
+
+### Production and security (backend)
+
+- **500 errors:** Set `ENVIRONMENT=production` in `backend/.env` so 500 responses return a generic "Internal server error" instead of exception details. Full errors are always logged server-side.
+- **user_id validation:** The backend accepts `user_id` in profile and chat. It is validated: required, max 256 characters, and only letters, numbers, hyphens, and underscores. Invalid values get 400.
+- **Auth without sign-in:** For profile and chat we support anonymous usage (no sign-up). Recommended approach and options for a stable per-device/session identity are described in [Auth and identity](docs/auth-and-identity.md).
 
 ## Running with Docker
 
@@ -173,14 +173,14 @@ docker compose up --build -d
 ```
 
 This starts:
-- **Backend** on port 8000 — healthcheck `GET /health` (5 min start period for OCR/embedding models); auto-restart if it exits
+- **Backend** on port 8000 — healthcheck `GET /health`; auto-restart if it exits
 - **Redis** on 6379 — healthcheck `redis-cli ping`; used by Celery
 - **Celery worker** — starts after backend and Redis are healthy
 - **Frontend** on port 3000 — starts after backend is healthy; has its own healthcheck
 
 **Docker health:** Backend is marked healthy only after it responds to `/health` (allow up to ~5 min on first start). If the backend stays unhealthy, run `docker compose logs backend` to see startup errors; increase Docker Desktop memory if you see OOM.
 
-Ollama must be running on the host; backend uses `host.docker.internal:11434`. For browser-based scan, set `NEXT_PUBLIC_BACKEND_URL=http://localhost:8000` in `frontend/.env.local`. Supabase is run separately via `supabase start`.
+Ollama must be running on the host; backend uses `host.docker.internal:11434`. Supabase is run separately via `supabase start`.
 
 **Single project name:** The Compose file sets `name: ingresure`, so all containers belong to one project regardless of the repo folder name (IngreSure vs ingresure). You should see only one project when you run `docker compose ps` or `docker ps` (project prefix `ingresure`).
 
@@ -188,7 +188,7 @@ Ollama must be running on the host; backend uses `host.docker.internal:11434`. F
 
 | Service   | Container name        | Port  | Role                          |
 |-----------|------------------------|-------|-------------------------------|
-| backend   | ingresure-backend      | 8000  | API, OCR, compliance, chat    |
+| backend   | ingresure-backend      | 8000  | API, compliance, chat         |
 | redis     | ingresure-redis        | 6379  | Celery broker                 |
 | worker    | ingresure-worker       | —     | Background enrichment         |
 | frontend  | ingresure-frontend     | 3000  | Next.js UI                    |
@@ -247,14 +247,6 @@ Users can update their profile through natural language:
 - `"remove milk from my allergens"` → removes allergen
 - `"I avoid alcohol"` → adds lifestyle preference
 - `"is onion jain?"` → sets diet to Jain AND checks onion
-
-### Scan (Image Upload)
-
-```bash
-curl -X POST http://localhost:8000/scan \
-  -F "image=@label_photo.jpg" \
-  -F 'userProfile={"diet":"Vegan"}'
-```
 
 ## Project Structure
 

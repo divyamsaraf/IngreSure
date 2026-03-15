@@ -14,8 +14,6 @@ services:
       - ./backend/.env
     environment:
       - OLLAMA_API_URL=http://host.docker.internal:11434/api/generate
-      - USE_NEW_ENGINE=${USE_NEW_ENGINE:-true}
-      - SHADOW_MODE=${SHADOW_MODE:-false}
       - RUNNING_IN_DOCKER=1
     volumes:
       - ./backend:/app

@@ -82,7 +82,7 @@ export default function HeroSection() {
               </div>
               <div className="flex justify-start">
                 <div className="max-w-[85%] rounded-2xl rounded-bl-sm bg-slate-50 px-3 py-2 text-slate-700 shadow-sm">
-                  I&apos;ve scanned your label. You have{' '}
+                  I&apos;ve checked your ingredients. You have{' '}
                   <span className="font-semibold text-emerald-700">5 safe ingredients</span>{' '}
                   and <span className="font-semibold text-rose-600">1 ingredient to avoid</span>.
                 </div>

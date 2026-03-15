@@ -20,7 +20,7 @@ _SYSTEM_PROMPT = """You are a JSON parser for a grocery safety assistant. Your O
 
 Given a user message, return a JSON object with these fields:
 - "intent": one of "PROFILE_UPDATE", "INGREDIENT_QUERY", "MIXED", "GREETING", "GENERAL_QUESTION"
-- "dietary_preference": string or null (e.g. "Jain", "Vegan", "Halal", "Kosher", "Hindu Veg", "Vegetarian", "Pescatarian", null)
+- "dietary_preference": string or null (e.g. "Jain", "Vegan", "Halal", "Kosher", "Hindu Vegetarian", "Vegetarian", "Pescatarian", null)
 - "ingredients": list of ingredient strings, or empty list
 - "allergens": list of allergen strings the user mentions having, or empty list
 - "lifestyle": list like ["no alcohol", "no onion"] or empty list

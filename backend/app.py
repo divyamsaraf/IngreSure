@@ -3,12 +3,11 @@ IngreSure FastAPI application.
 
 Endpoints:
     GET  /                  Health check
-    POST /scan              OCR -> normalize -> compliance -> scorecard
-    POST /chat/grocery      Conversational grocery safety assistant
+    POST /chat/grocery      Conversational grocery safety assistant (text only)
     GET  /profile/{user_id} Get user profile
     POST /profile           Create or update profile
 """
-from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -46,13 +45,13 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # --- Eagerly import core modules (avoid repeated lazy imports) ---
-from core.config import get_ollama_url, get_ollama_model
+from core.config import get_ollama_url, get_ollama_model, PRODUCTION, MAX_CHAT_MESSAGE_LENGTH
+from core.profile_options import get_profile_options_raw
 from core.profile_storage import get_or_create_profile, save_profile, update_profile_partial
 from core.models.user_profile import UserProfile
 from core.bridge import (
     user_profile_model_to_restriction_ids,
     run_new_engine_chat,
-    run_new_engine_scan,
 )
 from core.intent_detector import detect_intent, ParsedIntent
 from core.llm_intent import llm_extract_intent
@@ -66,16 +65,9 @@ from core.response_composer import (
 )
 from core.llm_response import (
     llm_compose_greeting,
-    llm_compose_profile_update,
     llm_compose_general,
 )
 from core.compound_expansion import expand_compounds
-
-# Service imports (flat modules in backend/)
-from ocr_engine import OCREngine
-from llm_normalizer import IngredientNormalizer
-ocr_engine = OCREngine()
-normalizer = IngredientNormalizer()
 
 # Public API (v1) - additive only
 try:
@@ -109,11 +101,36 @@ async def _warmup_ollama():
 
 
 # --- Request/Response Models ---
-class ScanResult(BaseModel):
-    raw_text: str
-    ingredients: List[str]
-    dietary_scorecard: Dict[str, Dict]
-    confidence_scores: Dict[str, float]
+# Max chat length from config (single source; frontend fetches via GET /config)
+MAX_CHAT_QUERY_LENGTH = MAX_CHAT_MESSAGE_LENGTH
+
+# user_id: max length and allowed characters (alphanumeric, hyphen, underscore only)
+USER_ID_MAX_LENGTH = 256
+_USER_ID_RE = _re.compile(r"^[a-zA-Z0-9_-]+$")
+
+
+def _validate_user_id(user_id: str) -> None:
+    """Validate user_id length and format. Raises HTTPException(400) if invalid."""
+    if not user_id or not user_id.strip():
+        raise HTTPException(status_code=400, detail="user_id is required and cannot be empty.")
+    if len(user_id) > USER_ID_MAX_LENGTH:
+        raise HTTPException(
+            status_code=400,
+            detail=f"user_id must be at most {USER_ID_MAX_LENGTH} characters.",
+        )
+    if not _USER_ID_RE.match(user_id):
+        raise HTTPException(
+            status_code=400,
+            detail="user_id may only contain letters, numbers, hyphens, and underscores.",
+        )
+
+
+def _500_detail(exc: Exception) -> str:
+    """In production, return generic message; otherwise return str(exc). Always log full error."""
+    logger.error("Error: %s", exc, exc_info=True)
+    if PRODUCTION:
+        return "Internal server error."
+    return str(exc)
 
 
 class ChatRequest(BaseModel):
@@ -199,33 +216,13 @@ def health_check():
     return {"status": "ok", "service": "IngreSure AI Scanner", "ingredient_audit_emitter": True}
 
 
-@app.post("/scan", response_model=ScanResult)
-async def scan_image(file: UploadFile = File(...)):
-    """OCR -> normalize ingredients -> compliance engine -> scorecard."""
-    logger.info("Scan request filename=%s", file.filename)
-    try:
-        image_bytes = await file.read()
-        raw_text = ocr_engine.extract_text(image_bytes)
-        logger.info("OCR extracted %d chars", len(raw_text))
-
-        ingredients = normalizer.normalize(raw_text)
-        logger.info("Normalized %d ingredients", len(ingredients))
-
-        verdict, scorecard = run_new_engine_scan(ingredients)
-        logger.info(
-            "Scan status=%s confidence=%s triggered=%s uncertain_count=%s",
-            verdict.status.value, verdict.confidence_score,
-            verdict.triggered_restrictions, len(verdict.uncertain_ingredients),
-        )
-        return {
-            "raw_text": raw_text,
-            "ingredients": ingredients,
-            "dietary_scorecard": scorecard,
-            "confidence_scores": {"overall": verdict.confidence_score},
-        }
-    except Exception as e:
-        logger.error("Scan failed: %s", e, exc_info=True)
-        raise HTTPException(status_code=500, detail=str(e))
+@app.get("/config")
+def get_config():
+    """Single source for frontend: profile options and max chat message length."""
+    return {
+        "profile_options": get_profile_options_raw(),
+        "max_chat_message_length": MAX_CHAT_MESSAGE_LENGTH,
+    }
 
 
 def _default_profile_response(user_id: str):
@@ -234,13 +231,13 @@ def _default_profile_response(user_id: str):
         "dietary_preference": "No rules",
         "allergens": [],
         "lifestyle": [],
-        "religious_preferences": [],
     }
 
 
 @app.get("/profile/{user_id}")
 async def get_profile(user_id: str):
     """Get persisted profile by user_id."""
+    _validate_user_id(user_id)
     try:
         from core.profile_storage import get_profile as get_stored
         profile = get_stored(user_id)
@@ -255,6 +252,7 @@ async def get_profile(user_id: str):
 @app.post("/profile")
 async def create_or_update_profile(body: ProfileBody):
     """Create or update profile. Merge: only provided fields are updated."""
+    _validate_user_id(body.user_id)
     try:
         profile = update_profile_partial(
             body.user_id,
@@ -268,8 +266,7 @@ async def create_or_update_profile(body: ProfileBody):
         logger.info("PROFILE_UPDATE user_id=%s dietary_preference=%s", body.user_id, profile.dietary_preference)
         return {"status": "ok", "profile": profile.to_dict()}
     except Exception as e:
-        logger.error("Profile save failed: %s", e)
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=_500_detail(e))
 
 
 @app.post("/chat/grocery")
@@ -285,10 +282,17 @@ async def chat_grocery(request: ChatRequest):
       5. Response Composer  - template-based responses, LLM for greetings/general only
     """
     query = request.query if request.query is not None else ""
+    if len(query) > MAX_CHAT_QUERY_LENGTH:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Query too long. Maximum {MAX_CHAT_QUERY_LENGTH} characters allowed.",
+        )
+    if request.user_id is not None:
+        _validate_user_id(request.user_id)
     logger.info("Grocery Chat query=%s user_id=%s", query, request.user_id)
     try:
         async def generate_safety():
-            # Auto-assign user_id if not provided (eliminates legacy fallback path)
+            # Auto-assign user_id if not provided (server-issued anonymous id)
             user_id = request.user_id or f"anon-{uuid.uuid4().hex[:12]}"
             profile = get_or_create_profile(user_id)
             # Merge client-sent profile so backend has latest (e.g. Jain from onboarding)
@@ -448,8 +452,7 @@ async def chat_grocery(request: ChatRequest):
 
         return StreamingResponse(generate_safety(), media_type="text/plain")
     except Exception as e:
-        logger.error("Grocery Chat failed: %s", e, exc_info=True)
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=_500_detail(e))
 
 
 if __name__ == "__main__":

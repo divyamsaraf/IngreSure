@@ -37,7 +37,7 @@ class TestMixedIntent:
     def test_i_am_hindu_veg_is_fish_safe(self):
         result = detect_intent("I am Hindu Veg. Is fish safe?")
         assert result.intent == "MIXED"
-        assert result.profile_updates.get("dietary_preference") == "Hindu Veg"
+        assert result.profile_updates.get("dietary_preference") == "Hindu Vegetarian"
         assert any("fish" in i.lower() for i in result.ingredients)
 
     def test_im_kosher_can_i_have_shellfish(self):
@@ -254,7 +254,7 @@ class TestThirdPersonQueries:
     def test_can_a_hindu_veg_person_eat_fish(self):
         result = detect_intent("can a hindu veg person eat fish?")
         assert result.intent == "MIXED"
-        assert result.profile_updates.get("dietary_preference") == "Hindu Veg"
+        assert result.profile_updates.get("dietary_preference") == "Hindu Vegetarian"
         assert any("fish" in i.lower() for i in result.ingredients)
 
     def test_is_onion_jain(self):
@@ -655,30 +655,30 @@ class TestComprehensiveRestrictions:
         v = self._verdict("Jain", ["wine"])
         assert v.status == VerdictStatus.NOT_SAFE
 
-    # === HINDU VEG ===
+    # === HINDU VEG (canonical display: Hindu Vegetarian) ===
     def test_hindu_veg_beef_not_safe(self):
         from core.models.verdict import VerdictStatus
-        v = self._verdict("Hindu Veg", ["beef"])
+        v = self._verdict("Hindu Vegetarian", ["beef"])
         assert v.status == VerdictStatus.NOT_SAFE
 
     def test_hindu_veg_egg_not_safe(self):
         from core.models.verdict import VerdictStatus
-        v = self._verdict("Hindu Veg", ["egg"])
+        v = self._verdict("Hindu Vegetarian", ["egg"])
         assert v.status == VerdictStatus.NOT_SAFE
 
     def test_hindu_veg_fish_not_safe(self):
         from core.models.verdict import VerdictStatus
-        v = self._verdict("Hindu Veg", ["fish"])
+        v = self._verdict("Hindu Vegetarian", ["fish"])
         assert v.status == VerdictStatus.NOT_SAFE
 
     def test_hindu_veg_milk_safe(self):
         from core.models.verdict import VerdictStatus
-        v = self._verdict("Hindu Veg", ["milk"])
+        v = self._verdict("Hindu Vegetarian", ["milk"])
         assert v.status == VerdictStatus.SAFE
 
     def test_hindu_veg_ghee_safe(self):
         from core.models.verdict import VerdictStatus
-        v = self._verdict("Hindu Veg", ["ghee"])
+        v = self._verdict("Hindu Vegetarian", ["ghee"])
         assert v.status == VerdictStatus.SAFE
 
     # === HINDU NON-VEG ===

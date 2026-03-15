@@ -82,18 +82,19 @@ def test_user_profile_update_merge():
     assert p.allergens == ["Egg"]
 
 
-def test_user_profile_from_dict_legacy():
-    """from_dict accepts legacy keys (dietary_restrictions, lifestyle_flags)."""
+def test_user_profile_from_dict():
+    """from_dict accepts user_id, dietary_preference, allergens, lifestyle."""
     from core.models.user_profile import UserProfile
     p = UserProfile.from_dict({
         "user_id": "u1",
-        "dietary_restrictions": ["vegan"],
+        "dietary_preference": "Vegan",
         "allergens": ["Milk"],
-        "lifestyle_flags": ["no alcohol"],
+        "lifestyle": ["no alcohol"],
     })
-    assert p.dietary_preference in ("vegan", "Vegan") or "vegan" in p.dietary_preference.lower()
-    assert "Milk" in p.allergens or "milk" in [a.lower() for a in p.allergens]
-    assert p.lifestyle or "no alcohol" in [x.lower() for x in p.lifestyle]
+    assert p.user_id == "u1"
+    assert p.dietary_preference == "Vegan"
+    assert "Milk" in p.allergens
+    assert "no alcohol" in [x.lower() for x in p.lifestyle]
 
 
 def test_profile_storage_merge():

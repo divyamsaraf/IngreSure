@@ -1,5 +1,5 @@
 """
-Bridge: map profile/legacy diet names to restriction_ids; build legacy-shaped scorecard from verdict.
+Bridge: map profile diet names to restriction_ids; run compliance engine for chat.
 """
 import logging
 from typing import Dict, List, Any, Optional, Set, Tuple, TYPE_CHECKING
@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from core.models.user_profile import UserProfile
 
 from core.evaluation.compliance_engine import ComplianceEngine
-from core.models.verdict import ComplianceVerdict, VerdictStatus
+from core.models.verdict import ComplianceVerdict
 from core.parsing.ingredient_parser import preprocess_ingredients
 from core.normalization.parser import flatten_ingredients
 
@@ -18,13 +18,13 @@ logger = logging.getLogger(__name__)
 # Mapping dictionaries (single source of truth)
 # ---------------------------------------------------------------------------
 
-# Scan scorecard diet labels -> restriction_ids
-SCAN_DIET_LABELS = ["Vegan", "Jain", "Halal", "Hindu Veg"]
+# Scan scorecard diet labels -> restriction_ids (canonical display: "Hindu Vegetarian")
+SCAN_DIET_LABELS = ["Vegan", "Jain", "Halal", "Hindu Vegetarian"]
 DIET_LABEL_TO_RESTRICTION_ID: Dict[str, str] = {
     "Vegan": "vegan",
     "Jain": "jain",
     "Halal": "halal",
-    "Hindu Veg": "hindu_vegetarian",
+    "Hindu Vegetarian": "hindu_vegetarian",
 }
 
 # Claimed diet types (profile/tagging) -> restriction_id
@@ -34,7 +34,7 @@ CLAIMED_DIET_TO_RESTRICTION_ID: Dict[str, str] = {
     "Jain": "jain",
     "Halal": "halal",
     "Kosher": "kosher",
-    "Hindu Veg": "hindu_vegetarian",
+    "Hindu Vegetarian": "hindu_vegetarian",
     "Gluten-Free": "gluten_free",
     "Dairy-Free": "dairy_free",
     "Egg-Free": "egg_free",
@@ -120,7 +120,7 @@ def _normalize_key(s: str) -> str:
 # ---------------------------------------------------------------------------
 
 def profile_to_restriction_ids(user_profile: Optional[Dict[str, Any]]) -> List[str]:
-    """Build restriction_ids from userProfile dict (supports both legacy and new field names)."""
+    """Build restriction_ids from userProfile dict (dietary_preference, allergens, lifestyle)."""
     if not user_profile:
         return []
     ids: List[str] = []
@@ -131,25 +131,19 @@ def profile_to_restriction_ids(user_profile: Optional[Dict[str, Any]]) -> List[s
             seen.add(rid)
             ids.append(rid)
 
-    # Dietary preference
-    pref = _normalize_key(user_profile.get("dietary_preference") or user_profile.get("diet") or "")
+    pref = _normalize_key(user_profile.get("dietary_preference") or "")
     if pref and pref not in ("no_rules", "no rules"):
         rid = DIETARY_PREFERENCE_TO_RESTRICTION_ID.get(pref)
         if rid:
             _add(rid)
 
-    if not user_profile.get("dairy_allowed", True):
-        _add("dairy_free")
-
-    # Allergens
-    for a in user_profile.get("allergens", []) or user_profile.get("allergies", []):
+    for a in user_profile.get("allergens", []) or []:
         key = _normalize_key(str(a))
         rid = ALLERGEN_TO_RESTRICTION_ID.get(key)
         if rid:
             _add(rid)
 
-    # Lifestyle
-    for v in user_profile.get("lifestyle", []) or user_profile.get("lifestyle_flags", []):
+    for v in user_profile.get("lifestyle", []) or []:
         key = _normalize_key(str(v))
         rid = LIFESTYLE_TO_RESTRICTION_ID.get(key) or DIETARY_PREFERENCE_TO_RESTRICTION_ID.get(key)
         if rid:
@@ -196,22 +190,6 @@ def user_profile_model_to_restriction_ids(profile: "UserProfile") -> List[str]:
 
 
 # ---------------------------------------------------------------------------
-# Scorecard builders
-# ---------------------------------------------------------------------------
-
-def verdict_to_legacy_scorecard(verdict: ComplianceVerdict) -> Dict[str, Dict[str, str]]:
-    """Build scan scorecard: { 'Vegan': { status: 'red'|'green', reason } }."""
-    scorecard = {}
-    for label in SCAN_DIET_LABELS:
-        rid = DIET_LABEL_TO_RESTRICTION_ID.get(label)
-        if rid and rid in verdict.triggered_restrictions:
-            scorecard[label] = {"status": "red", "reason": f"Contains ingredients not suitable for {label}."}
-        else:
-            scorecard[label] = {"status": "green", "reason": "No forbidden ingredients detected."}
-    return scorecard
-
-
-# ---------------------------------------------------------------------------
 # Ingredient preprocessing
 # ---------------------------------------------------------------------------
 
@@ -237,25 +215,8 @@ def preprocess_ingredient_list(ingredients: List[str]) -> Tuple[List[str], Set[s
 
 
 # ---------------------------------------------------------------------------
-# Engine runners
+# Engine runner
 # ---------------------------------------------------------------------------
-
-def run_new_engine_scan(
-    ingredients: List[str],
-    user_profile: Optional[Dict[str, Any]] = None,
-) -> Tuple[ComplianceVerdict, Dict[str, Dict[str, str]]]:
-    """Run compliance engine for scan. Returns (verdict, scorecard)."""
-    restriction_ids = [DIET_LABEL_TO_RESTRICTION_ID[l] for l in SCAN_DIET_LABELS]
-    atomic_names, trace_keys = preprocess_ingredient_list(ingredients)
-    engine = ComplianceEngine()
-    verdict = engine.evaluate(
-        atomic_names,
-        restriction_ids=restriction_ids,
-        trace_ingredient_keys=trace_keys or None,
-    )
-    scorecard = verdict_to_legacy_scorecard(verdict)
-    return verdict, scorecard
-
 
 def run_new_engine_chat(
     ingredients: List[str],

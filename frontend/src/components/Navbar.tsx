@@ -15,9 +15,7 @@ export default function Navbar() {
     const diet =
       profile.dietary_preference && profile.dietary_preference !== 'No rules'
         ? profile.dietary_preference
-        : profile.diet && profile.diet !== 'No rules'
-          ? profile.diet
-          : ''
+        : ''
 
     const activeClass = 'text-secondary border-b-2 border-secondary'
     const linkClass = 'py-2 px-1 rounded-md transition-colors hover:text-secondary border-b-2 border-transparent'

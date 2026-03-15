@@ -16,6 +16,7 @@ export const metadata: Metadata = {
 };
 
 import Navbar from "@/components/Navbar";
+import { ConfigProvider } from "@/context/ConfigContext";
 import { ProfileProvider } from "@/context/ProfileContext";
 
 export default function RootLayout({
@@ -26,10 +27,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
       <body className="antialiased font-sans" suppressHydrationWarning>
-        <ProfileProvider>
-          <Navbar />
-          {children}
-        </ProfileProvider>
+        <ConfigProvider>
+          <ProfileProvider>
+            <Navbar />
+            {children}
+          </ProfileProvider>
+        </ConfigProvider>
       </body>
     </html>
   );

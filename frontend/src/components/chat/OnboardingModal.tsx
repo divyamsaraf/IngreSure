@@ -2,14 +2,8 @@
 
 import React, { useState } from 'react'
 import { X, Check, RotateCcw } from 'lucide-react'
-import {
-  UserProfile,
-  DEFAULT_PROFILE,
-  DIETARY_PREFERENCE_OPTIONS,
-  ADDITIONAL_RESTRICTIONS,
-  ALLERGEN_OPTIONS,
-  DIET_ICON,
-} from '@/types/userProfile'
+import { UserProfile, DEFAULT_PROFILE } from '@/types/userProfile'
+import { useConfig } from '@/context/ConfigContext'
 
 interface OnboardingModalProps {
   isOpen: boolean
@@ -42,12 +36,9 @@ function mergeInitialProfile(base: UserProfile | undefined): UserProfile {
     ...DEFAULT_PROFILE,
     ...p,
     user_id: p.user_id,
-    dietary_preference: p.dietary_preference ?? p.diet ?? 'No rules',
-    diet: p.diet ?? p.dietary_preference ?? 'No rules',
-    allergies: p.allergies ?? p.allergens ?? [],
-    allergens: p.allergens ?? p.allergies ?? [],
-    lifestyle: p.lifestyle ?? p.lifestyle_flags ?? [],
-    lifestyle_flags: p.lifestyle_flags ?? p.lifestyle ?? [],
+    dietary_preference: p.dietary_preference ?? 'No rules',
+    allergens: p.allergens ?? [],
+    lifestyle: p.lifestyle ?? [],
     is_onboarding_completed: p.is_onboarding_completed ?? false,
   }
 }
@@ -65,20 +56,24 @@ function OnboardingModalInner({
   onSave,
   editMode,
 }: OnboardingModalInnerProps) {
+  const config = useConfig()
+  const dietaryOptions = config.profile_options.dietary_preference_options ?? []
+  const lifestyleOptions = config.profile_options.lifestyle_options ?? []
+  const allergenOptions = config.profile_options.allergen_options ?? []
+  const dietIcon: Record<string, string> = config.profile_options.diet_icon ?? {}
+
   const [profile, setProfile] = useState<UserProfile>(() => mergeInitialProfile(initialProfile))
   const [customAllergy, setCustomAllergy] = useState('')
 
   const toggleAllergy = (label: string) => {
     setProfile((prev) => ({
       ...prev,
-      allergies: toggleListCI(prev.allergies ?? [], label),
-      allergens: toggleListCI(prev.allergens ?? prev.allergies ?? [], label),
+      allergens: toggleListCI(prev.allergens ?? [], label),
     }))
   }
 
   const handleSave = () => {
-    // Deduplicate allergens (case-insensitive): keep the first occurrence of each
-    const rawAllergens = profile.allergens ?? profile.allergies ?? []
+    const rawAllergens = profile.allergens ?? []
     const seen = new Set<string>()
     const deduped: string[] = []
     for (const a of rawAllergens) {
@@ -92,11 +87,8 @@ function OnboardingModalInner({
       ...profile,
       is_onboarding_completed: true,
       dietary_preference: profile.dietary_preference || 'No rules',
-      diet: profile.dietary_preference || profile.diet || 'No rules',
       allergens: deduped,
-      allergies: deduped,
-      lifestyle: profile.lifestyle ?? profile.lifestyle_flags ?? [],
-      lifestyle_flags: profile.lifestyle ?? profile.lifestyle_flags ?? [],
+      lifestyle: profile.lifestyle ?? [],
     }
     onSave(final)
     onClose()
@@ -107,10 +99,8 @@ function OnboardingModalInner({
       ...DEFAULT_PROFILE,
       is_onboarding_completed: true,
       dietary_preference: 'No rules',
-      allergies: [],
       allergens: [],
       lifestyle: [],
-      lifestyle_flags: [],
     }
     onSave(empty)
     onClose()
@@ -122,22 +112,19 @@ function OnboardingModalInner({
       user_id: profile.user_id,
       is_onboarding_completed: profile.is_onboarding_completed,
       dietary_preference: 'No rules',
-      diet: 'No rules',
-      allergies: [],
       allergens: [],
       lifestyle: [],
-      lifestyle_flags: [],
     })
     setCustomAllergy('')
   }
 
   const removeAllergen = (toRemove: string) => {
-    setProfile((prev) => {
-      const next = (prev.allergens ?? prev.allergies ?? []).filter(
+    setProfile((prev) => ({
+      ...prev,
+      allergens: (prev.allergens ?? []).filter(
         (a) => a.toLowerCase() !== toRemove.toLowerCase()
-      )
-      return { ...prev, allergies: next, allergens: next }
-    })
+      ),
+    }))
   }
 
   return (
@@ -179,15 +166,15 @@ function OnboardingModalInner({
             <h3 className="text-sm font-semibold text-slate-700 mb-2">Dietary Preference</h3>
             <p className="text-xs text-slate-500 mb-2">Choose your main diet.</p>
             <div className="flex flex-wrap gap-2">
-              {DIETARY_PREFERENCE_OPTIONS.map(({ value, label }) => {
-                const selected = (profile.dietary_preference ?? profile.diet ?? 'No rules') === value
-                const icon = DIET_ICON[value] ?? '🍽️'
+              {dietaryOptions.map(({ value, label }) => {
+                const selected = (profile.dietary_preference ?? 'No rules') === value
+                const icon = dietIcon[value] ?? '🍽️'
                 return (
                   <button
                     key={value}
                     type="button"
                     onClick={() =>
-                      setProfile((p) => ({ ...p, dietary_preference: value as UserProfile['dietary_preference'], diet: value }))
+                      setProfile((p) => ({ ...p, dietary_preference: value as UserProfile['dietary_preference'] }))
                     }
                     className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-full border-2 text-sm transition-all ${
                       selected
@@ -208,8 +195,8 @@ function OnboardingModalInner({
             <h3 className="text-sm font-semibold text-slate-700 mb-2">Additional Restrictions</h3>
             <p className="text-xs text-slate-500 mb-2">Optional filters on top of your diet.</p>
             <div className="flex flex-wrap gap-2">
-              {ADDITIONAL_RESTRICTIONS.map(({ value, label }) => {
-                const selected = includesCI(profile.lifestyle ?? profile.lifestyle_flags ?? [], value)
+              {lifestyleOptions.map(({ value, label }) => {
+                const selected = includesCI(profile.lifestyle ?? [], value)
                 return (
                   <button
                     key={value}
@@ -217,8 +204,7 @@ function OnboardingModalInner({
                     onClick={() =>
                       setProfile((prev) => ({
                         ...prev,
-                        lifestyle: toggleListCI(prev.lifestyle ?? prev.lifestyle_flags ?? [], value),
-                        lifestyle_flags: toggleListCI(prev.lifestyle_flags ?? prev.lifestyle ?? [], value),
+                        lifestyle: toggleListCI(prev.lifestyle ?? [], value),
                       }))
                     }
                     className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-full border-2 text-sm transition-all ${
@@ -240,8 +226,8 @@ function OnboardingModalInner({
             <h3 className="text-sm font-semibold text-slate-700 mb-2">Allergens</h3>
             <p className="text-xs text-slate-500 mb-2">Select any that apply.</p>
             <div className="flex flex-wrap gap-2">
-              {[...ALLERGEN_OPTIONS].map((alg) => {
-                const selected = includesCI(profile.allergies ?? profile.allergens ?? [], alg)
+              {[...allergenOptions].map((alg) => {
+                const selected = includesCI(profile.allergens ?? [], alg)
                 return (
                   <button
                     key={alg}
@@ -262,12 +248,12 @@ function OnboardingModalInner({
               })}
             </div>
             {/* Custom/Other allergens: show as removable chips */}
-            {(profile.allergens ?? profile.allergies ?? []).filter(
-              (a) => !ALLERGEN_OPTIONS.some((opt) => opt.toLowerCase() === a.toLowerCase())
+            {(profile.allergens ?? []).filter(
+              (a) => !allergenOptions.some((opt) => opt.toLowerCase() === a.toLowerCase())
             ).length > 0 && (
               <div className="mt-2 flex flex-wrap gap-2">
-                {(profile.allergens ?? profile.allergies ?? []).filter(
-                  (a) => !ALLERGEN_OPTIONS.some((opt) => opt.toLowerCase() === a.toLowerCase())
+                {(profile.allergens ?? []).filter(
+                  (a) => !allergenOptions.some((opt) => opt.toLowerCase() === a.toLowerCase())
                 ).map((alg) => (
                   <span
                     key={alg}
@@ -298,11 +284,9 @@ function OnboardingModalInner({
                       .map((s) => s.trim())
                       .filter(Boolean)
                     setProfile((prev) => {
-                      const existing = prev.allergies ?? []
-                      // Only add items not already present (case-insensitive)
+                      const existing = prev.allergens ?? []
                       const toAdd = newAlgs.filter((a) => !includesCI(existing, a))
-                      const merged = [...existing, ...toAdd]
-                      return { ...prev, allergies: merged, allergens: merged }
+                      return { ...prev, allergens: [...existing, ...toAdd] }
                     })
                     setCustomAllergy('')
                   }

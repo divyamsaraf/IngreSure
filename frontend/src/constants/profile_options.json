@@ -1,0 +1,48 @@
+{
+  "dietary_preference_options": [
+    { "value": "No rules", "label": "No preference" },
+    { "value": "Vegan", "label": "Vegan" },
+    { "value": "Vegetarian", "label": "Vegetarian" },
+    { "value": "Pescatarian", "label": "Pescatarian" },
+    { "value": "Jain", "label": "Jain" },
+    { "value": "Halal", "label": "Halal" },
+    { "value": "Kosher", "label": "Kosher" },
+    { "value": "Hindu Vegetarian", "label": "Hindu Vegetarian" },
+    { "value": "Hindu Non Vegetarian", "label": "Hindu Non Vegetarian" }
+  ],
+  "allergen_options": [
+    "Milk",
+    "Eggs",
+    "Peanuts",
+    "Tree Nuts",
+    "Soy",
+    "Wheat/Gluten",
+    "Fish",
+    "Shellfish",
+    "Sesame",
+    "Mustard",
+    "Celery",
+    "Other"
+  ],
+  "lifestyle_options": [
+    { "value": "Gluten-Free", "label": "Gluten-Free" },
+    { "value": "Dairy-Free", "label": "Dairy-Free" },
+    { "value": "Egg-Free", "label": "Egg-Free" },
+    { "value": "no onion", "label": "No Onion" },
+    { "value": "no garlic", "label": "No Garlic" },
+    { "value": "no alcohol", "label": "No Alcohol" },
+    { "value": "no palm oil", "label": "No Palm Oil" },
+    { "value": "no insect derived", "label": "No Insect-Derived Ingredients" }
+  ],
+  "diet_icon": {
+    "No rules": "🍽️",
+    "Vegan": "🌱",
+    "Vegetarian": "🥗",
+    "Pescatarian": "🐟",
+    "Jain": "🙏",
+    "Halal": "☪️",
+    "Kosher": "✡️",
+    "Hindu Vegetarian": "🪔",
+    "Hindu Non Vegetarian": "🍗"
+  }
+}

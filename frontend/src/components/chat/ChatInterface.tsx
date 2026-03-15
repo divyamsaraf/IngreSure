@@ -7,8 +7,9 @@ import FormattedMessage from './FormattedMessage'
 import IngredientAuditCards from './IngredientAuditCards'
 import RecentChecksSection from './RecentChecksSection'
 import { type Message, streamChatResponse } from './streamChatResponse'
-import { UserProfile, profileToBackend, DIET_ICON, hasProfileRules } from '@/types/userProfile'
+import { UserProfile, profileToBackend, hasProfileRules } from '@/types/userProfile'
 import { useProfileContext } from '@/context/ProfileContext'
+import { useConfig } from '@/context/ConfigContext'
 import { PROFILE_STORAGE_KEY } from '@/constants/profileStorage'
 import { getOrCreateUserId, persistProfileToStorage } from '@/lib/profileStorage'
 
@@ -31,10 +32,10 @@ interface ChatInterfaceProps {
     suggestions?: string[]
 }
 
-function getDietIcon(diet: string | undefined): string {
-    if (!diet || diet === 'No rules') return DIET_ICON['No rules'] ?? '🍽️'
+function getDietIcon(dietIcon: Record<string, string>, diet: string | undefined): string {
+    if (!diet || diet === 'No rules') return dietIcon['No rules'] ?? '🍽️'
     const key = diet.trim()
-    const found = DIET_ICON[key] ?? Object.entries(DIET_ICON).find(([k]) => k.toLowerCase() === key.toLowerCase())?.[1]
+    const found = dietIcon[key] ?? Object.entries(dietIcon).find(([k]) => k.toLowerCase() === key.toLowerCase())?.[1]
     return found ?? '🥗'
 }
 
@@ -59,6 +60,9 @@ export default function ChatInterface({
     const profileApiBase = apiEndpoint.replace(/\/chat.*$/, '') || '/api'
 
     const { profile, setProfile, userId, profileLoaded, isProfileComplete } = useProfileContext()
+    const config = useConfig()
+    const maxChatLength = config.max_chat_message_length
+    const dietIcon = config.profile_options.diet_icon ?? {}
 
     // Decide initial onboarding visibility once profile has been loaded
     useEffect(() => {
@@ -113,8 +117,8 @@ export default function ChatInterface({
               setTimeout(() => setProfileSaveStatus('idle'), 3000)
               const parts: string[] = []
               if (toSave.dietary_preference && toSave.dietary_preference !== 'No rules') parts.push(`Diet: ${toSave.dietary_preference}`)
-              if (toSave.allergens?.length || toSave.allergies?.length) parts.push(`Allergens: ${(toSave.allergens ?? toSave.allergies ?? []).join(', ')}`)
-              if (toSave.lifestyle?.length || toSave.lifestyle_flags?.length) parts.push(`Lifestyle: ${(toSave.lifestyle ?? toSave.lifestyle_flags ?? []).join(', ')}`)
+              if (toSave.allergens?.length) parts.push(`Allergens: ${toSave.allergens.join(', ')}`)
+              if (toSave.lifestyle?.length) parts.push(`Lifestyle: ${toSave.lifestyle.join(', ')}`)
               setMessages(prev => [...prev, {
                 role: 'assistant',
                 content: `✅ Profile saved. ${parts.length ? parts.join(' · ') : 'No restrictions set.'} I'll use this for personalized advice.`
@@ -141,6 +145,13 @@ export default function ChatInterface({
         if (!input.trim() || loading) return
 
         const userMsg = input.trim()
+        if (userMsg.length > maxChatLength) {
+            setMessages(prev => [
+                ...prev,
+                { role: 'assistant', content: `Message is too long. Please keep it under ${(maxChatLength / 1000).toFixed(0)},000 characters.` }
+            ])
+            return
+        }
         setInput('')
         setMessages(prev => [...prev, { role: 'user', content: userMsg }])
         setLoading(true)
@@ -224,7 +235,7 @@ export default function ChatInterface({
                                 className="inline-flex items-center gap-1.5 rounded-full border font-semibold text-[13px] px-2.5 py-1 bg-emerald-50 border-emerald-200 text-emerald-800"
                                 title="Active diet profile"
                             >
-                                {getDietIcon(profile.dietary_preference)} {profile.dietary_preference}
+                                {getDietIcon(dietIcon, profile.dietary_preference)} {profile.dietary_preference}
                             </span>
                         ) : (
                             <span className="text-[13px] text-slate-500">No diet set</span>

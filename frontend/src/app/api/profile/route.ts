@@ -13,7 +13,6 @@ const defaultProfilePayload = (
   dietary_preference: 'No rules',
   allergens: [],
   lifestyle: [],
-  religious_preferences: [],
 })
 
 export async function GET(req: NextRequest) {

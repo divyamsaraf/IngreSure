@@ -39,7 +39,6 @@
 
 ## Step 4: Access the App
 - **Grocery Assistant**: [http://localhost:3000/chat](http://localhost:3000/chat)
-- **Scan**: [http://localhost:3000/scan](http://localhost:3000/scan)
 
 ## Trouble? 
 - **DB Connection Error?** Check if `supabase start` finished successfully.

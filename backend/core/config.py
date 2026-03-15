@@ -12,10 +12,11 @@ logger = logging.getLogger(__name__)
 _BACKEND_DIR = Path(__file__).resolve().parent.parent
 _REPO_ROOT = _BACKEND_DIR.parent
 
-# --- Feature flags ---
-USE_NEW_ENGINE = os.environ.get("USE_NEW_ENGINE", "true").lower() in ("1", "true", "yes")
-SHADOW_MODE = os.environ.get("SHADOW_MODE", "").lower() in ("1", "true", "yes")
+# --- Environment ---
+# When True, 500 responses hide exception detail (generic "Internal server error"); full error is always logged.
+PRODUCTION = os.environ.get("ENVIRONMENT", "").lower() == "production"
 
+# --- Feature flags ---
 # Knowledge DB (Phase 3+): keep off by default until fully wired
 USE_KNOWLEDGE_DB = os.environ.get("USE_KNOWLEDGE_DB", "").lower() in ("1", "true", "yes")
 
@@ -40,6 +41,13 @@ def get_learned_regional_mappings_path() -> Path:
 
 def get_unknown_ingredients_log_path() -> Path:
     return _REPO_ROOT / "data" / "unknown_ingredients_log.json"
+
+def get_profile_options_path() -> Path:
+    """Single source of truth for diet/allergen/lifestyle options (served to frontend via GET /config)."""
+    return _REPO_ROOT / "data" / "profile_options.json"
+
+# --- API constants (single source; frontend fetches via GET /config) ---
+MAX_CHAT_MESSAGE_LENGTH = int(os.environ.get("MAX_CHAT_MESSAGE_LENGTH", "8192"))
 
 # --- External APIs (lazy read from env) ---
 def get_usda_fdc_api_key() -> str:
@@ -80,9 +88,9 @@ def log_config() -> None:
     key = get_usda_fdc_api_key()
     off = get_open_food_facts_enabled()
     logger.info(
-        "CONFIG: use_new_engine=%s shadow_mode=%s use_knowledge_db=%s ontology=%s restrictions=%s dynamic=%s "
+        "CONFIG: production=%s use_knowledge_db=%s ontology=%s restrictions=%s dynamic=%s "
         "usda_key=%s off_enabled=%s ollama_model=%s llm_intent_timeout=%ds llm_response_timeout=%ds",
-        USE_NEW_ENGINE, SHADOW_MODE, USE_KNOWLEDGE_DB,
+        PRODUCTION, USE_KNOWLEDGE_DB,
         get_ontology_path().exists(), get_restrictions_path().exists(),
         get_dynamic_ontology_path().exists(),
         bool(key), off, get_ollama_model(),

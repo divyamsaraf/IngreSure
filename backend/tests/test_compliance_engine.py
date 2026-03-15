@@ -119,22 +119,6 @@ def test_compliance_engine_user_profile_restriction_ids():
     assert "vegan" in ids
 
 
-def test_verdict_to_legacy_scorecard():
-    """Verdict maps to legacy scorecard shape."""
-    from core.bridge import verdict_to_legacy_scorecard
-    from core.models.verdict import ComplianceVerdict, VerdictStatus
-    v = ComplianceVerdict(
-        status=VerdictStatus.NOT_SAFE,
-        triggered_restrictions=["vegan"],
-        triggered_ingredients=["milk"],
-        uncertain_ingredients=[],
-        confidence_score=0.8,
-    )
-    scorecard = verdict_to_legacy_scorecard(v)
-    assert "Vegan" in scorecard
-    assert scorecard["Vegan"]["status"] == "red"
-
-
 def test_trace_ingredient_informational():
     """Trace (<2%) unknown ingredients do not force UNCERTAIN when in trace set."""
     from core.config import get_ontology_path
