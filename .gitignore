@@ -1,4 +1,5 @@
 __pycache__/
+backend/venv/
 PROJECT_DETAILS.md
 
 # Documentation (phase reports, technical/refactor/arch/tech stack)
@@ -20,3 +21,11 @@ frontend/.env.*.local
 data/profiles.json
 data/unknown_ingredients_log.json
 data/learned_regional_mappings.json
+
+# Root env for Compose variable substitution (optional)
+/.env
+
+# Local deployment / phase write-ups (keep out of remote)
+DEPLOY.md
+OCI_STEP_BY_STEP.md
+PHASES.md

@@ -1,8 +1,13 @@
-# IngreSure Docker stack: single project name "ingresure" (avoids duplicate IngreSure/ingresure projects)
+# IngreSure Docker stack: single project name "ingresure"
+# For faster builds: DOCKER_BUILDKIT=1 docker compose build
+#
+# Default: backend + frontend (no Redis/Celery — lighter for small VMs and demos).
+# Optional cache tier: docker compose --profile cache up -d
+# OCI / API-only: docker compose up -d backend
+#
 name: ingresure
 
 services:
-  # 1/4 Python Backend (FastAPI, OCR, compliance, chat)
   backend:
     build:
       context: ./backend
@@ -11,9 +16,10 @@ services:
     ports:
       - "8000:8000"
     env_file:
-      - ./backend/.env
+      - path: ./backend/.env.compose
+      - path: ./backend/.env
+        required: false
     environment:
-      - OLLAMA_API_URL=http://host.docker.internal:11434/api/generate
       - RUNNING_IN_DOCKER=1
     volumes:
       - ./backend:/app
@@ -28,10 +34,11 @@ services:
       retries: 6
       start_period: 300s
 
-  # 2/4 Redis (broker for Celery)
   redis:
-    image: redis:7-alpine
+    image: redis:7.4-alpine
     container_name: ingresure-redis
+    profiles:
+      - cache
     ports:
       - "6379:6379"
     restart: unless-stopped
@@ -41,22 +48,25 @@ services:
       timeout: 5s
       retries: 3
       start_period: 5s
+    command: ["redis-server", "--maxmemory", "256mb", "--maxmemory-policy", "allkeys-lru"]
 
-  # 3/4 Celery worker (background ingredient enrichment)
   worker:
     build:
       context: ./backend
       dockerfile: Dockerfile
     container_name: ingresure-worker
+    profiles:
+      - cache
     depends_on:
       backend:
         condition: service_healthy
       redis:
         condition: service_healthy
     env_file:
-      - ./backend/.env
+      - path: ./backend/.env.compose
+      - path: ./backend/.env
+        required: false
     environment:
-      - REDIS_URL=redis://redis:6379/0
       - RUNNING_IN_DOCKER=1
     command: ["celery", "-A", "worker.celery_app:celery_app", "worker", "--loglevel=info"]
     volumes:
@@ -66,7 +76,6 @@ services:
       - "host.docker.internal:host-gateway"
     restart: unless-stopped
 
-  # 4/4 Next.js Frontend (UI, proxy to backend)
   frontend:
     build:
       context: ./frontend
@@ -91,5 +100,4 @@ services:
       retries: 3
       start_period: 15s
 
-# Note: Supabase is run separately via 'supabase start' to avoid complex docker-in-docker setups 
-# or duplicating the supabase stack locally. We connect to it via host.docker.internal or public URL.
+# Supabase: run separately (supabase start). Backend uses host.docker.internal or public URL when configured.

@@ -1,15 +1,17 @@
-# Base image
+# syntax=docker/dockerfile:1
+# Base image (use BuildKit for cache: DOCKER_BUILDKIT=1)
 FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Check package.json
+# Copy dependency manifests first for better layer cache
 COPY package.json package-lock.json* ./
 
-# Install dependencies
-RUN npm ci
+# Install dependencies with cache mount for faster rebuilds
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci
 
-# Copy source
+# Copy source (includes scripts/ for run-build.js)
 COPY . .
 
 # Build Next.js app

@@ -1,13 +1,13 @@
-# Use python 3.10 slim
-FROM python:3.10-slim
+# syntax=docker/dockerfile:1
+# Use Python 3.11 slim (align with dev; use BuildKit for cache mounts: DOCKER_BUILDKIT=1)
+FROM python:3.11-slim
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     libgl1 \
     libglib2.0-0 \
     libgomp1 \
-    git \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -15,11 +15,10 @@ WORKDIR /app
 # Copy requirements first to leverage cache
 COPY requirements.txt .
 
-# Upgrade packaging tooling to prefer/install manylinux wheels cleanly
-RUN pip install --no-cache-dir --upgrade pip setuptools wheel
-
-# Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Upgrade pip and install deps; use cache mount for faster rebuilds (BuildKit)
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install --upgrade pip setuptools wheel && \
+    pip install -r requirements.txt
 
 # Copy application code
 COPY . .

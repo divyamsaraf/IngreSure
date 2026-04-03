@@ -19,6 +19,17 @@ out
 *.md
 !README.md
 
+# Tests and tooling (not needed in image)
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+coverage
+.nyc_output
+.turbo
+vitest.config.*
+vitest.setup.*
+
 # Misc
 Dockerfile
 .dockerignore
