@@ -71,6 +71,12 @@ def get_open_food_facts_enabled() -> bool:
     return os.environ.get("OPEN_FOOD_FACTS_ENABLED", "true").lower() in ("1", "true", "yes")
 
 # --- LLM / Ollama ---
+def llm_enabled() -> bool:
+    """When false, skip all Ollama calls (intent, response, enrichment fallbacks). Default: on."""
+    v = os.environ.get("LLM_ENABLED", "true").strip().lower()
+    return v in ("1", "true", "yes", "on")
+
+
 def get_ollama_url() -> str:
     return os.environ.get("OLLAMA_API_URL", "http://localhost:11434/api/generate")
 
@@ -103,10 +109,10 @@ def log_config() -> None:
     off = get_open_food_facts_enabled()
     logger.info(
         "CONFIG: production=%s use_knowledge_db=%s ontology=%s restrictions=%s dynamic=%s "
-        "usda_key=%s off_enabled=%s ollama_model=%s llm_intent_timeout=%ds llm_response_timeout=%ds",
+        "usda_key=%s off_enabled=%s llm_enabled=%s ollama_model=%s llm_intent_timeout=%ds llm_response_timeout=%ds",
         PRODUCTION, USE_KNOWLEDGE_DB,
         get_ontology_path().exists(), get_restrictions_path().exists(),
         get_dynamic_ontology_path().exists(),
-        bool(key), off, get_ollama_model(),
+        bool(key), off, llm_enabled(), get_ollama_model(),
         LLM_INTENT_TIMEOUT, LLM_RESPONSE_TIMEOUT,
     )

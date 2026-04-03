@@ -113,6 +113,8 @@ supabase start
 
 ## Environment Variables
 
+For **Vercel + production API** (CORS, `BACKEND_URL`, optional Redis/LLM URLs), see **[DEPLOY.md](DEPLOY.md)**. Docker Compose also reads committed **[backend/.env.compose](backend/.env.compose)** before `backend/.env`.
+
 ### Backend (`backend/.env`)
 
 ```bash
@@ -123,9 +125,15 @@ USDA_FDC_API_KEY=your_key_here
 # Open Food Facts API (no key needed; set false to disable)
 OPEN_FOOD_FACTS_ENABLED=true
 
-# Ollama LLM (defaults shown — only override if non-standard)
+# Ollama LLM — local uvicorn: localhost; Docker: see backend/.env.compose and backend/.env.example
 # OLLAMA_API_URL=http://localhost:11434/api/generate
 # OLLAMA_MODEL=llama3.2:3b
+
+# Production: restrict browser origins (e.g. Vercel)
+# CORS_ORIGINS=https://your-app.vercel.app
+
+# Optional Redis (use with: docker compose --profile cache up)
+# REDIS_URL=redis://redis:6379/0
 
 # Supabase (optional — for ingredient knowledge DB and other features)
 # SUPABASE_URL=http://127.0.0.1:54321
@@ -154,7 +162,9 @@ NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
 
 ## Running with Docker
 
-**Before first run:** Create env files so Compose can start. From repo root:
+Full deployment topologies (Vercel + OCI, optional Redis/LLM VMs) are described in **[DEPLOY.md](DEPLOY.md)**. Step order: **[PHASES.md](PHASES.md)**. **Oracle Cloud (OCI) walkthrough:** **[OCI_STEP_BY_STEP.md](OCI_STEP_BY_STEP.md)**.
+
+**Before first run:** From repo root, copy env templates and add secrets (API keys, etc.):
 
 ```bash
 cp backend/.env.example backend/.env
@@ -162,44 +172,63 @@ cp frontend/.env.example frontend/.env.local
 # Edit backend/.env and frontend/.env.local if needed (see Environment Variables).
 ```
 
+Compose loads **`backend/.env.compose`** (committed defaults, e.g. host Ollama URL) and then **`backend/.env`** when present — your `.env` overrides. (`backend/.env` is optional for `docker compose config` only; you need it for real runs with keys.)
+
 Then:
 
 ```bash
-# Build and start all services
+# Build and start backend + frontend (default; no Redis/Celery)
 docker compose up --build
 
 # Or in detached mode
 docker compose up --build -d
+
+# Optional: add Redis + Celery worker (set REDIS_URL=redis://redis:6379/0 in backend/.env)
+docker compose --profile cache up --build -d
 ```
 
-This starts:
+**Default stack** starts:
+
 - **Backend** on port 8000 — healthcheck `GET /health`; auto-restart if it exits
-- **Redis** on 6379 — healthcheck `redis-cli ping`; used by Celery
-- **Celery worker** — starts after backend and Redis are healthy
 - **Frontend** on port 3000 — starts after backend is healthy; has its own healthcheck
+
+**With `--profile cache`** you also get:
+
+- **Redis** on 6379 — broker + optional resolution cache
+- **Celery worker** — starts after backend and Redis are healthy
 
 **Docker health:** Backend is marked healthy only after it responds to `/health` (allow up to ~5 min on first start). If the backend stays unhealthy, run `docker compose logs backend` to see startup errors; increase Docker Desktop memory if you see OOM.
 
-Ollama must be running on the host; backend uses `host.docker.internal:11434`. Supabase is run separately via `supabase start`.
+Ollama should run on the host for local LLM; defaults are in `backend/.env.compose` (`host.docker.internal:11434`). Supabase is run separately via `supabase start`.
+
+**API-only on a server (no Next.js container):** `docker compose up -d backend` (add `--profile cache` if using Redis/worker on that host).
 
 **Single project name:** The Compose file sets `name: ingresure`, so all containers belong to one project regardless of the repo folder name (IngreSure vs ingresure). You should see only one project when you run `docker compose ps` or `docker ps` (project prefix `ingresure`).
 
-**Verify all four services:**
+**Services:**
 
-| Service   | Container name        | Port  | Role                          |
-|-----------|------------------------|-------|-------------------------------|
-| backend   | ingresure-backend      | 8000  | API, compliance, chat         |
-| redis     | ingresure-redis        | 6379  | Celery broker                 |
-| worker    | ingresure-worker       | —     | Background enrichment         |
-| frontend  | ingresure-frontend     | 3000  | Next.js UI                    |
+| Service   | Container name        | Port  | Role                          | Default |
+|-----------|------------------------|-------|-------------------------------|---------|
+| backend   | ingresure-backend      | 8000  | API, compliance, chat         | yes     |
+| frontend  | ingresure-frontend     | 3000  | Next.js UI                    | yes     |
+| redis     | ingresure-redis        | 6379  | Celery + resolution cache     | profile `cache` |
+| worker    | ingresure-worker       | —     | Background enrichment         | profile `cache` |
 
 ```bash
 docker compose ps          # list services (project: ingresure)
 docker ps -a --filter "name=ingresure"   # same by container name
 ```
 
+**Faster Docker builds:** The Dockerfiles use BuildKit cache mounts for `pip` and `npm`, so rebuilds are quicker when only code changes. Use BuildKit (default in recent Docker Desktop):
+
+```bash
+DOCKER_BUILDKIT=1 docker compose build
+```
+
+Backend uses Python 3.11. Redis image: `redis:7.4-alpine`. Set **`REDIS_URL=redis://redis:6379/0`** in `backend/.env` when using the **`cache`** profile so the API uses the resolution cache (same Redis as Celery).
+
 **What you see in Docker Desktop:**  
-- **IngreSure app** (our stack): 4 containers — `ingresure-backend`, `ingresure-frontend`, `ingresure-redis`, `ingresure-worker`. Project name: **ingresure**.  
+- **IngreSure app** (our stack): typically 2 containers by default (`ingresure-backend`, `ingresure-frontend`); 4 when `cache` profile is enabled. Project name: **ingresure**.  
 - **Supabase local** (from `supabase start`): many containers named `supabase_<service>_IngreSure` (e.g. `supabase_studio_IngreSure`, `supabase_kong_IngreSure`, `supabase_auth_IngreSure`). Supabase CLI uses your project/folder name “IngreSure” as the suffix. Both groups are expected when you run the app and Supabase; you can stop Supabase with `supabase stop` if you don’t need the knowledge DB or other Supabase features.
 
 ## Maintainability checks

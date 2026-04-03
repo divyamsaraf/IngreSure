@@ -141,10 +141,13 @@ class TestIngredientQuery:
         assert any("bread" in i for i in lower) or any("egg" in i for i in lower)
 
     def test_single_ingredient(self):
-        # With no comma or "ingredients:", a bare word is not treated as a list (ask for list)
+        """Bare ingredient names (no comma) should still run compliance — matches chat UX ('milk', 'eggs')."""
         result = detect_intent("tuna")
-        assert result.intent == "GENERAL_QUESTION"
-        assert not result.ingredients
+        assert result.intent == "INGREDIENT_QUERY"
+        assert any("tuna" in i.lower() for i in result.ingredients)
+        result_milk = detect_intent("milk")
+        assert result_milk.intent == "INGREDIENT_QUERY"
+        assert any("milk" in i.lower() for i in result_milk.ingredients)
         # With comma or explicit list, we extract
         result2 = detect_intent("tuna, salmon")
         assert result2.intent == "INGREDIENT_QUERY"

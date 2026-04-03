@@ -12,7 +12,7 @@ from typing import Optional
 
 import requests
 
-from core.config import get_ollama_url, get_ollama_model, LLM_INTENT_TIMEOUT
+from core.config import get_ollama_url, get_ollama_model, LLM_INTENT_TIMEOUT, llm_enabled
 
 logger = logging.getLogger(__name__)
 
@@ -40,6 +40,8 @@ RULES:
 
 def _call_ollama(prompt: str, timeout: int = LLM_INTENT_TIMEOUT) -> Optional[str]:
     """Call Ollama and return the response text, or None on failure."""
+    if not llm_enabled():
+        return None
     try:
         resp = requests.post(
             get_ollama_url(),

@@ -11,7 +11,7 @@ from typing import Any, Optional
 
 import requests
 
-from core.config import get_ollama_url, get_ollama_model
+from core.config import get_ollama_url, get_ollama_model, llm_enabled
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +43,7 @@ def classify_ingredient_origin(
     Call LLM to classify ingredient. Returns dict with origin_type, animal_origin, etc.
     Returns None on failure or if Ollama is unavailable.
     """
-    if not name or not name.strip():
+    if not llm_enabled() or not name or not name.strip():
         return None
     prompt = f"Ingredient name: {name.strip()}\n"
     if description and description.strip():

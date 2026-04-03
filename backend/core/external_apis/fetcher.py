@@ -18,7 +18,13 @@ from core.external_apis.pubchem import fetch_pubchem
 from core.external_apis.chebi import fetch_chebi
 from core.external_apis.wikidata_api import fetch_wikidata, resolve_to_english_label
 from core.external_apis.regional_names import get_canonical_queries, set_learned_english
-from core.config import get_usda_fdc_api_key, get_open_food_facts_enabled, get_ollama_url, get_ollama_model
+from core.config import (
+    get_usda_fdc_api_key,
+    get_open_food_facts_enabled,
+    get_ollama_url,
+    get_ollama_model,
+    llm_enabled,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +40,7 @@ def _cache_key(normalized_query: str) -> str:
 
 def _resolve_to_english_llm(query: str, timeout: int = 5) -> Optional[str]:
     """Optional LLM fallback: ask Ollama for English name when Wikidata missed. Returns one line or None."""
-    if not query or not query.strip() or timeout <= 0:
+    if not llm_enabled() or not query or not query.strip() or timeout <= 0:
         return None
     try:
         prompt = (

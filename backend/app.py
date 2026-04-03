@@ -93,7 +93,14 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # --- Eagerly import core modules (avoid repeated lazy imports) ---
-from core.config import get_ollama_url, get_ollama_model, PRODUCTION, MAX_CHAT_MESSAGE_LENGTH, redact_pii
+from core.config import (
+    get_ollama_url,
+    get_ollama_model,
+    PRODUCTION,
+    MAX_CHAT_MESSAGE_LENGTH,
+    redact_pii,
+    llm_enabled,
+)
 from core.profile_options import get_profile_options_raw
 from core.profile_storage import get_or_create_profile, save_profile, update_profile_partial
 from core.models.user_profile import UserProfile
@@ -132,6 +139,9 @@ except Exception as _exc:
 @app.on_event("startup")
 async def _warmup_ollama():
     """Pre-load the Ollama model so the first user request is fast."""
+    if not llm_enabled():
+        logger.info("LLM disabled (LLM_ENABLED=false); skipping Ollama warmup")
+        return
     import threading
 
     def _ping():

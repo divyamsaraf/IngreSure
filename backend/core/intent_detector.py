@@ -508,6 +508,80 @@ def _split_ingredients(text: str) -> List[str]:
     return result
 
 
+# One-line messages that are not ingredient names (avoid mis-routing chat to compliance).
+_BARE_QUERY_DENYLIST = frozenset(
+    {
+        "help",
+        "help me",
+        "why",
+        "when",
+        "where",
+        "how",
+        "what",
+        "who",
+        "which",
+        "thanks",
+        "thank you",
+        "thank",
+        "please",
+        "ok",
+        "okay",
+        "cool",
+        "nice",
+        "sure",
+        "stop",
+        "cancel",
+        "reset",
+        "clear",
+        "menu",
+        "settings",
+        "ingredient",
+        "ingredients",
+        "list",
+        "none",
+        "nothing",
+    }
+)
+
+
+def _bare_ingredients_fallback(text: str) -> List[str]:
+    """
+    Treat a short, non-question line as ingredient(s) when it is not a list signal
+    (no comma / no 'ingredients:') — e.g. 'milk', 'eggs', 'soy milk', 'red 40'.
+
+    Skips meta phrases ('these ingredients for…'), WH-questions, and diet-only tokens.
+    """
+    t = (text or "").strip()
+    if not t or len(t) > 120 or "\n" in t:
+        return []
+    if re.search(r"https?://|www\.", t, re.IGNORECASE):
+        return []
+    t = t.strip(".,;:!? ").strip()
+    if not t:
+        return []
+    cleaned = _clean_for_ingredients(t)
+    if not cleaned:
+        return []
+    low = cleaned.lower().strip()
+    if low in _BARE_QUERY_DENYLIST or low in _DIET_NAMES_LOWER:
+        return []
+    if _is_meta_ingredient_phrase(cleaned):
+        return []
+    if re.match(r"^(?:check|analyze|evaluate|verify|test)\s+these\b", cleaned, re.IGNORECASE):
+        return []
+    # Obvious general-knowledge questions, not a label or ingredient line
+    if re.match(
+        r"^(?:what|how|why|when|where|who|which|tell\s+me\s+about|explain)\s+",
+        low,
+    ):
+        return []
+    n_words = len(cleaned.split())
+    if n_words < 1 or n_words > 10:
+        return []
+    ings = _split_ingredients(cleaned)
+    return ings
+
+
 def _clean_for_ingredients(text: str) -> str:
     """Strip conversational fluff; return empty string if nothing ingredient-like remains."""
     t = text.strip()
@@ -677,6 +751,13 @@ def detect_intent(query: str) -> ParsedIntent:
         # Fallback to base_text only if remaining was consumed by profile extraction
         if not ingredients and remaining != base_text and not profile_updates:
             ingredients = _extract_ingredients_from_text(base_text)
+        # Bare ingredient line: "milk", "eggs", "soy milk" (no comma / no "ingredients:")
+        if not ingredients:
+            target = remaining.strip()
+            if target:
+                ingredients = _bare_ingredients_fallback(target)
+            elif not profile_updates:
+                ingredients = _bare_ingredients_fallback(base_text)
 
     # Filter out diet names that leaked into ingredients
     if ingredients:

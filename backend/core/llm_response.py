@@ -8,7 +8,7 @@ from typing import Optional, Dict, Any
 
 import requests
 
-from core.config import get_ollama_url, get_ollama_model, LLM_RESPONSE_TIMEOUT
+from core.config import get_ollama_url, get_ollama_model, LLM_RESPONSE_TIMEOUT, llm_enabled
 
 logger = logging.getLogger(__name__)
 
@@ -17,6 +17,8 @@ _RESPONSE_SYSTEM_PROMPT = """You are a friendly ingredient safety assistant. You
 
 def _call_ollama(system: str, prompt: str, timeout: int = LLM_RESPONSE_TIMEOUT) -> Optional[str]:
     """Call Ollama and return the response text, or None on failure."""
+    if not llm_enabled():
+        return None
     try:
         resp = requests.post(
             get_ollama_url(),
