@@ -1,7 +1,8 @@
 'use client'
 
-import { ArrowRight, ShieldCheck, CheckCircle, MessageCircle } from 'lucide-react'
+import { ShieldCheck, CheckCircle, MessageCircle } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { PrimaryChatCta } from '@/components/home/PrimaryChatCta'
 
 export default function HeroSection() {
   return (
@@ -24,22 +25,24 @@ export default function HeroSection() {
             just paste your label or menu and get a clear, human explanation.
           </p>
 
-          <div className="flex flex-wrap items-center gap-4">
-            <Button href="/chat" variant="primary">
-              Start Audit
-              <ArrowRight className="h-5 w-5 ml-2" />
-            </Button>
-            <Button
-              variant="secondary"
-              size="sm"
-              type="button"
-              onClick={() => {
-                const el = document.getElementById('how-it-works')
-                el?.scrollIntoView({ behavior: 'smooth' })
-              }}
-            >
-              See how it works
-            </Button>
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-wrap items-center gap-4">
+              <PrimaryChatCta variant="onLight" />
+              <Button
+                variant="secondary"
+                size="sm"
+                type="button"
+                onClick={() => {
+                  const el = document.getElementById('how-it-works')
+                  el?.scrollIntoView({ behavior: 'smooth' })
+                }}
+              >
+                See how it works
+              </Button>
+            </div>
+            <p className="max-w-lg text-sm font-medium leading-relaxed text-slate-600">
+              Opens the chat — paste a label or ask in plain English. No signup.
+            </p>
           </div>
 
           <div className="mt-4 flex flex-wrap items-center gap-3 text-xs text-slate-500">

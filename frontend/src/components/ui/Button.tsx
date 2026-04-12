@@ -4,7 +4,7 @@ import React from 'react'
 import Link from 'next/link'
 
 type Variant = 'primary' | 'secondary' | 'ghost'
-type Size = 'sm' | 'md'
+type Size = 'sm' | 'md' | 'lg'
 
 interface BaseProps {
   variant?: Variant
@@ -40,6 +40,7 @@ export function Button(props: ButtonProps) {
   const sizeClasses: Record<Size, string> = {
     sm: 'px-3 py-1.5 text-xs rounded-[12px]',
     md: 'px-5 py-2.5 text-sm rounded-[16px]',
+    lg: 'px-7 py-3.5 text-base rounded-2xl md:px-9 md:py-4 md:text-lg',
   }
 
   const composed = [base, variantClasses[variant as Variant], sizeClasses[size as Size], className]

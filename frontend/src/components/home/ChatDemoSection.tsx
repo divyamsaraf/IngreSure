@@ -1,8 +1,8 @@
 'use client'
 
-import Link from 'next/link'
 import { useState } from 'react'
-import { ArrowRight, CheckCircle } from 'lucide-react'
+import { CheckCircle } from 'lucide-react'
+import { PrimaryChatCta } from '@/components/home/PrimaryChatCta'
 
 export default function ChatDemoSection() {
   const [showSafeExpanded, setShowSafeExpanded] = useState(false)
@@ -25,13 +25,7 @@ export default function ChatDemoSection() {
           </ul>
 
           <div className="mt-4 flex flex-wrap items-center gap-4">
-            <Link
-              href="/chat"
-              className="inline-flex items-center gap-2 rounded-[16px] bg-gradient-to-r from-emerald-500 to-lime-400 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-emerald-500/30 transition-transform transition-shadow hover:-translate-y-0.5 hover:shadow-emerald-500/50 active:translate-y-0"
-            >
-              Start Your Audit – Chat Now
-              <ArrowRight className="h-4 w-4" />
-            </Link>
+            <PrimaryChatCta variant="compact" />
             <p className="text-xs text-slate-500">
               Mobile-friendly • No login • Personalized in under 30 seconds
             </p>

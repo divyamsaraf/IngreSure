@@ -12,6 +12,7 @@ import { useProfileContext } from '@/context/ProfileContext'
 import { useConfig } from '@/context/ConfigContext'
 import { PROFILE_STORAGE_KEY } from '@/constants/profileStorage'
 import { getOrCreateUserId, getAnonSessionToken, persistProfileToStorage } from '@/lib/profileStorage'
+import { getDietIcon } from '@/lib/dietIcon'
 
 /** Ensure chat URL has exactly one mode param (avoids ?mode=grocery?mode=grocery from duplicate appends). */
 function normalizeChatUrl(url: string): string {
@@ -30,13 +31,6 @@ interface ChatInterfaceProps {
     title?: string
     subtitle?: string
     suggestions?: string[]
-}
-
-function getDietIcon(dietIcon: Record<string, string>, diet: string | undefined): string {
-    if (!diet || diet === 'No rules') return dietIcon['No rules'] ?? '🍽️'
-    const key = diet.trim()
-    const found = dietIcon[key] ?? Object.entries(dietIcon).find(([k]) => k.toLowerCase() === key.toLowerCase())?.[1]
-    return found ?? '🥗'
 }
 
 export default function ChatInterface({
