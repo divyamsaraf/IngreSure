@@ -39,7 +39,22 @@ IngreSure is an AI-powered food safety platform that helps consumers verify ingr
 
 ## Quick Start (Development)
 
-### Step 1: Start Ollama (LLM Server)
+### Run the full stack (one terminal)
+
+From the **repository root** (after one-time setup below):
+
+```bash
+chmod +x scripts/dev-local.sh
+./scripts/dev-local.sh
+```
+
+This starts the API on **http://127.0.0.1:8000**, waits until `/health` is OK, then starts Next.js on **http://127.0.0.1:3000**. Stop with `Ctrl+C` (backend child stops with the script).
+
+**Requirements:** `backend/venv` exists with `pip install -r requirements.txt`, and `frontend/node_modules` exists (`npm install` in `frontend/`).
+
+### Step 1: Ollama (LLM) — optional for rules-only mode
+
+If `LLM_ENABLED=false` in `backend/.env`, you can skip Ollama; the app uses templates for chat text.
 
 ```bash
 # Install Ollama (macOS)
@@ -60,12 +75,14 @@ curl http://localhost:11434/api/tags
 
 ### Step 2: Start the Backend
 
+**Always run commands from the `backend` directory** so `app:app` resolves and `.env` loads.
+
 ```bash
 cd backend
 
 # Create virtual environment (one-time)
 python3 -m venv venv
-source venv/bin/activate
+source venv/bin/activate   # Windows: venv\Scripts\activate
 
 # Install dependencies (one-time)
 pip install -r requirements.txt
@@ -74,8 +91,8 @@ pip install -r requirements.txt
 cp .env.example .env
 # Edit .env and add your API keys (see Environment Variables below)
 
-# Start the backend server
-uvicorn app:app --reload --host 0.0.0.0 --port 8000
+# Start the backend server (use venv’s Python if you did not `activate`)
+./venv/bin/python -m uvicorn app:app --reload --host 0.0.0.0 --port 8000
 ```
 
 The backend runs at **http://localhost:8000**.
@@ -85,7 +102,11 @@ Verify:
 curl http://localhost:8000/health
 ```
 
+**If you see `Could not import module "app"`:** you are not in `backend/` (e.g. you ran uvicorn from the repo root). `cd backend` and run the command again.
+
 ### Step 3: Start the Frontend
+
+Use a **second terminal** (keep the backend running).
 
 ```bash
 cd frontend
@@ -93,11 +114,25 @@ cd frontend
 # Install dependencies (one-time)
 npm install
 
+# Copy env (one-time): point BFF at local API
+cp .env.example .env.local
+# Ensure BACKEND_URL=http://127.0.0.1:8000 (default in .env.example)
+
 # Start dev server
 npm run dev
 ```
 
 The frontend runs at **http://localhost:3000**.
+
+### Local troubleshooting
+
+| Symptom | What to check |
+|--------|----------------|
+| `Could not import module "app"` | Run uvicorn from **`backend/`**, or use `./scripts/dev-local.sh`. |
+| Frontend errors / chat fails | Backend must be up first; `curl http://127.0.0.1:8000/health`. `frontend/.env.local` → `BACKEND_URL=http://127.0.0.1:8000`. |
+| `Port 8000 already in use` | Stop the other process: `lsof -i :8000` (macOS/Linux). |
+| `ModuleNotFoundError` (FastAPI, etc.) | Use **`backend/venv`**: `cd backend && ./venv/bin/pip install -r requirements.txt`. |
+| Supabase / `request_history` warnings | Optional: apply [`supabase/migrations/20260409120000_request_history.sql`](supabase/migrations/20260409120000_request_history.sql) on your project, or set `REQUEST_HISTORY_ENABLED=false` in `backend/.env`. See [database/README.md](database/README.md). |
 
 ### Step 4 (Optional): Start Supabase
 

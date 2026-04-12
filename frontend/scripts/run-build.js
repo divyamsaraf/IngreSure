@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports -- CJS build helper */
 /**
  * Runs `next build` and filters out the baseline-browser-mapping "two months old"
  * warning from stderr. All other output and the exit code are preserved.

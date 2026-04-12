@@ -12,12 +12,13 @@ from fastapi.responses import StreamingResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 from pydantic import BaseModel
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Any
 import logging
 import json
 import re as _re
 import uuid
 import os
+from datetime import datetime, timezone
 from dotenv import load_dotenv
 from pathlib import Path
 
@@ -125,6 +126,11 @@ from core.llm_response import (
 from core.compound_expansion import expand_compounds
 from core.stream_tags import PROFILE_REQUIRED_TAG, PROFILE_UPDATE_TAG, INGREDIENT_AUDIT_TAG
 from core.anon_session import sign_anon_token, verify_anon_token
+from core.request_history import (
+    record_request_history,
+    strip_stream_tags_for_history,
+    truncate_output,
+)
 
 # Public API (v1) - additive only
 try:
@@ -336,8 +342,31 @@ async def get_profile(request: Request, user_id: str):
 @_rate_limit("60/minute")
 async def create_or_update_profile(request: Request, body: ProfileBody):
     """Create or update profile. Merge: only provided fields are updated. When Authorization Bearer is valid, its user_id is used."""
-    resolved_user_id = _user_id_from_auth(request) or body.user_id
-    _validate_user_id(resolved_user_id)
+    started_at = datetime.now(timezone.utc)
+    resolved_user_id = None
+    try:
+        resolved_user_id = _user_id_from_auth(request) or body.user_id
+        _validate_user_id(resolved_user_id)
+    except HTTPException as he:
+        completed_at = datetime.now(timezone.utc)
+        record_request_history(
+            started_at=started_at,
+            completed_at=completed_at,
+            user_id=body.user_id if resolved_user_id is None else resolved_user_id,
+            route="/profile",
+            status=he.status_code,
+            error_code="http_exception",
+            user_input=None,
+            output_text=None,
+            metadata=None,
+            profile_update={
+                "user_id": body.user_id,
+                "dietary_preference": body.dietary_preference,
+                "allergens": body.allergens,
+                "lifestyle": body.lifestyle,
+            },
+        )
+        raise
     try:
         profile = update_profile_partial(
             resolved_user_id,
@@ -349,8 +378,42 @@ async def create_or_update_profile(request: Request, body: ProfileBody):
             profile = get_or_create_profile(resolved_user_id)
             save_profile(profile)
         logger.info("PROFILE_UPDATE user_id=%s dietary_preference=%s", redact_pii(resolved_user_id), redact_pii(profile.dietary_preference))
+        completed_at = datetime.now(timezone.utc)
+        record_request_history(
+            started_at=started_at,
+            completed_at=completed_at,
+            user_id=resolved_user_id,
+            route="/profile",
+            status=200,
+            error_code=None,
+            user_input=None,
+            output_text=None,
+            metadata=None,
+            profile_update={
+                "dietary_preference": body.dietary_preference,
+                "allergens": body.allergens,
+                "lifestyle": body.lifestyle,
+            },
+        )
         return {"status": "ok", "profile": profile.to_dict()}
     except Exception as e:
+        completed_at = datetime.now(timezone.utc)
+        record_request_history(
+            started_at=started_at,
+            completed_at=completed_at,
+            user_id=resolved_user_id,
+            route="/profile",
+            status=500,
+            error_code=type(e).__name__,
+            user_input=None,
+            output_text=None,
+            metadata=None,
+            profile_update={
+                "dietary_preference": body.dietary_preference,
+                "allergens": body.allergens,
+                "lifestyle": body.lifestyle,
+            },
+        )
         raise HTTPException(status_code=500, detail=_500_detail(e))
 
 
@@ -368,7 +431,21 @@ async def chat_grocery(request: Request, body: ChatRequest):
       5. Response Composer  - template-based responses, LLM for greetings/general only
     """
     query = body.query if body.query is not None else ""
+    started_at = datetime.now(timezone.utc)
     if len(query) > MAX_CHAT_QUERY_LENGTH:
+        uid_short = _user_id_from_auth(request) or body.user_id
+        record_request_history(
+            started_at=started_at,
+            completed_at=datetime.now(timezone.utc),
+            user_id=uid_short,
+            route="/chat/grocery",
+            status=400,
+            error_code="query_too_long",
+            user_input=query[: MAX_CHAT_QUERY_LENGTH + 512],
+            output_text=None,
+            metadata=None,
+            profile_update=None,
+        )
         raise HTTPException(
             status_code=400,
             detail=f"Query too long. Maximum {MAX_CHAT_QUERY_LENGTH} characters allowed.",
@@ -376,11 +453,13 @@ async def chat_grocery(request: Request, body: ChatRequest):
     resolved_user_id = _user_id_from_auth(request)
     if not resolved_user_id and body.user_id is not None:
         _validate_user_id(body.user_id)
+    stream_user_id = resolved_user_id or body.user_id or f"anon-{uuid.uuid4().hex[:12]}"
+    chat_history_meta: Dict[str, Any] = {}
     logger.info("Grocery Chat query=%s user_id=%s", redact_pii(query), redact_pii(body.user_id or resolved_user_id))
     try:
         async def generate_safety():
-            # Identity: Authorization Bearer token > body user_id > new anon- id
-            user_id = resolved_user_id or body.user_id or f"anon-{uuid.uuid4().hex[:12]}"
+            # Identity: stable per response (matches request_history user_id)
+            user_id = stream_user_id
             profile = get_or_create_profile(user_id)
 
             # 1) /update slash-command
@@ -394,6 +473,8 @@ async def chat_grocery(request: Request, body: ChatRequest):
                     profile.update_merge(lifestyle=values)
                 save_profile(profile)
                 logger.info("PROFILE_UPDATE user_id=%s field=%s values=%s", redact_pii(user_id), field_name, redact_pii(values) if values else values)
+                chat_history_meta["intent"] = "SLASH_PROFILE_UPDATE"
+                chat_history_meta["field"] = field_name
                 yield template_profile_update(profile, {field_name: values}, has_ingredients=False)
                 yield _profile_json(profile)
                 return
@@ -433,6 +514,10 @@ async def chat_grocery(request: Request, body: ChatRequest):
                         ingredients=llm_data["ingredients"],
                         original_query=query,
                     )
+
+            chat_history_meta["intent"] = parsed.intent
+            chat_history_meta["has_ingredients"] = parsed.has_ingredients
+            chat_history_meta["has_profile_update"] = parsed.has_profile_update
 
             # 3) Handle GREETING
             if parsed.intent == "GREETING":
@@ -514,6 +599,11 @@ async def chat_grocery(request: Request, body: ChatRequest):
                 verdict.status.value, verdict.confidence_score,
                 verdict.triggered_restrictions, redact_pii(ingredients),
             )
+            chat_history_meta["verdict_status"] = verdict.status.value
+            chat_history_meta["verdict_confidence"] = verdict.confidence_score
+            chat_history_meta["triggered_restrictions"] = verdict.triggered_restrictions
+            chat_history_meta["ingredient_count"] = len(ingredients)
+            chat_history_meta["eval_ingredient_count"] = len(eval_ingredients)
 
             # 10) Compose response (template-based: instant, accurate)
             response_text = template_verdict(
@@ -541,8 +631,50 @@ async def chat_grocery(request: Request, body: ChatRequest):
             if not profile_was_updated:
                 yield _profile_json(profile)
 
-        return StreamingResponse(generate_safety(), media_type="text/plain")
+        async def stream_with_history():
+            chunks = []
+            completed_status = 200
+            err_code = None
+            try:
+                async for piece in generate_safety():
+                    chunks.append(piece if isinstance(piece, str) else str(piece))
+                    yield piece
+            except Exception:
+                completed_status = 500
+                err_code = "stream_error"
+                raise
+            finally:
+                completed_at = datetime.now(timezone.utc)
+                raw_out = "".join(chunks)
+                out_vis = truncate_output(strip_stream_tags_for_history(raw_out))
+                record_request_history(
+                    started_at=started_at,
+                    completed_at=completed_at,
+                    user_id=stream_user_id,
+                    route="/chat/grocery",
+                    status=completed_status,
+                    error_code=err_code,
+                    user_input=query,
+                    output_text=out_vis or None,
+                    metadata=dict(chat_history_meta) if chat_history_meta else None,
+                    profile_update=None,
+                )
+
+        return StreamingResponse(stream_with_history(), media_type="text/plain")
     except Exception as e:
+        completed_at = datetime.now(timezone.utc)
+        record_request_history(
+            started_at=started_at,
+            completed_at=completed_at,
+            user_id=stream_user_id,
+            route="/chat/grocery",
+            status=500,
+            error_code=type(e).__name__,
+            user_input=query,
+            output_text=None,
+            metadata=dict(chat_history_meta) if chat_history_meta else None,
+            profile_update=None,
+        )
         raise HTTPException(status_code=500, detail=_500_detail(e))
 
 
