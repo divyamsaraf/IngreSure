@@ -5,13 +5,12 @@ import { Send, User, Bot, Loader2, X } from 'lucide-react'
 import OnboardingModal from './OnboardingModal'
 import FormattedMessage from './FormattedMessage'
 import IngredientAuditCards, { type IngredientAuditData } from './IngredientAuditCards'
-import RecentChecksSection from './RecentChecksSection'
-import { type Message, streamChatResponse, stripStatusPlaceholders, buildRecentChecksFromMessages } from './streamChatResponse'
+import { type Message, streamChatResponse, stripStatusPlaceholders } from './streamChatResponse'
 import { UserProfile, profileToBackend, hasProfileRules } from '@/types/userProfile'
 import { useProfileContext } from '@/context/ProfileContext'
 import { useConfig } from '@/context/ConfigContext'
 import { PROFILE_BANNER_DISMISSED_KEY } from '@/constants/profileStorage'
-import { getOrCreateUserId, getAnonSessionToken, persistProfileToStorage, loadRecentChecks, persistRecentChecks, type RecentCheckEntry } from '@/lib/profileStorage'
+import { getOrCreateUserId, getAnonSessionToken, persistProfileToStorage } from '@/lib/profileStorage'
 import { getDietIcon } from '@/lib/dietIcon'
 import { colors, spacing } from '@/theme/tokens'
 
@@ -98,7 +97,6 @@ export default function ChatInterface({
     const [lastQuery, setLastQuery] = useState<string | null>(null)
     const [bannerVisible, setBannerVisible] = useState(false)
     const [bannerExiting, setBannerExiting] = useState(false)
-    const [recentChecks, setRecentChecks] = useState<RecentCheckEntry[]>([])
     const messagesEndRef = useRef<HTMLDivElement>(null)
 
     // Profile API base: /api (no double /api). apiEndpoint is e.g. /api/chat so base = /api, then /api/profile
@@ -192,6 +190,7 @@ export default function ChatInterface({
           })
     }
 
+    /* Recent checks hidden — re-enable with RecentChecksSection when needed
     useEffect(() => {
         setRecentChecks(loadRecentChecks())
     }, [])
@@ -202,6 +201,7 @@ export default function ChatInterface({
         setRecentChecks(fromMessages)
         persistRecentChecks(fromMessages)
     }, [messages])
+    */
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
@@ -588,6 +588,7 @@ export default function ChatInterface({
                     </p>
                 )}
 
+                {/* Recent checks hidden for now
                 {recentChecks.length > 0 && (
                     <div style={{ marginTop: spacing.inner }}>
                         <RecentChecksSection
@@ -596,6 +597,7 @@ export default function ChatInterface({
                         />
                     </div>
                 )}
+                */}
 
                 <div ref={messagesEndRef} />
             </div>

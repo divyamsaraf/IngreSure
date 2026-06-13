@@ -1,0 +1,22 @@
+# Example Caddyfile for IngreSure on OCI (host install, not Docker).
+#
+# 1. Replace YOUR_API_HOSTNAME with your DNS name (e.g. ingresure-api.gleeze.com).
+# 2. DNS A record → instance public IPv4 (Let’s Encrypt HTTP-01 needs port 80 from the internet).
+# 3. OCI: ingress TCP 80 and 443 from 0.0.0.0/0 (subnet security list + any NSG).
+# 4. sudo cp ... /etc/caddy/Caddyfile
+#    sudo caddy fmt --overwrite /etc/caddy/Caddyfile
+#    sudo caddy validate --config /etc/caddy/Caddyfile
+#    sudo systemctl restart caddy
+#    sudo ss -tlnp4 | grep -E ':80|:443'
+#
+# Global default_bind forces IPv4 on *all* listeners (HTTPS, HTTP→HTTPS redirect, ACME).
+# Site-only "bind" can miss the automatic HTTP server; missing 0.0.0.0:80/443 in "ss -tlnp4"
+# usually means IPv6-only bind or Caddy not running — see journalctl -u caddy.
+
+{
+	default_bind 0.0.0.0
+}
+
+YOUR_API_HOSTNAME {
+	reverse_proxy 127.0.0.1:8000
+}

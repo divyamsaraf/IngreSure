@@ -41,6 +41,7 @@ class ComplianceEngine:
         trace_ingredient_keys: Optional[Set[str]] = None,
         use_api_fallback: bool = True,
         profile_context: Optional[dict] = None,
+        input_display_map: Optional[Dict[str, str]] = None,
     ) -> ComplianceVerdict:
         """
         Evaluate ingredient strings against restrictions.
@@ -60,6 +61,11 @@ class ComplianceEngine:
             )
 
         trace_set = trace_ingredient_keys or set()
+        display_map = input_display_map or {}
+
+        def _user_display(canonical_key: str, fallback: str) -> str:
+            return display_map.get(canonical_key) or display_map.get((canonical_key or "").lower().strip()) or fallback
+
         # Build list of (index, raw, key, is_trace) for items we will resolve
         items: List[Tuple[int, str, str, bool]] = []
         for i, raw in enumerate(ingredient_strings):
@@ -108,7 +114,7 @@ class ComplianceEngine:
             if use_api_fallback:
                 if ing is not None:
                     resolved.append(ing)
-                    resolved_raw.append(raw)
+                    resolved_raw.append(_user_display(ing.canonical_name, raw))
                     resolved_is_trace.append(is_trace)
                     resolution_levels.append(level)
                     if is_trace:
@@ -153,7 +159,7 @@ class ComplianceEngine:
                         )
                 else:
                     resolved.append(ing)
-                    resolved_raw.append(raw)
+                    resolved_raw.append(_user_display(ing.canonical_name, raw))
                     resolved_is_trace.append(is_trace)
                     resolution_levels.append("high")
                     if is_trace:

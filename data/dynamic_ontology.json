@@ -2207,6 +2207,68 @@
       "regions": [],
       "_enrichment_source": "usda_fdc",
       "_enrichment_confidence": "high"
+    },
+    {
+      "id": "usda_oscar_mayer_ham_chopped_with_natural_juice",
+      "canonical_name": "Oscar Mayer, Ham (chopped with natural juice)",
+      "aliases": [
+        "natural number"
+      ],
+      "derived_from": [],
+      "contains": [],
+      "may_contain": [],
+      "animal_origin": true,
+      "plant_origin": false,
+      "synthetic": false,
+      "fungal": false,
+      "insect_derived": false,
+      "animal_species": "pig",
+      "egg_source": false,
+      "dairy_source": false,
+      "gluten_source": false,
+      "nut_source": null,
+      "soy_source": false,
+      "sesame_source": false,
+      "alcohol_content": null,
+      "root_vegetable": false,
+      "onion_source": false,
+      "garlic_source": false,
+      "fermented": false,
+      "uncertainty_flags": [],
+      "regions": [],
+      "_enrichment_source": "usda_fdc",
+      "_enrichment_confidence": "high"
+    },
+    {
+      "id": "usda_peppers_banana_or_hungarian_wax_seeded_raw",
+      "canonical_name": "Peppers, banana or Hungarian wax, seeded, raw",
+      "aliases": [
+        "carnauba wax"
+      ],
+      "derived_from": [],
+      "contains": [],
+      "may_contain": [],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "fungal": false,
+      "insect_derived": false,
+      "animal_species": null,
+      "egg_source": false,
+      "dairy_source": false,
+      "gluten_source": false,
+      "nut_source": null,
+      "soy_source": false,
+      "sesame_source": false,
+      "alcohol_content": null,
+      "root_vegetable": false,
+      "onion_source": false,
+      "garlic_source": false,
+      "fermented": false,
+      "uncertainty_flags": [],
+      "regions": [],
+      "_enrichment_source": "usda_fdc",
+      "_enrichment_confidence": "medium"
     }
   ]
 }

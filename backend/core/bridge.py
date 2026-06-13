@@ -171,10 +171,17 @@ def user_profile_model_to_restriction_ids(profile: "UserProfile") -> List[str]:
 # Ingredient preprocessing
 # ---------------------------------------------------------------------------
 
-def preprocess_ingredient_list(ingredients: List[str]) -> Tuple[List[str], Set[str]]:
-    """Preprocess ingredient strings into atomic names and trace keys."""
+def preprocess_ingredient_list(
+    ingredients: List[str],
+) -> Tuple[List[str], Set[str], Dict[str, str]]:
+    """Preprocess ingredient strings into atomic names, trace keys, and display labels.
+
+    display_by_canonical maps normalized lookup keys (e.g. gelatin) back to the
+    user's original input (e.g. E441) for audit card display.
+    """
     flattened: List[str] = []
     trace_keys: Set[str] = set()
+    display_by_canonical: Dict[str, str] = {}
     for s in ingredients:
         if not s or not str(s).strip():
             continue
@@ -184,12 +191,15 @@ def preprocess_ingredient_list(ingredients: List[str]) -> Tuple[List[str], Set[s
             atoms = flatten_ingredients(x["name"])
             for a in atoms:
                 flattened.append(a)
+                display_by_canonical.setdefault(a, s)
                 if x.get("trace"):
                     trace_keys.add(a)
         if not items:
             atoms = flatten_ingredients(s)
-            flattened.extend(atoms)
-    return flattened, trace_keys
+            for a in atoms:
+                flattened.append(a)
+                display_by_canonical.setdefault(a, s)
+    return flattened, trace_keys, display_by_canonical
 
 
 # ---------------------------------------------------------------------------
@@ -211,7 +221,7 @@ def run_new_engine_chat(
     else:
         rids = profile_to_restriction_ids(user_profile if isinstance(user_profile, dict) else None)
 
-    atomic_names, trace_keys = preprocess_ingredient_list(ingredients)
+    atomic_names, trace_keys, display_by_canonical = preprocess_ingredient_list(ingredients)
     logger.info(
         "COMPLIANCE preprocess normalized_count=%d trace_count=%d",
         len(atomic_names), len(trace_keys),
@@ -223,5 +233,6 @@ def run_new_engine_chat(
         trace_ingredient_keys=trace_keys or None,
         use_api_fallback=use_api_fallback,
         profile_context=profile_context,
+        input_display_map=display_by_canonical or None,
     )
 

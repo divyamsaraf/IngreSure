@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 import {
   AlertTriangle,
   Check,
@@ -499,12 +499,36 @@ function AllSafeBanner() {
   )
 }
 
-export default function IngredientAuditCards({ data, showPersonaliseNudge, onPersonalise }: Props) {
+export default function IngredientAuditCards(props: Props) {
+  const resultFingerprint = useMemo(
+    () =>
+      JSON.stringify({
+        summary: props.data.summary,
+        explanation: props.data.explanation,
+        groups: props.data.groups.map((g) => ({
+          status: g.status,
+          items: g.items.map((i) => ({ name: i.name, reason: i.reason })),
+        })),
+      }),
+    [props.data.summary, props.data.explanation, props.data.groups],
+  )
+  return <IngredientAuditCardsContent key={resultFingerprint} {...props} />
+}
+
+function IngredientAuditCardsContent({ data, showPersonaliseNudge, onPersonalise }: Props) {
   const { profile } = useProfileContext()
-  const groupRefs: Record<IngredientStatus, React.RefObject<HTMLDivElement | null>> = {
-    safe: useRef<HTMLDivElement>(null),
-    avoid: useRef<HTMLDivElement>(null),
-    depends: useRef<HTMLDivElement>(null),
+  const safeSectionRef = useRef<HTMLDivElement>(null)
+  const avoidSectionRef = useRef<HTMLDivElement>(null)
+  const dependsSectionRef = useRef<HTMLDivElement>(null)
+
+  const scrollToGroup = (status: IngredientStatus) => {
+    const target =
+      status === 'safe'
+        ? safeSectionRef
+        : status === 'avoid'
+          ? avoidSectionRef
+          : dependsSectionRef
+    target.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
   const avoidItems = data.groups.find((g) => g.status === 'avoid')?.items ?? []
@@ -520,30 +544,10 @@ export default function IngredientAuditCards({ data, showPersonaliseNudge, onPer
     [safeItems.length, avoidItems.length, checkItems.length],
   )
 
-  const resultFingerprint = useMemo(
-    () =>
-      JSON.stringify({
-        summary: data.summary,
-        explanation: data.explanation,
-        groups: data.groups.map((g) => ({
-          status: g.status,
-          items: g.items.map((i) => ({ name: i.name, reason: i.reason })),
-        })),
-      }),
-    [data.summary, data.explanation, data.groups],
-  )
-
   const [avoidFullyExpanded, setAvoidFullyExpanded] = useState(false)
   const [avoidSearchQuery, setAvoidSearchQuery] = useState('')
   const [checkExpanded, setCheckExpanded] = useState(false)
   const [safeState, setSafeState] = useState<1 | 2 | 3>(() => getInitialSafeState(avoidItems.length))
-
-  useEffect(() => {
-    setAvoidFullyExpanded(false)
-    setAvoidSearchQuery('')
-    setCheckExpanded(false)
-    setSafeState(getInitialSafeState(avoidItems.length))
-  }, [resultFingerprint, avoidItems.length])
 
   const showAllSafeBanner = counts.avoid === 0 && counts.depends === 0 && counts.safe > 0
 
@@ -565,11 +569,11 @@ export default function IngredientAuditCards({ data, showPersonaliseNudge, onPer
               type="button"
               title={STATUS_TOOLTIP[status]}
               aria-label={`${count} ${PILL_LABEL[status]}. Click to scroll.`}
-              onClick={() => groupRefs[status].current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+              onClick={() => scrollToGroup(status)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault()
-                  groupRefs[status].current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                  scrollToGroup(status)
                 }
               }}
               className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-bold transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-slate-400 ${statusColors[status].pill}`}
@@ -594,13 +598,13 @@ export default function IngredientAuditCards({ data, showPersonaliseNudge, onPer
             setAvoidSearchQuery('')
           }}
           onSearchChange={setAvoidSearchQuery}
-          sectionRef={groupRefs.avoid}
+          sectionRef={avoidSectionRef}
         />
         <CheckSection
           items={checkItems}
           expanded={checkExpanded}
           onToggle={() => setCheckExpanded((prev) => !prev)}
-          sectionRef={groupRefs.depends}
+          sectionRef={dependsSectionRef}
         />
         {showAllSafeBanner ? <AllSafeBanner /> : null}
         <SafeSection
@@ -609,7 +613,7 @@ export default function IngredientAuditCards({ data, showPersonaliseNudge, onPer
           onToggle={() => setSafeState((prev) => (prev === 1 ? 2 : 1))}
           onShowMore={() => setSafeState(3)}
           onShowLess={() => setSafeState(2)}
-          sectionRef={groupRefs.safe}
+          sectionRef={safeSectionRef}
         />
       </div>
 

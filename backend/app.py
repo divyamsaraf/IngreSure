@@ -18,6 +18,8 @@ import json
 import re as _re
 import uuid
 import os
+import threading
+from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from dotenv import load_dotenv
 from pathlib import Path
@@ -25,25 +27,23 @@ from pathlib import Path
 # Load env vars
 load_dotenv(Path(__file__).parent / ".env")
 
-# Initialize App
-app = FastAPI(title="IngreSure AI Scanner API")
-
 try:
     from core.config import log_config
     log_config()
 except ImportError:
     pass
 
-# Rate limiting (per-IP)
+# Logger
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Rate limiting (per-IP) — limiter wired to app after FastAPI init below
 try:
     from slowapi import Limiter, _rate_limit_exceeded_handler
     from slowapi.util import get_remote_address
     from slowapi.errors import RateLimitExceeded
     from slowapi.middleware import SlowAPIMiddleware
     limiter = Limiter(key_func=get_remote_address)
-    app.state.limiter = limiter
-    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
-    app.add_middleware(SlowAPIMiddleware)
 except ImportError:
     limiter = None  # optional: slowapi not installed
 
@@ -76,23 +76,6 @@ class BodySizeLimitMiddleware(BaseHTTPMiddleware):
         return await call_next(request)
 
 
-app.add_middleware(BodySizeLimitMiddleware)
-
-# CORS: use CORS_ORIGINS env (comma-separated) when set; otherwise allow all (dev)
-_cors_origins_raw = os.environ.get("CORS_ORIGINS", "").strip()
-CORS_ORIGINS = [o.strip() for o in _cors_origins_raw.split(",") if o.strip()] if _cors_origins_raw else ["*"]
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=CORS_ORIGINS,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# Logger
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
 # --- Eagerly import core modules (avoid repeated lazy imports) ---
 from core.config import (
     get_ollama_url,
@@ -115,13 +98,17 @@ from core.response_composer import (
     compose_greeting as template_greeting,
     compose_profile_update as template_profile_update,
     compose_verdict as template_verdict,
+    compose_verdict_explanation,
     compose_general_question as template_general,
     compose_no_ingredients as template_no_ingredients,
     build_ingredient_audit_payload,
+    count_safe_audit_ingredients,
+    _display_name,
 )
 from core.llm_response import (
     llm_compose_greeting,
     llm_compose_general,
+    llm_compose_verdict_explanation,
 )
 from core.compound_expansion import expand_compounds
 from core.stream_tags import PROFILE_REQUIRED_TAG, PROFILE_UPDATE_TAG, INGREDIENT_AUDIT_TAG
@@ -132,6 +119,54 @@ from core.request_history import (
     truncate_output,
 )
 
+
+@asynccontextmanager
+async def _app_lifespan(_app: FastAPI):
+    """Pre-load the Ollama model so the first user request is fast."""
+    if llm_enabled():
+        def _ping():
+            try:
+                import requests as _req
+                _req.post(
+                    get_ollama_url(),
+                    json={
+                        "model": get_ollama_model(),
+                        "prompt": "hi",
+                        "stream": False,
+                        "options": {"num_predict": 1},
+                    },
+                    timeout=60,
+                )
+                logger.info("WARMUP Ollama model loaded successfully")
+            except Exception as exc:
+                logger.warning("WARMUP Ollama ping failed (non-fatal): %s", exc)
+
+        threading.Thread(target=_ping, daemon=True).start()
+    else:
+        logger.info("LLM disabled (LLM_ENABLED=false); skipping Ollama warmup")
+    yield
+
+
+app = FastAPI(title="IngreSure AI Scanner API", lifespan=_app_lifespan)
+
+if limiter is not None:
+    app.state.limiter = limiter
+    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+    app.add_middleware(SlowAPIMiddleware)
+
+app.add_middleware(BodySizeLimitMiddleware)
+
+# CORS: use CORS_ORIGINS env (comma-separated) when set; otherwise allow all (dev)
+_cors_origins_raw = os.environ.get("CORS_ORIGINS", "").strip()
+CORS_ORIGINS = [o.strip() for o in _cors_origins_raw.split(",") if o.strip()] if _cors_origins_raw else ["*"]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=CORS_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # Public API (v1) - additive only
 try:
     from core.api.v1 import v1_router
@@ -139,31 +174,6 @@ try:
 except Exception as _exc:
     # Never break the main app if optional API modules fail to import.
     logger.warning("API v1 router failed to load (non-fatal): %s", _exc)
-
-
-# --- Startup ---
-@app.on_event("startup")
-async def _warmup_ollama():
-    """Pre-load the Ollama model so the first user request is fast."""
-    if not llm_enabled():
-        logger.info("LLM disabled (LLM_ENABLED=false); skipping Ollama warmup")
-        return
-    import threading
-
-    def _ping():
-        try:
-            import requests as _req
-            _req.post(
-                get_ollama_url(),
-                json={"model": get_ollama_model(), "prompt": "hi", "stream": False,
-                      "options": {"num_predict": 1}},
-                timeout=60,
-            )
-            logger.info("WARMUP Ollama model loaded successfully")
-        except Exception as exc:
-            logger.warning("WARMUP Ollama ping failed (non-fatal): %s", exc)
-
-    threading.Thread(target=_ping, daemon=True).start()
 
 
 # --- Request/Response Models ---
@@ -614,6 +624,37 @@ async def chat_grocery(request: Request, body: ChatRequest):
                 updated_fields=updated_fields if profile_was_updated else None,
                 display_names=compound_map if compound_map else None,
             )
+            # Card explanation: short verdict prose only (no ingredient lists)
+            explanation_text = compose_verdict_explanation(
+                verdict=verdict,
+                profile=profile,
+                ingredients=eval_ingredients,
+                display_names=compound_map if compound_map else None,
+            )
+            explanation_source = "template"
+            triggered_to_input = verdict.triggered_ingredient_to_input or {}
+            triggered = verdict.triggered_ingredients or []
+            avoid_user_labels = [
+                str(triggered_to_input.get(ing, ing)).strip()
+                for ing in triggered
+            ]
+            avoid_substances = [_display_name(ing) for ing in triggered]
+            check_names = [
+                str(u).strip().title() for u in (verdict.uncertain_ingredients or [])
+            ]
+            safe_count = count_safe_audit_ingredients(eval_ingredients, verdict)
+            if llm_enabled():
+                llm_expl = llm_compose_verdict_explanation(
+                    verdict=verdict,
+                    profile=profile,
+                    avoid_substances=avoid_substances,
+                    avoid_user_labels=avoid_user_labels,
+                    check_names=check_names,
+                    safe_count=safe_count,
+                )
+                if llm_expl:
+                    explanation_text = llm_expl
+                    explanation_source = "llm"
             # 11) Emit profile first when updated so frontend header shows current diet before audit
             if profile_was_updated:
                 yield _profile_json(profile)
@@ -623,7 +664,8 @@ async def chat_grocery(request: Request, body: ChatRequest):
                 profile=profile,
                 ingredients=eval_ingredients,
                 display_names=compound_map if compound_map else None,
-                explanation_text=response_text,
+                explanation_text=explanation_text,
+                explanation_source=explanation_source,
             )
             audit_block = f"{INGREDIENT_AUDIT_TAG}{json.dumps(audit_payload)}{INGREDIENT_AUDIT_TAG}"
             logger.info("INGREDIENT_AUDIT_EMITTED groups=%s", [g.get("status") for g in audit_payload.get("groups", [])])

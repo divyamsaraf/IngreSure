@@ -63,10 +63,12 @@ export default function HeroSection() {
             aria-label="Open IngreSure chat to analyze your ingredients"
           >
             <img
-              src="/images/hero-result.webp"
+              src="/images/hero-result.gif"
               alt="IngreSure analyzing a food ingredient list and flagging unsafe ingredients for a Vegan user with a full plain-English explanation"
-              width={448}
-              height={520}
+              width={860}
+              height={1024}
+              loading="eager"
+              decoding="async"
               className="h-auto w-full max-w-md rounded-3xl shadow-card"
             />
           </Link>

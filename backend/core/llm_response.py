@@ -4,15 +4,33 @@ Used when the app needs natural-language replies (greeting, profile confirmation
 Verdict responses use the template-based response_composer for consistency and speed.
 """
 import logging
-from typing import Optional, Dict, Any
+import re
+from typing import Optional, Dict, Any, List
 
 import requests
 
 from core.config import get_ollama_url, get_ollama_model, LLM_RESPONSE_TIMEOUT, llm_enabled
+from core.models.verdict import ComplianceVerdict, VerdictStatus
+from core.response_composer import INGREDIENT_ALTERNATIVES, _format_user_ingredient_label
 
 logger = logging.getLogger(__name__)
 
 _RESPONSE_SYSTEM_PROMPT = """You are a friendly ingredient safety assistant. You help people check if ingredients are safe for their diet, allergens, and lifestyle. You are NOT a grocery store, shop, or retailer. Give brief, warm, conversational replies. Keep to 1-3 sentences. Do NOT say "grocery store", "welcome to our store", "we have", or anything that implies you are a store. Do NOT offer recipes, alternatives, or unsolicited follow-ups. No emojis."""
+
+_VERDICT_EXPLANATION_SYSTEM = """You are an ingredient safety assistant writing a brief verdict explanation.
+Write exactly 1-2 short sentences (maximum 45 words total). No bullet lists or markdown.
+Do NOT repeat ingredient names already shown in Avoid/Check/Safe cards.
+Give one practical takeaway: why it is flagged or what to choose instead. No emojis."""
+
+
+def _trim_explanation(text: str, max_sentences: int = 2, max_chars: int = 260) -> str:
+    if not text:
+        return text
+    parts = re.split(r"(?<=[.!?])\s+", text.strip())
+    trimmed = " ".join(parts[:max_sentences]).strip()
+    if len(trimmed) > max_chars:
+        trimmed = trimmed[: max_chars - 1].rsplit(" ", 1)[0] + "."
+    return trimmed
 
 
 def _call_ollama(system: str, prompt: str, timeout: int = LLM_RESPONSE_TIMEOUT) -> Optional[str]:
@@ -27,7 +45,7 @@ def _call_ollama(system: str, prompt: str, timeout: int = LLM_RESPONSE_TIMEOUT) 
                 "prompt": prompt,
                 "system": system,
                 "stream": False,
-                "options": {"temperature": 0.0, "num_predict": 400},
+                "options": {"temperature": 0.0, "num_predict": 100},
             },
             timeout=timeout,
         )
@@ -89,3 +107,63 @@ def llm_compose_general(query: str, profile: Any = None) -> Optional[str]:
         f"Keep it to 2-3 sentences. Do NOT offer to brainstorm, suggest recipes, or suggest alternative ingredients."
     )
     return _call_ollama(_RESPONSE_SYSTEM_PROMPT, prompt)
+
+
+def _looks_like_ingredient_list(text: str) -> bool:
+    if not text:
+        return True
+    if re.search(r"^\s*[-•*]\s", text, re.MULTILINE):
+        return True
+    if re.search(r"^\s*\d+\.\s", text, re.MULTILINE):
+        return True
+    if "the following are" in text.lower() or "the rest are" in text.lower():
+        return True
+    return False
+
+
+def llm_compose_verdict_explanation(
+    verdict: ComplianceVerdict,
+    profile: Any,
+    avoid_substances: List[str],
+    check_names: List[str],
+    safe_count: int,
+    avoid_user_labels: Optional[List[str]] = None,
+) -> Optional[str]:
+    """LLM verdict explanation: context and nuance only, no ingredient lists."""
+    diet = ""
+    if profile and hasattr(profile, "dietary_preference"):
+        diet = profile.dietary_preference or ""
+    diet_phrase = diet if diet and diet != "No rules" else "the user's dietary profile"
+    user_labels = avoid_user_labels or avoid_substances
+
+    if verdict.status == VerdictStatus.SAFE and not avoid_substances and not check_names:
+        prompt = (
+            f"All {safe_count} ingredients suit a {diet_phrase} diet. "
+            f"One short confirmation sentence. Do NOT list names."
+        )
+    elif avoid_substances:
+        primary = avoid_substances[0]
+        user_label = user_labels[0] if user_labels else primary
+        user_note = ""
+        if user_label.strip().lower() != primary.strip().lower():
+            formatted_user = _format_user_ingredient_label(user_label)
+            user_note = f" User typed {formatted_user} (= {primary})."
+        alts = INGREDIENT_ALTERNATIVES.get(primary.lower(), [])
+        alt_hint = f" Suggest {alts[0]} as a swap." if alts else ""
+        prompt = (
+            f"NOT SUITABLE for {diet_phrase}. Primary: {primary}.{user_note}{alt_hint} "
+            f"One practical sentence on why it appears in products and what to pick instead. "
+            f"Max 45 words. Do NOT list all ingredients."
+        )
+    elif check_names:
+        prompt = (
+            f"NEEDS VERIFICATION for {diet_phrase}. Uncertain: {', '.join(check_names[:3])}. "
+            f"One sentence on what to verify on the label. Max 45 words."
+        )
+    else:
+        return None
+
+    result = _call_ollama(_VERDICT_EXPLANATION_SYSTEM, prompt, timeout=LLM_RESPONSE_TIMEOUT)
+    if result and _looks_like_ingredient_list(result):
+        return None
+    return _trim_explanation(result) if result else None

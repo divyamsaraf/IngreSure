@@ -4,11 +4,15 @@ Converts structured compliance verdicts + context into conversational text.
 No robotic templates. No internal jargon unless explicitly requested.
 """
 import logging
-from typing import List, Optional, Dict, Any
+import re
+from typing import List, Optional, Dict, Any, Set
 
 from core.models.verdict import ComplianceVerdict, VerdictStatus
+from core.normalization.normalizer import normalize_ingredient_key
 
 logger = logging.getLogger(__name__)
+
+_E_NUMBER_RE = re.compile(r"^e\d{3,4}[a-z]?$", re.IGNORECASE)
 
 # ---------------------------------------------------------------------------
 # Restriction → human-readable diet label
@@ -162,6 +166,44 @@ def _display_name(ingredient: str) -> str:
     return s[0].upper() + s[1:]
 
 
+def _format_user_ingredient_label(user_input: str) -> str:
+    """Format user-typed labels — E-numbers as E441, E120, etc."""
+    s = (user_input or "").strip()
+    if not s:
+        return s
+    compact = re.sub(r"\s+", "", s)
+    if _E_NUMBER_RE.match(compact):
+        return compact.upper()
+    return _display_name(s)
+
+
+def format_audit_item_name(user_input: str, canonical: str) -> str:
+    """
+    Display name for audit cards. When the user typed an E-number or alias that
+    resolves to a different substance, show both (e.g. E441 · Gelatin).
+    """
+    raw = (user_input or "").strip()
+    canon = (canonical or "").strip()
+    if not raw and not canon:
+        return "Unknown"
+    if not raw:
+        return _display_name(canon)
+
+    user_label = _format_user_ingredient_label(raw)
+    canon_label = _display_name(canon or raw)
+    compact = re.sub(r"\s+", "", raw)
+
+    if _E_NUMBER_RE.match(compact) and canon and user_label.lower() != canon_label.lower():
+        return f"{user_label} · {canon_label}"
+
+    raw_key = normalize_ingredient_key(raw) or _normalize_for_match(raw)
+    canon_key = normalize_ingredient_key(canon) or _normalize_for_match(canon) if canon else raw_key
+    if canon and raw_key != canon_key:
+        return f"{user_label} · {canon_label}"
+
+    return canon_label if canon else user_label
+
+
 def _is_product_word(ingredient: str) -> bool:
     """Check if this is a product/container word rather than a real ingredient."""
     return ingredient.lower().strip() in _PRODUCT_WORDS
@@ -242,6 +284,63 @@ def _normalize_for_match(s: str) -> str:
     if s.endswith("s") and len(s) > 2:
         return s[:-1]
     return s
+
+
+def _ingredient_audit_key(s: str) -> str:
+    """
+    Canonical key for audit grouping — maps E-numbers and known aliases
+    (e.g. E120 -> carmine) so the same substance cannot appear in Avoid and Safe.
+    """
+    if not s or not isinstance(s, str):
+        return ""
+    key = normalize_ingredient_key(s)
+    if key:
+        return key
+    return _normalize_for_match(s)
+
+
+def _build_audit_exclusion_keys(
+    triggered: List[str],
+    triggered_to_input: Optional[Dict[str, str]],
+    uncertain: List[str],
+) -> Set[str]:
+    """All normalized keys that must not appear in the Safe audit group."""
+    excluded: Set[str] = set()
+    mapping = triggered_to_input or {}
+    for canonical in triggered:
+        excluded.add(_ingredient_audit_key(canonical))
+        excluded.add(_normalize_for_match(canonical))
+    for canonical, raw in mapping.items():
+        excluded.add(_ingredient_audit_key(canonical))
+        if isinstance(raw, str):
+            excluded.add(_ingredient_audit_key(raw))
+            excluded.add(_normalize_for_match(raw))
+    for item in uncertain:
+        excluded.add(_ingredient_audit_key(item))
+        excluded.add(_normalize_for_match(item))
+    excluded.discard("")
+    return excluded
+
+
+def _is_excluded_from_safe(ingredient: str, excluded: Set[str]) -> bool:
+    return (
+        _ingredient_audit_key(ingredient) in excluded
+        or _normalize_for_match(ingredient) in excluded
+    )
+
+
+def count_safe_audit_ingredients(ingredients: List[str], verdict: ComplianceVerdict) -> int:
+    """Count ingredients that belong in the Safe audit group (excludes aliases and E-numbers)."""
+    excluded = _build_audit_exclusion_keys(
+        verdict.triggered_ingredients or [],
+        verdict.triggered_ingredient_to_input,
+        verdict.uncertain_ingredients or [],
+    )
+    return sum(
+        1
+        for i in ingredients
+        if not _is_product_word(i) and not _is_excluded_from_safe(i, excluded)
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -349,19 +448,10 @@ def compose_verdict(
     triggered = verdict.triggered_ingredients or []
     triggered_to_input = verdict.triggered_ingredient_to_input or {}  # canonical -> raw user input (show what user typed)
     uncertain = verdict.uncertain_ingredients or []
-    triggered_norm = {_normalize_for_match(i) for i in triggered}
-    uncertain_norm = {_normalize_for_match(i) for i in uncertain}
-    # Raw inputs that mapped to triggered canonicals should not be shown as safe.
-    triggered_raw_norm = {
-        _normalize_for_match(raw)
-        for raw in (triggered_to_input.values() or [])
-        if isinstance(raw, str)
-    }
+    excluded_keys = _build_audit_exclusion_keys(triggered, triggered_to_input, uncertain)
     safe_ingredients = [
         i for i in ingredients
-        if _normalize_for_match(i) not in triggered_norm
-        and _normalize_for_match(i) not in triggered_raw_norm
-        and _normalize_for_match(i) not in uncertain_norm
+        if not _is_excluded_from_safe(i, excluded_keys)
     ]
 
     # Filter out product/container words from safe list (not real ingredients)
@@ -481,6 +571,69 @@ def compose_verdict(
     return "\n".join(parts)
 
 
+def compose_verdict_explanation(
+    verdict: ComplianceVerdict,
+    profile: Any,
+    ingredients: List[str],
+    display_names: Optional[Dict[str, str]] = None,
+) -> str:
+    """
+    Short verdict explanation for audit cards — prose only, no ingredient lists.
+    Ingredient details are shown in structured Avoid/Depends/Safe groups.
+    """
+    diet = _diet_label(profile)
+    triggered = verdict.triggered_ingredients or []
+    triggered_to_input = verdict.triggered_ingredient_to_input or {}
+    uncertain = verdict.uncertain_ingredients or []
+    restrictions = verdict.triggered_restrictions or []
+
+    meaningful = [i for i in ingredients if not _is_product_word(i)] or ingredients
+    safe_count = count_safe_audit_ingredients(meaningful, verdict)
+
+    if verdict.status == VerdictStatus.SAFE and not triggered and not uncertain:
+        if len(meaningful) == 1:
+            return (
+                f"Based on your {diet} profile, this ingredient looks suitable "
+                f"with no conflicts detected."
+            )
+        return (
+            f"All {safe_count} ingredients appear compatible with your {diet} profile. "
+            f"No allergens or diet restrictions were triggered."
+        )
+
+    if triggered:
+        primary = triggered[0]
+        primary_name = format_audit_item_name(
+            triggered_to_input.get(primary, primary),
+            primary,
+        )
+        reason = _ingredient_reason_for_verdict(primary, restrictions)
+        alts = INGREDIENT_ALTERNATIVES.get(primary.lower()) or INGREDIENT_ALTERNATIVES.get(
+            _normalize_for_match(primary), []
+        )
+        alt_hint = f" Try {alts[0]} instead." if alts else ""
+        if _allergy_triggered(restrictions):
+            return (
+                f"{primary_name} is not suitable for your allergens ({reason}).{alt_hint}"
+            )
+        return (
+            f"{primary_name} is not suitable for a {diet} diet ({reason}).{alt_hint}"
+        )
+
+    if uncertain:
+        count = len(uncertain)
+        return (
+            f"{count} ingredient{'s' if count != 1 else ''} could not be verified against "
+            f"your {diet} profile. Check the packaging or ask the manufacturer about "
+            f"processing aids and hidden derivatives."
+        )
+
+    return (
+        f"Results are based on your {diet} profile. "
+        f"Review the grouped ingredients below for specific concerns."
+    )
+
+
 # ---------------------------------------------------------------------------
 # General / fallback
 # ---------------------------------------------------------------------------
@@ -528,6 +681,7 @@ def build_ingredient_audit_payload(
     ingredients: List[str],
     display_names: Optional[Dict[str, str]] = None,
     explanation_text: str = "",
+    explanation_source: str = "template",
 ) -> Dict[str, Any]:
     """
     Build the structured payload for <<<INGREDIENT_AUDIT>>> for the frontend.
@@ -544,11 +698,16 @@ def build_ingredient_audit_payload(
     def _display(ing: str) -> str:
         key = ing.lower().strip()
         if key in dn:
-            return (dn[key] or ing).strip().title()
+            return format_audit_item_name(ing, dn[key] or ing)
         norm = _normalize_for_match(key)
         if norm in dn:
-            return (dn[norm] or ing).strip().title()
-        return (ing or "").strip().title() or "Unknown"
+            return format_audit_item_name(ing, dn[norm] or ing)
+        resolved = normalize_ingredient_key(ing) or ing
+        return format_audit_item_name(ing, resolved)
+
+    def _avoid_display(canonical: str) -> str:
+        raw = triggered_to_input.get(canonical, canonical)
+        return format_audit_item_name(raw, canonical)
 
     def _alternatives(ing: str) -> List[str]:
         key = ing.lower().strip()
@@ -558,20 +717,10 @@ def build_ingredient_audit_payload(
         norm = _normalize_for_match(key)
         return INGREDIENT_ALTERNATIVES.get(norm, [])
 
-    triggered_norm = {_normalize_for_match(i) for i in triggered}
-    uncertain_norm = {_normalize_for_match(i) for i in uncertain}
-    # Treat as triggered any raw input that mapped to a triggered canonical (so the same user input
-    # cannot appear in both Avoid and Safe). Normalize values from triggered_ingredient_to_input.
-    triggered_raw_norm = {
-        _normalize_for_match(raw)
-        for raw in (triggered_to_input.values() or [])
-        if isinstance(raw, str)
-    }
+    excluded_keys = _build_audit_exclusion_keys(triggered, triggered_to_input, uncertain)
     safe_list = [
         i for i in ingredients
-        if _normalize_for_match(i) not in triggered_norm
-        and _normalize_for_match(i) not in triggered_raw_norm
-        and _normalize_for_match(i) not in uncertain_norm
+        if not _is_excluded_from_safe(i, excluded_keys)
     ]
     # Filter product words from safe list
     safe_list = [i for i in safe_list if not _is_product_word(i)]
@@ -584,7 +733,7 @@ def build_ingredient_audit_payload(
     # Avoid
     avoid_items: List[Dict[str, Any]] = []
     for ing in triggered:
-        display_name = _display(triggered_to_input.get(ing, ing))
+        display_name = _avoid_display(ing)
         diets = [_restriction_label(r) for r in diet_restrictions]
         allergens = [_restriction_label(r) for r in allergy_restrictions]
         avoid_items.append({
@@ -631,4 +780,5 @@ def build_ingredient_audit_payload(
         "summary": summary,
         "groups": groups,
         "explanation": explanation_text.strip() or None,
+        "explanation_source": explanation_source,
     }
