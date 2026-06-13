@@ -592,6 +592,7 @@ def build_ingredient_audit_payload(
             "diets": diets if diets else None,
             "allergens": allergens if allergens else None,
             "alternatives": _alternatives(ing) or None,
+            "reason": _ingredient_reason_for_verdict(ing, restrictions),
         })
     if avoid_items:
         groups.append({"status": "avoid", "items": avoid_items})
@@ -605,6 +606,7 @@ def build_ingredient_audit_payload(
             "diets": [_restriction_label(r) for r in diet_restrictions] if diet_restrictions else None,
             "allergens": [_restriction_label(r) for r in allergy_restrictions] if allergy_restrictions else None,
             "alternatives": None,
+            "reason": _ingredient_reason(ing),
         })
     if depends_items:
         groups.append({"status": "depends", "items": depends_items})

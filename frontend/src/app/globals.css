@@ -11,6 +11,21 @@
   --color-avoid: #EF4444;
   --color-depends: #F59E0B;
   --shadow-card: 0 2px 8px rgba(0,0,0,0.08);
+  /* Chat typography tokens */
+  --font-size-chat-body: 15px;
+  --line-height-chat-body: 1.5;
+  --font-size-chat-explanation: 15px;
+  --line-height-chat-explanation: 1.65;
+  --font-size-chat-pill: 14px;
+  --font-size-chat-reason: 12px;
+  --line-height-chat-reason: 1.5;
+  --font-size-chat-count: 13px;
+  --font-size-chat-section: 11px;
+  --letter-spacing-chat-section: 0.06em;
+  --font-size-chat-chip: 13px;
+  --font-size-chat-recent: 13px;
+  --font-size-chat-meta: 11px;
+  --font-size-chat-input: 16px;
 }
 
 @theme inline {
@@ -32,4 +47,103 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+}
+
+.analysis-status-label {
+  transition: opacity 300ms ease;
+}
+
+.text-chat-body {
+  font-size: var(--font-size-chat-body);
+  line-height: var(--line-height-chat-body);
+}
+
+.text-chat-explanation {
+  font-size: var(--font-size-chat-explanation);
+  line-height: var(--line-height-chat-explanation);
+}
+
+.text-chat-pill {
+  font-size: var(--font-size-chat-pill);
+  font-weight: 600;
+}
+
+.text-chat-reason {
+  font-size: var(--font-size-chat-reason);
+  line-height: var(--line-height-chat-reason);
+}
+
+.text-chat-count {
+  font-size: var(--font-size-chat-count);
+}
+
+.text-chat-section {
+  font-size: var(--font-size-chat-section);
+  letter-spacing: var(--letter-spacing-chat-section);
+  text-transform: uppercase;
+}
+
+.text-chat-chip {
+  font-size: var(--font-size-chat-chip);
+}
+
+.text-chat-recent {
+  font-size: var(--font-size-chat-recent);
+}
+
+.text-chat-meta {
+  font-size: var(--font-size-chat-meta);
+}
+
+.text-chat-input {
+  font-size: var(--font-size-chat-input);
+}
+
+.audit-explanation {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid #E5E7EB;
+}
+
+.audit-avoid-search {
+  font-size: 16px;
+}
+
+@media (min-width: 640px) {
+  .audit-avoid-search {
+    font-size: 13px;
+  }
+}
+
+.loading-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.loading-dot {
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: 9999px;
+  background-color: rgb(148 163 184);
+  animation: loading-dot-bounce 1.4s infinite ease-in-out both;
+}
+
+.loading-dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.loading-dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes loading-dot-bounce {
+  0%, 80%, 100% {
+    transform: scale(0.6);
+    opacity: 0.4;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }

@@ -18,6 +18,7 @@ export const metadata: Metadata = {
 import Navbar from "@/components/Navbar";
 import { ConfigProvider } from "@/context/ConfigContext";
 import { ProfileProvider } from "@/context/ProfileContext";
+import { Analytics } from "@vercel/analytics/react";
 
 export default function RootLayout({
   children,
@@ -33,6 +34,7 @@ export default function RootLayout({
             {children}
           </ProfileProvider>
         </ConfigProvider>
+        <Analytics />
       </body>
     </html>
   );

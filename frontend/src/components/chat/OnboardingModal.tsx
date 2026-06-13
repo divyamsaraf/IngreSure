@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { X, Check, RotateCcw } from 'lucide-react'
+import { X, RotateCcw } from 'lucide-react'
 import { UserProfile, DEFAULT_PROFILE } from '@/types/userProfile'
 import { useConfig } from '@/context/ConfigContext'
 
@@ -64,6 +64,7 @@ function OnboardingModalInner({
 
   const [profile, setProfile] = useState<UserProfile>(() => mergeInitialProfile(initialProfile))
   const [customAllergy, setCustomAllergy] = useState('')
+  const [step, setStep] = useState<1 | 2>(1)
 
   const toggleAllergy = (label: string) => {
     setProfile((prev) => ({
@@ -127,6 +128,164 @@ function OnboardingModalInner({
     }))
   }
 
+  const chipTransition = 'transition-all duration-150 ease-in-out'
+  const chipSelected = `border-secondary bg-secondary text-white font-medium ${chipTransition}`
+  const chipUnselected = (borderClass: string, hoverClass: string) =>
+    `border-2 bg-transparent text-slate-700 ${borderClass} ${hoverClass} ${chipTransition}`
+
+  const dietarySection = (
+    <section>
+      <h3 className="text-sm font-semibold text-slate-700 mb-2">Dietary Preference</h3>
+      <p className="text-xs text-slate-500 mb-2">Choose your main diet.</p>
+      <div className={editMode ? 'flex flex-wrap gap-2' : 'flex flex-col gap-2'}>
+        {dietaryOptions.map(({ value, label }) => {
+          const selected = (profile.dietary_preference ?? 'No rules') === value
+          const icon = dietIcon[value] ?? '🍽️'
+          return (
+            <button
+              key={value}
+              type="button"
+              onClick={() =>
+                setProfile((p) => ({ ...p, dietary_preference: value as UserProfile['dietary_preference'] }))
+              }
+              className={`inline-flex items-center gap-1.5 rounded-xl border-2 text-sm ${
+                editMode ? 'px-3 py-2 rounded-full' : 'w-full justify-between px-4 py-3'
+              } ${
+                selected
+                  ? chipSelected
+                  : chipUnselected('border-slate-200', 'hover:border-emerald-200')
+              }`}
+            >
+              <span className="inline-flex items-center gap-1.5">
+                {selected ? <span aria-hidden="true">✓</span> : null}
+                <span aria-hidden>{icon}</span>
+                {label}
+              </span>
+            </button>
+          )
+        })}
+      </div>
+    </section>
+  )
+
+  const lifestyleSection = (
+    <section>
+      <h3 className="text-sm font-semibold text-slate-700 mb-2">Additional Restrictions</h3>
+      <p className="text-xs text-slate-500 mb-2">Optional filters on top of your diet.</p>
+      <div className="flex flex-wrap gap-2">
+        {lifestyleOptions.map(({ value, label }) => {
+          const selected = includesCI(profile.lifestyle ?? [], value)
+          return (
+            <button
+              key={value}
+              type="button"
+              onClick={() =>
+                setProfile((prev) => ({
+                  ...prev,
+                  lifestyle: toggleListCI(prev.lifestyle ?? [], value),
+                }))
+              }
+              className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-full border-2 text-sm ${
+                selected
+                  ? chipSelected
+                  : chipUnselected('border-slate-200', 'hover:border-emerald-200')
+              }`}
+            >
+              {selected ? <span aria-hidden="true">✓</span> : null}
+              {label}
+            </button>
+          )
+        })}
+      </div>
+    </section>
+  )
+
+  const allergensSection = (
+    <section>
+      <h3 className="text-sm font-semibold text-slate-700 mb-2">Allergens</h3>
+      <p className="text-xs text-slate-500 mb-2">Select any that apply.</p>
+      <div className="flex flex-wrap gap-2">
+        {[...allergenOptions].map((alg) => {
+          const selected = includesCI(profile.allergens ?? [], alg)
+          return (
+            <button
+              key={alg}
+              type="button"
+              onClick={() => toggleAllergy(alg)}
+              className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border-2 text-sm ${
+                selected
+                  ? chipSelected
+                  : chipUnselected('border-slate-100', 'hover:border-emerald-200')
+              }`}
+            >
+              {selected ? <span aria-hidden="true">✓</span> : null}
+              {alg}
+            </button>
+          )
+        })}
+      </div>
+      {(profile.allergens ?? []).filter(
+        (a) => !allergenOptions.some((opt) => opt.toLowerCase() === a.toLowerCase())
+      ).length > 0 && (
+        <div className="mt-2 flex flex-wrap gap-2">
+          {(profile.allergens ?? []).filter(
+            (a) => !allergenOptions.some((opt) => opt.toLowerCase() === a.toLowerCase())
+          ).map((alg) => (
+            <span
+              key={alg}
+              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border-2 border-red-200 bg-red-50 text-red-700 text-sm"
+            >
+              {alg}
+              <button
+                type="button"
+                onClick={() => removeAllergen(alg)}
+                className="p-0.5 rounded hover:bg-red-200 transition-colors"
+                aria-label={`Remove ${alg}`}
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
+      <div className="mt-2">
+        <input
+          type="text"
+          value={customAllergy}
+          onChange={(e) => setCustomAllergy(e.target.value)}
+          onBlur={() => {
+            if (customAllergy.trim()) {
+              const newAlgs = customAllergy
+                .split(',')
+                .map((s) => s.trim())
+                .filter(Boolean)
+              setProfile((prev) => {
+                const existing = prev.allergens ?? []
+                const toAdd = newAlgs.filter((a) => !includesCI(existing, a))
+                return { ...prev, allergens: [...existing, ...toAdd] }
+              })
+              setCustomAllergy('')
+            }
+          }}
+          placeholder="Other (comma-separated)"
+          className="w-full p-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none"
+        />
+      </div>
+    </section>
+  )
+
+  const progressBar = !editMode ? (
+    <div className="px-5 pt-4 shrink-0">
+      <p className="text-xs text-slate-500 mb-2">Step {step} of 2</p>
+      <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+        <div
+          className="h-full bg-secondary transition-all duration-200 ease-in-out"
+          style={{ width: step === 1 ? '50%' : '100%' }}
+        />
+      </div>
+    </div>
+  ) : null
+
   return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="bg-white rounded-2xl shadow-card w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col animate-in zoom-in-95 duration-200">
@@ -159,144 +318,24 @@ function OnboardingModalInner({
           </p>
         </div>
 
-        {/* Single scrollable form */}
+        {progressBar}
+
+        {/* Form body */}
         <div className="p-5 overflow-y-auto space-y-6 min-h-0">
-          {/* 1. Dietary Preference (primary — choose ONE) */}
-          <section>
-            <h3 className="text-sm font-semibold text-slate-700 mb-2">Dietary Preference</h3>
-            <p className="text-xs text-slate-500 mb-2">Choose your main diet.</p>
-            <div className="flex flex-wrap gap-2">
-              {dietaryOptions.map(({ value, label }) => {
-                const selected = (profile.dietary_preference ?? 'No rules') === value
-                const icon = dietIcon[value] ?? '🍽️'
-                return (
-                  <button
-                    key={value}
-                    type="button"
-                    onClick={() =>
-                      setProfile((p) => ({ ...p, dietary_preference: value as UserProfile['dietary_preference'] }))
-                    }
-                    className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-full border-2 text-sm transition-all ${
-                      selected
-                        ? 'border-emerald-600 bg-emerald-50 text-emerald-800 font-medium'
-                        : 'border-slate-200 hover:border-emerald-200 text-slate-700'
-                    }`}
-                  >
-                    <span aria-hidden>{icon}</span>
-                    {label}
-                  </button>
-                )
-              })}
-            </div>
-          </section>
-
-          {/* 2. Additional Restrictions (optional) */}
-          <section>
-            <h3 className="text-sm font-semibold text-slate-700 mb-2">Additional Restrictions</h3>
-            <p className="text-xs text-slate-500 mb-2">Optional filters on top of your diet.</p>
-            <div className="flex flex-wrap gap-2">
-              {lifestyleOptions.map(({ value, label }) => {
-                const selected = includesCI(profile.lifestyle ?? [], value)
-                return (
-                  <button
-                    key={value}
-                    type="button"
-                    onClick={() =>
-                      setProfile((prev) => ({
-                        ...prev,
-                        lifestyle: toggleListCI(prev.lifestyle ?? [], value),
-                      }))
-                    }
-                    className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-full border-2 text-sm transition-all ${
-                      selected
-                        ? 'border-blue-600 bg-blue-50 text-blue-700 font-medium'
-                        : 'border-slate-200 hover:border-blue-100 text-slate-700'
-                    }`}
-                  >
-                    {selected && <Check className="w-3.5 h-3.5" />}
-                    {label}
-                  </button>
-                )
-              })}
-            </div>
-          </section>
-
-          {/* 3. Allergens */}
-          <section>
-            <h3 className="text-sm font-semibold text-slate-700 mb-2">Allergens</h3>
-            <p className="text-xs text-slate-500 mb-2">Select any that apply.</p>
-            <div className="flex flex-wrap gap-2">
-              {[...allergenOptions].map((alg) => {
-                const selected = includesCI(profile.allergens ?? [], alg)
-                return (
-                  <button
-                    key={alg}
-                    type="button"
-                    onClick={() => toggleAllergy(alg)}
-                    className={`px-3 py-2 rounded-lg border-2 text-sm transition-all ${
-                      selected
-                        ? 'border-red-500 bg-red-50 text-red-700 font-medium'
-                        : 'border-slate-100 hover:border-red-100 text-slate-700'
-                    }`}
-                  >
-                    {alg}
-                    {selected && (
-                      <Check className="w-3.5 h-3.5 inline-block ml-1 -mt-0.5" />
-                    )}
-                  </button>
-                )
-              })}
-            </div>
-            {/* Custom/Other allergens: show as removable chips */}
-            {(profile.allergens ?? []).filter(
-              (a) => !allergenOptions.some((opt) => opt.toLowerCase() === a.toLowerCase())
-            ).length > 0 && (
-              <div className="mt-2 flex flex-wrap gap-2">
-                {(profile.allergens ?? []).filter(
-                  (a) => !allergenOptions.some((opt) => opt.toLowerCase() === a.toLowerCase())
-                ).map((alg) => (
-                  <span
-                    key={alg}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg border-2 border-red-200 bg-red-50 text-red-700 text-sm"
-                  >
-                    {alg}
-                    <button
-                      type="button"
-                      onClick={() => removeAllergen(alg)}
-                      className="p-0.5 rounded hover:bg-red-200 transition-colors"
-                      aria-label={`Remove ${alg}`}
-                    >
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  </span>
-                ))}
-              </div>
-            )}
-            <div className="mt-2">
-              <input
-                type="text"
-                value={customAllergy}
-                onChange={(e) => setCustomAllergy(e.target.value)}
-                onBlur={() => {
-                  if (customAllergy.trim()) {
-                    const newAlgs = customAllergy
-                      .split(',')
-                      .map((s) => s.trim())
-                      .filter(Boolean)
-                    setProfile((prev) => {
-                      const existing = prev.allergens ?? []
-                      const toAdd = newAlgs.filter((a) => !includesCI(existing, a))
-                      return { ...prev, allergens: [...existing, ...toAdd] }
-                    })
-                    setCustomAllergy('')
-                  }
-                }}
-                placeholder="Other (comma-separated)"
-                className="w-full p-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none"
-              />
-            </div>
-          </section>
-
+          {editMode ? (
+            <>
+              {dietarySection}
+              {lifestyleSection}
+              {allergensSection}
+            </>
+          ) : step === 1 ? (
+            dietarySection
+          ) : (
+            <>
+              {allergensSection}
+              {lifestyleSection}
+            </>
+          )}
         </div>
 
         {/* Footer - sticky */}
@@ -311,12 +350,31 @@ function OnboardingModalInner({
               Reset Profile
             </button>
           )}
-          <button
-            onClick={handleSave}
-            className="w-full bg-gradient-to-r from-primary to-secondary text-white py-3 rounded-[12px] font-bold hover:opacity-95 transition-opacity shadow-card"
-          >
-            {editMode ? 'Save Changes' : 'Save & start chatting'}
-          </button>
+          {!editMode && step === 2 ? (
+            <button
+              type="button"
+              onClick={() => setStep(1)}
+              className="w-full py-2.5 rounded-[12px] border-2 border-slate-200 text-slate-600 hover:bg-slate-100 hover:border-slate-300 transition-colors text-sm font-medium"
+            >
+              ← Back
+            </button>
+          ) : null}
+          {!editMode && step === 1 ? (
+            <button
+              type="button"
+              onClick={() => setStep(2)}
+              className="w-full bg-gradient-to-r from-primary to-secondary text-white py-3 rounded-[12px] font-bold hover:opacity-95 transition-opacity shadow-card"
+            >
+              Next →
+            </button>
+          ) : (
+            <button
+              onClick={handleSave}
+              className="w-full bg-gradient-to-r from-primary to-secondary text-white py-3 rounded-[12px] font-bold hover:opacity-95 transition-opacity shadow-card"
+            >
+              {editMode ? 'Save Changes' : 'Save & start chatting'}
+            </button>
+          )}
         </div>
       </div>
     </div>

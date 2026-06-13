@@ -1,5 +1,12 @@
 import type { UserProfile } from '@/types/userProfile'
-import { USER_ID_STORAGE_KEY, ANON_SESSION_TOKEN_KEY, PROFILE_STORAGE_KEY, PROFILE_UPDATED_EVENT_NAME } from '@/constants/profileStorage'
+import { USER_ID_STORAGE_KEY, ANON_SESSION_TOKEN_KEY, PROFILE_STORAGE_KEY, RECENT_CHECKS_STORAGE_KEY, PROFILE_UPDATED_EVENT_NAME } from '@/constants/profileStorage'
+
+export type RecentCheckVerdict = 'safe' | 'avoid' | 'depends'
+
+export interface RecentCheckEntry {
+  query: string
+  verdict?: RecentCheckVerdict
+}
 
 /**
  * Ensure we have a session: if no user_id in storage, fetch GET /api/anon-session and store user_id + token.
@@ -51,4 +58,33 @@ export function persistProfileToStorage(profile: UserProfile): void {
   if (typeof window === 'undefined') return
   localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile))
   window.dispatchEvent(new CustomEvent(PROFILE_UPDATED_EVENT_NAME))
+}
+
+const VALID_VERDICTS = new Set<RecentCheckVerdict>(['safe', 'avoid', 'depends'])
+
+export function loadRecentChecks(): RecentCheckEntry[] {
+  if (typeof window === 'undefined') return []
+  try {
+    const raw = localStorage.getItem(RECENT_CHECKS_STORAGE_KEY)
+    if (!raw) return []
+    const parsed = JSON.parse(raw) as unknown
+    if (!Array.isArray(parsed)) return []
+    return parsed
+      .filter(
+        (item): item is RecentCheckEntry =>
+          typeof item === 'object' &&
+          item !== null &&
+          typeof (item as RecentCheckEntry).query === 'string' &&
+          ((item as RecentCheckEntry).verdict === undefined ||
+            VALID_VERDICTS.has((item as RecentCheckEntry).verdict as RecentCheckVerdict)),
+      )
+      .slice(0, 5)
+  } catch {
+    return []
+  }
+}
+
+export function persistRecentChecks(entries: RecentCheckEntry[]): void {
+  if (typeof window === 'undefined') return
+  localStorage.setItem(RECENT_CHECKS_STORAGE_KEY, JSON.stringify(entries.slice(0, 5)))
 }

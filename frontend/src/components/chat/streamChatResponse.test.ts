@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { normalizeAuditData } from './streamChatResponse'
+import { normalizeAuditData, deriveTopLevelVerdict, buildRecentChecksFromMessages } from './streamChatResponse'
 import { PROFILE_REQUIRED_TAG, PROFILE_UPDATE_TAG, INGREDIENT_AUDIT_TAG } from '@/constants/chatProtocol'
 
 describe('normalizeAuditData', () => {
@@ -64,6 +64,7 @@ describe('normalizeAuditData', () => {
               diets: ['Vegan'],
               allergens: ['Milk'],
               alternatives: ['Y'],
+              reason: 'dairy product',
             },
           ],
         },
@@ -76,7 +77,47 @@ describe('normalizeAuditData', () => {
       diets: ['Vegan'],
       allergens: ['Milk'],
       alternatives: ['Y'],
+      reason: 'dairy product',
     })
+  })
+})
+
+describe('deriveTopLevelVerdict', () => {
+  it('returns avoid when any avoid items exist', () => {
+    const audit = normalizeAuditData({
+      groups: [
+        { status: 'safe', items: [{ name: 'Sugar' }] },
+        { status: 'avoid', items: [{ name: 'Gelatin' }] },
+      ],
+    })
+    expect(deriveTopLevelVerdict(audit)).toBe('avoid')
+  })
+
+  it('returns depends when no avoid but depends items exist', () => {
+    const audit = normalizeAuditData({
+      groups: [{ status: 'depends', items: [{ name: 'Natural flavor' }] }],
+    })
+    expect(deriveTopLevelVerdict(audit)).toBe('depends')
+  })
+
+  it('returns safe when only safe items exist', () => {
+    const audit = normalizeAuditData({
+      groups: [{ status: 'safe', items: [{ name: 'Water' }] }],
+    })
+    expect(deriveTopLevelVerdict(audit)).toBe('safe')
+  })
+})
+
+describe('buildRecentChecksFromMessages', () => {
+  it('pairs user queries with the next assistant audit verdict', () => {
+    const audit = normalizeAuditData({
+      groups: [{ status: 'avoid', items: [{ name: 'Gelatin' }] }],
+    })
+    const entries = buildRecentChecksFromMessages([
+      { role: 'user', content: 'Is this vegan?' },
+      { role: 'assistant', content: '', audit },
+    ])
+    expect(entries).toEqual([{ query: 'Is this vegan?', verdict: 'avoid' }])
   })
 })
 

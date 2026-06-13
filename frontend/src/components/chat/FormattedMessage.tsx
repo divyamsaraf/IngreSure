@@ -5,6 +5,10 @@ import React from 'react'
 interface FormattedMessageProps {
   content: string
   isUser?: boolean
+  /** Typography token class for assistant message text (default: text-chat-body). */
+  textClassName?: string
+  /** Strip emoji characters before rendering (used for audit explanations). */
+  stripEmoji?: boolean
 }
 
 /**
@@ -14,14 +18,26 @@ interface FormattedMessageProps {
  *   Lines starting with "- " → styled bullet list items
  *   Blank lines → paragraph breaks
  */
-export default function FormattedMessage({ content, isUser = false }: FormattedMessageProps) {
+export function stripEmojiFromText(text: string): string {
+  return text.replace(/\p{Emoji}/gu, '').replace(/\s{2,}/g, ' ').trim()
+}
+
+export default function FormattedMessage({
+  content,
+  isUser = false,
+  textClassName = 'text-chat-body',
+  stripEmoji = false,
+}: FormattedMessageProps) {
   if (!content) return null
 
+  const displayContent = stripEmoji ? stripEmojiFromText(content) : content
+  if (!displayContent) return null
+
   if (isUser) {
-    return <p className="text-base leading-[1.5] text-white">{content}</p>
+    return <p className="text-chat-body text-white">{displayContent}</p>
   }
 
-  const blocks = content.split('\n')
+  const blocks = displayContent.split('\n')
   const elements: React.ReactNode[] = []
   let bulletBuffer: string[] = []
   let keyIdx = 0
@@ -42,7 +58,7 @@ export default function FormattedMessage({ content, isUser = false }: FormattedM
           return (
             <li key={i} className="flex items-start gap-2">
               <span className={`mt-1.5 h-1.5 w-1.5 rounded-full flex-shrink-0 ${color}`} aria-hidden />
-              <span className="leading-[1.5] text-primary">{renderInline(text)}</span>
+              <span className={`${textClassName} text-primary`}>{renderInline(text)}</span>
             </li>
           )
         })}
@@ -67,7 +83,7 @@ export default function FormattedMessage({ content, isUser = false }: FormattedM
     }
 
     elements.push(
-      <p key={`p-${keyIdx++}`} className="leading-[1.5] text-primary">
+      <p key={`p-${keyIdx++}`} className={`${textClassName} text-primary`}>
         {renderInline(trimmed)}
       </p>
     )
@@ -75,7 +91,7 @@ export default function FormattedMessage({ content, isUser = false }: FormattedM
 
   flushBullets()
 
-  return <div className="space-y-2 text-base">{elements}</div>
+  return <div className={`space-y-2 ${textClassName}`}>{elements}</div>
 }
 
 /**

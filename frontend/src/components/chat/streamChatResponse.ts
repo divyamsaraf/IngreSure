@@ -2,11 +2,49 @@ import React from 'react'
 import type { IngredientAuditData, IngredientAuditGroup, IngredientStatus, BackendAuditPayload } from './IngredientAuditCards'
 import { PROFILE_REQUIRED_TAG, PROFILE_UPDATE_TAG, INGREDIENT_AUDIT_TAG } from '@/constants/chatProtocol'
 import { UserProfile, DEFAULT_PROFILE, backendToProfile, type BackendProfile, type ProfileUpdateStreamPayload } from '@/types/userProfile'
+import type { RecentCheckEntry } from '@/lib/profileStorage'
 
 export interface Message {
   role: 'user' | 'assistant'
   content: string
   audit?: IngredientAuditData
+}
+
+/** Top-level verdict from audit groups: avoid beats depends beats safe. */
+export function deriveTopLevelVerdict(audit: IngredientAuditData): IngredientStatus {
+  const counts = audit.groups.reduce(
+    (acc, g) => {
+      acc[g.status] += g.items.length
+      return acc
+    },
+    { safe: 0, avoid: 0, depends: 0 } as Record<IngredientStatus, number>,
+  )
+  if (counts.avoid > 0) return 'avoid'
+  if (counts.depends > 0) return 'depends'
+  return 'safe'
+}
+
+/** Build deduped recent checks (most recent first) with verdicts from paired assistant audits. */
+export function buildRecentChecksFromMessages(messages: Message[]): RecentCheckEntry[] {
+  const entries: RecentCheckEntry[] = []
+  const seen = new Set<string>()
+  for (let i = messages.length - 1; i >= 0; i--) {
+    const msg = messages[i]
+    if (msg.role !== 'user') continue
+    if (seen.has(msg.content)) continue
+    seen.add(msg.content)
+    let verdict: IngredientStatus | undefined
+    for (let j = i + 1; j < messages.length; j++) {
+      if (messages[j].role === 'user') break
+      if (messages[j].role === 'assistant' && messages[j].audit) {
+        verdict = deriveTopLevelVerdict(messages[j].audit)
+        break
+      }
+    }
+    entries.push({ query: msg.content, verdict })
+    if (entries.length >= 5) break
+  }
+  return entries
 }
 
 export function normalizeAuditData(raw: BackendAuditPayload): IngredientAuditData {
@@ -19,6 +57,7 @@ export function normalizeAuditData(raw: BackendAuditPayload): IngredientAuditDat
     diets: (item.diets ?? item.diet ?? []) as string[],
     allergens: (item.allergens ?? []) as string[],
     alternatives: (item.alternatives ?? []) as string[],
+    reason: typeof item.reason === 'string' ? item.reason : undefined,
   })
 
   if (Array.isArray(raw.groups)) {
@@ -63,19 +102,35 @@ export function normalizeAuditData(raw: BackendAuditPayload): IngredientAuditDat
 
 const STREAM_UI_THROTTLE_MS = 50
 
+const STATUS_PLACEHOLDER_LINES = [
+  /^Checking ingredients[….]{0,3}\s*$/i,
+  /^Analyzing[….]{0,3}\s*$/i,
+]
+
+/** Remove stream progress placeholders so they are not persisted in message content. */
+export function stripStatusPlaceholders(text: string): string {
+  return text
+    .split('\n')
+    .filter((line) => !STATUS_PLACEHOLDER_LINES.some((re) => re.test(line.trim())))
+    .join('\n')
+    .trim()
+}
+
 function flushStreamContent(
   buffer: string,
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>,
 ) {
-  const content = buffer
-    .replace(new RegExp(`${PROFILE_UPDATE_TAG}[\\s\\S]*?${PROFILE_UPDATE_TAG}`, 'g'), '')
-    .replace(new RegExp(`${PROFILE_REQUIRED_TAG}[\\s\\S]*?(?=${PROFILE_UPDATE_TAG}|$)`, 'g'), '')
-    .replace(new RegExp(`${INGREDIENT_AUDIT_TAG}[\\s\\S]*?${INGREDIENT_AUDIT_TAG}`, 'g'), '')
-    .trim()
+  const content = stripStatusPlaceholders(
+    buffer
+      .replace(new RegExp(`${PROFILE_UPDATE_TAG}[\\s\\S]*?${PROFILE_UPDATE_TAG}`, 'g'), '')
+      .replace(new RegExp(`${PROFILE_REQUIRED_TAG}[\\s\\S]*?(?=${PROFILE_UPDATE_TAG}|$)`, 'g'), '')
+      .replace(new RegExp(`${INGREDIENT_AUDIT_TAG}[\\s\\S]*?${INGREDIENT_AUDIT_TAG}`, 'g'), '')
+      .trim(),
+  )
   setMessages((prev) => {
     const newMsgs = [...prev]
     const last = newMsgs[newMsgs.length - 1]
-    if (last && last.role === 'assistant') last.content = content || last.content
+    if (last && last.role === 'assistant') last.content = content
     return newMsgs
   })
 }
@@ -102,7 +157,6 @@ export async function streamChatResponse(
     buffer += chunk
 
     if (buffer.includes(PROFILE_REQUIRED_TAG)) {
-      setShowOnboarding(true)
       const profileRequiredPattern = new RegExp(`${PROFILE_REQUIRED_TAG}[^]*?(?=${PROFILE_UPDATE_TAG}|$)`, 'g')
       buffer = buffer.replace(profileRequiredPattern, '').trim()
       if (!buffer.trim())

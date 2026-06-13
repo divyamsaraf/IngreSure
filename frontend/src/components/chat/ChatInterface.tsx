@@ -1,18 +1,19 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
-import { Send, User, Bot, Loader2 } from 'lucide-react'
+import { Send, User, Bot, Loader2, X } from 'lucide-react'
 import OnboardingModal from './OnboardingModal'
 import FormattedMessage from './FormattedMessage'
-import IngredientAuditCards from './IngredientAuditCards'
+import IngredientAuditCards, { type IngredientAuditData } from './IngredientAuditCards'
 import RecentChecksSection from './RecentChecksSection'
-import { type Message, streamChatResponse } from './streamChatResponse'
+import { type Message, streamChatResponse, stripStatusPlaceholders, buildRecentChecksFromMessages } from './streamChatResponse'
 import { UserProfile, profileToBackend, hasProfileRules } from '@/types/userProfile'
 import { useProfileContext } from '@/context/ProfileContext'
 import { useConfig } from '@/context/ConfigContext'
-import { PROFILE_STORAGE_KEY } from '@/constants/profileStorage'
-import { getOrCreateUserId, getAnonSessionToken, persistProfileToStorage } from '@/lib/profileStorage'
+import { PROFILE_BANNER_DISMISSED_KEY } from '@/constants/profileStorage'
+import { getOrCreateUserId, getAnonSessionToken, persistProfileToStorage, loadRecentChecks, persistRecentChecks, type RecentCheckEntry } from '@/lib/profileStorage'
 import { getDietIcon } from '@/lib/dietIcon'
+import { colors, spacing } from '@/theme/tokens'
 
 /** Ensure chat URL has exactly one mode param (avoids ?mode=grocery?mode=grocery from duplicate appends). */
 function normalizeChatUrl(url: string): string {
@@ -24,6 +25,50 @@ function normalizeChatUrl(url: string): string {
   } catch {
     return url.startsWith('/') ? url : '/api/chat?mode=grocery'
   }
+}
+
+const EMPTY_STATE_EXAMPLE_QUERY =
+  'Ingredients: Sugar, Gelatin, Citric Acid, Natural Flavors, Red 40, Carnauba Wax'
+
+const EMPTY_STATE_EXAMPLE_AUDIT: IngredientAuditData = {
+  summary: '3 Safe, 1 Avoid, 2 Depends',
+  groups: [
+    {
+      status: 'avoid',
+      items: [
+        {
+          name: 'Gelatin',
+          status: 'avoid',
+          reason: 'animal-derived (bovine/porcine)',
+        },
+      ],
+    },
+    {
+      status: 'depends',
+      items: [
+        {
+          name: 'Natural Flavors',
+          status: 'depends',
+          reason: 'may contain animal derivatives — check with manufacturer',
+        },
+        {
+          name: 'Red 40',
+          status: 'depends',
+          reason: 'some Jain/vegan diets avoid synthetic dyes',
+        },
+      ],
+    },
+    {
+      status: 'safe',
+      items: [
+        { name: 'Sugar', status: 'safe' },
+        { name: 'Citric Acid', status: 'safe' },
+        { name: 'Carnauba Wax', status: 'safe' },
+      ],
+    },
+  ],
+  explanation:
+    'Based on a Vegan profile, Gelatin is not suitable — it is derived from animal collagen. Natural Flavors also carries a warning as the source is unspecified.',
 }
 
 interface ChatInterfaceProps {
@@ -45,9 +90,15 @@ export default function ChatInterface({
     const [messages, setMessages] = useState<Message[]>([])
     const [input, setInput] = useState('')
     const [loading, setLoading] = useState(false)
+    const [analysisStatus, setAnalysisStatus] = useState<'idle' | 'checking' | 'complete' | 'fading' | 'hidden' | 'error'>('idle')
     const [showOnboarding, setShowOnboarding] = useState(false)
     const [profileSaveStatus, setProfileSaveStatus] = useState<'idle' | 'success' | 'error'>('idle')
     const [profileSaveError, setProfileSaveError] = useState<string>('')
+    const [reanalyseStatus, setReanalyseStatus] = useState('')
+    const [lastQuery, setLastQuery] = useState<string | null>(null)
+    const [bannerVisible, setBannerVisible] = useState(false)
+    const [bannerExiting, setBannerExiting] = useState(false)
+    const [recentChecks, setRecentChecks] = useState<RecentCheckEntry[]>([])
     const messagesEndRef = useRef<HTMLDivElement>(null)
 
     // Profile API base: /api (no double /api). apiEndpoint is e.g. /api/chat so base = /api, then /api/profile
@@ -57,27 +108,7 @@ export default function ChatInterface({
     const config = useConfig()
     const maxChatLength = config.max_chat_message_length
     const dietIcon = config.profile_options.diet_icon ?? {}
-
-    // Decide initial onboarding visibility once profile has been loaded
-    useEffect(() => {
-        if (!profileLoaded || typeof window === 'undefined') return
-
-        // Prefer explicit onboarding completion flag from saved profile
-        const saved = localStorage.getItem(PROFILE_STORAGE_KEY)
-        if (saved) {
-            try {
-                const p = JSON.parse(saved)
-                if (p.is_onboarding_completed) {
-                    setShowOnboarding(false)
-                    return
-                }
-            } catch {
-                // ignore parse error and fall through to rules-based check
-            }
-        }
-
-        setShowOnboarding(!hasProfileRules(profile))
-    }, [profileLoaded, profile])
+    const showPersonaliseNudge = profileLoaded && !hasProfileRules(profile)
 
     // Open profile modal when navigating with ?openProfile=1 (e.g. from navbar avatar)
     useEffect(() => {
@@ -91,9 +122,33 @@ export default function ChatInterface({
         }
     }, [])
 
+    useEffect(() => {
+        if (!profileLoaded || typeof window === 'undefined') return
+        if (hasProfileRules(profile)) {
+            setBannerVisible(false)
+            return
+        }
+        if (localStorage.getItem(PROFILE_BANNER_DISMISSED_KEY) === '1') {
+            setBannerVisible(false)
+            return
+        }
+        setBannerVisible(true)
+    }, [profileLoaded, profile])
+
+    const dismissProfileBanner = () => {
+        setBannerExiting(true)
+        window.setTimeout(() => {
+            localStorage.setItem(PROFILE_BANNER_DISMISSED_KEY, '1')
+            setBannerVisible(false)
+            setBannerExiting(false)
+        }, 200)
+    }
+
     const saveProfile = (newProfile: UserProfile) => {
         const uid = userId || getOrCreateUserId()
         const toSave = { ...newProfile, user_id: uid, is_onboarding_completed: true }
+        const queryToRerun = lastQuery
+        const shouldRerun = !!queryToRerun && messages.some((m) => m.role === 'assistant' && m.audit)
         setProfile(toSave)
         persistProfileToStorage(toSave)
         setProfileSaveStatus('idle')
@@ -109,14 +164,21 @@ export default function ChatInterface({
             if (res.ok) {
               setProfileSaveStatus('success')
               setTimeout(() => setProfileSaveStatus('idle'), 3000)
-              const parts: string[] = []
-              if (toSave.dietary_preference && toSave.dietary_preference !== 'No rules') parts.push(`Diet: ${toSave.dietary_preference}`)
-              if (toSave.allergens?.length) parts.push(`Allergens: ${toSave.allergens.join(', ')}`)
-              if (toSave.lifestyle?.length) parts.push(`Lifestyle: ${toSave.lifestyle.join(', ')}`)
-              setMessages(prev => [...prev, {
-                role: 'assistant',
-                content: `✅ Profile saved. ${parts.length ? parts.join(' · ') : 'No restrictions set.'} I'll use this for personalized advice.`
-              }])
+              if (shouldRerun && queryToRerun) {
+                setReanalyseStatus('Re-analysing with your profile…')
+                void submitMessage(queryToRerun, { profileOverride: toSave, replaceLast: true }).finally(() => {
+                  setReanalyseStatus('')
+                })
+              } else {
+                const parts: string[] = []
+                if (toSave.dietary_preference && toSave.dietary_preference !== 'No rules') parts.push(`Diet: ${toSave.dietary_preference}`)
+                if (toSave.allergens?.length) parts.push(`Allergens: ${toSave.allergens.join(', ')}`)
+                if (toSave.lifestyle?.length) parts.push(`Lifestyle: ${toSave.lifestyle.join(', ')}`)
+                setMessages(prev => [...prev, {
+                  role: 'assistant',
+                  content: `✅ Profile saved. ${parts.length ? parts.join(' · ') : 'No restrictions set.'} I'll use this for personalized advice.`
+                }])
+              }
             } else {
               const body = await res.json().catch(() => ({}))
               setProfileSaveStatus('error')
@@ -131,14 +193,33 @@ export default function ChatInterface({
     }
 
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
+        setRecentChecks(loadRecentChecks())
+    }, [])
+
+    useEffect(() => {
+        const fromMessages = buildRecentChecksFromMessages(messages)
+        if (fromMessages.length === 0) return
+        setRecentChecks(fromMessages)
+        persistRecentChecks(fromMessages)
     }, [messages])
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
-        if (!input.trim() || loading) return
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
+    }, [messages, loading])
 
-        const userMsg = input.trim()
+    useEffect(() => {
+        if (analysisStatus !== 'complete') return
+        const timer = window.setTimeout(() => setAnalysisStatus('fading'), 2000)
+        return () => window.clearTimeout(timer)
+    }, [analysisStatus])
+
+    const submitMessage = async (
+        rawMessage: string,
+        options?: { profileOverride?: UserProfile; replaceLast?: boolean },
+    ) => {
+        const userMsg = rawMessage.trim()
+        if (!userMsg || loading) return
+
         if (userMsg.length > maxChatLength) {
             setMessages(prev => [
                 ...prev,
@@ -146,18 +227,34 @@ export default function ChatInterface({
             ])
             return
         }
+
+        setLastQuery(userMsg)
+
+        if (options?.replaceLast) {
+            setMessages((prev) => {
+                if (prev.length >= 2 && prev[prev.length - 1].role === 'assistant' && prev[prev.length - 2].role === 'user') {
+                    return prev.slice(0, -2)
+                }
+                return prev
+            })
+        }
+
         setInput('')
-        setMessages(prev => [...prev, { role: 'user', content: userMsg }])
         setLoading(true)
-        // Show "Analyzing…" immediately so user sees progress before first stream chunk
-        setMessages(prev => [...prev, { role: 'assistant', content: 'Analyzing…' }])
+        setAnalysisStatus('checking')
+        setMessages(prev => [
+            ...prev,
+            { role: 'user', content: userMsg },
+            { role: 'assistant', content: '' },
+        ])
 
         try {
             const uid = userId || getOrCreateUserId()
+            const activeProfile = options?.profileOverride ?? profile
             const payload = {
                 message: userMsg,
                 user_id: uid,
-                userProfile: profile
+                userProfile: activeProfile
             }
             const token = getAnonSessionToken()
             const headers: Record<string, string> = { 'Content-Type': 'application/json' }
@@ -185,9 +282,11 @@ export default function ChatInterface({
             if (!reader) return
 
             await streamChatResponse(reader, setMessages, setProfile, setShowOnboarding, persistProfileToStorage)
+            setAnalysisStatus('complete')
 
         } catch (error) {
             console.error('Chat error:', error)
+            setAnalysisStatus('error')
             const message = error instanceof Error ? error.message : 'Sorry, I encountered an error. Please try again.'
             setMessages(prev => [
                 ...prev.slice(0, -1),
@@ -198,15 +297,18 @@ export default function ChatInterface({
         }
     }
 
-    // Recent user queries for suggestion chips
-    const recentQueries: string[] = Array.from(
-        new Set(
-            [...messages]
-                .filter((m) => m.role === 'user')
-                .map((m) => m.content)
-                .reverse(),
-        ),
-    ).slice(0, 5)
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
+        await submitMessage(input)
+    }
+
+    const chipsDisabled = loading || !profileLoaded
+
+    const hasAssistantResult = messages.some(
+        (m) =>
+            m.role === 'assistant' &&
+            (!!m.audit || !!stripStatusPlaceholders(m.content)),
+    )
 
     return (
         <div className="flex flex-col h-full rounded-2xl bg-white shadow-sm border border-slate-100 overflow-hidden">
@@ -229,12 +331,15 @@ export default function ChatInterface({
                     </div>
                     <div className="flex items-center gap-1.5 shrink-0">
                         {profileLoaded && profile.dietary_preference && profile.dietary_preference !== 'No rules' ? (
-                            <span
-                                className="inline-flex items-center gap-1.5 rounded-full border font-semibold text-[13px] px-2.5 py-1 bg-emerald-50 border-emerald-200 text-emerald-800"
-                                title="Active diet profile"
+                            <button
+                                type="button"
+                                onClick={() => setShowOnboarding(true)}
+                                className="inline-flex items-center gap-1.5 rounded-full border font-semibold text-[13px] px-2.5 py-1 bg-emerald-50 border-emerald-200 text-emerald-800 cursor-pointer transition-colors hover:bg-emerald-100"
+                                title="Edit profile"
+                                aria-label="Edit profile"
                             >
                                 {getDietIcon(dietIcon, profile.dietary_preference)} {profile.dietary_preference}
-                            </span>
+                            </button>
                         ) : (
                             <span className="text-[13px] text-slate-500">No diet set</span>
                         )}
@@ -248,6 +353,37 @@ export default function ChatInterface({
                         </button>
                     </div>
                 </div>
+
+                {bannerVisible && (
+                    <div
+                        className={`mt-3 flex items-center gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-2.5 shadow-card transition-all duration-200 ${
+                            bannerExiting
+                                ? 'opacity-0 -translate-y-1 max-h-0 py-0 mt-0 overflow-hidden'
+                                : 'opacity-100 translate-y-0 animate-in slide-in-from-top-2 duration-200'
+                        }`}
+                        role="region"
+                        aria-label="Profile setup prompt"
+                    >
+                        <p className="flex-1 min-w-0 text-sm text-emerald-800">
+                            👋 Set your diet for personalised results — takes 10 seconds.
+                        </p>
+                        <button
+                            type="button"
+                            onClick={() => setShowOnboarding(true)}
+                            className="shrink-0 text-sm font-semibold text-emerald-800 hover:text-emerald-950 transition-colors"
+                        >
+                            Set up →
+                        </button>
+                        <button
+                            type="button"
+                            onClick={dismissProfileBanner}
+                            className="shrink-0 p-0.5 rounded text-emerald-600 hover:text-emerald-900 hover:bg-emerald-100 transition-colors"
+                            aria-label="Dismiss profile setup banner"
+                        >
+                            <X className="w-4 h-4" />
+                        </button>
+                    </div>
+                )}
             </div>
 
             {/* Profile save feedback */}
@@ -262,49 +398,124 @@ export default function ChatInterface({
                     <button type="button" onClick={() => { setProfileSaveStatus('idle'); setProfileSaveError(''); }} className="px-2 py-0.5 rounded hover:bg-red-100 transition-colors" aria-label="Dismiss">Dismiss</button>
                 </div>
             )}
+            {reanalyseStatus && (
+                <div className="shrink-0 px-4 py-2 bg-emerald-50 border-b border-emerald-100 text-emerald-800 text-sm font-medium flex items-center justify-center gap-2" role="status" aria-live="polite">
+                    {reanalyseStatus}
+                </div>
+            )}
 
-            {/* Messages (only this section scrolls) */}
+            {/* Messages (scrolls with follow-up prompt and recent checks below results) */}
             <div
-                className="flex-1 overflow-y-auto overflow-x-hidden min-h-0 px-6 py-6 space-y-6 scroll-smooth"
+                className="flex-1 overflow-y-auto overflow-x-hidden min-h-0 px-6 pt-6 pb-3 scroll-smooth"
             >
                 {messages.length === 0 && (
-                    <div className="h-full flex flex-col items-center justify-center p-8 text-center space-y-6">
-                        <div className="w-20 h-20 bg-blue-50 rounded-2xl flex items-center justify-center mb-2 shadow-sm animate-in fade-in zoom-in duration-500">
-                            <Bot className="w-10 h-10 text-blue-600" />
-                        </div>
-                        <div className="max-w-md space-y-2">
-                            <h3 className="font-bold text-2xl text-slate-800">What&apos;s on your mind?</h3>
-                            <p className="text-slate-500">Check ingredients for allergies, religious diets (Halal, Jain, Hindu), or hidden additives.</p>
+                    <>
+                        <div className="flex flex-col items-center text-center space-y-4 pb-2">
+                            <div className="w-16 h-16 rounded-2xl bg-white border border-slate-100 flex items-center justify-center shadow-card">
+                                <Bot className="w-8 h-8 text-slate-600" />
+                            </div>
+                            <div className="max-w-md space-y-2">
+                                <h3 className="font-bold text-2xl text-slate-800">What&apos;s on your mind?</h3>
+                                <p className="text-slate-500">Check ingredients for allergies, religious diets (Halal, Jain, Hindu), or hidden additives.</p>
+                                {!isProfileComplete && (
+                                    <p className="text-xs text-slate-400">Set your diet &amp; allergens above for personalized results.</p>
+                                )}
+                            </div>
+
                             {!isProfileComplete && (
-                                <p className="text-xs text-slate-400">Set your diet &amp; allergens above for personalized results.</p>
-                            )}
-                        </div>
-
-                        {/* Profile CTA if not set */}
-                        {!isProfileComplete && (
-                            <button
-                                onClick={() => setShowOnboarding(true)}
-                                className="text-blue-600 font-bold bg-blue-50 px-6 py-3 rounded-full hover:bg-blue-100 transition-colors"
-                            >
-                                Setup my Safety Profile
-                            </button>
-                        )}
-
-                        <div className="flex flex-wrap justify-center gap-2 max-w-lg">
-                            {suggestions.map((s, i) => (
                                 <button
-                                    key={i}
-                                    onClick={() => setInput(s)}
-                                    className="text-sm bg-white border border-slate-200 px-4 py-2 rounded-xl hover:border-blue-300 hover:text-blue-600 hover:bg-blue-50/50 transition-all duration-200 shadow-sm"
+                                    type="button"
+                                    onClick={() => setShowOnboarding(true)}
+                                    className="text-secondary font-bold bg-emerald-50 border border-emerald-200 px-6 py-3 rounded-full hover:bg-emerald-100 transition-colors"
                                 >
-                                    {s}
+                                    Setup my Safety Profile
                                 </button>
-                            ))}
+                            )}
+
+                            <div className="flex flex-col items-stretch gap-2 w-full max-w-lg pt-1">
+                                {suggestions.map((s, i) => (
+                                    <button
+                                        key={i}
+                                        type="button"
+                                        disabled={chipsDisabled}
+                                        onClick={() => {
+                                            setInput(s)
+                                            void submitMessage(s)
+                                        }}
+                                        className="inline-flex items-center justify-between gap-3 w-full text-left text-chat-chip font-medium bg-white border border-slate-200 px-4 py-2.5 rounded-xl shadow-card transition-all duration-200 hover:border-secondary hover:text-secondary disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:border-slate-200 disabled:hover:text-inherit"
+                                    >
+                                        <span>{s}</span>
+                                        <span className="shrink-0 text-secondary" aria-hidden="true">→</span>
+                                    </button>
+                                ))}
+                            </div>
                         </div>
-                    </div>
+
+                        <div className="space-y-6 w-full border-t border-slate-100 pt-6">
+                            <p
+                                className="text-chat-meta font-medium text-center"
+                                style={{ color: colors.muted }}
+                            >
+                                Example result — try your own ingredients below ↓
+                            </p>
+                            <div className="flex gap-3 justify-end animate-in slide-in-from-bottom-2 duration-300">
+                                <div className="max-w-[80%] sm:max-w-[75%] rounded-2xl shadow-card font-sans bg-primary text-white rounded-br-none px-4 py-4">
+                                    <div className="text-chat-body">
+                                        <FormattedMessage content={EMPTY_STATE_EXAMPLE_QUERY} isUser />
+                                    </div>
+                                </div>
+                                <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0 mt-1 shadow-card">
+                                    <User className="w-4 h-4 text-white" />
+                                </div>
+                            </div>
+                            <div className="flex gap-3 justify-start animate-in slide-in-from-bottom-2 duration-300">
+                                <div className="w-8 h-8 rounded-full bg-white border border-slate-100 flex items-center justify-center flex-shrink-0 mt-1 shadow-card">
+                                    <Bot className="w-4 h-4 text-slate-600" />
+                                </div>
+                                <div className="max-w-[80%] sm:max-w-[75%] rounded-2xl shadow-card font-sans bg-white border border-slate-100 text-primary rounded-bl-none px-4 py-4">
+                                    <div className="text-chat-body">
+                                        <IngredientAuditCards data={EMPTY_STATE_EXAMPLE_AUDIT} />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </>
                 )}
 
-                {messages.map((msg, idx) => (
+                {messages.length > 0 && (
+                    <div className="space-y-6">
+                        {messages.map((msg, idx) => {
+                    const isLastAssistant =
+                        msg.role === 'assistant' &&
+                        idx === messages.length - 1 &&
+                        analysisStatus !== 'idle' &&
+                        analysisStatus !== 'hidden'
+                    const showAnalysisStatus = isLastAssistant
+                    const analysisStatusText =
+                        analysisStatus === 'checking'
+                            ? 'Checking ingredients...'
+                            : analysisStatus === 'error'
+                              ? 'Something went wrong'
+                              : analysisStatus === 'complete' || analysisStatus === 'fading'
+                                ? '✓ Analysis complete'
+                                : null
+                    const displayContent =
+                        msg.role === 'assistant' ? stripStatusPlaceholders(msg.content) : msg.content
+                    const hasResultContent = !!(msg.audit || displayContent)
+                    const isPendingAssistant =
+                        msg.role === 'assistant' &&
+                        loading &&
+                        idx === messages.length - 1 &&
+                        !hasResultContent
+                    const showStatusLabel =
+                        showAnalysisStatus &&
+                        analysisStatusText &&
+                        !isPendingAssistant &&
+                        (analysisStatus === 'error' ||
+                            analysisStatus === 'complete' ||
+                            analysisStatus === 'fading')
+
+                    return (
                     <div key={idx} className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-in slide-in-from-bottom-2 duration-300`}>
                         {msg.role === 'assistant' && (
                             <div className="w-8 h-8 rounded-full bg-white border border-slate-100 flex items-center justify-center flex-shrink-0 mt-1 shadow-card">
@@ -317,22 +528,43 @@ export default function ChatInterface({
                                 : 'bg-white border border-slate-100 text-primary rounded-bl-none px-4 py-4'
                                 }`}
                         >
-                            <div className="text-[15px] leading-[1.5]">
-                                {msg.role === 'assistant' && !msg.content.trim() && !msg.audit ? (
-                                    <div className="flex items-center gap-1 text-slate-400 animate-in fade-in duration-200" role="status" aria-label="Loading">
-                                        <span className="h-1.5 w-1.5 rounded-full bg-slate-300 animate-bounce [animation-delay:-0.2s]" />
-                                        <span className="h-1.5 w-1.5 rounded-full bg-slate-300 animate-bounce [animation-delay:-0.1s]" />
-                                        <span className="h-1.5 w-1.5 rounded-full bg-slate-300 animate-bounce" />
+                            <div className="text-chat-body">
+                                {showStatusLabel && analysisStatusText ? (
+                                    <p
+                                        role="status"
+                                        aria-live="polite"
+                                        className={`analysis-status-label text-chat-meta text-slate-500 mb-2 ${analysisStatus === 'fading' ? 'opacity-0' : 'opacity-100'} ${analysisStatus === 'complete' || analysisStatus === 'fading' ? 'text-emerald-600' : ''}`}
+                                        onTransitionEnd={(e) => {
+                                            if (e.propertyName === 'opacity' && analysisStatus === 'fading') {
+                                                setAnalysisStatus('hidden')
+                                            }
+                                        }}
+                                    >
+                                        {analysisStatusText}
+                                    </p>
+                                ) : null}
+                                {isPendingAssistant ? (
+                                    <div className="flex items-center gap-2 text-slate-500 animate-in fade-in duration-200" role="status" aria-live="polite" aria-label="Analyzing ingredients">
+                                        <span>Analyzing ingredients</span>
+                                        <span className="loading-dots" aria-hidden="true">
+                                            <span className="loading-dot" />
+                                            <span className="loading-dot" />
+                                            <span className="loading-dot" />
+                                        </span>
                                     </div>
                                 ) : msg.role === 'assistant' && msg.audit ? (
                                     <div className="space-y-3">
-                                        {msg.content.trim() ? (
-                                            <FormattedMessage content={msg.content.trim()} isUser={false} />
+                                        {displayContent ? (
+                                            <FormattedMessage content={displayContent} isUser={false} />
                                         ) : null}
-                                        <IngredientAuditCards data={msg.audit} />
+                                        <IngredientAuditCards
+                                            data={msg.audit}
+                                            showPersonaliseNudge={showPersonaliseNudge}
+                                            onPersonalise={() => setShowOnboarding(true)}
+                                        />
                                     </div>
                                 ) : (
-                                    <FormattedMessage content={msg.content} isUser={msg.role === 'user'} />
+                                    <FormattedMessage content={displayContent} isUser={msg.role === 'user'} />
                                 )}
                             </div>
                         </div>
@@ -342,64 +574,64 @@ export default function ChatInterface({
                             </div>
                         )}
                     </div>
-                ))}
+                    )
+                })}
+                    </div>
+                )}
+
+                {hasAssistantResult && (
+                    <p
+                        className="text-chat-meta font-medium text-center"
+                        style={{ color: colors.muted, marginTop: spacing.inner }}
+                    >
+                        Ask a follow-up or paste a new ingredient list ↓
+                    </p>
+                )}
+
+                {recentChecks.length > 0 && (
+                    <div style={{ marginTop: spacing.inner }}>
+                        <RecentChecksSection
+                            entries={recentChecks}
+                            onSelect={(q) => setInput(q)}
+                        />
+                    </div>
+                )}
+
                 <div ref={messagesEndRef} />
             </div>
-
-            {/* Recent checks (above input, does not scroll) */}
-            {recentQueries.length > 0 && (
-                <RecentChecksSection
-                    queries={recentQueries}
-                    onSelect={(q) => setInput(q)}
-                />
-            )}
 
             {/* Input area (sticky bottom) */}
             <form onSubmit={handleSubmit} className="border-t border-slate-100 bg-white px-4 py-3 shrink-0">
                 <div className="flex gap-3 items-center">
-                    <input
-                        type="text"
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        placeholder="Type ingredient or question…"
-                        className="w-full px-4 py-3.5 pr-4 bg-slate-50 border border-slate-200 rounded-2xl shadow-card focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all placeholder:text-slate-400 font-sans font-medium text-slate-700"
-                        disabled={loading || !profileLoaded}
-                    />
+                    <div className="relative w-full">
+                        <input
+                            type="text"
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                            placeholder="Type ingredient or question…"
+                            className={`w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl shadow-card focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all placeholder:text-slate-400 font-sans font-medium text-chat-input text-slate-700 ${input ? 'pr-10' : 'pr-4'}`}
+                            disabled={loading || !profileLoaded}
+                        />
+                        {input ? (
+                            <button
+                                type="button"
+                                onClick={() => setInput('')}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 p-0.5 rounded text-slate-400 hover:text-slate-600 hover:bg-slate-200 transition-colors"
+                                aria-label="Clear input"
+                            >
+                                <X className="w-4 h-4" />
+                            </button>
+                        ) : null}
+                    </div>
                     <button
                         type="submit"
-                        disabled={loading || !input.trim() || (!isProfileComplete && !profileLoaded)}
+                        disabled={loading || !input.trim() || !profileLoaded}
                         className="shrink-0 inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-primary to-secondary p-3.5 text-white shadow-card transition-all hover:opacity-95 hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed"
                     >
                         {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
                     </button>
                 </div>
             </form>
-            <div className="px-4 pb-3 pt-2 bg-white flex justify-center gap-2 flex-wrap shrink-0">
-                <button
-                    type="button"
-                    onClick={() => setInput('')}
-                    className="px-3 py-1.5 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded-[12px] hover:bg-slate-50 hover:shadow-card transition-all"
-                >
-                    Clear Input
-                </button>
-                <button
-                    type="button"
-                    onClick={() => {
-                        const lastUserMsg = [...messages].reverse().find(m => m.role === 'user')
-                        if (lastUserMsg) setInput(lastUserMsg.content)
-                    }}
-                    className="px-3 py-1.5 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded-[12px] hover:bg-slate-50 hover:shadow-card transition-all"
-                >
-                    Check Again
-                </button>
-                <button
-                    type="button"
-                    onClick={() => setShowOnboarding(true)}
-                    className="px-3 py-1.5 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded-[12px] hover:bg-slate-50 hover:shadow-card transition-all inline-flex items-center gap-1"
-                >
-                    Edit Profile
-                </button>
-            </div>
         </div>
     )
 
