@@ -36,8 +36,9 @@ export function buildRecentChecksFromMessages(messages: Message[]): RecentCheckE
     let verdict: IngredientStatus | undefined
     for (let j = i + 1; j < messages.length; j++) {
       if (messages[j].role === 'user') break
-      if (messages[j].role === 'assistant' && messages[j].audit) {
-        verdict = deriveTopLevelVerdict(messages[j].audit)
+      const audit = messages[j].audit
+      if (messages[j].role === 'assistant' && audit) {
+        verdict = deriveTopLevelVerdict(audit)
         break
       }
     }
