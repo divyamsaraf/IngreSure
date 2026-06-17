@@ -17,8 +17,25 @@ _REPO_ROOT = _BACKEND_DIR.parent
 PRODUCTION = os.environ.get("ENVIRONMENT", "").lower() == "production"
 
 # --- Feature flags ---
-# Knowledge DB (Phase 3+): keep off by default until fully wired
-USE_KNOWLEDGE_DB = os.environ.get("USE_KNOWLEDGE_DB", "").lower() in ("1", "true", "yes")
+def _supabase_available() -> bool:
+    url = os.getenv("SUPABASE_URL") or os.getenv("NEXT_PUBLIC_SUPABASE_URL")
+    key = (
+        os.getenv("SUPABASE_SERVICE_ROLE_KEY")
+        or os.getenv("SUPABASE_KEY")
+        or os.getenv("NEXT_PUBLIC_SUPABASE_ANON_KEY")
+    )
+    return bool(url and key)
+
+
+USE_KNOWLEDGE_DB: bool = (
+    os.getenv("USE_KNOWLEDGE_DB", "").lower() not in ("false", "0", "no")
+    if os.getenv("USE_KNOWLEDGE_DB")  # explicit override
+    else _supabase_available()  # auto-detect
+)
+
+# IKE-2 rollout stage: off | shadow | primary | fallback (see spec §8 gates).
+# Default "off" — legacy engine drives all output until explicitly promoted.
+IKE2_MODE: str = os.environ.get("IKE2_MODE", "off").strip().lower()
 
 # Redis cache (Phase 3+): optional distributed cache layer
 REDIS_URL = os.environ.get("REDIS_URL", "").strip()
