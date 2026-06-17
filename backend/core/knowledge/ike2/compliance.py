@@ -75,7 +75,10 @@ def _verdict_for(r, rule, severity: Optional[str]):
 
     if getattr(rule, "kind", "flag") == "alcohol":
         role = getattr(r, "alcohol_role", None)
-        triggered = role is not None
+        # The column is NOT NULL DEFAULT 'none', so "no alcohol" arrives as the
+        # STRING "none", not absence. Trigger on an actual role; anything other than
+        # the no-alcohol sentinels is treated as present (fail-closed -> WARN below).
+        triggered = role not in (None, "none", "")
     else:
         role = None
         triggered = bool(flags.get(rule.trigger_flag))

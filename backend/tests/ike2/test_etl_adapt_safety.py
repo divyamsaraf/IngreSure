@@ -68,6 +68,19 @@ def test_ambiguous_nut_is_never_safe_for_peanut_allergy(monkeypatch):
     assert result.verdict != Verdict.SAFE
 
 
+def test_non_alcohol_ingredient_is_safe_for_alcohol_restriction(monkeypatch):
+    # Correctness/UX (not safety): the "none" sentinel must flow through the real
+    # seam without turning every non-alcoholic ingredient into WARN/Depends.
+    result = _evaluate_via_resolver(
+        monkeypatch,
+        _raw(canonical_name="table salt"),
+        atom="table salt",
+        profile=_profile("alcohol"),
+        rules=[_ALCOHOL_RULE],
+    )
+    assert result.verdict == Verdict.SAFE
+
+
 def test_alcohol_ingredient_is_never_safe_for_alcohol_restriction(monkeypatch):
     result = _evaluate_via_resolver(
         monkeypatch,

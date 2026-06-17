@@ -145,6 +145,26 @@ def test_alcohol_ingredient_fails_trace_warns(rule_no_alcohol):
     )
 
 
+def test_alcohol_none_sentinel_string_is_safe(rule_no_alcohol):
+    # The adapter/DB store the STRING "none" (NOT NULL DEFAULT 'none') for
+    # non-alcohol ingredients. Compliance must treat it as not-triggered, otherwise
+    # every water/salt/sugar becomes WARN for an alcohol-restricted user.
+    r = _resolved(alcohol_role="none", knowledge_state="VERIFIED", trusted=True)
+    assert (
+        evaluate([r], _profile("alcohol", "medical"), [rule_no_alcohol]).verdict
+        == Verdict.SAFE
+    )
+
+
+def test_alcohol_unknown_role_stays_cautious(rule_no_alcohol):
+    # Defense in depth: a role outside the known set must never resolve SAFE.
+    r = _resolved(alcohol_role="mystery", knowledge_state="VERIFIED", trusted=True)
+    assert (
+        evaluate([r], _profile("alcohol", "medical"), [rule_no_alcohol]).verdict
+        != Verdict.SAFE
+    )
+
+
 def test_compound_term_caps_to_warn(rule_jain):
     r = _resolved(
         canonical="spices", knowledge_state="VERIFIED", trusted=True, verdict_cap="WARN"
