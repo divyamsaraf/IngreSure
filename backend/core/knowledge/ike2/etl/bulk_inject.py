@@ -90,6 +90,7 @@ _GROUP_COLUMNS = set(BOOL_FLAGS) | {
     "canonical_name",
     "animal_species",
     "alcohol_content",
+    "alcohol_role",
     "uncertainty_flags",
     "knowledge_state",
     "primary_source_url",
