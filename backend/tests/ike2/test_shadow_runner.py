@@ -79,3 +79,40 @@ def test_real_pipeline_unknown_is_uncertain():
 def test_real_legacy_pipeline_gelatin_vegan_not_safe():
     verdict = runner.legacy_external_verdict(["gelatin"], ["vegan"], None)
     assert verdict == "NOT_SAFE"
+
+
+def test_legacy_external_verdict_does_not_call_bridge_run_new_engine_chat(monkeypatch):
+    """Regression guard: once bridge's chat entrypoint is IKE-2-only, calling
+    it here would compare IKE-2 to itself instead of running the legacy
+    engine. legacy_external_verdict must call ComplianceEngine directly.
+    """
+    import core.bridge as bridge
+
+    def _boom(*a, **k):
+        raise AssertionError("legacy_external_verdict must not call run_new_engine_chat")
+
+    monkeypatch.setattr(bridge, "run_new_engine_chat", _boom)
+    verdict = runner.legacy_external_verdict(["gelatin"], ["vegan"], None)
+    assert verdict == "NOT_SAFE"
+
+
+def test_legacy_external_verdict_uses_compliance_engine_directly(monkeypatch):
+    """legacy_external_verdict must instantiate ComplianceEngine itself
+    rather than delegating to core.bridge.run_new_engine_chat.
+    """
+    import core.evaluation.compliance_engine as compliance_engine_module
+
+    calls = []
+    real_evaluate = compliance_engine_module.ComplianceEngine.evaluate
+
+    def _spy_evaluate(self, *args, **kwargs):
+        calls.append((args, kwargs))
+        return real_evaluate(self, *args, **kwargs)
+
+    monkeypatch.setattr(
+        compliance_engine_module.ComplianceEngine, "evaluate", _spy_evaluate
+    )
+    verdict = runner.legacy_external_verdict(["gelatin"], ["vegan"], None)
+    assert verdict == "NOT_SAFE"
+    assert len(calls) == 1
+    assert calls[0][1].get("use_api_fallback") is False

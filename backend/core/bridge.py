@@ -303,20 +303,8 @@ def run_new_engine_chat(
         input_display_map=display_by_canonical or None,
     )
 
-    # IKE-2 shadow mode (no-op unless IKE2_MODE=='shadow'): run the new engine
-    # alongside and log divergences. Never alters the legacy verdict below.
-    try:
-        from core.knowledge.ike2.shadow.runner import run_shadow
-
-        run_shadow(
-            ingredients,
-            rids,
-            None,
-            verdict.status,
-            decomposed_atoms=prepared_decomposed,
-        )
-    except Exception:  # belt-and-suspenders: shadow must never break legacy
-        logger.warning("IKE-2 shadow hook failed; legacy unaffected", exc_info=True)
+    # Task 4: schedule core.knowledge.ike2.shadow.runner.run_legacy_diff in
+    # the background here once this entrypoint runs IKE-2 as primary.
 
     return verdict
 

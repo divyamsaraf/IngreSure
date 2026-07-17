@@ -71,14 +71,33 @@ def legacy_external_verdict(
     ``region`` is accepted for interface symmetry with ``ike2_external_verdict``;
     the legacy engine does not use it. ``use_api_fallback=False`` keeps this
     deterministic and network-free -- this path is diff-only, never user-facing.
-    """
-    from core.bridge import run_new_engine_chat
 
-    verdict = run_new_engine_chat(
-        raw_ingredients,
+    Calls ``ComplianceEngine`` directly instead of going through
+    ``core.bridge.run_new_engine_chat``: once bridge's chat entrypoint is
+    IKE-2-only, routing through it here would compare IKE-2 to itself.
+    """
+    from core.bridge import preprocess_ingredient_list
+    from core.evaluation.compliance_engine import ComplianceEngine
+    from core.normalization.normalizer import substance_key
+
+    if decomposed_atoms is not None:
+        atomic_names = [atom.name for atom in decomposed_atoms]
+        trace_keys = {atom.name for atom in decomposed_atoms if atom.trace}
+        display_by_canonical = {}
+        for atom in decomposed_atoms:
+            display_by_canonical.setdefault(substance_key(atom.name), atom.name)
+            display_by_canonical.setdefault(atom.name.lower().strip(), atom.name)
+    else:
+        atomic_names, trace_keys, display_by_canonical = preprocess_ingredient_list(
+            raw_ingredients
+        )
+
+    verdict = ComplianceEngine().evaluate(
+        atomic_names,
         restriction_ids=restriction_ids,
+        trace_ingredient_keys=trace_keys or None,
         use_api_fallback=False,
-        prepared_decomposed=decomposed_atoms,
+        input_display_map=display_by_canonical or None,
     )
     return verdict.status.value
 
