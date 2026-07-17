@@ -246,17 +246,33 @@ def map_ike2_to_compliance_verdict(
     """
     status = VerdictStatus(to_external(result.verdict))
 
-    triggered_ingredients = list(dict.fromkeys(result.matched_contains or []))
+    # Per-ingredient worst verdict across every restriction it matched. The
+    # breakdown itself already keeps max per (name, restriction) (compliance
+    # fix); take max across restrictions too so Avoid/Depends attribution
+    # follows the single worst outcome for that ingredient (spec §3.2/§4).
+    per_ingredient_verdict: Dict[str, Verdict] = {}
+    for (name, _restriction), verdict in (result.breakdown or {}).items():
+        prev = per_ingredient_verdict.get(name)
+        per_ingredient_verdict[name] = verdict if prev is None else max(prev, verdict)
+
+    # Avoid is FAIL-only. matched_contains already carries FAIL-only names
+    # (compliance.evaluate no longer appends caution/UNCERTAIN triggers to
+    # it), but defend against any non-FAIL entry (e.g. a hand-built
+    # ComplianceResult) by cross-checking breakdown when a verdict is known.
+    triggered_ingredients = [
+        name for name in dict.fromkeys(result.matched_contains or [])
+        if per_ingredient_verdict.get(name, Verdict.FAIL) == Verdict.FAIL
+    ]
     informational_ingredients = list(dict.fromkeys(result.matched_may_contain or []))
 
-    # A may_contain/trace name that actually drove a non-SAFE breakdown verdict
-    # is why the headline isn't SAFE -- it must not be left only in
+    # A may_contain/trace name whose breakdown verdict is FAIL is why the
+    # headline isn't SAFE -- it must not be left only in
     # informational_ingredients (empty "conflicts with" + mislabeled as a
     # low-confidence trace). Promote it into triggered_ingredients instead.
-    for (name, _restriction), verdict in (result.breakdown or {}).items():
-        if verdict == Verdict.SAFE:
-            continue
-        if name in informational_ingredients and name not in triggered_ingredients:
+    # WARN/UNCERTAIN trace names stay informational/uncertain -- they must
+    # never reach Avoid (species-unknown / compound caution is not FAIL).
+    for name in informational_ingredients:
+        if per_ingredient_verdict.get(name) == Verdict.FAIL and name not in triggered_ingredients:
             triggered_ingredients.append(name)
     informational_ingredients = [
         name for name in informational_ingredients if name not in triggered_ingredients
@@ -265,7 +281,7 @@ def map_ike2_to_compliance_verdict(
     triggered_restrictions = []
     seen_restrictions = set()
     for (name, restriction), verdict in (result.breakdown or {}).items():
-        if verdict == Verdict.SAFE:
+        if verdict != Verdict.FAIL:
             continue
         if name in triggered_ingredients and restriction not in seen_restrictions:
             seen_restrictions.add(restriction)
@@ -278,7 +294,14 @@ def map_ike2_to_compliance_verdict(
         if raw:
             triggered_ingredient_to_input[canonical] = raw
 
+    # Depends: any ingredient whose worst per-rule outcome is WARN or
+    # UNCERTAIN (compound/umbrella cap, species/source-unknown caution, ...)
+    # -- never left to fall through to Safe just because it never FAILed.
     uncertain_ingredients = []
+    for name, verdict in per_ingredient_verdict.items():
+        if verdict in (Verdict.WARN, Verdict.UNCERTAIN) and name not in triggered_ingredients:
+            uncertain_ingredients.append(name)
+
     for idx, inp in enumerate(inputs or []):
         canonical_name = getattr(inp, "canonical_name", "") or ""
         is_uncertain = (
@@ -292,7 +315,7 @@ def map_ike2_to_compliance_verdict(
             # "unknown" -- lets the audit exclude these from Safe by substance.
             raw = display_map.get(_UNRESOLVED_POS_KEY.format(idx))
             label = canonical_name or raw or "unknown"
-            if label not in uncertain_ingredients:
+            if label not in uncertain_ingredients and label not in triggered_ingredients:
                 uncertain_ingredients.append(label)
 
     confidence_score = 1.0 if (status == VerdictStatus.SAFE and not uncertain_ingredients) else 0.0
