@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""IKE-2 shadow soak report — query ``ike2_shadow_diffs`` for safety regressions.
+"""IKE-2 soak report — query ``ike2_shadow_diffs`` for safety regressions.
 
-Use during staging shadow soak (``IKE2_MODE=shadow``) to confirm
-``false_safe_regression`` count stays at zero. Does not require waiting a fixed
-number of days; run on demand or via cron.
+Use during staging to confirm the primary + legacy diff logged in
+``ike2_shadow_diffs`` keeps ``false_safe_regression`` count at zero. Does not
+require waiting a fixed number of days; run on demand or via cron.
 
 Examples::
 

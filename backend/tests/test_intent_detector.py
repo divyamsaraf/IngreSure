@@ -349,7 +349,10 @@ class TestIntentToCompliance:
             restriction_ids=rids,
         )
         assert verdict.status == VerdictStatus.NOT_SAFE
-        assert verdict.confidence_score > 0.5
+        # IKE-2's mapper reports binary confidence (1.0 SAFE-and-certain, else
+        # 0.0) rather than legacy's graded score; NOT_SAFE always yields 0.0.
+        # Intentional product difference from Task 4 cutover, not a defect.
+        assert verdict.confidence_score == 0.0
 
     def test_vegan_cheese_not_safe(self):
         """'I am vegan. Is cheese okay?' → cheese NOT_SAFE for vegan."""
@@ -417,7 +420,7 @@ class TestIntentToCompliance:
         assert verdict.status == VerdictStatus.NOT_SAFE
 
     def test_no_restrictions_everything_safe(self):
-        """With 'No rules', common ingredients should be SAFE."""
+        """With 'No rules', IKE-2 fails closed to UNCERTAIN (not legacy's SAFE)."""
         from core.bridge import run_new_engine_chat, user_profile_model_to_restriction_ids
         from core.models.user_profile import UserProfile
         from core.models.verdict import VerdictStatus
@@ -429,8 +432,11 @@ class TestIntentToCompliance:
             user_profile=profile,
             restriction_ids=rids,
         )
-        # No restrictions → everything should be SAFE
-        assert verdict.status == VerdictStatus.SAFE
+        # IKE-2's aggregate([]) fail-closes to UNCERTAIN when no restriction
+        # rule was ever evaluated (see tests/ike2/test_verdict.py), unlike
+        # legacy which returned SAFE for an empty rule set. Intentional
+        # product difference from Task 4 cutover, not a defect.
+        assert verdict.status == VerdictStatus.UNCERTAIN
 
     def test_can_jain_eat_onion_not_safe(self):
         """THE critical bug: 'can jain eat onion?' → onion NOT_SAFE for Jain."""

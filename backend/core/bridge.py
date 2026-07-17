@@ -1,14 +1,22 @@
 """
 Bridge: map profile diet names to restriction_ids; run compliance engine for chat.
 """
+import hashlib
 import logging
+from concurrent.futures import ThreadPoolExecutor
+from types import SimpleNamespace
 from typing import Dict, List, Any, Optional, Set, Tuple, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from core.models.user_profile import UserProfile
 
-from core.evaluation.compliance_engine import ComplianceEngine
-from core.models.verdict import ComplianceVerdict
+from core.knowledge.ike2 import input_layer as ike2_input_layer
+from core.knowledge.ike2 import resolver as ike2_resolver
+from core.knowledge.ike2 import rules as ike2_rules
+from core.knowledge.ike2 import compliance as ike2_compliance
+from core.knowledge.ike2.seam import to_compliance_input
+from core.knowledge.ike2.verdict import Verdict, to_external
+from core.models.verdict import ComplianceVerdict, VerdictStatus
 from core.parsing.ingredient_parser import preprocess_ingredients
 from core.normalization.parser import flatten_ingredients
 from core.normalization.normalizer import substance_key
@@ -208,8 +216,240 @@ def preprocess_ingredient_list(
 
 
 # ---------------------------------------------------------------------------
-# Engine runner
+# IKE-2 result -> ComplianceVerdict mapper
 # ---------------------------------------------------------------------------
+
+# Sentinel key format for position-keyed display-map entries (used only for
+# atoms IKE-2 could not resolve, where canonical_name is "" and therefore
+# cannot itself be used as a lookup key). The NUL prefix keeps this namespace
+# disjoint from real canonical/substance-key strings.
+_UNRESOLVED_POS_KEY = "\x00pos:{}"
+
+
+def map_ike2_to_compliance_verdict(
+    result, inputs, *, ontology_version: str = "", input_display_map: dict | None = None
+) -> ComplianceVerdict:
+    """Map an IKE-2 ``ComplianceResult`` (+ its ``ComplianceInput`` list) to the
+    external ``ComplianceVerdict`` shape. Status comes only from
+    ``VerdictStatus(to_external(result.verdict))`` — never reimplemented here.
+
+    ``input_display_map`` (canonical name / substance_key -> raw user input)
+    lets the audit UI show what the user typed (e.g. "E120") instead of the
+    resolved canonical ("carmine"). It is optional: IKE-2's ``ComplianceInput``
+    carries no raw text on its own, so callers that resolve ingredients build
+    this map themselves (see ``_run_ike2_compliance``).
+    """
+    status = VerdictStatus(to_external(result.verdict))
+
+    triggered_ingredients = list(dict.fromkeys(result.matched_contains or []))
+    informational_ingredients = list(dict.fromkeys(result.matched_may_contain or []))
+
+    # A may_contain/trace name that actually drove a non-SAFE breakdown verdict
+    # is why the headline isn't SAFE -- it must not be left only in
+    # informational_ingredients (empty "conflicts with" + mislabeled as a
+    # low-confidence trace). Promote it into triggered_ingredients instead.
+    for (name, _restriction), verdict in (result.breakdown or {}).items():
+        if verdict == Verdict.SAFE:
+            continue
+        if name in informational_ingredients and name not in triggered_ingredients:
+            triggered_ingredients.append(name)
+    informational_ingredients = [
+        name for name in informational_ingredients if name not in triggered_ingredients
+    ]
+
+    triggered_restrictions = []
+    seen_restrictions = set()
+    for (name, restriction), verdict in (result.breakdown or {}).items():
+        if verdict == Verdict.SAFE:
+            continue
+        if name in triggered_ingredients and restriction not in seen_restrictions:
+            seen_restrictions.add(restriction)
+            triggered_restrictions.append(restriction)
+
+    display_map = input_display_map or {}
+    triggered_ingredient_to_input: Dict[str, str] = {}
+    for canonical in triggered_ingredients:
+        raw = display_map.get(canonical) or display_map.get(substance_key(canonical))
+        if raw:
+            triggered_ingredient_to_input[canonical] = raw
+
+    uncertain_ingredients = []
+    for idx, inp in enumerate(inputs or []):
+        canonical_name = getattr(inp, "canonical_name", "") or ""
+        is_uncertain = (
+            not getattr(inp, "trusted", True)
+            or getattr(inp, "knowledge_state", "") in ("UNCLASSIFIED", "DISCOVERED")
+            or not canonical_name
+        )
+        if is_uncertain:
+            # canonical_name is "" for unresolved atoms, so fall back to the
+            # raw atom/input text (position-keyed) rather than the literal
+            # "unknown" -- lets the audit exclude these from Safe by substance.
+            raw = display_map.get(_UNRESOLVED_POS_KEY.format(idx))
+            label = canonical_name or raw or "unknown"
+            if label not in uncertain_ingredients:
+                uncertain_ingredients.append(label)
+
+    confidence_score = 1.0 if (status == VerdictStatus.SAFE and not uncertain_ingredients) else 0.0
+
+    return ComplianceVerdict(
+        status=status,
+        triggered_restrictions=triggered_restrictions,
+        triggered_ingredients=triggered_ingredients,
+        triggered_ingredient_to_input=triggered_ingredient_to_input or None,
+        uncertain_ingredients=uncertain_ingredients,
+        informational_ingredients=informational_ingredients,
+        confidence_score=confidence_score,
+        ontology_version=ontology_version,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Engine runner (IKE-2 primary; never falls back to the legacy engine)
+# ---------------------------------------------------------------------------
+
+def _profile_from_restriction_ids(restriction_ids: Optional[List[str]]) -> SimpleNamespace:
+    # Default medical severity so may_contain/trace triggers FAIL (not WARN).
+    return SimpleNamespace(restrictions={rid: "medical" for rid in (restriction_ids or [])})
+
+
+def _input_hash(ingredients: Optional[List[str]], restriction_ids: Optional[List[str]]) -> str:
+    raw = "|".join(ingredients or []) + "::" + ",".join(sorted(restriction_ids or []))
+    return hashlib.sha256(raw.encode("utf-8")).hexdigest()[:12]
+
+
+def _record_display(
+    display_map: Dict[str, str], idx: int, canonical_name: str, raw_display: str
+) -> None:
+    """Record one atom's raw display text, keyed for later lookup by the mapper.
+
+    Resolved atoms are keyed by canonical name (+ substance_key) so
+    ``triggered_ingredient_to_input`` can look them up by canonical.
+    Unresolved atoms (canonical_name == "") have no stable key of their own,
+    so they're keyed by position instead (see ``_UNRESOLVED_POS_KEY``).
+    """
+    if canonical_name:
+        display_map.setdefault(canonical_name, raw_display)
+        sk = substance_key(canonical_name)
+        if sk:
+            display_map.setdefault(sk, raw_display)
+    else:
+        display_map[_UNRESOLVED_POS_KEY.format(idx)] = raw_display
+
+
+def _run_ike2_compliance(
+    ingredients: List[str],
+    restriction_ids: Optional[List[str]],
+    prepared_decomposed: Optional[List[Any]] = None,
+    region: Optional[str] = None,
+) -> Tuple[Any, List[Any], Dict[str, str]]:
+    """Run the IKE-2 pipeline (input -> resolve -> seam -> rules -> evaluate)
+    and return the raw ``ComplianceResult``, its ``ComplianceInput`` list, and
+    a display map (canonical/substance_key -> raw user input) for the mapper.
+
+    Same pipeline as ``core.knowledge.ike2.shadow.runner.ike2_external_verdict``,
+    kept separate because that module returns only the external status string
+    while the chat path needs the full result to build a ``ComplianceVerdict``.
+    """
+    profile = _profile_from_restriction_ids(restriction_ids)
+    active_rules = ike2_rules.load_rules()
+    inputs = []
+    display_map: Dict[str, str] = {}
+    if prepared_decomposed is not None:
+        for idx, atom in enumerate(prepared_decomposed):
+            resolved = ike2_resolver.resolve(atom.name, region)
+            ci = to_compliance_input(resolved, trace=atom.trace, may_contain=atom.may_contain)
+            inputs.append(ci)
+            # DecomposedItem carries no original display text (it's already
+            # post-decompose), so atom.name is the best available display.
+            _record_display(display_map, idx, ci.canonical_name, atom.name)
+    else:
+        idx = 0
+        for raw in ingredients or []:
+            for atom in ike2_input_layer.parse_atoms(raw):
+                resolved = ike2_resolver.resolve(atom.name, region)
+                ci = to_compliance_input(resolved, trace=atom.trace, may_contain=atom.may_contain)
+                inputs.append(ci)
+                _record_display(display_map, idx, ci.canonical_name, raw)
+                idx += 1
+    result = ike2_compliance.evaluate(inputs, profile, active_rules)
+    return result, inputs, display_map
+
+
+# Legacy shadow diff is observational only, so it is capped rather than left
+# to run indefinitely -- a hung legacy call must not accumulate threads.
+LEGACY_DIFF_TIMEOUT_SEC = 5
+
+# Worker pool that actually runs the legacy diff. A second, small pool
+# supervises each worker future with a timeout so the *request* thread never
+# waits on either the legacy call or the timeout -- `_schedule_legacy_diff`
+# only submits and returns.
+_LEGACY_DIFF_EXECUTOR = ThreadPoolExecutor(max_workers=2, thread_name_prefix="legacy-diff")
+_LEGACY_DIFF_SUPERVISOR = ThreadPoolExecutor(max_workers=2, thread_name_prefix="legacy-diff-sv")
+
+
+def _run_legacy_diff_job(
+    ingredients: List[str],
+    restriction_ids: Optional[List[str]],
+    primary_status: str,
+    prepared_decomposed: Optional[List[Any]] = None,
+) -> None:
+    """Diff the legacy engine against the already-computed IKE-2 verdict.
+
+    Runs on a background worker thread (see ``_schedule_legacy_diff``).
+    Observational only; must never affect the primary result. Uses
+    ``use_api_fallback=False`` inside ``run_legacy_diff`` to keep the diff
+    deterministic and network-free.
+    """
+    from core.knowledge.ike2.shadow.runner import run_legacy_diff
+
+    run_legacy_diff(
+        ingredients,
+        restriction_ids,
+        None,
+        primary_status,
+        decomposed_atoms=prepared_decomposed,
+    )
+
+
+def _supervise_legacy_diff(future) -> None:
+    """Wait (with timeout) for a legacy diff future, off the request thread.
+
+    Runs on the supervisor pool. Never raises -- logs and moves on.
+    """
+    try:
+        future.result(timeout=LEGACY_DIFF_TIMEOUT_SEC)
+    except TimeoutError:
+        future.cancel()
+        logger.warning(
+            "IKE-2 legacy diff exceeded %ss timeout; abandoning", LEGACY_DIFF_TIMEOUT_SEC
+        )
+    except Exception:
+        logger.warning("IKE-2 legacy diff failed", exc_info=True)
+
+
+def _schedule_legacy_diff(
+    ingredients: List[str],
+    restriction_ids: Optional[List[str]],
+    primary_status: str,
+    prepared_decomposed: Optional[List[Any]] = None,
+) -> None:
+    """Fire-and-forget: submit the legacy diff to a background worker pool
+    and return immediately. The request thread never blocks on the legacy
+    engine or on the timeout that bounds it.
+    """
+    try:
+        future = _LEGACY_DIFF_EXECUTOR.submit(
+            _run_legacy_diff_job,
+            ingredients,
+            restriction_ids,
+            primary_status,
+            prepared_decomposed,
+        )
+        _LEGACY_DIFF_SUPERVISOR.submit(_supervise_legacy_diff, future)
+    except Exception:
+        logger.warning("IKE-2 legacy diff scheduling failed", exc_info=True)
+
 
 def run_new_engine_chat(
     ingredients: List[str],
@@ -219,7 +459,9 @@ def run_new_engine_chat(
     use_api_fallback: bool = True,
     prepared_decomposed: Optional[List[Any]] = None,
 ) -> ComplianceVerdict:
-    """Run compliance engine for chat."""
+    """Run compliance for chat. IKE-2 is the only source of the returned
+    verdict; on any IKE-2 failure this fails closed to UNCERTAIN and never
+    falls back to the legacy engine's result."""
     if restriction_ids is not None:
         rids = restriction_ids
     elif hasattr(user_profile, "dietary_preference"):
@@ -227,44 +469,23 @@ def run_new_engine_chat(
     else:
         rids = profile_to_restriction_ids(user_profile if isinstance(user_profile, dict) else None)
 
-    if prepared_decomposed is not None:
-        atomic_names = [d.name for d in prepared_decomposed]
-        trace_keys = {d.name for d in prepared_decomposed if d.trace}
-        display_by_canonical: Dict[str, str] = {}
-        for d in prepared_decomposed:
-            sk = substance_key(d.name)
-            display_by_canonical.setdefault(sk, d.name)
-            display_by_canonical.setdefault(d.name.lower().strip(), d.name)
-    else:
-        atomic_names, trace_keys, display_by_canonical = preprocess_ingredient_list(ingredients)
-    logger.info(
-        "COMPLIANCE preprocess normalized_count=%d trace_count=%d",
-        len(atomic_names), len(trace_keys),
-    )
-    engine = ComplianceEngine()
-    verdict = engine.evaluate(
-        atomic_names,
-        restriction_ids=rids,
-        trace_ingredient_keys=trace_keys or None,
-        use_api_fallback=use_api_fallback,
-        profile_context=profile_context,
-        input_display_map=display_by_canonical or None,
-    )
-
-    # IKE-2 shadow mode (no-op unless IKE2_MODE=='shadow'): run the new engine
-    # alongside and log divergences. Never alters the legacy verdict below.
     try:
-        from core.knowledge.ike2.shadow.runner import run_shadow
-
-        run_shadow(
-            ingredients,
-            rids,
-            None,
-            verdict.status,
-            decomposed_atoms=prepared_decomposed,
+        ike2_output = _run_ike2_compliance(ingredients, rids, prepared_decomposed)
+        if isinstance(ike2_output, ComplianceVerdict):
+            verdict = ike2_output
+        else:
+            result, inputs, display_map = ike2_output
+            verdict = map_ike2_to_compliance_verdict(
+                result, inputs, input_display_map=display_map
+            )
+    except Exception:
+        logger.exception(
+            "IKE2_PRIMARY_FAILED input_hash=%s restriction_ids=%s",
+            _input_hash(ingredients, rids), rids,
         )
-    except Exception:  # belt-and-suspenders: shadow must never break legacy
-        logger.warning("IKE-2 shadow hook failed; legacy unaffected", exc_info=True)
+        verdict = ComplianceVerdict(status=VerdictStatus.UNCERTAIN)
+
+    _schedule_legacy_diff(ingredients, rids, verdict.status.value, prepared_decomposed)
 
     return verdict
 

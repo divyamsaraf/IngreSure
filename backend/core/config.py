@@ -20,9 +20,13 @@ PRODUCTION = os.environ.get("ENVIRONMENT", "").lower() == "production"
 # Knowledge DB (Phase 3+): keep off by default until fully wired
 USE_KNOWLEDGE_DB = os.environ.get("USE_KNOWLEDGE_DB", "").lower() in ("1", "true", "yes")
 
-# IKE-2 rollout stage: off | shadow | primary | fallback (see spec §8 gates).
-# Default "off" — legacy engine drives all output until explicitly promoted.
-IKE2_MODE: str = os.environ.get("IKE2_MODE", "off").strip().lower()
+# IKE-2 mode: primary-only. Any IKE2_MODE env value is silently coerced to "primary".
+def _coerce_ike2_mode(raw: str | None) -> str:
+    # Only "primary" is valid; everything else (including unset) → primary. Silent.
+    return "primary"
+
+
+IKE2_MODE: str = _coerce_ike2_mode(os.environ.get("IKE2_MODE"))
 
 # Redis cache (Phase 3+): optional distributed cache layer
 REDIS_URL = os.environ.get("REDIS_URL", "").strip()
