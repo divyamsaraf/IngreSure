@@ -1,3 +1,8 @@
+import Link from 'next/link'
+import { CONTACT_EMAIL } from '@/lib/site'
+
+const footerLinkClass = 'hover:text-slate-200 transition-colors'
+
 export default function HomepageFooter() {
   return (
     <footer className="bg-slate-900 py-8 text-sm text-slate-300">
@@ -8,13 +13,26 @@ export default function HomepageFooter() {
             Human-first ingredient intelligence. Built for real-world diets and allergies.
           </p>
         </div>
-        <div className="flex flex-wrap items-center justify-center gap-4 text-[12px] text-slate-400 md:justify-end">
-          <span className="cursor-default hover:text-slate-200" title="Coming soon">About</span>
-          <a href="mailto:hello@ingresure.com" className="hover:text-slate-200">
+        <nav
+          className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[12px] text-slate-400 md:justify-end"
+          aria-label="Footer"
+        >
+          <Link href="/about" className={footerLinkClass}>
+            About
+          </Link>
+          <Link href="/faq" className={footerLinkClass}>
+            FAQ
+          </Link>
+          <a href={`mailto:${CONTACT_EMAIL}`} className={footerLinkClass}>
             Contact
           </a>
-          <span className="cursor-default hover:text-slate-200" title="Coming soon">Privacy Policy</span>
-        </div>
+          <Link href="/privacy-policy" className={footerLinkClass}>
+            Privacy Policy
+          </Link>
+          <Link href="/terms-of-service" className={footerLinkClass}>
+            Terms of Service
+          </Link>
+        </nav>
         <p className="text-[12px] text-slate-500">
           &copy; {new Date().getFullYear()} IngreSure. All rights reserved.
         </p>
@@ -22,4 +40,3 @@ export default function HomepageFooter() {
     </footer>
   )
 }
-
