@@ -218,12 +218,25 @@ def preprocess_ingredient_list(
 # IKE-2 result -> ComplianceVerdict mapper
 # ---------------------------------------------------------------------------
 
+# Sentinel key format for position-keyed display-map entries (used only for
+# atoms IKE-2 could not resolve, where canonical_name is "" and therefore
+# cannot itself be used as a lookup key). The NUL prefix keeps this namespace
+# disjoint from real canonical/substance-key strings.
+_UNRESOLVED_POS_KEY = "\x00pos:{}"
+
+
 def map_ike2_to_compliance_verdict(
-    result, inputs, *, ontology_version: str = ""
+    result, inputs, *, ontology_version: str = "", input_display_map: dict | None = None
 ) -> ComplianceVerdict:
     """Map an IKE-2 ``ComplianceResult`` (+ its ``ComplianceInput`` list) to the
     external ``ComplianceVerdict`` shape. Status comes only from
     ``VerdictStatus(to_external(result.verdict))`` — never reimplemented here.
+
+    ``input_display_map`` (canonical name / substance_key -> raw user input)
+    lets the audit UI show what the user typed (e.g. "E120") instead of the
+    resolved canonical ("carmine"). It is optional: IKE-2's ``ComplianceInput``
+    carries no raw text on its own, so callers that resolve ingredients build
+    this map themselves (see ``_run_ike2_compliance``).
     """
     status = VerdictStatus(to_external(result.verdict))
 
@@ -239,8 +252,15 @@ def map_ike2_to_compliance_verdict(
             seen_restrictions.add(restriction)
             triggered_restrictions.append(restriction)
 
+    display_map = input_display_map or {}
+    triggered_ingredient_to_input: Dict[str, str] = {}
+    for canonical in triggered_ingredients:
+        raw = display_map.get(canonical) or display_map.get(substance_key(canonical))
+        if raw:
+            triggered_ingredient_to_input[canonical] = raw
+
     uncertain_ingredients = []
-    for inp in inputs or []:
+    for idx, inp in enumerate(inputs or []):
         canonical_name = getattr(inp, "canonical_name", "") or ""
         is_uncertain = (
             not getattr(inp, "trusted", True)
@@ -248,7 +268,11 @@ def map_ike2_to_compliance_verdict(
             or not canonical_name
         )
         if is_uncertain:
-            label = canonical_name or "unknown"
+            # canonical_name is "" for unresolved atoms, so fall back to the
+            # raw atom/input text (position-keyed) rather than the literal
+            # "unknown" -- lets the audit exclude these from Safe by substance.
+            raw = display_map.get(_UNRESOLVED_POS_KEY.format(idx))
+            label = canonical_name or raw or "unknown"
             if label not in uncertain_ingredients:
                 uncertain_ingredients.append(label)
 
@@ -258,6 +282,7 @@ def map_ike2_to_compliance_verdict(
         status=status,
         triggered_restrictions=triggered_restrictions,
         triggered_ingredients=triggered_ingredients,
+        triggered_ingredient_to_input=triggered_ingredient_to_input or None,
         uncertain_ingredients=uncertain_ingredients,
         informational_ingredients=informational_ingredients,
         confidence_score=confidence_score,
@@ -279,14 +304,34 @@ def _input_hash(ingredients: Optional[List[str]], restriction_ids: Optional[List
     return hashlib.sha256(raw.encode("utf-8")).hexdigest()[:12]
 
 
+def _record_display(
+    display_map: Dict[str, str], idx: int, canonical_name: str, raw_display: str
+) -> None:
+    """Record one atom's raw display text, keyed for later lookup by the mapper.
+
+    Resolved atoms are keyed by canonical name (+ substance_key) so
+    ``triggered_ingredient_to_input`` can look them up by canonical.
+    Unresolved atoms (canonical_name == "") have no stable key of their own,
+    so they're keyed by position instead (see ``_UNRESOLVED_POS_KEY``).
+    """
+    if canonical_name:
+        display_map.setdefault(canonical_name, raw_display)
+        sk = substance_key(canonical_name)
+        if sk:
+            display_map.setdefault(sk, raw_display)
+    else:
+        display_map[_UNRESOLVED_POS_KEY.format(idx)] = raw_display
+
+
 def _run_ike2_compliance(
     ingredients: List[str],
     restriction_ids: Optional[List[str]],
     prepared_decomposed: Optional[List[Any]] = None,
     region: Optional[str] = None,
-) -> Tuple[Any, List[Any]]:
+) -> Tuple[Any, List[Any], Dict[str, str]]:
     """Run the IKE-2 pipeline (input -> resolve -> seam -> rules -> evaluate)
-    and return the raw ``ComplianceResult`` plus its ``ComplianceInput`` list.
+    and return the raw ``ComplianceResult``, its ``ComplianceInput`` list, and
+    a display map (canonical/substance_key -> raw user input) for the mapper.
 
     Same pipeline as ``core.knowledge.ike2.shadow.runner.ike2_external_verdict``,
     kept separate because that module returns only the external status string
@@ -295,21 +340,26 @@ def _run_ike2_compliance(
     profile = _profile_from_restriction_ids(restriction_ids)
     active_rules = ike2_rules.load_rules()
     inputs = []
+    display_map: Dict[str, str] = {}
     if prepared_decomposed is not None:
-        for atom in prepared_decomposed:
+        for idx, atom in enumerate(prepared_decomposed):
             resolved = ike2_resolver.resolve(atom.name, region)
-            inputs.append(
-                to_compliance_input(resolved, trace=atom.trace, may_contain=atom.may_contain)
-            )
+            ci = to_compliance_input(resolved, trace=atom.trace, may_contain=atom.may_contain)
+            inputs.append(ci)
+            # DecomposedItem carries no original display text (it's already
+            # post-decompose), so atom.name is the best available display.
+            _record_display(display_map, idx, ci.canonical_name, atom.name)
     else:
+        idx = 0
         for raw in ingredients or []:
             for atom in ike2_input_layer.parse_atoms(raw):
                 resolved = ike2_resolver.resolve(atom.name, region)
-                inputs.append(
-                    to_compliance_input(resolved, trace=atom.trace, may_contain=atom.may_contain)
-                )
+                ci = to_compliance_input(resolved, trace=atom.trace, may_contain=atom.may_contain)
+                inputs.append(ci)
+                _record_display(display_map, idx, ci.canonical_name, raw)
+                idx += 1
     result = ike2_compliance.evaluate(inputs, profile, active_rules)
-    return result, inputs
+    return result, inputs, display_map
 
 
 def _schedule_legacy_diff(
@@ -360,8 +410,10 @@ def run_new_engine_chat(
         if isinstance(ike2_output, ComplianceVerdict):
             verdict = ike2_output
         else:
-            result, inputs = ike2_output
-            verdict = map_ike2_to_compliance_verdict(result, inputs)
+            result, inputs, display_map = ike2_output
+            verdict = map_ike2_to_compliance_verdict(
+                result, inputs, input_display_map=display_map
+            )
     except Exception:
         logger.exception(
             "IKE2_PRIMARY_FAILED input_hash=%s restriction_ids=%s",
