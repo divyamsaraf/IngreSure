@@ -6,6 +6,13 @@ import logging
 from typing import List
 
 from core.normalization.normalizer import normalize_ingredient_key
+from core.parsing.ingredient_parser import (
+    _label_clauses,
+    _segment_canonical,
+    _TOP_LEVEL_SEP,
+    strip_label_boilerplate,
+)
+from core.parsing.nesting_split import split_by_nesting
 
 logger = logging.getLogger(__name__)
 
@@ -111,47 +118,6 @@ def _expand_category_parenthetical(parts: List[str]) -> List[str]:
     return out if out else parts
 
 
-def _split_by_parentheses(text: str) -> List[str]:
-    """
-    Split by top-level parentheses; commas inside parentheses become separate items.
-    'Enriched Flour (Wheat Flour, Niacin, Iron)' -> ['Enriched Flour', 'Wheat Flour', 'Niacin', 'Iron']
-    """
-    if not text or not text.strip():
-        return []
-    out: List[str] = []
-    depth = 0
-    start = 0
-    i = 0
-    while i < len(text):
-        if text[i] == "(":
-            if depth == 0 and i > start:
-                chunk = text[start:i].strip()
-                if chunk:
-                    out.append(chunk)
-            depth += 1
-            if depth == 1:
-                start = i + 1
-            i += 1
-        elif text[i] == ")":
-            depth -= 1
-            if depth == 0:
-                inner = text[start:i].strip()
-                if inner:
-                    for part in re.split(r"\s*,\s*", inner):
-                        part = part.strip()
-                        if part:
-                            out.extend(_split_by_parentheses(part))
-                start = i + 1
-            i += 1
-        else:
-            i += 1
-    if depth == 0 and start < len(text):
-        chunk = text[start:].strip()
-        if chunk:
-            out.append(chunk)
-    return out
-
-
 def flatten_ingredients(raw_str: str) -> List[str]:
     """
     Flatten a raw ingredient string into a list of normalized base ingredients.
@@ -167,7 +133,7 @@ def flatten_ingredients(raw_str: str) -> List[str]:
     """
     if not raw_str or not isinstance(raw_str, str):
         return []
-    raw_str = raw_str.strip()
+    raw_str = strip_label_boilerplate(raw_str)
     if not raw_str:
         return []
 
@@ -176,25 +142,26 @@ def flatten_ingredients(raw_str: str) -> List[str]:
     if key in PROCESSED_FOOD_TO_BASE:
         return list(PROCESSED_FOOD_TO_BASE[key])
 
-    # Split by comma outside parentheses only (commas inside parentheses handled in _split_by_parentheses)
     flat: List[str] = []
-    segments = re.split(r",(?![^(]*\))", raw_str)
-    for seg in segments:
-        seg = seg.strip()
-        if not seg:
-            continue
-        parts = _split_by_parentheses(seg)
-        # Expand "X (A, B, C)" when X is a known category (e.g. vegetable oil (sunflower, canola) -> sunflower oil, canola oil)
-        parts = _expand_category_parenthetical(parts)
-        for p in parts:
-            p = p.strip()
-            if not p:
+    for clause in _label_clauses(raw_str):
+        for seg in _TOP_LEVEL_SEP.split(clause):
+            seg = seg.strip()
+            if not seg:
                 continue
-            pk = normalize_ingredient_key(p)
-            if pk in PROCESSED_FOOD_TO_BASE:
-                flat.extend(PROCESSED_FOOD_TO_BASE[pk])
+            collapsed = _segment_canonical(seg)
+            if collapsed != seg:
+                parts = [collapsed]
             else:
-                if pk:
+                parts = split_by_nesting(seg)
+            parts = _expand_category_parenthetical(parts)
+            for p in parts:
+                p = p.strip()
+                if not p:
+                    continue
+                pk = normalize_ingredient_key(p)
+                if pk in PROCESSED_FOOD_TO_BASE:
+                    flat.extend(PROCESSED_FOOD_TO_BASE[pk])
+                elif pk:
                     flat.append(pk)
 
     # Deduplicate while preserving order
