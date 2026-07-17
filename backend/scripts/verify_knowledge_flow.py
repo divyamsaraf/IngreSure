@@ -27,9 +27,8 @@ def main() -> int:
     assert "sunflower oil" in out and "canola oil" in out and "salt" in out
     print("   OK: flatten_ingredients category expand")
 
-    print("3. Resolver (DB-first when enabled)")
+    print("3. Resolver (DB-first when Supabase configured)")
     from core.knowledge.canonicalizer import CanonicalResolver
-    from core.config import USE_KNOWLEDGE_DB
     resolver = CanonicalResolver()
     # Static ontology or DB may have "wheat" / "egg"
     res = resolver.resolve_static("wheat")

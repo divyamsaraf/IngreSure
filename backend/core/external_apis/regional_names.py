@@ -7,7 +7,6 @@ via Wikidata (resolve_to_english_label) and persist with set_learned_english().
 """
 import json
 import logging
-from pathlib import Path
 from typing import List
 
 from core.config import get_regional_ingredient_names_path, get_learned_regional_mappings_path

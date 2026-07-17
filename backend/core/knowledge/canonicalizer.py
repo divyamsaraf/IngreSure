@@ -25,7 +25,6 @@ from core.ontology.ingredient_registry import IngredientRegistry
 from core.knowledge.lifecycle import KnowledgeMetadata, KnowledgeState, ResolutionLevel
 from core.knowledge.ingredient_db import IngredientKnowledgeDB
 from core.normalization.normalizer import normalize_ingredient_key
-from core.config import USE_KNOWLEDGE_DB
 from core.evaluation.resolution_trust import is_trusted_for_compliance, _is_cacheable
 from core.cache.redis_resolution import (
     resolution_cache_available,
@@ -79,8 +78,7 @@ class CanonicalResolver:
 
     def __init__(self, registry: Optional[IngredientRegistry] = None) -> None:
         self._registry = registry or IngredientRegistry()
-        # Optional knowledge DB; used only when USE_KNOWLEDGE_DB is enabled.
-        self._db = IngredientKnowledgeDB() if USE_KNOWLEDGE_DB else None
+        self._db = IngredientKnowledgeDB()
         self._resolution_cache: dict[Tuple[str, bool], CanonicalResolution] = {}
         self._cache_lock = threading.Lock()
 
@@ -110,11 +108,8 @@ class CanonicalResolver:
 
     def _resolve_via_db(self, raw: str) -> Optional[CanonicalResolution]:
         """
-        Optional DB-backed resolution path.
-
-        Currently:
-          - Only used when USE_KNOWLEDGE_DB is true and DB is configured.
-          - Falls back silently to the legacy registry-based path on any miss.
+        Optional DB-backed resolution path. Falls back silently to the
+        legacy registry-based path on any miss when Supabase is not configured.
         """
         if not self._db or not self._db.enabled:
             return None

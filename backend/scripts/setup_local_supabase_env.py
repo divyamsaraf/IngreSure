@@ -58,8 +58,6 @@ def main() -> int:
         to_append.append(f"SUPABASE_URL={url}")
     if not has_key:
         to_append.append(f"SUPABASE_SERVICE_ROLE_KEY={key}")
-    if "USE_KNOWLEDGE_DB=" not in content:
-        to_append.append("USE_KNOWLEDGE_DB=true")
 
     if not to_append:
         print("backend/.env already has SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY")

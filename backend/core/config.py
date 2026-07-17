@@ -17,17 +17,6 @@ _REPO_ROOT = _BACKEND_DIR.parent
 PRODUCTION = os.environ.get("ENVIRONMENT", "").lower() == "production"
 
 # --- Feature flags ---
-# Knowledge DB (Phase 3+): keep off by default until fully wired
-USE_KNOWLEDGE_DB = os.environ.get("USE_KNOWLEDGE_DB", "").lower() in ("1", "true", "yes")
-
-# IKE-2 mode: primary-only. Any IKE2_MODE env value is silently coerced to "primary".
-def _coerce_ike2_mode(raw: str | None) -> str:
-    # Only "primary" is valid; everything else (including unset) → primary. Silent.
-    return "primary"
-
-
-IKE2_MODE: str = _coerce_ike2_mode(os.environ.get("IKE2_MODE"))
-
 # Redis cache (Phase 3+): optional distributed cache layer
 REDIS_URL = os.environ.get("REDIS_URL", "").strip()
 
@@ -116,9 +105,9 @@ def log_config() -> None:
     key = get_usda_fdc_api_key()
     off = get_open_food_facts_enabled()
     logger.info(
-        "CONFIG: production=%s use_knowledge_db=%s ontology=%s restrictions=%s dynamic=%s "
+        "CONFIG: production=%s ontology=%s restrictions=%s dynamic=%s "
         "usda_key=%s off_enabled=%s llm_enabled=%s ollama_model=%s llm_intent_timeout=%ds llm_response_timeout=%ds",
-        PRODUCTION, USE_KNOWLEDGE_DB,
+        PRODUCTION,
         get_ontology_path().exists(), get_restrictions_path().exists(),
         get_dynamic_ontology_path().exists(),
         bool(key), off, llm_enabled(), get_ollama_model(),

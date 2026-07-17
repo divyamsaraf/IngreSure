@@ -3,7 +3,6 @@ Unit tests for compliance engine: ontology lookup, confidence, profile overrides
 Run from backend: python -m pytest tests/test_compliance_engine.py -v
 """
 import pytest
-from pathlib import Path
 
 
 def test_ingredient_registry_resolve_static():

@@ -2,7 +2,7 @@
 Rule DSL for restrictions. All restrictions are data-driven; no hardcoded if/else.
 """
 from dataclasses import dataclass
-from typing import Any, Optional
+from typing import Any
 from enum import Enum
 
 

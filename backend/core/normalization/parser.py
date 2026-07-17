@@ -1,7 +1,6 @@
 """
 Flatten ingredient strings for evaluation: split parentheses, commas, map processed foods to base ingredients.
 """
-import re
 import logging
 from typing import List
 

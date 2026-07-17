@@ -3,7 +3,6 @@ Unit tests for core path resolution. Run from backend directory:
   cd backend && python -m pytest tests/test_core_paths.py -v
 """
 import pytest
-from pathlib import Path
 
 
 def test_backend_is_current_or_on_path():

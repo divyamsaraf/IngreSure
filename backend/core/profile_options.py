@@ -4,7 +4,6 @@ Canonical display string for Hindu veg diet is "Hindu Vegetarian".
 """
 import json
 import logging
-from pathlib import Path
 from typing import Any, Dict, List
 
 from core.config import get_profile_options_path

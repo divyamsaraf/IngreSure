@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, HTTPException
-from typing import Any, Dict
 
 from core.knowledge.canonicalizer import CanonicalResolver
 from core.ontology.ingredient_registry import IngredientRegistry

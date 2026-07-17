@@ -3,10 +3,9 @@ Full chat flow tests: multiple messages in sequence (greeting, ingredient querie
 Verifies stream tags, INGREDIENT_AUDIT structure, and verdict content. Works with or without Redis.
 """
 import json
-import pytest
 from fastapi.testclient import TestClient
 
-from core.stream_tags import PROFILE_UPDATE_TAG, INGREDIENT_AUDIT_TAG, PROFILE_REQUIRED_TAG
+from core.stream_tags import PROFILE_UPDATE_TAG, INGREDIENT_AUDIT_TAG
 
 
 def _stream_has_tag(body: str, tag: str) -> bool:

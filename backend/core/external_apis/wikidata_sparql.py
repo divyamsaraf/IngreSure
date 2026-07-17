@@ -8,6 +8,7 @@ from __future__ import annotations
 WIKIDATA_SPARQL_URL = "https://query.wikidata.org/sparql"
 
 # Re-export headers from runtime API module for User-Agent policy compliance.
+# WIKIDATA_HEADERS is re-exported from this module for User-Agent policy compliance.
 from core.external_apis.wikidata_api import WIKIDATA_HEADERS  # noqa: F401
 
 # E-number registry: items with P628 (EU food additive code). GROUP BY keeps LIMIT on

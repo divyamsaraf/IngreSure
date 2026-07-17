@@ -1,6 +1,5 @@
 """IKE-2 resolver against ontology seeded in local Supabase."""
 import os
-from pathlib import Path
 
 import pytest
 

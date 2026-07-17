@@ -11,7 +11,7 @@ from typing import Optional
 import requests
 
 from core.ontology.ingredient_schema import Ingredient
-from core.external_apis.base import EnrichmentResult, ConfidenceLevel
+from core.external_apis.base import EnrichmentResult
 from core.external_apis.usda_fdc import fetch_usda_fdc
 from core.external_apis.open_food_facts import fetch_open_food_facts
 from core.external_apis.enrichment_relevance import is_enrichment_relevant

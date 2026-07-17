@@ -166,28 +166,3 @@ def run_legacy_diff(
     except Exception:  # legacy diff must never break or slow-fail the primary path
         logger.warning("IKE-2 legacy diff failed; primary result unaffected", exc_info=True)
         return None
-
-
-def log_legacy_diff(primary_verdict, legacy_verdict, raw_input, *, writer=None):
-    """Diff two already-computed verdicts and log/write on divergence.
-
-    For callers (e.g. a bridge background job) that already ran both engines
-    and want to avoid a second engine invocation.
-    """
-    try:
-        primary_ext = getattr(primary_verdict, "value", primary_verdict)
-        legacy_ext = getattr(legacy_verdict, "value", legacy_verdict)
-        diff = compare(legacy_ext, primary_ext, raw_input)
-        logger.info(
-            "IKE2_DIFF legacy=%s primary=%s match=%s false_safe_regression=%s",
-            diff["legacy_verdict"],
-            diff["ike2_verdict"],
-            diff["match"],
-            diff["false_safe_regression"],
-        )
-        if not diff["match"]:
-            (writer or _log_diff)(diff)
-        return diff
-    except Exception:
-        logger.warning("IKE-2 legacy diff logging failed", exc_info=True)
-        return None

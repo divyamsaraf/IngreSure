@@ -5,7 +5,6 @@ Use for regional/scientific synonyms and origin inference.
 """
 import logging
 import re
-import urllib.parse
 from typing import List, Optional
 
 import requests

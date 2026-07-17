@@ -1,28 +1,11 @@
-import importlib
 import time
 
-import pytest
 
 from core.bridge import map_ike2_to_compliance_verdict, run_new_engine_chat
 from core.knowledge.ike2.compliance import ComplianceResult
 from core.knowledge.ike2.seam import ComplianceInput
 from core.knowledge.ike2.verdict import Verdict, to_external
 from core.models.verdict import VerdictStatus
-
-
-def _reload_config(monkeypatch, value):
-    if value is None:
-        monkeypatch.delenv("IKE2_MODE", raising=False)
-    else:
-        monkeypatch.setenv("IKE2_MODE", value)
-    import core.config as config
-    return importlib.reload(config)
-
-
-@pytest.mark.parametrize("raw", [None, "", "off", "shadow", "fallback", "PRIMARY", "garbage"])
-def test_ike2_mode_coerces_to_primary(monkeypatch, raw):
-    cfg = _reload_config(monkeypatch, raw)
-    assert cfg.IKE2_MODE == "primary"
 
 
 def test_map_ike2_fail_to_not_safe():

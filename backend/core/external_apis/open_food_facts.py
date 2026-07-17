@@ -4,7 +4,6 @@ Search: https://world.openfoodfacts.org/cgi/search.pl?search_terms=...&json=1
 """
 import logging
 import re
-from typing import Optional
 
 import requests
 
@@ -64,7 +63,6 @@ def _infer_flags_from_product(product: dict, combined_text: str) -> dict:
     # Use OFF structured tags for reliable classification
     labels = [tag.lower() for tag in (product.get("labels_tags") or [])]
     allergen_tags = [tag.lower() for tag in (product.get("allergens_tags") or [])]
-    cat_tags = [tag.lower() for tag in (product.get("categories_tags") or [])]
 
     is_vegan = any("vegan" in l for l in labels)
     is_vegetarian = any("vegetarian" in l for l in labels)

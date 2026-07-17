@@ -3,14 +3,12 @@ Broad scenario tests: substance dedup, E-numbers, diets, LLM on/off chat paths.
 Compliance is always deterministic; LLM only affects explanation prose when enabled.
 """
 import json
-import os
 import re
-from typing import List, Optional, Set
 
 import pytest
 from fastapi.testclient import TestClient
 
-from core.normalization.normalizer import KNOWN_VARIANTS, substance_key, is_e_number_code
+from core.normalization.normalizer import KNOWN_VARIANTS, substance_key
 from core.response_composer import build_ingredient_audit_payload, count_safe_audit_ingredients
 from core.stream_tags import INGREDIENT_AUDIT_TAG
 

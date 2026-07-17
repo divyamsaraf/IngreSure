@@ -1,6 +1,5 @@
 """Tests for server-issued anonymous session (GET /anon-session, token sign/verify)."""
 import os
-import pytest
 from fastapi.testclient import TestClient
 
 

@@ -5,8 +5,6 @@ Search: GET es_search/?query=... or GET compounds/?query=...
 """
 import logging
 import re
-import urllib.parse
-from typing import Optional
 
 import requests
 

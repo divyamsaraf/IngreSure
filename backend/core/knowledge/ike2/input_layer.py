@@ -1,4 +1,3 @@
-import re
 from dataclasses import dataclass
 
 from core.parsing.label_decomposer import decompose_label

@@ -1,5 +1,5 @@
 from core.knowledge.ike2.response import assemble
-from core.knowledge.ike2.verdict import Verdict, to_external
+from core.knowledge.ike2.verdict import to_external
 from tests.ike2.golden_runner import load_corpus, run_case_full
 
 

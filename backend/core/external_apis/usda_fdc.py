@@ -3,17 +3,13 @@ USDA FoodData Central API connector.
 Free API key: https://fdc.nal.usda.gov/api-key-signup
 Search: GET https://api.nal.usda.gov/fdc/v1/foods/search?api_key=KEY&query=...
 """
-import json
 import logging
 import re
-import urllib.parse
-from typing import Optional
 
 import requests
 
 from core.ontology.ingredient_schema import Ingredient
 from core.external_apis.enrichment_relevance import (
-    enrichment_species_mismatch,
     is_enrichment_relevant,
     score_enrichment_candidate,
 )

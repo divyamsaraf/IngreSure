@@ -6,7 +6,7 @@ from typing import Any, Optional
 import json
 import logging
 
-from .restriction_schema import Restriction, Rule, RuleAction
+from .restriction_schema import Restriction, Rule
 from core.ontology.ingredient_schema import Ingredient
 from core.config import get_restrictions_path
 

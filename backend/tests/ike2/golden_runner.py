@@ -9,7 +9,6 @@ from core.knowledge.ike2.compliance import evaluate
 from core.knowledge.ike2.input_layer import parse_atoms
 from core.knowledge.ike2 import rules as rules_module
 from core.knowledge.ike2.resolver import resolve
-from core.knowledge.ike2.response import assemble
 from core.knowledge.ike2.seam import to_compliance_input
 from core.knowledge.ike2.verdict import to_external
 

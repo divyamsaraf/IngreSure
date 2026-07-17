@@ -44,7 +44,7 @@ def test_flatten_ingredients_potato_chips_uppercase():
 
 def test_normalize_ingredient_key_variant():
     """Known variants (e.g. inglass -> isinglass) are applied for lookup."""
-    from core.normalization.normalizer import normalize_ingredient_key, KNOWN_VARIANTS
+    from core.normalization.normalizer import normalize_ingredient_key
     assert normalize_ingredient_key("inglass") == "isinglass"
     assert normalize_ingredient_key("Isinglass") == "isinglass"
     assert normalize_ingredient_key("fish gelatin") == "fish_gelatin"

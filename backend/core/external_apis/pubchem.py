@@ -8,7 +8,6 @@ Batch Layer 1: backend/scripts/fetch_pubchem_batch.py (uses pubchem_batch.py)
 import logging
 import re
 import urllib.parse
-from typing import Optional
 
 import requests
 

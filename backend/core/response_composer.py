@@ -189,7 +189,6 @@ def format_audit_item_name(user_input: str, canonical: str) -> str:
 
     user_label = _format_user_ingredient_label(raw)
     canon_label = _display_name(canon or raw)
-    compact = re.sub(r"\s+", "", raw)
 
     if is_e_number_code(raw) and canon and user_label.lower() != canon_label.lower():
         return f"{user_label} · {canon_label}"

@@ -10,7 +10,7 @@ from pathlib import Path
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from core.intent_detector import detect_intent, ParsedIntent
+from core.intent_detector import detect_intent
 
 
 # ===== MIXED intent: profile + ingredient ====================================

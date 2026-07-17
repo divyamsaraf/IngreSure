@@ -1,5 +1,4 @@
 """Phase 5 — OCR noise and multi-block label selection."""
-import pytest
 
 from core.normalization.normalizer import normalize_ingredient_key
 from core.parsing.label_decomposer import decompose_label
