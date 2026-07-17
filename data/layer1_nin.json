@@ -1,0 +1,1705 @@
+[
+  {
+    "canonical_name": "ajwain",
+    "aliases": [
+      "carom seeds",
+      "bishop's weed"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "amaranth",
+    "aliases": [
+      "ramdana",
+      "chaulai",
+      "rajgira"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "amchur",
+    "aliases": [
+      "dried mango powder",
+      "amchoor"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "atta",
+    "aliases": [
+      "whole wheat flour",
+      "chakki atta"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "badi elaichi",
+    "aliases": [
+      "black cardamom",
+      "brown cardamom"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "bajra",
+    "aliases": [
+      "pearl millet",
+      "bajri",
+      "kambu"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "barnyard millet",
+    "aliases": [
+      "sanwa",
+      "udalu",
+      "kuthiravali"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "besan",
+    "aliases": [
+      "gram flour",
+      "chickpea flour"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "biryani masala",
+    "aliases": [],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "chaat masala",
+    "aliases": [
+      "chat masala"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "chana dal",
+    "aliases": [
+      "split chickpea",
+      "Bengal gram dal"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "chole masala",
+    "aliases": [
+      "chana masala"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "coconut oil",
+    "aliases": [
+      "nariyal tel",
+      "thengai ennai"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "curry leaves",
+    "aliases": [
+      "kadi patta",
+      "karuveppilai"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "dalchini",
+    "aliases": [
+      "cinnamon",
+      "pattai"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "desi ghee",
+    "aliases": [
+      "A2 ghee",
+      "bilona ghee"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": false,
+    "animal_origin": true,
+    "synthetic": false,
+    "dairy_source": true,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "dhania",
+    "aliases": [
+      "coriander",
+      "coriander powder"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "drumstick",
+    "aliases": [
+      "moringa pods",
+      "sahjan",
+      "murungakkai"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "elaichi",
+    "aliases": [
+      "green cardamom",
+      "cardamom"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "foxtail millet",
+    "aliases": [
+      "kangni",
+      "thinai"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "garam masala",
+    "aliases": [],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "ghee",
+    "aliases": [
+      "clarified butter",
+      "neyyi"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": false,
+    "animal_origin": true,
+    "synthetic": false,
+    "dairy_source": true,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "groundnut oil",
+    "aliases": [
+      "peanut oil",
+      "mungfali oil"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "haldi",
+    "aliases": [
+      "turmeric",
+      "manjal"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "hing",
+    "aliases": [
+      "asafoetida",
+      "perungayam"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "idli rava",
+    "aliases": [
+      "idli semolina",
+      "idli rice rava"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "jaggery",
+    "aliases": [
+      "gur",
+      "vellam",
+      "bellam"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "jeera",
+    "aliases": [
+      "cumin",
+      "cumin seeds"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "jowar",
+    "aliases": [
+      "sorghum",
+      "cholam"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "kala chana",
+    "aliases": [
+      "black chickpea",
+      "brown chickpea"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "kala namak",
+    "aliases": [
+      "black salt",
+      "Himalayan black salt"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": false,
+    "animal_origin": false,
+    "synthetic": true,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "kalonji",
+    "aliases": [
+      "nigella seeds",
+      "onion seeds"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "kasuri methi",
+    "aliases": [
+      "dried fenugreek leaves"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "kewra water",
+    "aliases": [
+      "kewda water",
+      "screwpine essence"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "khoya",
+    "aliases": [
+      "mawa",
+      "khoa",
+      "reduced milk solids"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": false,
+    "animal_origin": true,
+    "synthetic": false,
+    "dairy_source": true,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "khus syrup",
+    "aliases": [
+      "vetiver syrup"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "kitchen king masala",
+    "aliases": [],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "kodo millet",
+    "aliases": [
+      "kodra",
+      "varagu"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "kokum",
+    "aliases": [
+      "garcinia indica",
+      "bhirind"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "kokum butter",
+    "aliases": [
+      "kokum fat"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "kokum syrup",
+    "aliases": [
+      "kokum agal",
+      "kokum concentrate"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "kuttu",
+    "aliases": [
+      "buckwheat flour",
+      "buckwheat"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "lal mirch",
+    "aliases": [
+      "red chilli powder",
+      "kashmiri mirch"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "laung",
+    "aliases": [
+      "cloves",
+      "grambu"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "little millet",
+    "aliases": [
+      "kutki",
+      "samai"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "maida",
+    "aliases": [
+      "refined wheat flour",
+      "all purpose flour"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "makhana",
+    "aliases": [
+      "foxnut",
+      "lotus seeds",
+      "phool makhana"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "masoor dal",
+    "aliases": [
+      "red lentil",
+      "masur dal"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "methi",
+    "aliases": [
+      "fenugreek",
+      "fenugreek seeds"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "moong dal",
+    "aliases": [
+      "mung dal",
+      "green gram dal"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "panch phoron",
+    "aliases": [
+      "panch phoran",
+      "Bengali five spice"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "paneer",
+    "aliases": [
+      "cottage cheese",
+      "Indian cottage cheese"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": false,
+    "animal_origin": true,
+    "synthetic": false,
+    "dairy_source": true,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "pathiri podi",
+    "aliases": [
+      "roasted rice powder"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "pav bhaji masala",
+    "aliases": [],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "pickle masala",
+    "aliases": [
+      "achar masala"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "poha",
+    "aliases": [
+      "flattened rice",
+      "chivda",
+      "aval"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "proso millet",
+    "aliases": [
+      "cheena",
+      "barri"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "puttu podi",
+    "aliases": [
+      "roasted rice flour"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "quinoa",
+    "aliases": [
+      "bathua seeds",
+      "Increasingly used in India; IFCT 2017 includes amaranth/millets"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "ragi",
+    "aliases": [
+      "finger millet",
+      "nachni",
+      "kezhvaragu"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "rai",
+    "aliases": [
+      "mustard seeds",
+      "sarson"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "rajma masala",
+    "aliases": [],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "rasam powder",
+    "aliases": [
+      "rasam podi"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "rice bran oil",
+    "aliases": [
+      "akshat tel"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "rose water",
+    "aliases": [
+      "gulab jal"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "sabudana",
+    "aliases": [
+      "sago",
+      "tapioca pearls"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "sambar powder",
+    "aliases": [
+      "sambhar masala"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "sarson ka tel",
+    "aliases": [
+      "mustard oil"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "saunf",
+    "aliases": [
+      "fennel seeds",
+      "sompu"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "sendha namak",
+    "aliases": [
+      "rock salt",
+      "Himalayan pink salt"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": false,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "shah jeera",
+    "aliases": [
+      "black cumin",
+      "caraway",
+      "kala jeera"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "soya chunks",
+    "aliases": [
+      "textured vegetable protein",
+      "nutrela"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": true,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "soya nuggets",
+    "aliases": [
+      "meal maker",
+      "TVP"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": true,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "suji",
+    "aliases": [
+      "semolina",
+      "rava",
+      "sooji"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "sunflower oil",
+    "aliases": [
+      "surajmukhi tel"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "tamarind",
+    "aliases": [
+      "imli",
+      "puli"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "tandoori masala",
+    "aliases": [],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "tej patta",
+    "aliases": [
+      "Indian bay leaf",
+      "cassia leaf"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "til oil",
+    "aliases": [
+      "sesame oil",
+      "gingelly oil",
+      "nallennai"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": true,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "toor dal",
+    "aliases": [
+      "pigeon pea",
+      "arhar dal",
+      "tuvar dal"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "urad dal",
+    "aliases": [
+      "black gram dal",
+      "ulundu paruppu"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": false,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  },
+  {
+    "canonical_name": "vanaspati",
+    "aliases": [
+      "hydrogenated vegetable oil",
+      "dalda"
+    ],
+    "source": "nin",
+    "region": "IN",
+    "regions": [
+      "IN"
+    ],
+    "plant_origin": true,
+    "animal_origin": false,
+    "synthetic": true,
+    "dairy_source": false,
+    "soy_source": false,
+    "sesame_source": false,
+    "uncertainty_flags": [
+      "nin_curated"
+    ]
+  }
+]
