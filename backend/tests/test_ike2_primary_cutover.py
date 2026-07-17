@@ -84,3 +84,101 @@ def test_map_partial_unknown_status_from_to_external_only():
     assert v.status == VerdictStatus.UNCERTAIN
     assert v.status.value == to_external(result.verdict)
     assert v.status != VerdictStatus.SAFE
+
+
+def test_map_ike2_triggered_restrictions_excludes_safe_breakdown_rows():
+    """A SAFE row in breakdown (e.g. peanut_allergy) must not leak into
+    triggered_restrictions just because the ingredient is also in
+    matched_contains for an unrelated FAIL restriction (vegan)."""
+    inputs = [
+        ComplianceInput(
+            canonical_name="gelatin",
+            flags={"animal_origin": True},
+            knowledge_state="LOCKED",
+            trusted=True,
+            alcohol_role=None,
+            verdict_cap=None,
+            trace=False,
+        ),
+        ComplianceInput(
+            canonical_name="peanut",
+            flags={},
+            knowledge_state="LOCKED",
+            trusted=True,
+            alcohol_role=None,
+            verdict_cap=None,
+            trace=False,
+        ),
+    ]
+    result = ComplianceResult(
+        Verdict.FAIL,
+        matched_contains=["gelatin", "peanut"],
+        matched_may_contain=[],
+        caution_reasons=["vegan:gelatin"],
+        breakdown={
+            ("gelatin", "vegan"): Verdict.FAIL,
+            ("peanut", "peanut_allergy"): Verdict.SAFE,
+        },
+    )
+    v = map_ike2_to_compliance_verdict(result, inputs)
+    assert v.triggered_restrictions == ["vegan"]
+
+
+def test_map_ike2_may_contain_goes_to_informational_ingredients():
+    """matched_may_contain (trace/may-contain minors) must surface as
+    informational_ingredients, not be discarded."""
+    inputs = [
+        ComplianceInput(
+            canonical_name="peanut",
+            flags={},
+            knowledge_state="LOCKED",
+            trusted=True,
+            alcohol_role=None,
+            verdict_cap=None,
+            trace=True,
+        )
+    ]
+    result = ComplianceResult(
+        Verdict.WARN,
+        matched_contains=[],
+        matched_may_contain=["peanut"],
+        caution_reasons=["peanut_allergy:peanut"],
+        breakdown={("peanut", "peanut_allergy"): Verdict.WARN},
+    )
+    v = map_ike2_to_compliance_verdict(result, inputs)
+    assert "peanut" in v.informational_ingredients
+
+
+def test_map_ike2_confidence_score_safe_no_uncertain():
+    inputs = [
+        ComplianceInput(
+            canonical_name="water",
+            flags={},
+            knowledge_state="LOCKED",
+            trusted=True,
+            alcohol_role=None,
+            verdict_cap=None,
+            trace=False,
+        )
+    ]
+    result = ComplianceResult(
+        Verdict.SAFE,
+        matched_contains=[],
+        matched_may_contain=[],
+        caution_reasons=[],
+        breakdown={("water", "vegan"): Verdict.SAFE},
+    )
+    v = map_ike2_to_compliance_verdict(result, inputs)
+    assert v.confidence_score == 1.0
+
+
+def test_map_ike2_confidence_score_zero_when_not_safe():
+    result = ComplianceResult(
+        Verdict.FAIL,
+        matched_contains=["gelatin"],
+        matched_may_contain=[],
+        caution_reasons=["vegan:gelatin"],
+        breakdown={("gelatin", "vegan"): Verdict.FAIL},
+    )
+    v = map_ike2_to_compliance_verdict(result, [])
+    assert v.confidence_score == 0.0
