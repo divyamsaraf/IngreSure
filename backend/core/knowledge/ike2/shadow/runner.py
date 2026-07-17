@@ -7,6 +7,7 @@ is wrapped so it can never raise into or slow a failure onto the primary
 result, and it always runs -- there is no mode gate.
 """
 import logging
+import sys
 from types import SimpleNamespace
 
 from core.knowledge.ike2 import input_layer, resolver
@@ -17,6 +18,11 @@ from core.knowledge.ike2.shadow.comparator import compare
 from core.knowledge.ike2.verdict import to_external
 
 logger = logging.getLogger(__name__)
+
+
+def _interpreter_finalizing() -> bool:
+    """True when Python is in teardown and background work must stop."""
+    return bool(getattr(sys, "is_finalizing", lambda: False)())
 
 
 def _profile_from_restriction_ids(restriction_ids):
@@ -103,6 +109,10 @@ def legacy_external_verdict(
 
 
 def _log_diff(diff) -> None:
+    if _interpreter_finalizing():
+        logger.debug("Skipping _log_diff: interpreter is finalizing")
+        return
+
     from core.knowledge.ingredient_db import get_supabase_config
 
     cfg = get_supabase_config()
@@ -140,6 +150,13 @@ def run_legacy_diff(
     caller's primary result is unaffected. Returns the diff dict when the
     comparison ran.
     """
+    # During interpreter shutdown, thread-pool submissions from downstream libs
+    # can raise RuntimeError ("cannot schedule new futures..."). Legacy diff is
+    # observational only, so skip entirely in that phase.
+    if _interpreter_finalizing():
+        logger.info("IKE-2 legacy diff skipped during interpreter finalization")
+        return None
+
     try:
         primary_ext = getattr(primary_verdict, "value", primary_verdict)
         legacy_ext = legacy_external_verdict(
@@ -163,6 +180,14 @@ def run_legacy_diff(
         if not diff["match"]:
             (writer or _log_diff)(diff)
         return diff
+    except RuntimeError as exc:
+        # Shutdown race: downstream code may try to submit futures while Python
+        # is finalizing. Diff is observational only, so swallow quietly.
+        if "cannot schedule new futures after interpreter shutdown" in str(exc).lower():
+            logger.info("IKE-2 legacy diff skipped during interpreter shutdown race")
+            return None
+        logger.warning("IKE-2 legacy diff failed; primary result unaffected", exc_info=True)
+        return None
     except Exception:  # legacy diff must never break or slow-fail the primary path
         logger.warning("IKE-2 legacy diff failed; primary result unaffected", exc_info=True)
         return None

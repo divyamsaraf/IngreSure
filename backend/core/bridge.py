@@ -3,6 +3,7 @@ Bridge: map profile diet names to restriction_ids; run compliance engine for cha
 """
 import hashlib
 import logging
+import sys
 from concurrent.futures import ThreadPoolExecutor
 from types import SimpleNamespace
 from typing import Dict, List, Any, Optional, Set, Tuple, TYPE_CHECKING
@@ -22,6 +23,10 @@ from core.normalization.parser import flatten_ingredients
 from core.normalization.normalizer import substance_key
 
 logger = logging.getLogger(__name__)
+
+
+def _interpreter_finalizing() -> bool:
+    return bool(getattr(sys, "is_finalizing", lambda: False)())
 
 # ---------------------------------------------------------------------------
 # Mapping dictionaries (single source of truth)
@@ -438,6 +443,10 @@ def _schedule_legacy_diff(
     and return immediately. The request thread never blocks on the legacy
     engine or on the timeout that bounds it.
     """
+    if _interpreter_finalizing():
+        logger.info("IKE-2 legacy diff scheduling skipped during interpreter finalization")
+        return
+
     try:
         future = _LEGACY_DIFF_EXECUTOR.submit(
             _run_legacy_diff_job,
@@ -447,6 +456,11 @@ def _schedule_legacy_diff(
             prepared_decomposed,
         )
         _LEGACY_DIFF_SUPERVISOR.submit(_supervise_legacy_diff, future)
+    except RuntimeError as exc:
+        if "cannot schedule new futures after interpreter shutdown" in str(exc).lower():
+            logger.info("IKE-2 legacy diff scheduling skipped during interpreter shutdown race")
+            return
+        logger.warning("IKE-2 legacy diff scheduling failed", exc_info=True)
     except Exception:
         logger.warning("IKE-2 legacy diff scheduling failed", exc_info=True)
 

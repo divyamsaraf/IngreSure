@@ -66,6 +66,46 @@ def test_never_raises_on_internal_error(monkeypatch):
     assert run_legacy_diff(["x"], ["vegan"], None, "SAFE", writer=lambda d: None) is None
 
 
+def test_skips_during_interpreter_finalization(monkeypatch):
+    monkeypatch.setattr(runner, "_interpreter_finalizing", lambda: True)
+
+    def _boom(*a, **k):
+        raise AssertionError("legacy engine should not run during finalization")
+
+    monkeypatch.setattr(runner, "legacy_external_verdict", _boom)
+    assert run_legacy_diff(["x"], ["vegan"], None, "SAFE", writer=lambda d: None) is None
+
+
+def test_swallows_interpreter_shutdown_runtime_error(monkeypatch):
+    monkeypatch.setattr(runner, "_interpreter_finalizing", lambda: False)
+
+    def _shutdown_race(*a, **k):
+        raise RuntimeError("cannot schedule new futures after interpreter shutdown")
+
+    monkeypatch.setattr(runner, "legacy_external_verdict", _shutdown_race)
+    assert run_legacy_diff(["x"], ["vegan"], None, "SAFE", writer=lambda d: None) is None
+
+
+def test_log_diff_skips_during_interpreter_finalization(monkeypatch):
+    import core.knowledge.ingredient_db as ingredient_db
+
+    monkeypatch.setattr(runner, "_interpreter_finalizing", lambda: True)
+
+    def _boom():
+        raise AssertionError("supabase client should not be created during finalization")
+
+    monkeypatch.setattr(ingredient_db, "get_supabase_config", _boom)
+    runner._log_diff(
+        {
+            "raw_input": "x",
+            "legacy_verdict": "SAFE",
+            "ike2_verdict": "SAFE",
+            "match": True,
+            "false_safe_regression": False,
+        }
+    )
+
+
 def test_real_pipeline_e471_vegan_not_safe():
     verdict = runner.ike2_external_verdict(["E471"], ["vegan"], None)
     assert verdict != "SAFE"

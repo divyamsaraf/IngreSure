@@ -290,6 +290,32 @@ def test_legacy_diff_does_not_block_response(monkeypatch):
     assert v.status in (VerdictStatus.SAFE, VerdictStatus.UNCERTAIN, VerdictStatus.NOT_SAFE)
 
 
+def test_legacy_diff_not_scheduled_during_interpreter_finalization(monkeypatch):
+    import core.bridge as bridge
+
+    monkeypatch.setattr(bridge, "_interpreter_finalizing", lambda: True)
+
+    def _boom(*args, **kwargs):
+        raise AssertionError("legacy diff executor should not submit during finalization")
+
+    monkeypatch.setattr(bridge._LEGACY_DIFF_EXECUTOR, "submit", _boom)
+    monkeypatch.setattr(bridge._LEGACY_DIFF_SUPERVISOR, "submit", _boom)
+
+    bridge._schedule_legacy_diff(["water"], ["vegan"], "SAFE", None)
+
+
+def test_legacy_diff_scheduling_swallows_shutdown_runtime_error(monkeypatch):
+    import core.bridge as bridge
+
+    monkeypatch.setattr(bridge, "_interpreter_finalizing", lambda: False)
+
+    def _shutdown_race(*args, **kwargs):
+        raise RuntimeError("cannot schedule new futures after interpreter shutdown")
+
+    monkeypatch.setattr(bridge._LEGACY_DIFF_EXECUTOR, "submit", _shutdown_race)
+    bridge._schedule_legacy_diff(["water"], ["vegan"], "SAFE", None)
+
+
 # ---------------------------------------------------------------------------
 # Task 6: IKE-2 wins when engines disagree
 # ---------------------------------------------------------------------------
