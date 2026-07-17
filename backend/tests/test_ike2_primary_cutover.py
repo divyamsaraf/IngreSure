@@ -1,4 +1,5 @@
 import importlib
+import time
 
 import pytest
 
@@ -223,3 +224,23 @@ def test_ike2_success_returned_not_legacy(monkeypatch):
     )
     v = run_new_engine_chat(["gelatin"], restriction_ids=["vegan"], use_api_fallback=False)
     assert v is fake or v.status == VerdictStatus.NOT_SAFE
+
+
+# ---------------------------------------------------------------------------
+# Task 5: legacy diff runs in background, does not block the chat response
+# ---------------------------------------------------------------------------
+
+def test_legacy_diff_does_not_block_response(monkeypatch):
+    import core.bridge as bridge
+
+    def slow_legacy(*args, **kwargs):
+        time.sleep(2.0)
+        return None
+
+    monkeypatch.setattr(bridge, "_run_legacy_diff_job", slow_legacy)
+    # Ensure IKE-2 path is fast
+    t0 = time.perf_counter()
+    v = run_new_engine_chat(["water"], restriction_ids=["vegan"], use_api_fallback=False)
+    elapsed = time.perf_counter() - t0
+    assert elapsed < 0.5  # must not wait for 2s legacy
+    assert v.status in (VerdictStatus.SAFE, VerdictStatus.UNCERTAIN, VerdictStatus.NOT_SAFE)

@@ -3,6 +3,7 @@ Bridge: map profile diet names to restriction_ids; run compliance engine for cha
 """
 import hashlib
 import logging
+from concurrent.futures import ThreadPoolExecutor
 from types import SimpleNamespace
 from typing import Dict, List, Any, Optional, Set, Tuple, TYPE_CHECKING
 
@@ -362,7 +363,19 @@ def _run_ike2_compliance(
     return result, inputs, display_map
 
 
-def _schedule_legacy_diff(
+# Legacy shadow diff is observational only, so it is capped rather than left
+# to run indefinitely -- a hung legacy call must not accumulate threads.
+LEGACY_DIFF_TIMEOUT_SEC = 5
+
+# Worker pool that actually runs the legacy diff. A second, small pool
+# supervises each worker future with a timeout so the *request* thread never
+# waits on either the legacy call or the timeout -- `_schedule_legacy_diff`
+# only submits and returns.
+_LEGACY_DIFF_EXECUTOR = ThreadPoolExecutor(max_workers=2, thread_name_prefix="legacy-diff")
+_LEGACY_DIFF_SUPERVISOR = ThreadPoolExecutor(max_workers=2, thread_name_prefix="legacy-diff-sv")
+
+
+def _run_legacy_diff_job(
     ingredients: List[str],
     restriction_ids: Optional[List[str]],
     primary_status: str,
@@ -370,19 +383,57 @@ def _schedule_legacy_diff(
 ) -> None:
     """Diff the legacy engine against the already-computed IKE-2 verdict.
 
-    Observational only; must never affect the primary result. Runs inline for
-    now -- Task 5 moves this off the request path (background thread/queue).
+    Runs on a background worker thread (see ``_schedule_legacy_diff``).
+    Observational only; must never affect the primary result. Uses
+    ``use_api_fallback=False`` inside ``run_legacy_diff`` to keep the diff
+    deterministic and network-free.
+    """
+    from core.knowledge.ike2.shadow.runner import run_legacy_diff
+
+    run_legacy_diff(
+        ingredients,
+        restriction_ids,
+        None,
+        primary_status,
+        decomposed_atoms=prepared_decomposed,
+    )
+
+
+def _supervise_legacy_diff(future) -> None:
+    """Wait (with timeout) for a legacy diff future, off the request thread.
+
+    Runs on the supervisor pool. Never raises -- logs and moves on.
     """
     try:
-        from core.knowledge.ike2.shadow.runner import run_legacy_diff
+        future.result(timeout=LEGACY_DIFF_TIMEOUT_SEC)
+    except TimeoutError:
+        future.cancel()
+        logger.warning(
+            "IKE-2 legacy diff exceeded %ss timeout; abandoning", LEGACY_DIFF_TIMEOUT_SEC
+        )
+    except Exception:
+        logger.warning("IKE-2 legacy diff failed", exc_info=True)
 
-        run_legacy_diff(
+
+def _schedule_legacy_diff(
+    ingredients: List[str],
+    restriction_ids: Optional[List[str]],
+    primary_status: str,
+    prepared_decomposed: Optional[List[Any]] = None,
+) -> None:
+    """Fire-and-forget: submit the legacy diff to a background worker pool
+    and return immediately. The request thread never blocks on the legacy
+    engine or on the timeout that bounds it.
+    """
+    try:
+        future = _LEGACY_DIFF_EXECUTOR.submit(
+            _run_legacy_diff_job,
             ingredients,
             restriction_ids,
-            None,
             primary_status,
-            decomposed_atoms=prepared_decomposed,
+            prepared_decomposed,
         )
+        _LEGACY_DIFF_SUPERVISOR.submit(_supervise_legacy_diff, future)
     except Exception:
         logger.warning("IKE-2 legacy diff scheduling failed", exc_info=True)
 
