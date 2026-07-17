@@ -244,3 +244,31 @@ def test_legacy_diff_does_not_block_response(monkeypatch):
     elapsed = time.perf_counter() - t0
     assert elapsed < 0.5  # must not wait for 2s legacy
     assert v.status in (VerdictStatus.SAFE, VerdictStatus.UNCERTAIN, VerdictStatus.NOT_SAFE)
+
+
+# ---------------------------------------------------------------------------
+# Task 6: IKE-2 wins when engines disagree
+# ---------------------------------------------------------------------------
+
+def test_response_is_ike2_when_disagrees_with_legacy(monkeypatch):
+    import core.bridge as bridge
+    from core.models.verdict import ComplianceVerdict, VerdictStatus
+
+    ike2_v = ComplianceVerdict(status=VerdictStatus.NOT_SAFE, triggered_ingredients=["gelatin"])
+    captured = {}
+
+    monkeypatch.setattr(bridge, "map_ike2_to_compliance_verdict", lambda *a, **k: ike2_v)
+    monkeypatch.setattr(
+        bridge,
+        "_run_ike2_compliance",
+        lambda *a, **k: ("result", "inputs", {}),
+    )
+
+    def capture_schedule(ingredients, rids, primary_status, prepared):
+        captured["primary_status"] = primary_status
+
+    monkeypatch.setattr(bridge, "_schedule_legacy_diff", capture_schedule)
+
+    out = run_new_engine_chat(["gelatin"], restriction_ids=["vegan"], use_api_fallback=False)
+    assert out.status == VerdictStatus.NOT_SAFE
+    assert captured["primary_status"] == "NOT_SAFE"
