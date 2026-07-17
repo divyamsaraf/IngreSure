@@ -14,6 +14,7 @@ from core.ontology.ingredient_schema import Ingredient
 from core.external_apis.base import EnrichmentResult, ConfidenceLevel
 from core.external_apis.usda_fdc import fetch_usda_fdc
 from core.external_apis.open_food_facts import fetch_open_food_facts
+from core.external_apis.enrichment_relevance import is_enrichment_relevant
 from core.external_apis.pubchem import fetch_pubchem
 from core.external_apis.chebi import fetch_chebi
 from core.external_apis.wikidata_api import fetch_wikidata, resolve_to_english_label
@@ -182,6 +183,16 @@ def fetch_ingredient_from_apis(
 
     if best is None:
         best = EnrichmentResult(None, "low", "none", "no_result")
+
+    # Pattern class L: central relevance gate for all API sources
+    if best.ingredient is not None:
+        canon = (best.ingredient.canonical_name or "").strip()
+        if canon and not is_enrichment_relevant(query, canon):
+            logger.warning(
+                "ENRICHMENT rejected relevance mismatch query=%s canonical=%s source=%s",
+                query[:60], canon[:60], best.source,
+            )
+            best = EnrichmentResult(None, "low", best.source, "relevance_mismatch")
 
     # Auto-expand: persist regional -> canonical so next time we don't need online resolve
     if best.ingredient and best.ingredient.canonical_name:

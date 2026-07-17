@@ -9,6 +9,7 @@ from typing import Optional
 import requests
 
 from core.ontology.ingredient_schema import Ingredient
+from core.external_apis.enrichment_relevance import score_enrichment_candidate
 from core.external_apis.http_retry import get_with_retries
 from core.external_apis.base import EnrichmentResult, ConfidenceLevel
 
@@ -187,18 +188,39 @@ def fetch_open_food_facts(
         logger.info("OPEN_FOOD_FACTS no results query=%s", query)
         return EnrichmentResult(None, "low", "open_food_facts", "no_results")
 
-    best = products[0]
+    scored: list[tuple[int, dict]] = []
+    for product in products:
+        name = (product.get("product_name") or product.get("product_name_en") or "").strip()
+        if not name:
+            continue
+        score = score_enrichment_candidate(query, name)
+        if score < 0:
+            logger.info(
+                "OPEN_FOOD_FACTS skip relevance mismatch query=%s product=%s",
+                query, name[:80],
+            )
+            continue
+        scored.append((score, product))
+
+    if not scored:
+        logger.info("OPEN_FOOD_FACTS no relevant results query=%s", query)
+        return EnrichmentResult(None, "low", "open_food_facts", "relevance_mismatch")
+
+    scored.sort(key=lambda pair: pair[0], reverse=True)
+    best_score, best = scored[0]
     name = (best.get("product_name") or best.get("product_name_en") or "").strip().lower()
     q_lower = query.lower()
-    if name and (q_lower in name or name in q_lower or q_lower.split()[0] in name):
+    if name and (q_lower in name or name in q_lower or best_score >= 30):
         confidence: ConfidenceLevel = "high"
-    else:
+    elif best_score >= 10:
         confidence = "medium"
+    else:
+        confidence = "low"
 
     ing = _product_to_ingredient(best, query)
     summary = f"product_name={(best.get('product_name') or '')[:80]}"
     logger.info(
-        "ENRICHMENT OPEN_FOOD_FACTS success query=%s confidence=%s",
-        query, confidence,
+        "ENRICHMENT OPEN_FOOD_FACTS success query=%s confidence=%s score=%s",
+        query, confidence, best_score,
     )
     return EnrichmentResult(ing, confidence, "open_food_facts", summary)

@@ -1,4 +1,5 @@
 __pycache__/
+.claude/
 backend/venv/
 PROJECT_DETAILS.md
 
@@ -22,6 +23,9 @@ data/profiles.json
 data/unknown_ingredients_log.json
 data/learned_regional_mappings.json
 
+# Tier 1 bulk downloads (large; regenerate via scripts/download_*.sh)
+data/raw/
+
 # Root env for Compose variable substitution (optional)
 /.env
 
@@ -29,3 +33,11 @@ data/learned_regional_mappings.json
 DEPLOY.md
 OCI_STEP_BY_STEP.md
 PHASES.md
+
+# Agent skills, rules, hooks, and lockfiles (local tooling; never commit)
+.agents/
+.cursor/
+.claude/
+skills-lock.json
+skills-cursor/
+.cursor/hooks.json.tddguard-bak

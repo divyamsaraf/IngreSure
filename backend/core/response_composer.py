@@ -8,11 +8,9 @@ import re
 from typing import List, Optional, Dict, Any, Set
 
 from core.models.verdict import ComplianceVerdict, VerdictStatus
-from core.normalization.normalizer import normalize_ingredient_key
+from core.normalization.normalizer import normalize_ingredient_key, substance_key, is_e_number_code
 
 logger = logging.getLogger(__name__)
-
-_E_NUMBER_RE = re.compile(r"^e\d{3,4}[a-z]?$", re.IGNORECASE)
 
 # ---------------------------------------------------------------------------
 # Restriction → human-readable diet label
@@ -172,7 +170,7 @@ def _format_user_ingredient_label(user_input: str) -> str:
     if not s:
         return s
     compact = re.sub(r"\s+", "", s)
-    if _E_NUMBER_RE.match(compact):
+    if is_e_number_code(s):
         return compact.upper()
     return _display_name(s)
 
@@ -193,8 +191,12 @@ def format_audit_item_name(user_input: str, canonical: str) -> str:
     canon_label = _display_name(canon or raw)
     compact = re.sub(r"\s+", "", raw)
 
-    if _E_NUMBER_RE.match(compact) and canon and user_label.lower() != canon_label.lower():
+    if is_e_number_code(raw) and canon and user_label.lower() != canon_label.lower():
         return f"{user_label} · {canon_label}"
+
+    from core.external_apis.enrichment_relevance import is_enrichment_relevant
+    if canon and not is_enrichment_relevant(raw, canon):
+        return user_label
 
     raw_key = normalize_ingredient_key(raw) or _normalize_for_match(raw)
     canon_key = normalize_ingredient_key(canon) or _normalize_for_match(canon) if canon else raw_key
@@ -224,6 +226,10 @@ def _ingredient_reason(ingredient: str) -> str:
     """Return a short reason string for an ingredient, handling plurals."""
     key = ingredient.lower().strip()
     reason = INGREDIENT_REASONS.get(key)
+    if reason:
+        return reason
+    sk = substance_key(key)
+    reason = INGREDIENT_REASONS.get(sk)
     if reason:
         return reason
     norm = _normalize_for_match(key)
@@ -291,12 +297,7 @@ def _ingredient_audit_key(s: str) -> str:
     Canonical key for audit grouping — maps E-numbers and known aliases
     (e.g. E120 -> carmine) so the same substance cannot appear in Avoid and Safe.
     """
-    if not s or not isinstance(s, str):
-        return ""
-    key = normalize_ingredient_key(s)
-    if key:
-        return key
-    return _normalize_for_match(s)
+    return substance_key(s)
 
 
 def _build_audit_exclusion_keys(
@@ -308,16 +309,21 @@ def _build_audit_exclusion_keys(
     excluded: Set[str] = set()
     mapping = triggered_to_input or {}
     for canonical in triggered:
-        excluded.add(_ingredient_audit_key(canonical))
+        sk = substance_key(canonical) or canonical
+        excluded.add(sk)
+        excluded.add(_normalize_for_match(sk))
         excluded.add(_normalize_for_match(canonical))
     for canonical, raw in mapping.items():
-        excluded.add(_ingredient_audit_key(canonical))
+        sk = substance_key(canonical) or canonical
+        excluded.add(sk)
+        excluded.add(_normalize_for_match(sk))
         if isinstance(raw, str):
-            excluded.add(_ingredient_audit_key(raw))
+            excluded.add(substance_key(raw))
             excluded.add(_normalize_for_match(raw))
     for item in uncertain:
-        excluded.add(_ingredient_audit_key(item))
-        excluded.add(_normalize_for_match(item))
+        sk = substance_key(item) or item
+        excluded.add(sk)
+        excluded.add(_normalize_for_match(sk))
     excluded.discard("")
     return excluded
 
@@ -492,8 +498,9 @@ def compose_verdict(
         if len(triggered) == 1 and not meaningful_safe and not uncertain:
             ing = triggered[0]
             reason = _ingredient_reason_for_verdict(ing, restrictions)
-            name = _show(triggered_to_input.get(ing, ing))  # show user's input, not API-resolved name
-            verb = "are" if _is_plural(triggered_to_input.get(ing, ing)) else "is"
+            user_label = triggered_to_input.get(ing, ing)
+            name = format_audit_item_name(user_label, ing)
+            verb = "are" if _is_plural(user_label) else "is"
             intro = "Based on your **allergens**," if has_allergy and not has_diet else f"Based on your **{diet}** diet and **allergens**," if has_allergy and has_diet else f"Based on your **{diet}** diet,"
             parts.append(
                 f"{intro} **{name}** {verb} **not suitable** — {reason}."
@@ -502,7 +509,8 @@ def compose_verdict(
             parts.append(_lead_text())
             for ing in triggered:
                 reason = _ingredient_reason_for_verdict(ing, restrictions)
-                display_name = _show(triggered_to_input.get(ing, ing))  # show user's input, not API-resolved name
+                user_label = triggered_to_input.get(ing, ing)
+                display_name = format_audit_item_name(user_label, ing)
                 parts.append(f"- ❌ **{display_name}** — {reason}")
         else:
             restriction_names = ", ".join(_restriction_label(r) for r in restrictions[:3])
@@ -710,12 +718,11 @@ def build_ingredient_audit_payload(
         return format_audit_item_name(raw, canonical)
 
     def _alternatives(ing: str) -> List[str]:
-        key = ing.lower().strip()
-        alts = INGREDIENT_ALTERNATIVES.get(key)
-        if alts:
-            return alts
-        norm = _normalize_for_match(key)
-        return INGREDIENT_ALTERNATIVES.get(norm, [])
+        for key in (substance_key(ing), ing.lower().strip(), _normalize_for_match(ing)):
+            alts = INGREDIENT_ALTERNATIVES.get(key)
+            if alts:
+                return alts
+        return []
 
     excluded_keys = _build_audit_exclusion_keys(triggered, triggered_to_input, uncertain)
     safe_list = [
@@ -730,9 +737,14 @@ def build_ingredient_audit_payload(
 
     groups: List[Dict[str, Any]] = []
 
-    # Avoid
+    # Avoid — one card row per substance (E120/carmine are the same)
     avoid_items: List[Dict[str, Any]] = []
+    seen_avoid: Set[str] = set()
     for ing in triggered:
+        sk = substance_key(ing) or ing
+        if sk in seen_avoid:
+            continue
+        seen_avoid.add(sk)
         display_name = _avoid_display(ing)
         diets = [_restriction_label(r) for r in diet_restrictions]
         allergens = [_restriction_label(r) for r in allergy_restrictions]
@@ -760,9 +772,14 @@ def build_ingredient_audit_payload(
     if depends_items:
         groups.append({"status": "depends", "items": depends_items})
 
-    # Safe
+    # Safe — dedupe aliases that resolve to the same substance
     safe_items: List[Dict[str, Any]] = []
+    seen_safe: Set[str] = set()
     for ing in safe_list:
+        sk = substance_key(ing) or ing.lower().strip()
+        if sk in seen_safe:
+            continue
+        seen_safe.add(sk)
         display_name = _display(ing)
         safe_items.append({
             "name": display_name,

@@ -1,0 +1,60 @@
+[
+  {
+    "id": "simple_list",
+    "class": "A",
+    "raw": "milk, gelatin, E471",
+    "must_include": ["milk", "gelatin", "e471"]
+  },
+  {
+    "id": "parenthesis_flour",
+    "class": "B",
+    "raw": "Enriched Bleached Wheat Flour (Bleached Wheat Flour, Niacin, Folic Acid)",
+    "must_include": ["bleached wheat flour", "niacin", "folic acid"],
+    "must_not_include_brackets": true
+  },
+  {
+    "id": "bracket_flour",
+    "class": "C",
+    "raw": "Enriched Wheat Flour [Flour, Malted Barley Flour, Folic Acid]",
+    "must_include": ["flour", "malted barley flour", "folic acid"],
+    "must_not_include_brackets": true
+  },
+  {
+    "id": "trace_after_period",
+    "class": "D",
+    "raw": "Yeast. Contains 2% Or Less Of Each Of The Following: Sea Salt, Enzymes",
+    "must_include": ["yeast", "sea salt", "enzymes"],
+    "trace_atoms": ["sea salt", "enzymes"],
+    "non_trace_atoms": ["yeast"]
+  },
+  {
+    "id": "ingredients_prefix",
+    "class": "E",
+    "raw": "Ingredients: water, salt",
+    "must_include": ["water", "salt"],
+    "must_not_include_prefix": true
+  },
+  {
+    "id": "semicolon_eu",
+    "class": "F",
+    "raw": "water; sugar; citric acid",
+    "must_include": ["water", "sugar", "citric acid"]
+  },
+  {
+    "id": "may_contain_statement",
+    "class": "G",
+    "raw": "Ingredients: water, flour. May contain: peanuts, tree nuts",
+    "must_include": ["water", "flour", "peanut", "tree nut"],
+    "may_contain_atoms": ["peanut", "tree nut"],
+    "non_may_contain_atoms": ["water", "flour"]
+  },
+  {
+    "id": "sourdough_bread",
+    "class": "CDE",
+    "raw": "Ingredients: Enriched Wheat Flour [Flour, Malted Barley Flour, Reduced Iron, Niacin, Thiamin Mononitrate (Vitamin B1), Riboflavin (Vitamin B2), Folic Acid], Water, Sourdough (Wheat Flour), Wheat Gluten, Yeast. Contains 2% Or Less Of Each Of The Following: Extra Virgin Olive Oil, Sea Salt, Preservatives (Calcium Propionate, Sorbic Acid), Organic Grain Vinegar, Enzymes.",
+    "must_include": ["water", "wheat gluten", "yeast", "enzymes", "malted barley flour"],
+    "must_not_include_brackets": true,
+    "trace_atoms": ["sea salt", "enzymes", "calcium propionate", "sorbic acid"],
+    "must_not_include": ["preservatives"]
+  }
+]

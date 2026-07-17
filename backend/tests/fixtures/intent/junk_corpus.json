@@ -1,0 +1,22 @@
+[
+  {"id": "greeting_hi", "query": "hi", "allowed_intents": ["GREETING"]},
+  {"id": "greeting_hello_there", "query": "Hello there!", "allowed_intents": ["GREETING"]},
+  {"id": "greeting_good_morning", "query": "Good morning", "allowed_intents": ["GREETING"]},
+  {"id": "chat_thanks", "query": "thanks", "allowed_intents": ["GREETING", "GENERAL_QUESTION"]},
+  {"id": "chat_okay", "query": "okay", "allowed_intents": ["GREETING", "GENERAL_QUESTION"]},
+  {"id": "chat_bye", "query": "bye", "allowed_intents": ["GREETING", "GENERAL_QUESTION"]},
+  {"id": "chat_who_are_you", "query": "who are you", "allowed_intents": ["GREETING", "GENERAL_QUESTION"]},
+  {"id": "weather", "query": "what's the weather today", "allowed_intents": ["GENERAL_QUESTION"]},
+  {"id": "weather_rain", "query": "will it rain tomorrow?", "allowed_intents": ["GENERAL_QUESTION"]},
+  {"id": "meta_check_gluten", "query": "Check these ingredients for gluten", "allowed_intents": ["GENERAL_QUESTION"]},
+  {"id": "meta_ingredients_for_vegan", "query": "ingredients for vegan diet", "allowed_intents": ["GENERAL_QUESTION", "PROFILE_UPDATE"]},
+  {"id": "meta_analyze_this", "query": "analyze this for me", "allowed_intents": ["GENERAL_QUESTION"]},
+  {"id": "help_request", "query": "help", "allowed_intents": ["GENERAL_QUESTION"]},
+  {"id": "empty_punctuation", "query": "???", "allowed_intents": ["GENERAL_QUESTION"]},
+  {"id": "what_is_castoreum", "query": "What is castoreum?", "allowed_intents": ["GENERAL_QUESTION"]},
+  {"id": "tell_me_about_gelatin", "query": "Tell me about gelatin", "allowed_intents": ["GENERAL_QUESTION"]},
+  {"id": "suggest_substitute", "query": "suggest a substitute for butter", "allowed_intents": ["GENERAL_QUESTION"]},
+  {"id": "profile_only_vegan", "query": "I am vegan", "allowed_intents": ["PROFILE_UPDATE"]},
+  {"id": "profile_only_jain", "query": "I'm Jain", "allowed_intents": ["PROFILE_UPDATE"]},
+  {"id": "profile_halal_no_food", "query": "I follow halal", "allowed_intents": ["PROFILE_UPDATE"]}
+]

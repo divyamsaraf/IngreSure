@@ -31,6 +31,7 @@ _BUILTIN_REGIONAL: dict[str, str] = {
 
 # regional_key (normalized) -> canonical English name (built-in + static + learned)
 _regional_to_canonical: dict[str, str] = {}
+_static_only_regional: dict[str, str] = {}
 _loaded_static = False
 _loaded_learned = False
 _learned: dict[str, str] = {}
@@ -41,13 +42,14 @@ def _normalize(s: str) -> str:
 
 
 def _load_static() -> None:
-    global _regional_to_canonical, _loaded_static
+    global _regional_to_canonical, _static_only_regional, _loaded_static
     if _loaded_static:
         return
     _loaded_static = True
     # Built-in first so regional names work even when data/ file is missing (e.g. Docker)
     for k, v in _BUILTIN_REGIONAL.items():
         _regional_to_canonical[k] = v
+        _static_only_regional[k] = v
     path = get_regional_ingredient_names_path()
     if not path.exists():
         logger.debug("Regional ingredient names file not found: %s (using built-in)", path)
@@ -64,6 +66,7 @@ def _load_static() -> None:
                 key = _normalize((name or "").strip())
                 if key:
                     _regional_to_canonical[key] = canonical
+                    _static_only_regional[key] = canonical
         logger.info("Loaded %d static regional ingredient name mappings", len(_regional_to_canonical))
     except Exception as e:
         logger.warning("Failed to load regional ingredient names from %s: %s", path, e)
@@ -132,6 +135,33 @@ def set_learned_english(query: str, english_name: str) -> None:
         logger.debug("Learned regional mapping: %s -> %s", norm[:50], en[:50])
     except Exception as e:
         logger.warning("Failed to persist learned regional mapping to %s: %s", path, e)
+
+
+def resolve_static_regional_canonical(query: str) -> str | None:
+    """Regional hint for normalization — static/built-in only (no learned pollution)."""
+    _load_static()
+    if not query or not query.strip():
+        return None
+    normalized = _normalize(query)
+    canonical = _static_only_regional.get(normalized) if normalized else None
+    if canonical and _normalize(canonical) != normalized:
+        return canonical
+    return None
+
+
+def resolve_regional_canonical(query: str, *, include_learned: bool = True) -> str | None:
+    """Return canonical English name for a regional ingredient token, if mapped."""
+    if include_learned:
+        _load_mappings()
+    else:
+        return resolve_static_regional_canonical(query)
+    if not query or not query.strip():
+        return None
+    normalized = _normalize(query)
+    canonical = _regional_to_canonical.get(normalized) if normalized else None
+    if canonical and _normalize(canonical) != normalized:
+        return canonical
+    return None
 
 
 def get_canonical_queries(query: str) -> List[str]:

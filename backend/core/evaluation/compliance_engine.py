@@ -14,6 +14,8 @@ from core.restrictions.restriction_registry import RestrictionRegistry
 from core.models.verdict import ComplianceVerdict, VerdictStatus
 from core.evaluation.confidence import compute_confidence
 from core.knowledge.canonicalizer import CanonicalResolver
+from core.evaluation.resolution_trust import is_trusted_for_compliance
+from core.normalization.normalizer import substance_key
 
 logger = logging.getLogger(__name__)
 
@@ -63,8 +65,18 @@ class ComplianceEngine:
         trace_set = trace_ingredient_keys or set()
         display_map = input_display_map or {}
 
-        def _user_display(canonical_key: str, fallback: str) -> str:
-            return display_map.get(canonical_key) or display_map.get((canonical_key or "").lower().strip()) or fallback
+        def _lookup_user_display(atom_raw: str, ing: Ingredient) -> str:
+            """Map evaluated atom back to what the user typed (E-number, label text, etc.)."""
+            candidates = [
+                substance_key(atom_raw),
+                substance_key(ing.canonical_name),
+                (atom_raw or "").lower().strip(),
+                (ing.canonical_name or "").lower().strip(),
+            ]
+            for candidate in candidates:
+                if candidate and candidate in display_map:
+                    return display_map[candidate]
+            return atom_raw
 
         # Build list of (index, raw, key, is_trace) for items we will resolve
         items: List[Tuple[int, str, str, bool]] = []
@@ -112,9 +124,16 @@ class ComplianceEngine:
 
         for idx, raw, key, is_trace, ing, source, level in results_ordered:
             if use_api_fallback:
-                if ing is not None:
+                if ing is not None and not is_trusted_for_compliance(ing, source, level):
+                    logger.info(
+                        "COMPLIANCE_ENGINE untrusted_resolution uncertain raw=%s source=%s level=%s flags=%s",
+                        raw, source, level, getattr(ing, "uncertainty_flags", None),
+                    )
+                    uncertain_raw.append(raw)
+                    resolution_levels.append("low")
+                elif ing is not None:
                     resolved.append(ing)
-                    resolved_raw.append(_user_display(ing.canonical_name, raw))
+                    resolved_raw.append(_lookup_user_display(raw, ing))
                     resolved_is_trace.append(is_trace)
                     resolution_levels.append(level)
                     if is_trace:
@@ -159,7 +178,7 @@ class ComplianceEngine:
                         )
                 else:
                     resolved.append(ing)
-                    resolved_raw.append(_user_display(ing.canonical_name, raw))
+                    resolved_raw.append(_lookup_user_display(raw, ing))
                     resolved_is_trace.append(is_trace)
                     resolution_levels.append("high")
                     if is_trace:
@@ -189,7 +208,8 @@ class ComplianceEngine:
 
         triggered_restrictions: List[str] = []
         triggered_ingredients: List[str] = []
-        triggered_ingredient_to_input: Dict[str, str] = {}  # canonical -> raw user input for display
+        triggered_ingredient_to_input: Dict[str, str] = {}  # substance_key -> user display label
+        seen_substances: Set[str] = set()
         triggered_restrictions_from_minor: set = set()
         triggered_ingredients_from_minor: set = set()
         warning_count = 0
@@ -202,12 +222,15 @@ class ComplianceEngine:
                 result, reason = self._restrictions.evaluate(ing, rest)
                 if result == "FAIL":
                     triggered_restrictions.append(restriction_id)
-                    triggered_ingredients.append(ing.canonical_name)
-                    if ing.canonical_name not in triggered_ingredient_to_input and idx < len(resolved_raw):
-                        triggered_ingredient_to_input[ing.canonical_name] = resolved_raw[idx]
+                    substance = substance_key(ing.canonical_name) or ing.canonical_name
+                    if substance not in seen_substances:
+                        seen_substances.add(substance)
+                        triggered_ingredients.append(substance)
+                    if substance not in triggered_ingredient_to_input and idx < len(resolved_raw):
+                        triggered_ingredient_to_input[substance] = resolved_raw[idx]
                     if idx < len(resolved_is_trace) and resolved_is_trace[idx]:
                         triggered_restrictions_from_minor.add(restriction_id)
-                        triggered_ingredients_from_minor.add(ing.canonical_name)
+                        triggered_ingredients_from_minor.add(substance)
                 elif result == "WARN":
                     warning_count += 1
 

@@ -1,0 +1,91 @@
+{
+  "errors": [],
+  "warnings": [
+    {
+      "e_code": "E920",
+      "check": "shared_canonical",
+      "message": "canonical l-cysteine also used by E910"
+    },
+    {
+      "check": "off_cross_ref",
+      "message": "250 E-codes in OFF not in catalog",
+      "sample": [
+        "e1000",
+        "e1001",
+        "e101a",
+        "e103",
+        "e105",
+        "e106",
+        "e107",
+        "e111",
+        "e1206",
+        "e1207",
+        "e1208",
+        "e1209",
+        "e121",
+        "e1210",
+        "e125",
+        "e126",
+        "e130",
+        "e140i",
+        "e1411",
+        "e1423"
+      ]
+    },
+    {
+      "check": "off_cross_ref",
+      "message": "7 catalog E-codes not in OFF",
+      "sample": [
+        "e1421",
+        "e1516",
+        "e479",
+        "e700",
+        "e701",
+        "e702",
+        "e943"
+      ]
+    },
+    {
+      "check": "wikidata_cross_ref",
+      "message": "314 E-codes overlap Wikidata layer1"
+    },
+    {
+      "check": "fssai_cross_ref",
+      "message": "116 FSSAI codes not in catalog",
+      "sample": [
+        "e108",
+        "e112",
+        "e113",
+        "e114",
+        "e115",
+        "e116",
+        "e118",
+        "e125",
+        "e1411",
+        "e143",
+        "e1432",
+        "e144",
+        "e146",
+        "e147",
+        "e148",
+        "e1503",
+        "e1504",
+        "e150a",
+        "e150b",
+        "e150c"
+      ]
+    }
+  ],
+  "stats": {
+    "entries": 330,
+    "tier_a": 280,
+    "tier_b": 50,
+    "merge_into": 22,
+    "catalog_e_codes": 330,
+    "off_e_codes": 573,
+    "wikidata_e_codes": 532,
+    "fssai_e_codes": 381,
+    "error_count": 0,
+    "warning_count": 5
+  }
+}

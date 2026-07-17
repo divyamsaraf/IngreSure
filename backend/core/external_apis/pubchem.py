@@ -1,7 +1,9 @@
 """
 PubChem PUG REST API connector for chemical ingredients, E-numbers, additives.
 No API key. Rate limit: ~5 requests/second.
-Search by name: https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/{name}/json
+
+Per-item: fetch_pubchem(), fetch_pubchem_by_cid()
+Batch Layer 1: backend/scripts/fetch_pubchem_batch.py (uses pubchem_batch.py)
 """
 import logging
 import re

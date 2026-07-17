@@ -1,0 +1,776 @@
+{
+  "version": "1.0",
+  "description": "India-specific ingredients for IngreSure ontology",
+  "ingredients": [
+    {
+      "id": "hing",
+      "canonical_name": "asafoetida",
+      "aliases": [
+        "Hing",
+        "Asafoetida",
+        "Asafetida",
+        "Ferula",
+        "Devil's Dung",
+        "Kayam",
+        "Perungayam",
+        "Heeng",
+        "Hingu",
+        "Inguva"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "root_vegetable": true,
+      "onion_source": true,
+      "gluten_source": true,
+      "uncertainty_flags": [
+        "jain_restricted_as_underground_resin",
+        "commercial_form_contains_wheat_flour_carrier"
+      ],
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "khoa",
+      "canonical_name": "khoa",
+      "aliases": [
+        "Khoa",
+        "Mawa",
+        "Khoya",
+        "Evaporated Milk Solids"
+      ],
+      "animal_origin": true,
+      "plant_origin": false,
+      "synthetic": false,
+      "dairy_source": true,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "paneer",
+      "canonical_name": "paneer",
+      "aliases": [
+        "Paneer",
+        "Indian Cottage Cheese",
+        "Chenna",
+        "Chhena"
+      ],
+      "animal_origin": true,
+      "plant_origin": false,
+      "synthetic": false,
+      "dairy_source": true,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "dahi",
+      "canonical_name": "dahi",
+      "aliases": [
+        "Dahi",
+        "Curd",
+        "Indian Yogurt",
+        "Thayir",
+        "Mosaru"
+      ],
+      "animal_origin": true,
+      "plant_origin": false,
+      "synthetic": false,
+      "dairy_source": true,
+      "fermented": true,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "rabri",
+      "canonical_name": "rabri",
+      "aliases": [
+        "Rabri",
+        "Rabdi",
+        "Rabdhi",
+        "Thickened Milk"
+      ],
+      "animal_origin": true,
+      "plant_origin": false,
+      "synthetic": false,
+      "dairy_source": true,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "lassi",
+      "canonical_name": "lassi",
+      "aliases": [
+        "Lassi",
+        "Buttermilk",
+        "Chaas",
+        "Mattha",
+        "Majjige"
+      ],
+      "animal_origin": true,
+      "plant_origin": false,
+      "synthetic": false,
+      "dairy_source": true,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "ghee",
+      "canonical_name": "ghee",
+      "aliases": [
+        "Ghee",
+        "Clarified Butter",
+        "Desi Ghee",
+        "Pure Ghee",
+        "Anhydrous Milk Fat",
+        "AMF",
+        "Ney"
+      ],
+      "animal_origin": true,
+      "plant_origin": false,
+      "synthetic": false,
+      "dairy_source": true,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "buttermilk_powder",
+      "canonical_name": "buttermilk powder",
+      "aliases": [
+        "Buttermilk Powder",
+        "Butter Milk Powder",
+        "Dried Buttermilk",
+        "Chhachh Powder"
+      ],
+      "animal_origin": true,
+      "plant_origin": false,
+      "synthetic": false,
+      "dairy_source": true,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "turmeric",
+      "canonical_name": "turmeric",
+      "aliases": [
+        "Turmeric",
+        "Haldi",
+        "Manjal",
+        "Pasupu",
+        "Haridra",
+        "Curcuma longa",
+        "Indian Saffron",
+        "Ground Turmeric",
+        "Turmeric Powder",
+        "Turmeric Extract"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "red_chilli",
+      "canonical_name": "red chilli",
+      "aliases": [
+        "Red Chilli",
+        "Red Chili",
+        "Chilli Powder",
+        "Red Chilli Powder",
+        "Lal Mirch",
+        "Kashmiri Chilli",
+        "Bydagi Chilli",
+        "Cayenne Pepper",
+        "Capsicum annuum"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "coriander",
+      "canonical_name": "coriander",
+      "aliases": [
+        "Coriander",
+        "Dhania",
+        "Kothamalli",
+        "Kottambari",
+        "Coriander Powder",
+        "Ground Coriander",
+        "Cilantro",
+        "Coriandrum sativum"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "cumin",
+      "canonical_name": "cumin",
+      "aliases": [
+        "Cumin",
+        "Jeera",
+        "Jira",
+        "Zeera",
+        "Zira",
+        "Jeerige",
+        "Cumin Powder",
+        "Ground Cumin",
+        "Cuminum cyminum"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "cardamom",
+      "canonical_name": "cardamom",
+      "aliases": [
+        "Cardamom",
+        "Elaichi",
+        "Elakkai",
+        "Elachi",
+        "Yelakki",
+        "Green Cardamom",
+        "Black Cardamom",
+        "Elettaria cardamomum"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "black_pepper",
+      "canonical_name": "black pepper",
+      "aliases": [
+        "Black Pepper",
+        "Kali Mirch",
+        "Kali Miri",
+        "Milagu",
+        "Black Pepper Powder",
+        "Ground Black Pepper",
+        "Pepper",
+        "Piper nigrum"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "mustard_seeds",
+      "canonical_name": "mustard seeds",
+      "aliases": [
+        "Mustard Seeds",
+        "Rai",
+        "Sarson",
+        "Kadugu",
+        "Aavalu",
+        "Black Mustard",
+        "Yellow Mustard",
+        "Brassica juncea"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "fenugreek",
+      "canonical_name": "fenugreek",
+      "aliases": [
+        "Fenugreek",
+        "Methi",
+        "Vendhayam",
+        "Menthya",
+        "Fenugreek Seeds",
+        "Methi Seeds",
+        "Trigonella foenum-graecum"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "curry_leaves",
+      "canonical_name": "curry leaves",
+      "aliases": [
+        "Curry Leaves",
+        "Kadi Patta",
+        "Karuveppilai",
+        "Karivepaku",
+        "Sweet Neem",
+        "Murraya koenigii"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "garam_masala",
+      "canonical_name": "garam masala",
+      "aliases": [
+        "Garam Masala",
+        "Mixed Spices",
+        "Indian Spice Blend",
+        "Whole Spices Mix"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "uncertainty_flags": ["blend_composition_varies_by_brand"],
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "chat_masala",
+      "canonical_name": "chat masala",
+      "aliases": [
+        "Chaat Masala",
+        "Chat Masala",
+        "Chaat Powder"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "uncertainty_flags": ["blend_composition_varies"],
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "amchur",
+      "canonical_name": "amchur",
+      "aliases": [
+        "Amchur",
+        "Amchoor",
+        "Aamchoor",
+        "Dry Mango Powder",
+        "Dried Mango Powder",
+        "Aam Chur"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "tamarind",
+      "canonical_name": "tamarind",
+      "aliases": [
+        "Tamarind",
+        "Imli",
+        "Puli",
+        "Chinthapandu",
+        "Tamarind Extract",
+        "Tamarind Paste",
+        "Tamarind Concentrate",
+        "Tamarindus indica"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "kokum",
+      "canonical_name": "kokum",
+      "aliases": [
+        "Kokum",
+        "Kokam",
+        "Garcinia indica",
+        "Amsool",
+        "Kokum Butter",
+        "Sol Kadhi"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "besan",
+      "canonical_name": "besan",
+      "aliases": [
+        "Besan",
+        "Gram Flour",
+        "Chickpea Flour",
+        "Bengal Gram Flour",
+        "Chana Dal Flour",
+        "Kadalai Maavu"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "gluten_source": false,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "atta",
+      "canonical_name": "atta",
+      "aliases": [
+        "Atta",
+        "Whole Wheat Flour",
+        "Chakki Atta",
+        "Chapati Flour",
+        "Indian Whole Wheat Flour"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "gluten_source": true,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "maida",
+      "canonical_name": "maida",
+      "aliases": [
+        "Maida",
+        "Refined Flour",
+        "All Purpose Flour",
+        "White Flour",
+        "Refined Wheat Flour"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "gluten_source": true,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "sooji",
+      "canonical_name": "sooji",
+      "aliases": [
+        "Sooji",
+        "Suji",
+        "Semolina",
+        "Rava",
+        "Bombay Rava",
+        "Cream of Wheat",
+        "Farina"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "gluten_source": true,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "rice_flour",
+      "canonical_name": "rice flour",
+      "aliases": [
+        "Rice Flour",
+        "Chaval Ka Atta",
+        "Arisi Maavu",
+        "Ground Rice",
+        "Rice Powder"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "jowar_flour",
+      "canonical_name": "jowar flour",
+      "aliases": [
+        "Jowar Flour",
+        "Sorghum Flour",
+        "Jolada Hittu",
+        "Jonnala Pindi"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "bajra_flour",
+      "canonical_name": "bajra flour",
+      "aliases": [
+        "Bajra Flour",
+        "Pearl Millet Flour",
+        "Kambu Maavu"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "nachni_flour",
+      "canonical_name": "nachni flour",
+      "aliases": [
+        "Nachni",
+        "Ragi",
+        "Ragi Flour",
+        "Finger Millet Flour",
+        "Mandua",
+        "Kelvaragu"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "rajgira_flour",
+      "canonical_name": "rajgira flour",
+      "aliases": [
+        "Rajgira",
+        "Amaranth Flour",
+        "Ramdana",
+        "Chaulai",
+        "Rajgira Atta"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "uncertainty_flags": ["fasting_permitted_jain_hindu_vrat"],
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "chana_dal",
+      "canonical_name": "chana dal",
+      "aliases": [
+        "Chana Dal",
+        "Bengal Gram",
+        "Split Chickpeas",
+        "Kadalai Paruppu",
+        "Senagapappu"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "moong_dal",
+      "canonical_name": "moong dal",
+      "aliases": [
+        "Moong Dal",
+        "Moong Dhal",
+        "Split Mung Beans",
+        "Green Gram Dal",
+        "Pesara Pappu",
+        "Pasi Paruppu"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "urad_dal",
+      "canonical_name": "urad dal",
+      "aliases": [
+        "Urad Dal",
+        "Black Gram",
+        "White Lentil",
+        "Split Black Gram",
+        "Ulutham Paruppu",
+        "Minapappu"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "toor_dal",
+      "canonical_name": "toor dal",
+      "aliases": [
+        "Toor Dal",
+        "Tuvar Dal",
+        "Arhar Dal",
+        "Yellow Lentils",
+        "Split Pigeon Peas",
+        "Kandhi Pappu",
+        "Thuvaram Paruppu"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "masoor_dal",
+      "canonical_name": "masoor dal",
+      "aliases": [
+        "Masoor Dal",
+        "Red Lentils",
+        "Split Red Lentils",
+        "Mysore Dal",
+        "Misur Dal"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "kabuli_chana",
+      "canonical_name": "kabuli chana",
+      "aliases": [
+        "Kabuli Chana",
+        "White Chickpeas",
+        "Garbanzo Beans",
+        "Chole",
+        "Safed Chana"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "jaggery",
+      "canonical_name": "jaggery",
+      "aliases": [
+        "Jaggery",
+        "Gur",
+        "Gud",
+        "Vellam",
+        "Bella",
+        "Bellam",
+        "Unrefined Cane Sugar",
+        "Panela",
+        "Piloncillo",
+        "Rapadura",
+        "Palm Jaggery",
+        "Coconut Jaggery",
+        "Date Jaggery"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "mishri",
+      "canonical_name": "mishri",
+      "aliases": [
+        "Mishri",
+        "Misri",
+        "Rock Sugar",
+        "Crystal Sugar",
+        "Sugar Candy",
+        "Kalkandu"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "khand",
+      "canonical_name": "khand",
+      "aliases": [
+        "Khand",
+        "Raw Cane Sugar",
+        "Unrefined Sugar",
+        "Desi Khand",
+        "Raw Sugar"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "mustard_oil",
+      "canonical_name": "mustard oil",
+      "aliases": [
+        "Mustard Oil",
+        "Sarson Ka Tel",
+        "Kadugu Ennai",
+        "Kachi Ghani Mustard Oil",
+        "Cold Pressed Mustard Oil"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "groundnut_oil",
+      "canonical_name": "groundnut oil",
+      "aliases": [
+        "Groundnut Oil",
+        "Peanut Oil",
+        "Mungfali Ka Tel",
+        "Moongphali Oil",
+        "Verkadalai Ennai"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "nut_source": "peanut",
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "sesame_oil",
+      "canonical_name": "sesame oil",
+      "aliases": [
+        "Sesame Oil",
+        "Til Ka Tel",
+        "Gingelly Oil",
+        "Nalla Ennai",
+        "Nuvvula Nune",
+        "Till Oil",
+        "Til Oil"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "sesame_source": true,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "coconut_oil",
+      "canonical_name": "coconut oil",
+      "aliases": [
+        "Coconut Oil",
+        "Nariyal Ka Tel",
+        "Thengai Ennai",
+        "Kopra Tel",
+        "Virgin Coconut Oil",
+        "VCO"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "vanaspati",
+      "canonical_name": "vanaspati",
+      "aliases": [
+        "Vanaspati",
+        "Vanaspati Ghee",
+        "PHVO",
+        "Hydrogenated Vegetable Oil",
+        "Partially Hydrogenated Vegetable Oil",
+        "Dalda",
+        "Vegetable Shortening"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "uncertainty_flags": ["may_contain_traces_of_animal_fat_in_some_brands"],
+      "regions": ["India", "Global"]
+    },
+    {
+      "id": "murukku",
+      "canonical_name": "murukku",
+      "aliases": [
+        "Murukku",
+        "Chakli",
+        "Chakali",
+        "Namkeen"
+      ],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "uncertainty_flags": [
+        "product_not_ingredient_composition_varies",
+        "product_category_not_single_ingredient"
+      ],
+      "regions": ["India", "Global"]
+    }
+  ]
+}

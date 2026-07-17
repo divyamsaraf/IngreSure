@@ -11,6 +11,7 @@ from core.evaluation.compliance_engine import ComplianceEngine
 from core.models.verdict import ComplianceVerdict
 from core.parsing.ingredient_parser import preprocess_ingredients
 from core.normalization.parser import flatten_ingredients
+from core.normalization.normalizer import substance_key
 
 logger = logging.getLogger(__name__)
 
@@ -176,8 +177,8 @@ def preprocess_ingredient_list(
 ) -> Tuple[List[str], Set[str], Dict[str, str]]:
     """Preprocess ingredient strings into atomic names, trace keys, and display labels.
 
-    display_by_canonical maps normalized lookup keys (e.g. gelatin) back to the
-    user's original input (e.g. E441) for audit card display.
+    display_by_canonical maps substance keys (e.g. carmine, gelatin) back to the
+    user's original input (e.g. E120, E441) for audit card display.
     """
     flattened: List[str] = []
     trace_keys: Set[str] = set()
@@ -191,14 +192,18 @@ def preprocess_ingredient_list(
             atoms = flatten_ingredients(x["name"])
             for a in atoms:
                 flattened.append(a)
-                display_by_canonical.setdefault(a, s)
+                sk = substance_key(a)
+                display_by_canonical.setdefault(sk, s)
+                display_by_canonical.setdefault(a.lower().strip(), s)
                 if x.get("trace"):
                     trace_keys.add(a)
         if not items:
             atoms = flatten_ingredients(s)
             for a in atoms:
                 flattened.append(a)
-                display_by_canonical.setdefault(a, s)
+                sk = substance_key(a)
+                display_by_canonical.setdefault(sk, s)
+                display_by_canonical.setdefault(a.lower().strip(), s)
     return flattened, trace_keys, display_by_canonical
 
 
@@ -212,6 +217,7 @@ def run_new_engine_chat(
     restriction_ids: Optional[List[str]] = None,
     profile_context: Optional[Dict[str, Any]] = None,
     use_api_fallback: bool = True,
+    prepared_decomposed: Optional[List[Any]] = None,
 ) -> ComplianceVerdict:
     """Run compliance engine for chat."""
     if restriction_ids is not None:
@@ -221,13 +227,22 @@ def run_new_engine_chat(
     else:
         rids = profile_to_restriction_ids(user_profile if isinstance(user_profile, dict) else None)
 
-    atomic_names, trace_keys, display_by_canonical = preprocess_ingredient_list(ingredients)
+    if prepared_decomposed is not None:
+        atomic_names = [d.name for d in prepared_decomposed]
+        trace_keys = {d.name for d in prepared_decomposed if d.trace}
+        display_by_canonical: Dict[str, str] = {}
+        for d in prepared_decomposed:
+            sk = substance_key(d.name)
+            display_by_canonical.setdefault(sk, d.name)
+            display_by_canonical.setdefault(d.name.lower().strip(), d.name)
+    else:
+        atomic_names, trace_keys, display_by_canonical = preprocess_ingredient_list(ingredients)
     logger.info(
         "COMPLIANCE preprocess normalized_count=%d trace_count=%d",
         len(atomic_names), len(trace_keys),
     )
     engine = ComplianceEngine()
-    return engine.evaluate(
+    verdict = engine.evaluate(
         atomic_names,
         restriction_ids=rids,
         trace_ingredient_keys=trace_keys or None,
@@ -235,4 +250,21 @@ def run_new_engine_chat(
         profile_context=profile_context,
         input_display_map=display_by_canonical or None,
     )
+
+    # IKE-2 shadow mode (no-op unless IKE2_MODE=='shadow'): run the new engine
+    # alongside and log divergences. Never alters the legacy verdict below.
+    try:
+        from core.knowledge.ike2.shadow.runner import run_shadow
+
+        run_shadow(
+            ingredients,
+            rids,
+            None,
+            verdict.status,
+            decomposed_atoms=prepared_decomposed,
+        )
+    except Exception:  # belt-and-suspenders: shadow must never break legacy
+        logger.warning("IKE-2 shadow hook failed; legacy unaffected", exc_info=True)
+
+    return verdict
 

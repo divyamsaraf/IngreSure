@@ -12,6 +12,8 @@ import logging
 from .ingredient_schema import Ingredient
 from core.config import get_ontology_path, get_dynamic_ontology_path
 
+from core.normalization.normalizer import normalize_ingredient_key, substance_key, is_e_number_code
+
 logger = logging.getLogger(__name__)
 
 _DEFAULT_ONTOLOGY_PATH = get_ontology_path()
@@ -20,8 +22,34 @@ _DEFAULT_DYNAMIC_PATH = get_dynamic_ontology_path()
 
 def _normalize_key(text: str) -> str:
     """Deterministic normalization for lookup. Uses normalize_ingredient_key which applies KNOWN_VARIANTS."""
-    from core.normalization.normalizer import normalize_ingredient_key
     return normalize_ingredient_key(text)
+
+
+def _prefer_substance_entry(existing: Ingredient, new: Ingredient, sk: str) -> Ingredient:
+    """When two ontology rows share a substance key, keep the human-readable canonical name."""
+    if (existing.canonical_name or "").lower() == sk:
+        return existing
+    if (new.canonical_name or "").lower() == sk:
+        return new
+    if is_e_number_code(existing.canonical_name) and not is_e_number_code(new.canonical_name):
+        return new
+    if is_e_number_code(new.canonical_name) and not is_e_number_code(existing.canonical_name):
+        return existing
+    return new
+
+
+def _register_ingredient(by_key: dict[str, Ingredient], ing: Ingredient) -> None:
+    """Index ingredient under every alias key; merge with existing substance entries."""
+    keys = [ing.canonical_name] + (ing.aliases or [])
+    for k in keys:
+        nk = _normalize_key(k)
+        if not nk:
+            continue
+        sk = substance_key(nk)
+        existing = by_key.get(sk)
+        winner = _prefer_substance_entry(existing, ing, sk) if existing else ing
+        by_key[nk] = winner
+        by_key[sk] = winner
 
 
 # Words that indicate a string is a sentence/question, not an ingredient name
@@ -56,6 +84,28 @@ def _is_valid_ingredient_input(s: str) -> bool:
     return True
 
 
+def _looks_like_gibberish(key: str) -> bool:
+    """
+    Reject random keyboard input (e.g. safnaksjnf) before API lookup.
+    E-numbers and known short chemical tokens are allowed through.
+    """
+    if not key or is_e_number_code(key):
+        return False
+    compact = re.sub(r"[^a-z0-9]", "", key.lower())
+    if len(compact) < 8:
+        return False
+    if not compact.isalpha():
+        return False
+    vowels = sum(1 for c in compact if c in "aeiou")
+    if vowels == 0:
+        return True
+    # Long alphabetic token with unusual consonant clusters and no dictionary hint
+    consonant_run = max(len(m.group()) for m in re.finditer(r"[^aeiouy]+", compact)) if compact else 0
+    if len(compact) >= 9 and consonant_run >= 4 and vowels <= 2:
+        return True
+    return False
+
+
 class IngredientRegistry:
     """
     O(1) lookup by normalized canonical_name or alias.
@@ -83,11 +133,10 @@ class IngredientRegistry:
             self._version = data.get("ontology_version", "0")
             for item in data.get("ingredients", []):
                 ing = Ingredient.from_dict(item)
-                keys = [ing.canonical_name] + (ing.aliases or [])
-                for k in keys:
+                _register_ingredient(self._by_key, ing)
+                for k in [ing.canonical_name] + (ing.aliases or []):
                     key = _normalize_key(k)
                     if key:
-                        self._by_key[key] = ing
                         self._static_keys.add(key)
             logger.info("Loaded %d ingredient keys from static %s", len(self._by_key), self._path)
         else:
@@ -100,11 +149,7 @@ class IngredientRegistry:
                 for item in dyn.get("ingredients", []):
                     d = {k: v for k, v in item.items() if not str(k).startswith("_")}
                     ing = Ingredient.from_dict(d)
-                    keys = [ing.canonical_name] + (ing.aliases or [])
-                    for k in keys:
-                        key = _normalize_key(k)
-                        if key:
-                            self._by_key[key] = ing
+                    _register_ingredient(self._by_key, ing)
                 logger.info("Loaded %d total keys after dynamic ontology", len(self._by_key))
             except Exception as e:
                 logger.warning("Dynamic ontology load failed: %s", e)
@@ -131,11 +176,7 @@ class IngredientRegistry:
 
     def add_ingredient(self, ingredient: Ingredient) -> None:
         """Add an ingredient to in-memory registry (e.g. after API enrichment)."""
-        keys = [ingredient.canonical_name] + (ingredient.aliases or [])
-        for k in keys:
-            key = _normalize_key(k)
-            if key:
-                self._by_key[key] = ingredient
+        _register_ingredient(self._by_key, ingredient)
 
     def resolve_with_fallback(
         self,
@@ -151,14 +192,48 @@ class IngredientRegistry:
         On high-confidence API result, adds to dynamic ontology and in-memory registry.
         """
         key = _normalize_key(ingredient_str)
+        # E-numbers: static ontology only. Never API/dynamic — avoids false Safe from PubChem/ChEBI.
+        if is_e_number_code(key):
+            sk = substance_key(key)
+            for lookup_key in (key, sk):
+                if lookup_key in self._static_keys:
+                    ing = self._by_key.get(lookup_key)
+                    if ing is not None:
+                        return ing, "static", "high"
+            if log_unknown:
+                from core.enrichment.unknown_log import log_unknown_ingredient
+                log_unknown_ingredient(
+                    ingredient_str, key,
+                    restriction_ids=restriction_ids,
+                    profile_context=profile_context,
+                )
+            logger.info(
+                "E_NUMBER unknown in static ontology, skipping API raw=%s key=%s",
+                ingredient_str[:50], key,
+            )
+            return None, "static", "low"
+
         ing, source = self.resolve_with_source(ingredient_str)
         if ing is not None:
-            return ing, source, "high"
+            from core.external_apis.enrichment_relevance import is_enrichment_relevant
+            if not is_enrichment_relevant(ingredient_str, ing.canonical_name):
+                logger.warning(
+                    "ENRICHMENT rejected stored species mismatch raw=%s canonical=%s source=%s",
+                    ingredient_str[:50], ing.canonical_name[:60], source,
+                )
+            else:
+                return ing, source, "high"
 
         # Reject obviously non-ingredient strings BEFORE API lookup
         if not _is_valid_ingredient_input(key):
             logger.warning(
                 "INGREDIENT_VALIDATION rejected non-ingredient input raw=%s key=%s",
+                ingredient_str[:60], key,
+            )
+            return None, "static", "low"
+        if _looks_like_gibberish(key):
+            logger.warning(
+                "INGREDIENT_VALIDATION rejected gibberish input raw=%s key=%s",
                 ingredient_str[:60], key,
             )
             return None, "static", "low"
@@ -185,7 +260,14 @@ class IngredientRegistry:
             )
             return None, "api", "low"
 
+        from core.external_apis.enrichment_relevance import is_enrichment_relevant
         canonical = result.ingredient.canonical_name
+        if not is_enrichment_relevant(ingredient_str, canonical):
+            logger.warning(
+                "ENRICHMENT rejected API species mismatch raw=%s canonical=%s source=%s",
+                ingredient_str[:50], canonical[:60], result.source,
+            )
+            return None, "api", "low"
         if result.confidence == "high":
             append_to_dynamic_ontology(result.ingredient, result.source, result.confidence)
             self.add_ingredient(result.ingredient)

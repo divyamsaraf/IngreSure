@@ -22,6 +22,7 @@ from supabase import create_client, Client
 from core.config import get_supabase_url
 from core.external_apis.base import EnrichmentResult
 from core.ontology.ingredient_schema import Ingredient
+from core.ontology.ingredient_registry import normalize_ingredient_key
 
 # Allowed values for ingredients.source (must match DB check constraint)
 ALLOWED_INGREDIENT_SOURCES = (
@@ -36,6 +37,10 @@ ALLOWED_INGREDIENT_SOURCES = (
     "wikidata",
     "dbpedia",
     "foodb",
+    "fda_gras",
+    "foodex2",
+    "fssai",
+    "nin",
     "uniprot",
     "admin",
     "system",
@@ -63,18 +68,39 @@ class SupabaseConfig:
     key: str
 
 
+def _resolve_supabase_key() -> str:
+    """Pick the best Supabase API key from environment.
+
+    Prefers ``sb_secret_*`` (new Supabase CLI) and legacy JWT keys over
+    ``sb_publishable_*``, which is subject to RLS and cannot run IKE-2 ETL.
+    """
+    raw = [
+        os.environ.get("SUPABASE_SERVICE_ROLE_KEY"),
+        os.environ.get("SUPABASE_SECRET_KEY"),
+        os.environ.get("SUPABASE_KEY"),
+        os.environ.get("NEXT_PUBLIC_SUPABASE_ANON_KEY"),
+    ]
+    keys = [str(k).strip() for k in raw if k and str(k).strip()]
+
+    for k in keys:
+        if k.startswith("sb_secret_"):
+            return k
+    for k in keys:
+        if k.startswith("eyJ"):
+            return k
+    for k in keys:
+        if not k.startswith("sb_publishable_"):
+            return k
+    return keys[0] if keys else ""
+
+
 def get_supabase_config() -> Optional[SupabaseConfig]:
     """
     Resolve Supabase credentials from environment.
     Uses Docker-safe URL (localhost/127.0.0.1 -> host.docker.internal) when RUNNING_IN_DOCKER=1.
     """
     url = get_supabase_url()
-    key = (
-        os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
-        or os.environ.get("SUPABASE_KEY")
-        or os.environ.get("NEXT_PUBLIC_SUPABASE_ANON_KEY")
-        or ""
-    ).strip()
+    key = _resolve_supabase_key()
     if not url or not key:
         return None
     return SupabaseConfig(url=url, key=key)
@@ -227,43 +253,51 @@ class IngredientKnowledgeDB:
             canon_name = (ing.canonical_name or "").strip() or normalized_key
             group_sel = (
                 client.table("ingredient_groups")
-                .select("id")
+                .select("id, knowledge_state")
                 .eq("canonical_name", canon_name)
                 .is_("superseded_by", None)
                 .limit(1)
                 .execute()
             )
+            origin_type = _origin_type_from_ingredient(ing)
+            group_dietary_payload = {
+                "origin_type": origin_type,
+                "animal_origin": ing.animal_origin,
+                "plant_origin": ing.plant_origin,
+                "synthetic": ing.synthetic,
+                "fungal": ing.fungal,
+                "insect_derived": ing.insect_derived,
+                "animal_species": ing.animal_species,
+                "egg_source": ing.egg_source,
+                "dairy_source": ing.dairy_source,
+                "gluten_source": ing.gluten_source,
+                "nut_source": ing.nut_source,
+                "soy_source": ing.soy_source,
+                "sesame_source": ing.sesame_source,
+                "alcohol_content": ing.alcohol_content,
+                "root_vegetable": ing.root_vegetable,
+                "onion_source": ing.onion_source,
+                "garlic_source": ing.garlic_source,
+                "fermented": ing.fermented,
+                "uncertainty_flags": _list(ing.uncertainty_flags),
+                "derived_from": _list(ing.derived_from),
+                "contains": _list(ing.contains),
+                "may_contain": _list(ing.may_contain),
+                "regions": _list(ing.regions),
+            }
             if group_sel.data:
                 group_id = group_sel.data[0]["id"]
+                knowledge_state = (group_sel.data[0].get("knowledge_state") or "").upper()
+                if knowledge_state not in ("LOCKED", "VERIFIED"):
+                    client.table("ingredient_groups").update(group_dietary_payload).eq(
+                        "id", group_id
+                    ).execute()
             else:
-                origin_type = _origin_type_from_ingredient(ing)
                 group_payload = {
                     "canonical_name": canon_name,
-                    "origin_type": origin_type,
-                    "animal_origin": ing.animal_origin,
-                    "plant_origin": ing.plant_origin,
-                    "synthetic": ing.synthetic,
-                    "fungal": ing.fungal,
-                    "insect_derived": ing.insect_derived,
-                    "animal_species": ing.animal_species,
-                    "egg_source": ing.egg_source,
-                    "dairy_source": ing.dairy_source,
-                    "gluten_source": ing.gluten_source,
-                    "nut_source": ing.nut_source,
-                    "soy_source": ing.soy_source,
-                    "sesame_source": ing.sesame_source,
-                    "alcohol_content": ing.alcohol_content,
-                    "root_vegetable": ing.root_vegetable,
-                    "onion_source": ing.onion_source,
-                    "garlic_source": ing.garlic_source,
-                    "fermented": ing.fermented,
+                    **group_dietary_payload,
                     "knowledge_state": "DISCOVERED" if result.confidence == "medium" else "AUTO_CLASSIFIED",
                     "version": 1,
-                    "uncertainty_flags": _list(ing.uncertainty_flags),
-                    "derived_from": _list(ing.derived_from),
-                    "contains": _list(ing.contains),
-                    "may_contain": _list(ing.may_contain),
-                    "regions": _list(ing.regions),
                 }
                 ins_group = client.table("ingredient_groups").insert(group_payload).execute()
                 group_id = ins_group.data[0]["id"]
@@ -310,10 +344,92 @@ class IngredientKnowledgeDB:
                 }
                 client.table("ingredient_aliases").insert(alias_payload).execute()
 
+            extra_aliases = result.aliases if hasattr(result, "aliases") and result.aliases else ing.aliases
+            if extra_aliases:
+                for alias_str in extra_aliases:
+                    normalized = normalize_ingredient_key(alias_str)
+                    if not normalized or normalized == norm_name:
+                        continue
+                    try:
+                        client.table("ingredient_aliases").insert({
+                            "alias": alias_str,
+                            "normalized_alias": normalized,
+                            "ingredient_id": ingredient_id,
+                            "alias_type": "synonym",
+                            "language": "en",
+                        }).execute()
+                    except Exception:
+                        pass
+
             return group_id
         except Exception as e:
             logging.getLogger(__name__).warning("upsert_from_enrichment failed key=%s: %s", normalized_key[:80], e)
             return None
+
+    async def record_resolution_metric(
+        self,
+        source_layer: str,
+        resolved: bool,
+        resolution_time_ms: float = 0.0,
+        new_group: bool = False,
+        new_alias: bool = False,
+    ) -> None:
+        """Write-only, fire-and-forget. Never raises."""
+        if not self._client:
+            return
+        try:
+            today = datetime.utcnow().date().isoformat()
+
+            column_map = {
+                "cache": "resolved_cache",
+                "db": "resolved_db",
+                "static": "resolved_static",
+                "dynamic": "resolved_static",
+                "api": "resolved_api",
+            }
+            source_col = column_map.get(
+                source_layer, "unresolved" if not resolved else "resolved_api"
+            )
+
+            client = self._client
+            result = (
+                client.table("enrichment_metrics")
+                .select("*")
+                .eq("date", today)
+                .limit(1)
+                .execute()
+            )
+
+            if result.data:
+                row = result.data[0]
+                updates = {
+                    "total_queries": row["total_queries"] + 1,
+                    source_col: row.get(source_col, 0) + 1,
+                }
+                if new_group:
+                    updates["new_groups_created"] = row.get("new_groups_created", 0) + 1
+                if new_alias:
+                    updates["new_aliases_added"] = row.get("new_aliases_added", 0) + 1
+                total = updates["total_queries"]
+                unresolved = row.get("unresolved", 0) + (1 if not resolved else 0)
+                updates["coverage_percent"] = (
+                    ((total - unresolved) / total * 100) if total > 0 else 0
+                )
+                updates["unresolved"] = unresolved
+
+                client.table("enrichment_metrics").update(updates).eq("date", today).execute()
+            else:
+                client.table("enrichment_metrics").insert({
+                    "date": today,
+                    "total_queries": 1,
+                    source_col: 1,
+                    "unresolved": 0 if resolved else 1,
+                    "coverage_percent": 100.0 if resolved else 0.0,
+                    "new_groups_created": 1 if new_group else 0,
+                    "new_aliases_added": 1 if new_alias else 0,
+                }).execute()
+        except Exception:
+            pass
 
     def upsert_unknown_ingredient(
         self,

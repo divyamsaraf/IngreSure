@@ -22,6 +22,12 @@
           "action": "FAIL"
         },
         {
+          "field": "animal_species",
+          "operator": "contains",
+          "value": "porcine",
+          "action": "FAIL"
+        },
+        {
           "field": "insect_derived",
           "operator": "equals",
           "value": true,
@@ -41,6 +47,12 @@
           "field": "animal_species",
           "operator": "equals",
           "value": "pig",
+          "action": "FAIL"
+        },
+        {
+          "field": "animal_species",
+          "operator": "contains",
+          "value": "porcine",
           "action": "FAIL"
         },
         {

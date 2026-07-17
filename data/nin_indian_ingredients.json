@@ -1,0 +1,502 @@
+[
+  {
+    "canonical_name": "ragi",
+    "aliases": ["finger millet", "nachni", "kezhvaragu"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "bajra",
+    "aliases": ["pearl millet", "bajri", "kambu"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "jowar",
+    "aliases": ["sorghum", "cholam"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "kuttu",
+    "aliases": ["buckwheat flour", "buckwheat"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "sabudana",
+    "aliases": ["sago", "tapioca pearls"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "poha",
+    "aliases": ["flattened rice", "chivda", "aval"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "makhana",
+    "aliases": ["foxnut", "lotus seeds", "phool makhana"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "kala namak",
+    "aliases": ["black salt", "Himalayan black salt"],
+    "synthetic": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "hing",
+    "aliases": ["asafoetida", "perungayam"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "amchur",
+    "aliases": ["dried mango powder", "amchoor"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "kasuri methi",
+    "aliases": ["dried fenugreek leaves"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "curry leaves",
+    "aliases": ["kadi patta", "karuveppilai"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "drumstick",
+    "aliases": ["moringa pods", "sahjan", "murungakkai"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "kokum",
+    "aliases": ["garcinia indica", "bhirind"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "tamarind",
+    "aliases": ["imli", "puli"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "jaggery",
+    "aliases": ["gur", "vellam", "bellam"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "khoya",
+    "aliases": ["mawa", "khoa", "reduced milk solids"],
+    "animal_origin": true,
+    "dairy_source": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "paneer",
+    "aliases": ["cottage cheese", "Indian cottage cheese"],
+    "animal_origin": true,
+    "dairy_source": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "ghee",
+    "aliases": ["clarified butter", "neyyi"],
+    "animal_origin": true,
+    "dairy_source": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "chaat masala",
+    "aliases": ["chat masala"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "panch phoron",
+    "aliases": ["panch phoran", "Bengali five spice"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "sambar powder",
+    "aliases": ["sambhar masala"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "rasam powder",
+    "aliases": ["rasam podi"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "garam masala",
+    "aliases": [],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "kala chana",
+    "aliases": ["black chickpea", "brown chickpea"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "toor dal",
+    "aliases": ["pigeon pea", "arhar dal", "tuvar dal"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "moong dal",
+    "aliases": ["mung dal", "green gram dal"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "urad dal",
+    "aliases": ["black gram dal", "ulundu paruppu"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "masoor dal",
+    "aliases": ["red lentil", "masur dal"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "chana dal",
+    "aliases": ["split chickpea", "Bengal gram dal"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "besan",
+    "aliases": ["gram flour", "chickpea flour"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "atta",
+    "aliases": ["whole wheat flour", "chakki atta"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "maida",
+    "aliases": ["refined wheat flour", "all purpose flour"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "suji",
+    "aliases": ["semolina", "rava", "sooji"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "sendha namak",
+    "aliases": ["rock salt", "Himalayan pink salt"],
+    "region": "IN"
+  },
+  {
+    "canonical_name": "desi ghee",
+    "aliases": ["A2 ghee", "bilona ghee"],
+    "animal_origin": true,
+    "dairy_source": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "kokum butter",
+    "aliases": ["kokum fat"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "kokum syrup",
+    "aliases": ["kokum agal", "kokum concentrate"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "kewra water",
+    "aliases": ["kewda water", "screwpine essence"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "rose water",
+    "aliases": ["gulab jal"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "khus syrup",
+    "aliases": ["vetiver syrup"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "shah jeera",
+    "aliases": ["black cumin", "caraway", "kala jeera"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "tej patta",
+    "aliases": ["Indian bay leaf", "cassia leaf"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "kalonji",
+    "aliases": ["nigella seeds", "onion seeds"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "ajwain",
+    "aliases": ["carom seeds", "bishop's weed"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "saunf",
+    "aliases": ["fennel seeds", "sompu"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "laung",
+    "aliases": ["cloves", "grambu"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "elaichi",
+    "aliases": ["green cardamom", "cardamom"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "badi elaichi",
+    "aliases": ["black cardamom", "brown cardamom"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "dalchini",
+    "aliases": ["cinnamon", "pattai"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "lal mirch",
+    "aliases": ["red chilli powder", "kashmiri mirch"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "haldi",
+    "aliases": ["turmeric", "manjal"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "dhania",
+    "aliases": ["coriander", "coriander powder"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "jeera",
+    "aliases": ["cumin", "cumin seeds"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "methi",
+    "aliases": ["fenugreek", "fenugreek seeds"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "rai",
+    "aliases": ["mustard seeds", "sarson"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "sarson ka tel",
+    "aliases": ["mustard oil"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "groundnut oil",
+    "aliases": ["peanut oil", "mungfali oil"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "til oil",
+    "aliases": ["sesame oil", "gingelly oil", "nallennai"],
+    "plant_origin": true,
+    "sesame_source": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "coconut oil",
+    "aliases": ["nariyal tel", "thengai ennai"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "sunflower oil",
+    "aliases": ["surajmukhi tel"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "rice bran oil",
+    "aliases": ["akshat tel"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "vanaspati",
+    "aliases": ["hydrogenated vegetable oil", "dalda"],
+    "plant_origin": true,
+    "synthetic": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "soya chunks",
+    "aliases": ["textured vegetable protein", "nutrela"],
+    "plant_origin": true,
+    "soy_source": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "soya nuggets",
+    "aliases": ["meal maker", "TVP"],
+    "plant_origin": true,
+    "soy_source": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "pickle masala",
+    "aliases": ["achar masala"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "biryani masala",
+    "aliases": [],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "kitchen king masala",
+    "aliases": [],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "tandoori masala",
+    "aliases": [],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "pav bhaji masala",
+    "aliases": [],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "chole masala",
+    "aliases": ["chana masala"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "rajma masala",
+    "aliases": [],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "idli rava",
+    "aliases": ["idli semolina", "idli rice rava"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "puttu podi",
+    "aliases": ["roasted rice flour"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "pathiri podi",
+    "aliases": ["roasted rice powder"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "kodo millet",
+    "aliases": ["kodra", "varagu"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "little millet",
+    "aliases": ["kutki", "samai"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "barnyard millet",
+    "aliases": ["sanwa", "udalu", "kuthiravali"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "foxtail millet",
+    "aliases": ["kangni", "thinai"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "proso millet",
+    "aliases": ["cheena", "barri"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "amaranth",
+    "aliases": ["ramdana", "chaulai", "rajgira"],
+    "plant_origin": true,
+    "region": "IN"
+  },
+  {
+    "canonical_name": "quinoa",
+    "aliases": ["bathua seeds"],
+    "plant_origin": true,
+    "region": "IN",
+    "notes": "Increasingly used in India; IFCT 2017 includes amaranth/millets"
+  }
+]

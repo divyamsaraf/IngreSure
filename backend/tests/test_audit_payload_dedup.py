@@ -44,6 +44,44 @@ def test_e120_avoid_only_not_also_safe():
     assert count_safe_audit_ingredients(["E120"], verdict) == 0
 
 
+def test_e120_end_to_end_substance_key_and_no_safe_duplicate():
+    """e120 must map to carmine substance, show E120 · Carmine, never duplicate in Safe."""
+    from core.bridge import run_new_engine_chat, user_profile_model_to_restriction_ids
+
+    profile = _Profile()
+    rids = user_profile_model_to_restriction_ids(profile)
+    verdict = run_new_engine_chat(["e120"], user_profile=profile, restriction_ids=rids, use_api_fallback=False)
+    payload = build_ingredient_audit_payload(
+        verdict=verdict,
+        profile=profile,
+        ingredients=["e120"],
+    )
+    assert verdict.triggered_ingredients == ["carmine"]
+    assert verdict.triggered_ingredient_to_input == {"carmine": "e120"}
+    assert _group_names(payload, "avoid") == ["E120 · Carmine"]
+    assert _group_names(payload, "safe") == []
+    assert payload["summary"] == "0 Safe, 1 Avoid, 0 Depends"
+
+
+def test_e120_and_carmine_same_substance_one_avoid():
+    """Listing both E-number and name must not create Avoid + Safe for same substance."""
+    from core.bridge import run_new_engine_chat, user_profile_model_to_restriction_ids
+
+    profile = _Profile()
+    rids = user_profile_model_to_restriction_ids(profile)
+    verdict = run_new_engine_chat(
+        ["e120", "carmine"], user_profile=profile, restriction_ids=rids, use_api_fallback=False,
+    )
+    payload = build_ingredient_audit_payload(
+        verdict=verdict,
+        profile=profile,
+        ingredients=["e120", "carmine"],
+    )
+    assert _group_names(payload, "avoid") == ["E120 · Carmine"]
+    assert _group_names(payload, "safe") == []
+    assert payload["summary"] == "0 Safe, 1 Avoid, 0 Depends"
+
+
 def test_e441_end_to_end_shows_user_input_in_avoid():
     """Typing E441 should show E441 in audit cards, not the resolved name Gelatin."""
     from core.bridge import run_new_engine_chat, user_profile_model_to_restriction_ids

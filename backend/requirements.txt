@@ -6,5 +6,7 @@ httpx>=0.26.0,<0.28.0
 supabase>=2.28,<3
 python-dotenv==1.0.1
 pytest==8.1.1
+tdd-guard-pytest==0.1.2
 celery==5.3.6
 redis==5.0.1
+pdfplumber>=0.11.0

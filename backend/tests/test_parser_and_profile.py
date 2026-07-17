@@ -47,6 +47,7 @@ def test_normalize_ingredient_key_variant():
     from core.normalization.normalizer import normalize_ingredient_key, KNOWN_VARIANTS
     assert normalize_ingredient_key("inglass") == "isinglass"
     assert normalize_ingredient_key("Isinglass") == "isinglass"
+    assert normalize_ingredient_key("fish gelatin") == "fish_gelatin"
     assert normalize_ingredient_key("  castoreum  ") == "castoreum"
 
 

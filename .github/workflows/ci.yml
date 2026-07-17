@@ -20,6 +20,16 @@ jobs:
           cache-dependency-path: backend/requirements.txt
       - name: Install dependencies
         run: pip install -r requirements.txt
+      - name: Verify E-number catalog
+        run: python scripts/verify_e_number_catalog.py --fail-on-error
+      - name: Check E-number artifact drift
+        run: |
+          python scripts/generate_ike2_e_numbers.py
+          git diff --exit-code core/knowledge/ike2/truth_anchor_e_numbers.json ../data/layer1_e_numbers.json
+      - name: Check label corpus drift
+        run: python scripts/generate_label_corpus.py --check
+      - name: Label corpus shadow gate
+        run: python scripts/ike2_label_corpus_shadow.py --fail-below-threshold
       - name: Run tests
         run: python -m pytest tests/ -q
 

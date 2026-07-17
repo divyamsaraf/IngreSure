@@ -2,9 +2,11 @@
 Tests for the intent detector and response composer.
 Covers conversational cases, profile persistence, mixed intents, and edge cases.
 """
+import json
 import pytest
 import sys
 import os
+from pathlib import Path
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
@@ -854,3 +856,36 @@ class TestComprehensiveRestrictions:
         rids = user_profile_model_to_restriction_ids(profile)
         v = run_new_engine_chat(parsed.ingredients, user_profile=profile, restriction_ids=rids)
         assert v.status == VerdictStatus.NOT_SAFE
+
+
+# ===== Phase 5: junk / chat corpus — no compliance ingredients =================
+
+_JUNK_CORPUS_PATH = Path(__file__).parent / "fixtures" / "intent" / "junk_corpus.json"
+_JUNK_CASES = json.loads(_JUNK_CORPUS_PATH.read_text(encoding="utf-8")) if _JUNK_CORPUS_PATH.is_file() else []
+
+
+@pytest.mark.parametrize("case", _JUNK_CASES, ids=lambda c: c["id"])
+def test_junk_corpus_no_ingredient_extraction(case: dict) -> None:
+    """Junk, chat, and meta phrases must not emit ingredient lists for compliance."""
+    result = detect_intent(case["query"])
+    assert not result.ingredients, f"{case['id']}: unexpected ingredients {result.ingredients!r}"
+    assert result.intent in case["allowed_intents"], (
+        f"{case['id']}: intent {result.intent!r} not in {case['allowed_intents']}"
+    )
+
+
+class TestMultiBlockIntent:
+    def test_prefers_last_ingredients_block(self):
+        q = "Ingredients: water\n\nIngredients: milk, sugar, salt"
+        result = detect_intent(q)
+        assert result.has_ingredients
+        lower = [i.lower() for i in result.ingredients]
+        assert any("milk" in i for i in lower)
+        assert any("sugar" in i for i in lower)
+
+    def test_ocr_prefix_and_typos_in_list(self):
+        result = detect_intent("Ingred1ents: mi1k, fl0ur")
+        assert result.has_ingredients
+        joined = " ".join(i.lower() for i in result.ingredients)
+        assert "mi1k" in joined or "milk" in joined
+        assert "fl0ur" in joined or "flour" in joined
