@@ -122,21 +122,19 @@ def test_emit_resolution_metric_skips_without_running_event_loop():
     assert not any("coroutine" in str(w.message).lower() for w in caught)
 
 
-def test_run_shadow_forwards_decomposed_atoms(monkeypatch):
-    from core import config
+def test_run_legacy_diff_forwards_decomposed_atoms(monkeypatch):
     from core.knowledge.ike2.shadow import runner
-    from core.knowledge.ike2.shadow.runner import run_shadow
+    from core.knowledge.ike2.shadow.runner import run_legacy_diff
     from core.parsing.label_decomposer import DecomposedItem
 
-    monkeypatch.setattr(config, "IKE2_MODE", "shadow")
     seen: dict = {}
 
     def _capture(*args, **kwargs):
         seen.update(kwargs)
         return "SAFE"
 
-    monkeypatch.setattr(runner, "ike2_external_verdict", _capture)
+    monkeypatch.setattr(runner, "legacy_external_verdict", _capture)
     atoms = [DecomposedItem(name="water", trace=True)]
-    run_shadow(["ignored"], ["vegan"], None, "SAFE", decomposed_atoms=atoms)
+    run_legacy_diff(["ignored"], ["vegan"], None, "SAFE", decomposed_atoms=atoms)
 
     assert seen.get("decomposed_atoms") is atoms

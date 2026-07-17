@@ -1,15 +1,14 @@
-"""Shadow-mode orchestrator.
+"""Legacy diff runner.
 
-When ``IKE2_MODE == 'shadow'`` the full IKE-2 pipeline (input -> resolve -> seam
--> compliance) runs alongside the legacy engine and every divergence is recorded
-in ``ike2_shadow_diffs``. The legacy verdict is always what the user sees; this
-path is strictly observational and is wrapped so it can never raise into or slow
-a failure onto the legacy result.
+IKE-2 is the primary pipeline (input -> resolve -> seam -> compliance); the
+legacy engine now runs only for comparison. Every divergence between the two
+is recorded in ``ike2_shadow_diffs``. This path is strictly observational and
+is wrapped so it can never raise into or slow a failure onto the primary
+result, and it always runs -- there is no mode gate.
 """
 import logging
 from types import SimpleNamespace
 
-from core import config
 from core.knowledge.ike2 import input_layer, resolver
 from core.knowledge.ike2 import rules as rules_module
 from core.knowledge.ike2.compliance import evaluate
@@ -60,6 +59,30 @@ def ike2_external_verdict(
     return to_external(result.verdict)
 
 
+def legacy_external_verdict(
+    raw_ingredients,
+    restriction_ids,
+    region,
+    *,
+    decomposed_atoms=None,
+) -> str:
+    """Run the legacy engine and return its external 3-tier verdict.
+
+    ``region`` is accepted for interface symmetry with ``ike2_external_verdict``;
+    the legacy engine does not use it. ``use_api_fallback=False`` keeps this
+    deterministic and network-free -- this path is diff-only, never user-facing.
+    """
+    from core.bridge import run_new_engine_chat
+
+    verdict = run_new_engine_chat(
+        raw_ingredients,
+        restriction_ids=restriction_ids,
+        use_api_fallback=False,
+        prepared_decomposed=decomposed_atoms,
+    )
+    return verdict.status.value
+
+
 def _log_diff(diff) -> None:
     from core.knowledge.ingredient_db import get_supabase_config
 
@@ -82,34 +105,34 @@ def _log_diff(diff) -> None:
         logger.warning("IKE-2 shadow diff insert failed; comparison was logged", exc_info=True)
 
 
-def run_shadow(
+def run_legacy_diff(
     raw_ingredients,
     restriction_ids,
     region,
-    legacy_verdict,
+    primary_verdict,
     *,
     decomposed_atoms=None,
     writer=None,
 ):
-    """Compare IKE-2 to legacy and record divergences. No-op unless mode=='shadow'.
+    """Run the legacy engine and diff it against the already-computed primary
+    (IKE-2) verdict. Always runs -- no mode gate.
 
-    Fail-safe: returns None on any error and never propagates, so the user-facing
-    legacy verdict is unaffected. Returns the diff dict when the comparison ran.
+    Fail-safe: returns None on any error and never propagates, so the
+    caller's primary result is unaffected. Returns the diff dict when the
+    comparison ran.
     """
-    if config.IKE2_MODE != "shadow":
-        return None
     try:
-        legacy_ext = getattr(legacy_verdict, "value", legacy_verdict)
-        ike2_ext = ike2_external_verdict(
+        primary_ext = getattr(primary_verdict, "value", primary_verdict)
+        legacy_ext = legacy_external_verdict(
             raw_ingredients,
             restriction_ids,
             region,
             decomposed_atoms=decomposed_atoms,
         )
         raw_input = ", ".join(raw_ingredients or [])
-        diff = compare(legacy_ext, ike2_ext, raw_input)
+        diff = compare(legacy_ext, primary_ext, raw_input)
         logger.info(
-            "IKE2_SHADOW legacy=%s ike2=%s match=%s false_safe_regression=%s "
+            "IKE2_DIFF legacy=%s primary=%s match=%s false_safe_regression=%s "
             "restriction_ids=%s ingredients=%s",
             diff["legacy_verdict"],
             diff["ike2_verdict"],
@@ -121,6 +144,31 @@ def run_shadow(
         if not diff["match"]:
             (writer or _log_diff)(diff)
         return diff
-    except Exception:  # shadow must never break or slow-fail the legacy path
-        logger.warning("IKE-2 shadow run failed; legacy unaffected", exc_info=True)
+    except Exception:  # legacy diff must never break or slow-fail the primary path
+        logger.warning("IKE-2 legacy diff failed; primary result unaffected", exc_info=True)
+        return None
+
+
+def log_legacy_diff(primary_verdict, legacy_verdict, raw_input, *, writer=None):
+    """Diff two already-computed verdicts and log/write on divergence.
+
+    For callers (e.g. a bridge background job) that already ran both engines
+    and want to avoid a second engine invocation.
+    """
+    try:
+        primary_ext = getattr(primary_verdict, "value", primary_verdict)
+        legacy_ext = getattr(legacy_verdict, "value", legacy_verdict)
+        diff = compare(legacy_ext, primary_ext, raw_input)
+        logger.info(
+            "IKE2_DIFF legacy=%s primary=%s match=%s false_safe_regression=%s",
+            diff["legacy_verdict"],
+            diff["ike2_verdict"],
+            diff["match"],
+            diff["false_safe_regression"],
+        )
+        if not diff["match"]:
+            (writer or _log_diff)(diff)
+        return diff
+    except Exception:
+        logger.warning("IKE-2 legacy diff logging failed", exc_info=True)
         return None
