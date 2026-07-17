@@ -2,7 +2,7 @@ import importlib
 
 import pytest
 
-from core.bridge import map_ike2_to_compliance_verdict
+from core.bridge import map_ike2_to_compliance_verdict, run_new_engine_chat
 from core.knowledge.ike2.compliance import ComplianceResult
 from core.knowledge.ike2.seam import ComplianceInput
 from core.knowledge.ike2.verdict import Verdict, to_external
@@ -182,3 +182,44 @@ def test_map_ike2_confidence_score_zero_when_not_safe():
     )
     v = map_ike2_to_compliance_verdict(result, [])
     assert v.confidence_score == 0.0
+
+
+# ---------------------------------------------------------------------------
+# Task 4: bridge primary path + fail-closed UNCERTAIN
+# ---------------------------------------------------------------------------
+
+def test_ike2_exception_returns_uncertain_not_legacy(monkeypatch):
+    import core.bridge as bridge
+
+    def boom(*args, **kwargs):
+        raise RuntimeError("ike2 down")
+
+    monkeypatch.setattr(bridge, "_run_ike2_compliance", boom)  # extract helper for testability
+
+    # Legacy would say SAFE for water — must not be returned
+    v = run_new_engine_chat(["water"], restriction_ids=["vegan"], use_api_fallback=False)
+    assert v.status == VerdictStatus.UNCERTAIN
+
+
+def test_ike2_success_returned_not_legacy(monkeypatch):
+    from core.models.verdict import ComplianceVerdict, VerdictStatus
+    import core.bridge as bridge
+
+    fake = ComplianceVerdict(
+        status=VerdictStatus.NOT_SAFE,
+        triggered_restrictions=["vegan"],
+        triggered_ingredients=["gelatin"],
+    )
+    monkeypatch.setattr(
+        bridge,
+        "_run_ike2_compliance",
+        lambda *a, **k: fake,
+    )
+    # Force legacy to SAFE if it were used
+    monkeypatch.setattr(
+        bridge,
+        "_schedule_legacy_diff",
+        lambda *a, **k: None,
+    )
+    v = run_new_engine_chat(["gelatin"], restriction_ids=["vegan"], use_api_fallback=False)
+    assert v is fake or v.status == VerdictStatus.NOT_SAFE

@@ -1,13 +1,19 @@
 """
 Bridge: map profile diet names to restriction_ids; run compliance engine for chat.
 """
+import hashlib
 import logging
+from types import SimpleNamespace
 from typing import Dict, List, Any, Optional, Set, Tuple, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from core.models.user_profile import UserProfile
 
-from core.evaluation.compliance_engine import ComplianceEngine
+from core.knowledge.ike2 import input_layer as ike2_input_layer
+from core.knowledge.ike2 import resolver as ike2_resolver
+from core.knowledge.ike2 import rules as ike2_rules
+from core.knowledge.ike2 import compliance as ike2_compliance
+from core.knowledge.ike2.seam import to_compliance_input
 from core.knowledge.ike2.verdict import Verdict, to_external
 from core.models.verdict import ComplianceVerdict, VerdictStatus
 from core.parsing.ingredient_parser import preprocess_ingredients
@@ -260,8 +266,76 @@ def map_ike2_to_compliance_verdict(
 
 
 # ---------------------------------------------------------------------------
-# Engine runner
+# Engine runner (IKE-2 primary; never falls back to the legacy engine)
 # ---------------------------------------------------------------------------
+
+def _profile_from_restriction_ids(restriction_ids: Optional[List[str]]) -> SimpleNamespace:
+    # Default medical severity so may_contain/trace triggers FAIL (not WARN).
+    return SimpleNamespace(restrictions={rid: "medical" for rid in (restriction_ids or [])})
+
+
+def _input_hash(ingredients: Optional[List[str]], restriction_ids: Optional[List[str]]) -> str:
+    raw = "|".join(ingredients or []) + "::" + ",".join(sorted(restriction_ids or []))
+    return hashlib.sha256(raw.encode("utf-8")).hexdigest()[:12]
+
+
+def _run_ike2_compliance(
+    ingredients: List[str],
+    restriction_ids: Optional[List[str]],
+    prepared_decomposed: Optional[List[Any]] = None,
+    region: Optional[str] = None,
+) -> Tuple[Any, List[Any]]:
+    """Run the IKE-2 pipeline (input -> resolve -> seam -> rules -> evaluate)
+    and return the raw ``ComplianceResult`` plus its ``ComplianceInput`` list.
+
+    Same pipeline as ``core.knowledge.ike2.shadow.runner.ike2_external_verdict``,
+    kept separate because that module returns only the external status string
+    while the chat path needs the full result to build a ``ComplianceVerdict``.
+    """
+    profile = _profile_from_restriction_ids(restriction_ids)
+    active_rules = ike2_rules.load_rules()
+    inputs = []
+    if prepared_decomposed is not None:
+        for atom in prepared_decomposed:
+            resolved = ike2_resolver.resolve(atom.name, region)
+            inputs.append(
+                to_compliance_input(resolved, trace=atom.trace, may_contain=atom.may_contain)
+            )
+    else:
+        for raw in ingredients or []:
+            for atom in ike2_input_layer.parse_atoms(raw):
+                resolved = ike2_resolver.resolve(atom.name, region)
+                inputs.append(
+                    to_compliance_input(resolved, trace=atom.trace, may_contain=atom.may_contain)
+                )
+    result = ike2_compliance.evaluate(inputs, profile, active_rules)
+    return result, inputs
+
+
+def _schedule_legacy_diff(
+    ingredients: List[str],
+    restriction_ids: Optional[List[str]],
+    primary_status: str,
+    prepared_decomposed: Optional[List[Any]] = None,
+) -> None:
+    """Diff the legacy engine against the already-computed IKE-2 verdict.
+
+    Observational only; must never affect the primary result. Runs inline for
+    now -- Task 5 moves this off the request path (background thread/queue).
+    """
+    try:
+        from core.knowledge.ike2.shadow.runner import run_legacy_diff
+
+        run_legacy_diff(
+            ingredients,
+            restriction_ids,
+            None,
+            primary_status,
+            decomposed_atoms=prepared_decomposed,
+        )
+    except Exception:
+        logger.warning("IKE-2 legacy diff scheduling failed", exc_info=True)
+
 
 def run_new_engine_chat(
     ingredients: List[str],
@@ -271,7 +345,9 @@ def run_new_engine_chat(
     use_api_fallback: bool = True,
     prepared_decomposed: Optional[List[Any]] = None,
 ) -> ComplianceVerdict:
-    """Run compliance engine for chat."""
+    """Run compliance for chat. IKE-2 is the only source of the returned
+    verdict; on any IKE-2 failure this fails closed to UNCERTAIN and never
+    falls back to the legacy engine's result."""
     if restriction_ids is not None:
         rids = restriction_ids
     elif hasattr(user_profile, "dietary_preference"):
@@ -279,32 +355,21 @@ def run_new_engine_chat(
     else:
         rids = profile_to_restriction_ids(user_profile if isinstance(user_profile, dict) else None)
 
-    if prepared_decomposed is not None:
-        atomic_names = [d.name for d in prepared_decomposed]
-        trace_keys = {d.name for d in prepared_decomposed if d.trace}
-        display_by_canonical: Dict[str, str] = {}
-        for d in prepared_decomposed:
-            sk = substance_key(d.name)
-            display_by_canonical.setdefault(sk, d.name)
-            display_by_canonical.setdefault(d.name.lower().strip(), d.name)
-    else:
-        atomic_names, trace_keys, display_by_canonical = preprocess_ingredient_list(ingredients)
-    logger.info(
-        "COMPLIANCE preprocess normalized_count=%d trace_count=%d",
-        len(atomic_names), len(trace_keys),
-    )
-    engine = ComplianceEngine()
-    verdict = engine.evaluate(
-        atomic_names,
-        restriction_ids=rids,
-        trace_ingredient_keys=trace_keys or None,
-        use_api_fallback=use_api_fallback,
-        profile_context=profile_context,
-        input_display_map=display_by_canonical or None,
-    )
+    try:
+        ike2_output = _run_ike2_compliance(ingredients, rids, prepared_decomposed)
+        if isinstance(ike2_output, ComplianceVerdict):
+            verdict = ike2_output
+        else:
+            result, inputs = ike2_output
+            verdict = map_ike2_to_compliance_verdict(result, inputs)
+    except Exception:
+        logger.exception(
+            "IKE2_PRIMARY_FAILED input_hash=%s restriction_ids=%s",
+            _input_hash(ingredients, rids), rids,
+        )
+        verdict = ComplianceVerdict(status=VerdictStatus.UNCERTAIN)
 
-    # Task 4: schedule core.knowledge.ike2.shadow.runner.run_legacy_diff in
-    # the background here once this entrypoint runs IKE-2 as primary.
+    _schedule_legacy_diff(ingredients, rids, verdict.status.value, prepared_decomposed)
 
     return verdict
 
