@@ -31,7 +31,7 @@ from dotenv import load_dotenv
 load_dotenv(_backend / ".env")
 load_dotenv(_backend.parent / ".env")
 
-from core.knowledge.ingredient_db import IngredientKnowledgeDB
+from core.knowledge.ingredient_db import IngredientKnowledgeDB, ALLOWED_INGREDIENT_SOURCES
 from core.knowledge.ingest import ensure_group_with_aliases
 
 
@@ -60,7 +60,7 @@ def main() -> None:
             continue
         aliases = item.get("aliases") or []
         source = (item.get("source") or "system").strip().lower()
-        if source not in ("ontology", "usda_fdc", "open_food_facts", "fao", "ifct", "indb", "admin", "system"):
+        if source not in ALLOWED_INGREDIENT_SOURCES:
             source = "system"
         gid = ensure_group_with_aliases(
             db,
@@ -70,6 +70,7 @@ def main() -> None:
             alias_type=item.get("alias_type") or "synonym",
             language=item.get("language") or "en",
             region=item.get("region"),
+            regions=item.get("regions"),
             animal_origin=item.get("animal_origin", False),
             plant_origin=item.get("plant_origin", False),
             synthetic=item.get("synthetic", False),
@@ -87,6 +88,8 @@ def main() -> None:
             onion_source=item.get("onion_source", False),
             garlic_source=item.get("garlic_source", False),
             fermented=item.get("fermented", False),
+            uncertainty_flags=item.get("uncertainty_flags") or [],
+            derived_from=item.get("derived_from") or [],
         )
         if gid:
             count += 1
