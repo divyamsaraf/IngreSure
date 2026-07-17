@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
-import { Send, User, Bot, Loader2, X } from 'lucide-react'
+import { Send, User, Bot, Loader2, X, Info } from 'lucide-react'
 import OnboardingModal from './OnboardingModal'
 import FormattedMessage from './FormattedMessage'
 import IngredientAuditCards, { type IngredientAuditData } from './IngredientAuditCards'
@@ -13,6 +13,7 @@ import { PROFILE_BANNER_DISMISSED_KEY } from '@/constants/profileStorage'
 import { getOrCreateUserId, getAnonSessionToken, persistProfileToStorage } from '@/lib/profileStorage'
 import { getDietIcon } from '@/lib/dietIcon'
 import { colors, spacing } from '@/theme/tokens'
+import { CHAT_PANEL_DISCLAIMER } from '@/constants/disclaimers'
 
 /** Ensure chat URL has exactly one mode param (avoids ?mode=grocery?mode=grocery from duplicate appends). */
 function normalizeChatUrl(url: string): string {
@@ -603,7 +604,30 @@ export default function ChatInterface({
             </div>
 
             {/* Input area (sticky bottom) */}
-            <form onSubmit={handleSubmit} className="border-t border-slate-100 bg-white px-4 py-3 shrink-0">
+            <form onSubmit={handleSubmit} className="border-t border-slate-100 bg-white px-4 pt-2 pb-3 shrink-0">
+                <div
+                    role="note"
+                    aria-label={CHAT_PANEL_DISCLAIMER}
+                    className="mb-2 flex items-center gap-2 rounded-xl border border-slate-100 bg-slate-50/90 px-2.5 py-1.5 min-w-0"
+                >
+                    <span
+                        className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-slate-200/70"
+                        aria-hidden="true"
+                    >
+                        <Info className="h-3 w-3 text-slate-500" strokeWidth={2.5} />
+                    </span>
+                    <div className="relative min-w-0 flex-1">
+                        <div className="overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+                            <p className="whitespace-nowrap pr-1 text-[10px] font-medium leading-none tracking-wide text-slate-500 sm:text-chat-meta">
+                                {CHAT_PANEL_DISCLAIMER}
+                            </p>
+                        </div>
+                        <span
+                            className="pointer-events-none absolute inset-y-0 right-0 w-6 bg-gradient-to-l from-slate-50/95 to-transparent sm:hidden"
+                            aria-hidden="true"
+                        />
+                    </div>
+                </div>
                 <div className="flex gap-3 items-center">
                     <div className="relative w-full">
                         <input

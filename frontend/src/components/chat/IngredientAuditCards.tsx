@@ -14,6 +14,7 @@ import {
 import FormattedMessage, { stripEmojiFromText } from './FormattedMessage'
 import { useProfileContext } from '@/context/ProfileContext'
 import { statusColors, colors } from '@/theme/tokens'
+import { VERDICT_CARD_SAFETY_NOTE } from '@/constants/disclaimers'
 
 export type IngredientStatus = 'safe' | 'avoid' | 'depends'
 
@@ -639,6 +640,8 @@ function IngredientAuditCardsContent({ data, showPersonaliseNudge, onPersonalise
           </button>
         </div>
       ) : null}
+
+      <p className="text-chat-meta leading-snug text-slate-500 pt-1">{VERDICT_CARD_SAFETY_NOTE}</p>
     </div>
   )
 }
