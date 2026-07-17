@@ -13,6 +13,9 @@ _CANONICAL = {
     "off": "openfoodfacts",
     "usda_fdc": "usda",
     "fda_gras": "fda",
+    "e_number_catalog": "e_number_catalog",
+    "ontology": "ontology",
+    "system": "ontology",
 }
 
 # canonical source -> default knowledge_state for newly ingested rows
@@ -21,6 +24,8 @@ _DEFAULT_STATE = {
     "fssai": "AUTO_CLASSIFIED",
     "fda": "AUTO_CLASSIFIED",
     "usda": "AUTO_CLASSIFIED",
+    "ontology": "AUTO_CLASSIFIED",
+    "e_number_catalog": "LOCKED",
     "chebi": "DISCOVERED",
     "wikidata": "DISCOVERED",
     "openfoodfacts": "DISCOVERED",

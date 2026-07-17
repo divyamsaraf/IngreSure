@@ -18,7 +18,8 @@ import sys
 from dataclasses import asdict, dataclass, field
 from types import SimpleNamespace
 
-from core.knowledge.ike2.etl.adapt import BOOL_FLAGS, map_record
+from core.knowledge.ike2.etl.adapt import BOOL_FLAGS, map_record as map_generic_record
+from core.knowledge.ike2.etl.adapt_e_number import map_record as map_e_number_record
 from core.knowledge.ike2.etl.reconcile import reconcile
 from core.knowledge.ike2.etl.sources import canonical_source, default_knowledge_state
 from core.knowledge.ike2.etl.validate import validate_rows
@@ -50,12 +51,14 @@ def load_dump(path: str):
 
 def inject(records, source: str, writer) -> InjectStats:
     canon = canonical_source(source)
+    if canon == "e_number_catalog":
+        return _inject_e_number_catalog(records, writer)
     default_state = default_knowledge_state(canon)
     stats = InjectStats()
 
     for raw in records:
         stats.total += 1
-        row, aliases = map_record(raw, canon, default_state)
+        row, aliases = map_generic_record(raw, canon, default_state)
 
         ok, rejects = validate_rows([row])
         if rejects:
@@ -78,10 +81,48 @@ def inject(records, source: str, writer) -> InjectStats:
 
         iid = writer.upsert_ingredient(gid, row["canonical_name"], canon)
         stats.ingredients += 1
-        for normalized_alias, region in aliases:
-            if writer.upsert_alias(normalized_alias, iid, region, canon):
+        for alias_item in aliases:
+            if len(alias_item) == 3:
+                normalized_alias, region, alias_type = alias_item
+            else:
+                normalized_alias, region = alias_item
+                alias_type = "common"
+            if writer.upsert_alias(normalized_alias, iid, region, canon, alias_type=alias_type):
                 stats.aliases += 1
 
+    return stats
+
+
+def _inject_e_number_catalog(records, writer) -> InjectStats:
+    canon = "e_number_catalog"
+    stats = InjectStats()
+    for raw in records:
+        stats.total += 1
+        row, aliases = map_e_number_record(raw, canon, default_knowledge_state(canon))
+        ok, rejects = validate_rows([row])
+        if rejects:
+            writer.quarantine(rejects[0], canon)
+            stats.rejected += 1
+            continue
+
+        existing = writer.get_group(row["canonical_name"])
+        if existing is None:
+            gid = writer.insert_group(row)
+            stats.inserted += 1
+        else:
+            incoming = {f: row[f] for f in BOOL_FLAGS}
+            result = reconcile(SimpleNamespace(**existing), incoming, canon)
+            writer.update_group(existing["id"], result)
+            gid = existing["id"]
+            stats.updated += 1
+            if result.needs_review:
+                stats.needs_review += 1
+
+        iid = writer.upsert_ingredient(gid, row["canonical_name"], canon)
+        stats.ingredients += 1
+        for normalized_alias, region, alias_type in aliases:
+            if writer.upsert_alias(normalized_alias, iid, region, canon, alias_type=alias_type):
+                stats.aliases += 1
     return stats
 
 
@@ -95,6 +136,7 @@ _GROUP_COLUMNS = set(BOOL_FLAGS) | {
     "knowledge_state",
     "primary_source_url",
     "classification_method",
+    "verdict_cap",
 }
 
 
@@ -152,7 +194,7 @@ class SupabaseWriter:
             .data[0]["id"]
         )
 
-    def upsert_alias(self, normalized_alias, ingredient_id, region, source):
+    def upsert_alias(self, normalized_alias, ingredient_id, region, source, alias_type="common"):
         q = (
             self.c.table("ike2_aliases")
             .select("id")
@@ -168,7 +210,7 @@ class SupabaseWriter:
                     "normalized_alias": normalized_alias,
                     "ingredient_id": ingredient_id,
                     "region": region,
-                    "alias_type": "common",
+                    "alias_type": alias_type,
                     "source": source,
                 }
             ).execute()
@@ -216,7 +258,7 @@ class _CollectWriter:
     def upsert_ingredient(self, gid, normalized_name, source):
         return f"i:{gid}:{normalized_name}"
 
-    def upsert_alias(self, normalized_alias, ingredient_id, region, source):
+    def upsert_alias(self, normalized_alias, ingredient_id, region, source, alias_type="common"):
         return True
 
     def quarantine(self, reject, source):

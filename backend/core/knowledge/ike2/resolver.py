@@ -42,10 +42,13 @@ def resolve(atom: str, region: Optional[str]) -> ResolvedIngredient:
         )
 
     # L3 — DB alias resolution (L2 cache omitted; correctness is unaffected).
-    if db.disambiguate(atom, region) == "ambiguous":
-        return _uncertain("L3_db_alias", "db")
+    try:
+        if db.disambiguate(atom, region) == "ambiguous":
+            return _uncertain("L3_db_alias", "db")
 
-    group = db.resolve_alias(atom, region)
+        group = db.resolve_alias(atom, region)
+    except Exception:
+        return _uncertain("L3_db_alias", "db")
     if group is not None:
         return ResolvedIngredient(
             group=group,

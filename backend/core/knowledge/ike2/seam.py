@@ -26,6 +26,7 @@ class ComplianceInput:
     alcohol_role: Optional[str]
     verdict_cap: Optional[str]
     trace: bool
+    may_contain: bool = False
 
 
 def _derive_alcohol_role(explicit, alcohol_content) -> Optional[str]:
@@ -39,7 +40,9 @@ def _derive_alcohol_role(explicit, alcohol_content) -> Optional[str]:
     return None
 
 
-def to_compliance_input(resolved, *, trace: bool = False) -> ComplianceInput:
+def to_compliance_input(
+    resolved, *, trace: bool = False, may_contain: bool = False
+) -> ComplianceInput:
     group = resolved.group
     trusted = bool(getattr(resolved, "trusted", False))
 
@@ -47,7 +50,8 @@ def to_compliance_input(resolved, *, trace: bool = False) -> ComplianceInput:
     if group is None:
         return ComplianceInput(
             canonical_name="", flags={}, knowledge_state="UNCLASSIFIED",
-            trusted=False, alcohol_role=None, verdict_cap=None, trace=trace,
+            trusted=False, alcohol_role=None, verdict_cap=None,
+            trace=trace, may_contain=may_contain,
         )
 
     if isinstance(group, TruthAnchorFact):
@@ -60,6 +64,7 @@ def to_compliance_input(resolved, *, trace: bool = False) -> ComplianceInput:
             alcohol_role=_derive_alcohol_role(flags.get("alcohol_role"), flags.get("alcohol_content")),
             verdict_cap=flags.get("verdict_cap"),
             trace=trace,
+            may_contain=may_contain,
         )
 
     # db GroupRow: every column is a flat attribute, so its __dict__ already is the
@@ -73,4 +78,5 @@ def to_compliance_input(resolved, *, trace: bool = False) -> ComplianceInput:
         alcohol_role=_derive_alcohol_role(getattr(group, "alcohol_role", None), getattr(group, "alcohol_content", None)),
         verdict_cap=getattr(group, "verdict_cap", None),
         trace=trace,
+        may_contain=may_contain,
     )

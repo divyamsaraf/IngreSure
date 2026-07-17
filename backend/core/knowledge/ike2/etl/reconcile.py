@@ -6,6 +6,7 @@ _SOURCE_TIER = {
     "regulatory": 4,
     "fssai": 4,
     "fda": 4,
+    "ontology": 4,
     "usda": 3,
     "chebi": 3,
     "wikidata": 2,

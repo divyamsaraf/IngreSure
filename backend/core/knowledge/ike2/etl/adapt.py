@@ -101,6 +101,9 @@ def _alcohol_role(raw):
 def map_record(raw: dict, canonical_source: str, default_state: str):
     row = {flag: bool(raw.get(flag, False)) for flag in BOOL_FLAGS}
 
+    if row["insect_derived"]:
+        row["animal_origin"] = True
+
     # Legacy free-text `nut_source` -> specific peanut / tree-nut allergen flags.
     _map_nut_source(raw, row)
 
