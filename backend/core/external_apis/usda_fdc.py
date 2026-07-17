@@ -12,6 +12,11 @@ from typing import Optional
 import requests
 
 from core.ontology.ingredient_schema import Ingredient
+from core.external_apis.enrichment_relevance import (
+    enrichment_species_mismatch,
+    is_enrichment_relevant,
+    score_enrichment_candidate,
+)
 from core.external_apis.http_retry import get_with_retries
 from core.external_apis.base import EnrichmentResult, ConfidenceLevel
 
@@ -239,19 +244,41 @@ def fetch_usda_fdc(
         logger.info("USDA_FDC no results query=%s", query)
         return EnrichmentResult(None, "low", "usda_fdc", "no_results")
 
-    best = foods[0]
+    scored = []
+    for food in foods:
+        desc = (food.get("description") or "").strip()
+        if not desc:
+            continue
+        score = score_enrichment_candidate(query, desc)
+        if score < 0:
+            logger.info(
+                "USDA_FDC skip species mismatch query=%s description=%s",
+                query, desc[:80],
+            )
+            continue
+        scored.append((score, food))
+
+    if not scored:
+        logger.info("USDA_FDC no relevant results (species filter) query=%s", query)
+        return EnrichmentResult(None, "low", "usda_fdc", "species_mismatch")
+
+    scored.sort(key=lambda pair: pair[0], reverse=True)
+    best_score, best = scored[0]
     desc = (best.get("description") or "").strip().lower()
     q_lower = query.lower()
-    # High: exact or very close match in description
-    if q_lower in desc or desc in q_lower or q_lower.split()[0] in desc:
+    if q_lower in desc or desc in q_lower or best_score >= 30:
         confidence: ConfidenceLevel = "high"
-    else:
+    elif best_score >= 10:
         confidence = "medium"
+    else:
+        confidence = "low"
+        if not is_enrichment_relevant(query, best.get("description") or ""):
+            return EnrichmentResult(None, "low", "usda_fdc", "species_mismatch")
 
     ing = _food_to_ingredient(best, query)
     summary = f"description={best.get('description', '')[:80]}"
     logger.info(
-        "ENRICHMENT USDA_FDC success query=%s confidence=%s fdcId=%s",
-        query, confidence, best.get("fdcId"),
+        "ENRICHMENT USDA_FDC success query=%s confidence=%s fdcId=%s score=%s",
+        query, confidence, best.get("fdcId"), best_score,
     )
     return EnrichmentResult(ing, confidence, "usda_fdc", summary)
