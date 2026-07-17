@@ -1,0 +1,89 @@
+[
+  {
+    "canonical_name": "TBHQ",
+    "aliases": ["tert-butylhydroquinone", "tertiary butylhydroquinone", "E319"],
+    "synthetic": true,
+    "notes": "US antioxidant in fast food and snacks; EU E319 but often unlabeled in US"
+  },
+  {
+    "canonical_name": "carboxymethylcellulose",
+    "aliases": ["CMC", "cellulose gum", "E466"],
+    "plant_origin": true,
+    "synthetic": true,
+    "notes": "US thickener name vs EU E466"
+  },
+  {
+    "canonical_name": "gum ghatti",
+    "aliases": ["ghatti gum"],
+    "plant_origin": true
+  },
+  {
+    "canonical_name": "quillaja extract",
+    "aliases": ["quillaia extract", "soap bark extract"],
+    "plant_origin": true,
+    "notes": "Foaming agent; US GRAS, no E-number"
+  },
+  {
+    "canonical_name": "trehalose",
+    "aliases": [],
+    "plant_origin": true,
+    "synthetic": true
+  },
+  {
+    "canonical_name": "tagatose",
+    "aliases": ["D-tagatose"],
+    "synthetic": true
+  },
+  {
+    "canonical_name": "inulin",
+    "aliases": ["chicory inulin"],
+    "plant_origin": true
+  },
+  {
+    "canonical_name": "fructooligosaccharides",
+    "aliases": ["FOS", "oligofructose"],
+    "plant_origin": true
+  },
+  {
+    "canonical_name": "resistant starch",
+    "aliases": ["RS2", "RS3", "RS4"],
+    "plant_origin": true
+  },
+  {
+    "canonical_name": "natamycin",
+    "aliases": ["pimaricin", "E235"],
+    "synthetic": true,
+    "notes": "E235 in EU; US uses common name on cheese coatings"
+  },
+  {
+    "canonical_name": "glucono delta-lactone",
+    "aliases": ["GDL", "glucono-delta-lactone", "E575"],
+    "synthetic": true
+  },
+  {
+    "canonical_name": "dextrose monohydrate",
+    "aliases": ["glucose monohydrate", "D-glucose monohydrate"],
+    "plant_origin": true
+  },
+  {
+    "canonical_name": "maltodextrin DE 5",
+    "aliases": ["maltodextrin dextrose equivalent 5"],
+    "plant_origin": true
+  },
+  {
+    "canonical_name": "maltodextrin DE 10",
+    "aliases": ["maltodextrin dextrose equivalent 10"],
+    "plant_origin": true
+  },
+  {
+    "canonical_name": "maltodextrin DE 20",
+    "aliases": ["maltodextrin dextrose equivalent 20"],
+    "plant_origin": true
+  },
+  {
+    "canonical_name": "sodium stearoyl lactylate",
+    "aliases": ["SSL", "E481"],
+    "synthetic": true,
+    "notes": "E481 in EU; US labels often use full chemical name"
+  }
+]

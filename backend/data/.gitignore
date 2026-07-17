@@ -1,0 +1,7 @@
+# Large manual downloads — keep india_ingredients_catalog.json tracked
+off_ingredients_taxonomy.json
+usda_foundation_foods.json
+usda_sr_legacy_foods.json
+chebi_names.tsv
+chebi_compounds.tsv
+*.tsv.gz

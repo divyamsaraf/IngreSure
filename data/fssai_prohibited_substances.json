@@ -1,0 +1,72 @@
+[
+  {
+    "canonical_name": "potassium bromate",
+    "aliases": ["bromate", "E924"],
+    "notes": "Banned as flour improver in India (FSSAI)"
+  },
+  {
+    "canonical_name": "cyclamate",
+    "aliases": ["sodium cyclamate", "E952"],
+    "notes": "Not permitted as sweetener in India"
+  },
+  {
+    "canonical_name": "calcium cyclamate",
+    "aliases": ["E952"],
+    "notes": "Not permitted as sweetener in India"
+  },
+  {
+    "canonical_name": "dulcin",
+    "aliases": ["p-ethoxyphenylurea"],
+    "notes": "Prohibited artificial sweetener"
+  },
+  {
+    "canonical_name": "saccharin",
+    "aliases": ["E954"],
+    "notes": "Restricted/prohibited in certain food categories in India"
+  },
+  {
+    "canonical_name": "raspberry ketone",
+    "aliases": [],
+    "notes": "FSSAI nutraceutical prohibition directive 2018"
+  },
+  {
+    "canonical_name": "saw palmetto extract",
+    "aliases": ["Serenoa repens extract"],
+    "notes": "FSSAI nutraceutical prohibition directive 2018"
+  },
+  {
+    "canonical_name": "selenium dioxide",
+    "aliases": [],
+    "notes": "FSSAI nutraceutical prohibition directive 2018"
+  },
+  {
+    "canonical_name": "D-ribose",
+    "aliases": [],
+    "notes": "Banned in health supplements/nutraceuticals (FSSAI)"
+  },
+  {
+    "canonical_name": "ipriflavone",
+    "aliases": [],
+    "notes": "Banned — drug-like properties (FSSAI)"
+  },
+  {
+    "canonical_name": "polypodium leucotomos",
+    "aliases": [],
+    "notes": "Banned — drug-like properties (FSSAI)"
+  },
+  {
+    "canonical_name": "tea tree oil",
+    "aliases": ["Melaleuca oil"],
+    "notes": "FSSAI nutraceutical prohibition directive 2018"
+  },
+  {
+    "canonical_name": "vanadium",
+    "aliases": [],
+    "notes": "FSSAI nutraceutical prohibition directive 2018"
+  },
+  {
+    "canonical_name": "para-aminobenzoic acid",
+    "aliases": ["PABA"],
+    "notes": "FSSAI nutraceutical prohibition directive 2018"
+  }
+]
