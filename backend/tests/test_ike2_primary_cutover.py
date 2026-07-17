@@ -125,9 +125,10 @@ def test_map_ike2_triggered_restrictions_excludes_safe_breakdown_rows():
     assert v.triggered_restrictions == ["vegan"]
 
 
-def test_map_ike2_may_contain_goes_to_informational_ingredients():
-    """matched_may_contain (trace/may-contain minors) must surface as
-    informational_ingredients, not be discarded."""
+def test_map_ike2_may_contain_promoted_to_triggered_when_it_drives_warn():
+    """A may_contain/trace ingredient whose breakdown verdict is WARN (not
+    SAFE) drove the non-SAFE aggregate, so it must be attributed as
+    triggered -- not left only in informational_ingredients."""
     inputs = [
         ComplianceInput(
             canonical_name="peanut",
@@ -147,7 +148,67 @@ def test_map_ike2_may_contain_goes_to_informational_ingredients():
         breakdown={("peanut", "peanut_allergy"): Verdict.WARN},
     )
     v = map_ike2_to_compliance_verdict(result, inputs)
+    assert "peanut" in v.triggered_ingredients
+    assert "peanut_allergy" in v.triggered_restrictions
+    assert "peanut" not in v.informational_ingredients
+
+
+def test_map_ike2_may_contain_without_breakdown_stays_informational():
+    """A matched_may_contain name with no corresponding non-SAFE breakdown
+    entry (e.g. an incomplete/defensive ComplianceResult) is left as
+    informational only -- nothing to promote it on."""
+    inputs = [
+        ComplianceInput(
+            canonical_name="peanut",
+            flags={},
+            knowledge_state="LOCKED",
+            trusted=True,
+            alcohol_role=None,
+            verdict_cap=None,
+            trace=True,
+        )
+    ]
+    result = ComplianceResult(
+        Verdict.WARN,
+        matched_contains=[],
+        matched_may_contain=["peanut"],
+        caution_reasons=["peanut_allergy:peanut"],
+        breakdown={},
+    )
+    v = map_ike2_to_compliance_verdict(result, inputs)
     assert "peanut" in v.informational_ingredients
+    assert "peanut" not in v.triggered_ingredients
+
+
+def test_map_ike2_may_contain_promoted_to_triggered_when_fail_not_safe():
+    """Task 8 fix: a medical may_contain/trace trigger that drives the
+    aggregate to FAIL/NOT_SAFE must be attributed into triggered_ingredients
+    and triggered_restrictions, not left only as informational (which
+    previously shipped an empty "conflicts with" and mislabeled the allergen
+    as a low-confidence trace)."""
+    inputs = [
+        ComplianceInput(
+            canonical_name="peanut",
+            flags={},
+            knowledge_state="LOCKED",
+            trusted=True,
+            alcohol_role=None,
+            verdict_cap=None,
+            trace=True,
+        )
+    ]
+    result = ComplianceResult(
+        Verdict.FAIL,
+        matched_contains=[],
+        matched_may_contain=["peanut"],
+        caution_reasons=["peanut_allergy:peanut"],
+        breakdown={("peanut", "peanut_allergy"): Verdict.FAIL},
+    )
+    v = map_ike2_to_compliance_verdict(result, inputs)
+    assert v.status == VerdictStatus.NOT_SAFE
+    assert "peanut" in v.triggered_ingredients
+    assert "peanut_allergy" in v.triggered_restrictions
+    assert "peanut" not in v.informational_ingredients
 
 
 def test_map_ike2_confidence_score_safe_no_uncertain():

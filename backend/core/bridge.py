@@ -244,6 +244,19 @@ def map_ike2_to_compliance_verdict(
     triggered_ingredients = list(dict.fromkeys(result.matched_contains or []))
     informational_ingredients = list(dict.fromkeys(result.matched_may_contain or []))
 
+    # A may_contain/trace name that actually drove a non-SAFE breakdown verdict
+    # is why the headline isn't SAFE -- it must not be left only in
+    # informational_ingredients (empty "conflicts with" + mislabeled as a
+    # low-confidence trace). Promote it into triggered_ingredients instead.
+    for (name, _restriction), verdict in (result.breakdown or {}).items():
+        if verdict == Verdict.SAFE:
+            continue
+        if name in informational_ingredients and name not in triggered_ingredients:
+            triggered_ingredients.append(name)
+    informational_ingredients = [
+        name for name in informational_ingredients if name not in triggered_ingredients
+    ]
+
     triggered_restrictions = []
     seen_restrictions = set()
     for (name, restriction), verdict in (result.breakdown or {}).items():
