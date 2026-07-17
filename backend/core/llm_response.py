@@ -121,6 +121,47 @@ def _looks_like_ingredient_list(text: str) -> bool:
     return False
 
 
+# High-signal animal-derived terms the verdict LLM must not invent when absent from flags.
+_VERDICT_EXPL_HALLUCINATION_TERMS = frozenset({
+    "gelatin",
+    "gelatine",
+    "lard",
+    "rennet",
+    "carmine",
+    "castoreum",
+    "collagen",
+})
+
+
+def _explanation_introduces_unflagged_terms(text: str, flagged: List[str]) -> bool:
+    """True when prose names a sensitive term not present in avoid/check lists."""
+    if not text or not flagged:
+        return False
+    flagged_blob = " ".join(flagged).lower()
+    lowered = text.lower()
+    for term in _VERDICT_EXPL_HALLUCINATION_TERMS:
+        if term in lowered and term not in flagged_blob:
+            return True
+    if _explanation_species_mismatch(text, flagged):
+        return True
+    return False
+
+
+def _explanation_species_mismatch(text: str, flagged: List[str]) -> bool:
+    """True when explanation names a different meat species than flagged ingredients."""
+    from core.external_apis.enrichment_relevance import species_groups_in_text
+
+    flagged_groups: set[str] = set()
+    for item in flagged:
+        flagged_groups |= species_groups_in_text(item)
+    if not flagged_groups:
+        return False
+    text_groups = species_groups_in_text(text)
+    if not text_groups:
+        return False
+    return flagged_groups.isdisjoint(text_groups)
+
+
 def llm_compose_verdict_explanation(
     verdict: ComplianceVerdict,
     profile: Any,
@@ -151,7 +192,8 @@ def llm_compose_verdict_explanation(
         alts = INGREDIENT_ALTERNATIVES.get(primary.lower(), [])
         alt_hint = f" Suggest {alts[0]} as a swap." if alts else ""
         prompt = (
-            f"NOT SUITABLE for {diet_phrase}. Primary: {primary}.{user_note}{alt_hint} "
+            f"NOT SUITABLE for {diet_phrase}. Primary flagged ingredient: {primary}.{user_note}{alt_hint} "
+            f"Discuss ONLY {primary}. Do not mention gelatin or any other ingredient unless it is {primary}. "
             f"One practical sentence on why it appears in products and what to pick instead. "
             f"Max 45 words. Do NOT list all ingredients."
         )
@@ -165,5 +207,10 @@ def llm_compose_verdict_explanation(
 
     result = _call_ollama(_VERDICT_EXPLANATION_SYSTEM, prompt, timeout=LLM_RESPONSE_TIMEOUT)
     if result and _looks_like_ingredient_list(result):
+        return None
+    if result and _explanation_introduces_unflagged_terms(
+        result, list(avoid_substances) + list(check_names)
+    ):
+        logger.info("LLM_VERDICT_EXPL rejected unflagged sensitive terms")
         return None
     return _trim_explanation(result) if result else None

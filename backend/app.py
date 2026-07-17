@@ -88,6 +88,7 @@ from core.config import (
 from core.profile_options import get_profile_options_raw
 from core.profile_storage import get_or_create_profile, save_profile, update_profile_partial
 from core.models.user_profile import UserProfile
+from core.models.verdict import VerdictStatus
 from core.bridge import (
     user_profile_model_to_restriction_ids,
     run_new_engine_chat,
@@ -110,7 +111,6 @@ from core.llm_response import (
     llm_compose_general,
     llm_compose_verdict_explanation,
 )
-from core.compound_expansion import expand_compounds
 from core.stream_tags import PROFILE_REQUIRED_TAG, PROFILE_UPDATE_TAG, INGREDIENT_AUDIT_TAG
 from core.anon_session import sign_anon_token, verify_anon_token
 from core.request_history import (
@@ -564,25 +564,28 @@ async def chat_grocery(request: Request, body: ChatRequest):
                 yield _profile_json(profile)
                 return
 
-            # 7) Extract ingredients
-            ingredients = parsed.ingredients
+            # 7) Extract ingredients (label decomposer for pasted labels)
+            from core.parsing.chat_ingredients import prepare_chat_ingredients
 
-            if profile.is_empty() and not ingredients:
+            prepared = prepare_chat_ingredients(query, parsed)
+            ingredients = parsed.ingredients
+            eval_ingredients = prepared.eval_names
+            compound_map = prepared.compound_map
+
+            if profile.is_empty() and not eval_ingredients:
                 yield f"{PROFILE_REQUIRED_TAG}\n\n"
                 msg = llm_compose_general(query, profile)
                 yield msg or "Please set up your dietary profile first so I can give you personalized advice."
                 yield _profile_json(profile)
                 return
 
-            if not ingredients:
+            if not eval_ingredients:
                 msg = llm_compose_general(query, profile)
                 yield msg or template_no_ingredients()
                 yield _profile_json(profile)
                 return
 
-            # 8) Expand compound items
-            eval_ingredients, compound_map = expand_compounds(ingredients)
-
+            # 8) Prepared atoms (decomposer or compound expansion)
             # Eager first byte: show progress before compliance run (improves perceived latency)
             yield "Checking ingredients…\n\n"
 
@@ -603,6 +606,7 @@ async def chat_grocery(request: Request, body: ChatRequest):
                 restriction_ids=restriction_ids,
                 profile_context=profile_context,
                 use_api_fallback=True,
+                prepared_decomposed=prepared.decomposed,
             )
             logger.info(
                 "VERDICT=%s confidence=%.2f triggered=%s ingredients=%s",
@@ -643,7 +647,13 @@ async def chat_grocery(request: Request, body: ChatRequest):
                 str(u).strip().title() for u in (verdict.uncertain_ingredients or [])
             ]
             safe_count = count_safe_audit_ingredients(eval_ingredients, verdict)
-            if llm_enabled():
+            if llm_enabled() and (
+                verdict.status != VerdictStatus.SAFE
+                or (
+                    verdict.confidence_score >= 0.95
+                    and not (verdict.uncertain_ingredients or [])
+                )
+            ):
                 llm_expl = llm_compose_verdict_explanation(
                     verdict=verdict,
                     profile=profile,

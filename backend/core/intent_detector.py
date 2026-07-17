@@ -334,26 +334,10 @@ def _extract_lifestyle(query: str) -> Tuple[List[str], str]:
 
 
 def _strip_duplicate_ingredient_label_block(text: str) -> str:
-    """
-    Remove duplicate label blocks that often appear in pasted labels, e.g.:
-    "...Strawberry Juice Concentrate. Active Ingredient Name Vegetable Juice (Water..."
-    Keep only the first ingredient list; strip ". Active Ingredient Name ..." or
-    a second "Ingredients:" block so we don't parse the same list twice.
-    """
-    if not text or not text.strip():
-        return text
-    t = text.strip()
-    # Strip ". Active Ingredient Name ..." (common in US labels)
-    m = re.search(r"\.\s+Active\s+Ingredient\s+Name\b.*", t, re.IGNORECASE | re.DOTALL)
-    if m:
-        t = t[: m.start()].strip().rstrip(".")
-    # If there are two "Ingredients:" blocks, keep only the first
-    first_ing = re.search(r"\bingredients?\s*[:;]", t, re.IGNORECASE)
-    if first_ing:
-        second_ing = re.search(r"\bingredients?\s*[:;]", t[first_ing.end() :], re.IGNORECASE)
-        if second_ing:
-            t = t[: first_ing.end() + second_ing.start()].strip().rstrip(".,")
-    return t
+    """Select the primary ingredient block from pasted multi-section labels."""
+    from core.parsing.label_text import select_ingredient_label_text
+
+    return select_ingredient_label_text(text)
 
 
 def _has_ingredient_list_indicator(text: str) -> bool:
@@ -371,6 +355,16 @@ def _has_ingredient_list_indicator(text: str) -> bool:
         parts = [p.strip() for p in t.split(",")]
         if len(parts) >= 2 and any(len(p) >= 2 for p in parts):
             return True
+    return False
+
+
+def _is_non_ingredient_capture(raw: str) -> bool:
+    """Reject meta placeholders from analyze/check patterns."""
+    r = (raw or "").strip().lower().rstrip(".,;:!?")
+    if r in {"this", "these", "that", "it", "me", "my label", "this for me"}:
+        return True
+    if re.match(r"^(?:this|these|that)\s+for\s+me$", r):
+        return True
     return False
 
 
@@ -398,7 +392,7 @@ def _extract_ingredients_from_text(text: str) -> List[str]:
         m = pat.search(text)
         if m:
             raw = _strip_duplicate_ingredient_label_block(m.group(1).strip())
-            if _is_meta_ingredient_phrase(raw):
+            if _is_meta_ingredient_phrase(raw) or _is_non_ingredient_capture(raw):
                 return []
             return _split_ingredients(raw)
     # Fallback: only when text clearly has a list (comma or "ingredients:")
@@ -567,7 +561,13 @@ def _bare_ingredients_fallback(text: str) -> List[str]:
         return []
     if _is_meta_ingredient_phrase(cleaned):
         return []
-    if re.match(r"^(?:check|analyze|evaluate|verify|test)\s+these\b", cleaned, re.IGNORECASE):
+    if re.match(r"^(?:check|analyze|evaluate|verify|test)\s+(?:this|these|that)\b", cleaned, re.IGNORECASE):
+        return []
+    if re.search(r"\b(?:weather|forecast)\b", low):
+        return []
+    if re.match(r"^what'?s\b", low):
+        return []
+    if re.match(r"^will\s+it\b", low):
         return []
     # Obvious general-knowledge questions, not a label or ingredient line
     if re.match(
@@ -668,6 +668,10 @@ def detect_intent(query: str) -> ParsedIntent:
     query = (query or "").strip()
     if not query:
         return ParsedIntent(intent="GENERAL_QUESTION", original_query=query)
+
+    from core.parsing.label_text import fix_ocr_label_noise
+
+    query = fix_ocr_label_noise(query)
 
     # Typo normalization so diet detection works on e.g. "vegeterian", "im veg"
     query = normalize_query_for_typos(query)

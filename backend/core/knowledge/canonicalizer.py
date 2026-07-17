@@ -15,6 +15,7 @@ Future phases will:
 
 from __future__ import annotations
 
+import asyncio
 import threading
 from dataclasses import dataclass
 from typing import Literal, Optional, Tuple
@@ -25,6 +26,7 @@ from core.knowledge.lifecycle import KnowledgeMetadata, KnowledgeState, Resoluti
 from core.knowledge.ingredient_db import IngredientKnowledgeDB
 from core.normalization.normalizer import normalize_ingredient_key
 from core.config import USE_KNOWLEDGE_DB
+from core.evaluation.resolution_trust import is_trusted_for_compliance, _is_cacheable
 from core.cache.redis_resolution import (
     resolution_cache_available,
     resolution_cache_get,
@@ -81,6 +83,30 @@ class CanonicalResolver:
         self._db = IngredientKnowledgeDB() if USE_KNOWLEDGE_DB else None
         self._resolution_cache: dict[Tuple[str, bool], CanonicalResolution] = {}
         self._cache_lock = threading.Lock()
+
+    def _emit_resolution_metric(
+        self,
+        result: Optional[CanonicalResolution],
+        *,
+        source_layer: Optional[str] = None,
+    ) -> None:
+        if not self._db:
+            return
+        try:
+            source = source_layer or (
+                getattr(result, "source_layer", "unknown") if result else "unknown"
+            )
+            resolved = result is not None and getattr(result, "confidence_band", "") in (
+                "high",
+                "medium",
+            )
+            try:
+                loop = asyncio.get_running_loop()
+            except RuntimeError:
+                return
+            loop.create_task(self._db.record_resolution_metric(source, resolved))
+        except Exception:
+            pass
 
     def _resolve_via_db(self, raw: str) -> Optional[CanonicalResolution]:
         """
@@ -191,18 +217,27 @@ class CanonicalResolver:
         if cache_key is not None:
             with self._cache_lock:
                 if cache_key in self._resolution_cache:
-                    return self._resolution_cache[cache_key]
+                    cached = self._resolution_cache[cache_key]
+                    if cached.ingredient is None or is_trusted_for_compliance(
+                        cached.ingredient,
+                        cached.source_layer,
+                        cached.confidence_band or "low",
+                    ):
+                        self._emit_resolution_metric(cached, source_layer="cache")
+                        return cached
+                    del self._resolution_cache[cache_key]
 
         # Optional Redis L2: only when REDIS_URL is set; any error falls back to impl
         if cache_key is not None and resolution_cache_available():
             redis_res = resolution_cache_get(norm_key, try_api)
             if redis_res is not None:
                 with self._cache_lock:
-                    if cache_key not in self._resolution_cache:
+                    if cache_key not in self._resolution_cache and _is_cacheable(redis_res):
                         self._resolution_cache[cache_key] = redis_res
                         if len(self._resolution_cache) > self._RESOLUTION_CACHE_MAX:
                             first_key = next(iter(self._resolution_cache))
                             del self._resolution_cache[first_key]
+                self._emit_resolution_metric(redis_res, source_layer="cache")
                 return redis_res
 
         res = self._resolve_with_fallback_impl(
@@ -211,14 +246,16 @@ class CanonicalResolver:
         )
 
         if cache_key is not None:
-            with self._cache_lock:
-                if cache_key not in self._resolution_cache:
-                    self._resolution_cache[cache_key] = res
-                    if len(self._resolution_cache) > self._RESOLUTION_CACHE_MAX:
-                        first_key = next(iter(self._resolution_cache))
-                        del self._resolution_cache[first_key]
-            if resolution_cache_available():
-                resolution_cache_set(norm_key, try_api, res)
+            if _is_cacheable(res):
+                with self._cache_lock:
+                    if cache_key not in self._resolution_cache:
+                        self._resolution_cache[cache_key] = res
+                        if len(self._resolution_cache) > self._RESOLUTION_CACHE_MAX:
+                            first_key = next(iter(self._resolution_cache))
+                            del self._resolution_cache[first_key]
+                if resolution_cache_available():
+                    resolution_cache_set(norm_key, try_api, res)
+        self._emit_resolution_metric(res)
         return res
 
     def _resolve_with_fallback_impl(

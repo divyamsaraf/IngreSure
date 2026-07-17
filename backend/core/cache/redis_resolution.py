@@ -12,6 +12,7 @@ import logging
 from typing import Optional
 
 from core.config import REDIS_URL
+from core.evaluation.resolution_trust import is_trusted_for_compliance, _is_cacheable
 
 logger = logging.getLogger(__name__)
 
@@ -137,6 +138,19 @@ def resolution_cache_get(norm_key: str, try_api: bool):
         except Exception:
             pass
         return None
+    ing = resolution.ingredient
+    if ing is not None and not is_trusted_for_compliance(
+        ing, resolution.source_layer, resolution.confidence_band or "low"
+    ):
+        logger.debug(
+            "Redis resolution cache: untrusted entry dropped key=%s source=%s",
+            norm_key[:50], resolution.source_layer,
+        )
+        try:
+            client.delete(key)
+        except Exception:
+            pass
+        return None
     return resolution
 
 
@@ -147,6 +161,8 @@ def resolution_cache_set(norm_key: str, try_api: bool, resolution) -> None:
     """
     client = _get_client()
     if client is None:
+        return
+    if not _is_cacheable(resolution):
         return
     key = _resolution_key(norm_key, try_api)
     try:

@@ -98,17 +98,22 @@ def enrich_unknown_batch(min_frequency: int = 1, limit: int = 50) -> dict[str, A
         }
         if result.ingredient and result.confidence != "low":
             group_id = db.upsert_from_enrichment(result, normalized_key=key)
-            # Mark unknown as resolved when we successfully persisted it
-            try:
-                update = {
-                    **base_update,
-                    "resolved": True,
-                    "resolved_group_id": group_id,
-                    "resolution_source": result.source,
-                }
-                client.table("unknown_ingredients").update(update).eq("id", row["id"]).execute()
-            except Exception as e:
-                logger.warning("enrich_unknown_batch: failed to update unknown_ingredients for key=%s: %s", key, e)
+            if group_id:
+                try:
+                    update = {
+                        **base_update,
+                        "resolved": True,
+                        "resolved_group_id": group_id,
+                        "resolution_source": result.source,
+                    }
+                    client.table("unknown_ingredients").update(update).eq("id", row["id"]).execute()
+                except Exception as e:
+                    logger.warning("enrich_unknown_batch: failed to update unknown_ingredients for key=%s: %s", key, e)
+            else:
+                try:
+                    client.table("unknown_ingredients").update(base_update).eq("id", row["id"]).execute()
+                except Exception as e:
+                    logger.debug("enrich_unknown_batch: failed to update last_attempt_at for key=%s: %s", key, e)
         else:
             try:
                 client.table("unknown_ingredients").update(base_update).eq("id", row["id"]).execute()
