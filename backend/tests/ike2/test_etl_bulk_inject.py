@@ -43,7 +43,7 @@ class FakeWriter:
             self.ingredients[key] = self._next("i")
         return self.ingredients[key]
 
-    def upsert_alias(self, normalized_alias, ingredient_id, region, source):
+    def upsert_alias(self, normalized_alias, ingredient_id, region, source, alias_type="common"):
         key = (normalized_alias, ingredient_id, region)
         if key in self.aliases:
             return False
@@ -85,15 +85,20 @@ def test_existing_group_reconciles_most_restrictive_and_flags_review():
 
 def test_invalid_row_is_quarantined_and_batch_continues():
     w = FakeWriter()
-    # insect_derived without animal_origin violates insect_implies_animal
-    bad = _rec(canonical_name="mystery_dye", insect_derived=True,
-               animal_origin=False, plant_origin=False, aliases=["mystery_dye"])
+    # dual animal+plant origin without uncertainty_flags violates CHECK mirror
+    bad = _rec(
+        canonical_name="mystery_dye",
+        animal_origin=True,
+        plant_origin=True,
+        uncertainty_flags=[],
+        aliases=["mystery_dye"],
+    )
     good = _rec(canonical_name="spinach", aliases=["spinach"])
     stats = inject([bad, good], "wikidata", w)
     assert stats.rejected == 1
     assert stats.inserted == 1
     assert len(w.rejects) == 1
-    assert w.rejects[0]["violated_constraint"] == "insect_implies_animal"
+    assert w.rejects[0]["violated_constraint"] == "dual_origin_requires_uncertainty"
     assert w.get_group("spinach") is not None
     assert w.get_group("mystery_dye") is None
 

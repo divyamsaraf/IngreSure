@@ -181,3 +181,158 @@ def test_untrusted_trace_is_uncertain_not_avoid(rule_peanut):
         evaluate([r], _profile("peanut", "medical"), [rule_peanut]).verdict
         == Verdict.UNCERTAIN
     )
+
+
+def test_uncovered_restriction_is_never_safe(rule_vegan):
+    # A profile restriction with no matching rule must not be silently dropped:
+    # vegan passes SAFE, but peanut has no rule -> the peanut restriction was never
+    # evaluated, so the headline verdict must degrade to UNCERTAIN, not SAFE.
+    r = _resolved(animal_origin=False, knowledge_state="VERIFIED", trusted=True)
+    profile = SimpleNamespace(restrictions={"peanut": "medical", "vegan": "preference"})
+    result = evaluate([r], profile, [rule_vegan])
+    assert result.verdict == Verdict.UNCERTAIN
+    assert any("peanut" in c for c in result.caution_reasons)
+
+
+def test_full_coverage_resolves_safe(rule_vegan):
+    # Guard against the coverage check over-firing: a single fully-covered
+    # restriction on a clean, verified ingredient still resolves SAFE.
+    r = _resolved(animal_origin=False, knowledge_state="VERIFIED", trusted=True)
+    assert evaluate([r], _vegan(), [rule_vegan]).verdict == Verdict.SAFE
+
+
+def test_medical_may_contain_through_seam(rule_peanut):
+    """Product-level trace from parser -> seam -> compliance (not hand-built trace)."""
+    from core.knowledge.ike2.input_layer import parse_atoms
+    from core.knowledge.ike2.seam import to_compliance_input
+
+    peanut_atom = next(a for a in parse_atoms("water, contains 2% or less: peanuts") if "peanut" in a.name)
+    assert peanut_atom.trace is True
+
+    group = SimpleNamespace(
+        canonical_name=peanut_atom.name, peanut_source=True, tree_nut_source=False,
+        knowledge_state="VERIFIED", alcohol_role="none", alcohol_content=None,
+        verdict_cap=None, uncertainty_flags=[],
+    )
+    ci = to_compliance_input(
+        SimpleNamespace(group=group, trusted=True),
+        trace=peanut_atom.trace,
+    )
+    assert evaluate([ci], _profile("peanut", "medical"), [rule_peanut]).verdict == Verdict.FAIL
+
+
+def test_medical_may_contain_statement_through_seam(rule_peanut):
+    from core.knowledge.ike2.input_layer import parse_atoms
+    from core.knowledge.ike2.seam import to_compliance_input
+
+    peanut_atom = next(
+        a for a in parse_atoms("water, flour. May contain: peanuts") if "peanut" in a.name
+    )
+    assert peanut_atom.may_contain is True
+    assert peanut_atom.trace is False
+
+    group = SimpleNamespace(
+        canonical_name=peanut_atom.name, peanut_source=True, tree_nut_source=False,
+        knowledge_state="VERIFIED", alcohol_role="none", alcohol_content=None,
+        verdict_cap=None, uncertainty_flags=[],
+    )
+    ci = to_compliance_input(
+        SimpleNamespace(group=group, trusted=True),
+        trace=peanut_atom.trace,
+        may_contain=peanut_atom.may_contain,
+    )
+    assert evaluate([ci], _profile("peanut", "medical"), [rule_peanut]).verdict == Verdict.FAIL
+
+
+def test_species_match_triggers_fail():
+    rule = SimpleNamespace(
+        restriction="halal",
+        kind="species_match",
+        trigger_flag=None,
+        match_value="pig",
+        action="FAIL",
+        min_knowledge_state="UNCLASSIFIED",
+    )
+    r = _resolved(animal_origin=True, knowledge_state="VERIFIED", trusted=True)
+    r.flags["animal_species"] = "pig"
+    assert evaluate([r], _profile("halal", "preference"), [rule]).verdict == Verdict.FAIL
+
+
+def test_species_match_porcine_gelatin_triggers_fail():
+    rule = SimpleNamespace(
+        restriction="halal",
+        kind="species_match",
+        trigger_flag=None,
+        match_value="pig",
+        action="FAIL",
+        min_knowledge_state="UNCLASSIFIED",
+    )
+    r = _resolved(animal_origin=True, knowledge_state="VERIFIED", trusted=True)
+    r.flags["animal_species"] = "bovine/porcine/fish depending on source"
+    assert evaluate([r], _profile("halal", "preference"), [rule]).verdict == Verdict.FAIL
+
+
+def test_species_unknown_with_animal_origin_is_uncertain():
+    rule = SimpleNamespace(
+        restriction="halal",
+        kind="species_match",
+        trigger_flag=None,
+        match_value="pig",
+        action="FAIL",
+        min_knowledge_state="UNCLASSIFIED",
+    )
+    r = _resolved(animal_origin=True, knowledge_state="VERIFIED", trusted=True)
+    r.flags["animal_species"] = None
+    assert evaluate([r], _profile("halal", "preference"), [rule]).verdict == Verdict.UNCERTAIN
+
+
+def test_meat_fish_derived_from_fish_source_without_animal_origin():
+    rule = SimpleNamespace(
+        restriction="vegetarian",
+        kind="meat_fish_derived",
+        trigger_flag=None,
+        match_value=True,
+        action="FAIL",
+        min_knowledge_state="UNCLASSIFIED",
+    )
+    r = _resolved(animal_origin=False, knowledge_state="VERIFIED", trusted=True)
+    r.flags["fish_source"] = True
+    assert evaluate([r], _profile("vegetarian", "preference"), [rule]).verdict == Verdict.FAIL
+
+
+def test_alcohol_content_gt_zero_fails():
+    rule = SimpleNamespace(
+        restriction="halal",
+        kind="alcohol_content",
+        trigger_flag=None,
+        match_value=0,
+        action="FAIL",
+        min_knowledge_state="UNCLASSIFIED",
+    )
+    r = _resolved(alcohol_role="none", knowledge_state="VERIFIED", trusted=True)
+    r.flags["alcohol_content"] = 5.0
+    assert evaluate([r], _profile("halal", "preference"), [rule]).verdict == Verdict.FAIL
+
+
+def test_rule_action_warn():
+    rule = SimpleNamespace(
+        restriction="jain",
+        kind="flag",
+        trigger_flag="fermented",
+        match_value=True,
+        action="WARN",
+        min_knowledge_state="UNCLASSIFIED",
+    )
+    r = _resolved(animal_origin=False, knowledge_state="VERIFIED", trusted=True)
+    r.flags["fermented"] = True
+    assert evaluate([r], _profile("jain", "preference"), [rule]).verdict == Verdict.WARN
+
+
+def test_verdict_cap_never_promotes_safe_to_firm_safe(rule_vegan):
+    r = _resolved(animal_origin=False, knowledge_state="VERIFIED", trusted=True, verdict_cap="WARN")
+    assert evaluate([r], _profile("vegan", "preference"), [rule_vegan]).verdict != Verdict.SAFE
+
+
+def test_definite_fail_not_downgraded_to_safe(rule_vegan):
+    r = _resolved(animal_origin=True, knowledge_state="LOCKED", trusted=True)
+    assert evaluate([r], _profile("vegan", "medical"), [rule_vegan]).verdict == Verdict.FAIL

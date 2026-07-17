@@ -1,6 +1,10 @@
 import os
+from pathlib import Path
 
 import pytest
+from dotenv import load_dotenv
+
+load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 
 
 def _is_local(url: str) -> bool:
@@ -15,17 +19,18 @@ def db_admin():
     constraint tests (which insert deliberately-invalid rows) can never
     touch a remote/prod database.
     """
-    url = os.getenv("SUPABASE_URL", "")
-    key = os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("SUPABASE_KEY")
-    if not url or not key:
+    from core.knowledge.ingredient_db import get_supabase_config
+
+    cfg = get_supabase_config()
+    if not cfg:
         pytest.skip("needs local supabase (SUPABASE_URL + service role key)")
-    if not _is_local(url):
+    if not _is_local(cfg.url):
         pytest.fail(
-            f"refusing to run schema constraint tests against non-local URL: {url!r}"
+            f"refusing to run schema constraint tests against non-local URL: {cfg.url!r}"
         )
     from supabase import create_client
 
-    return create_client(url, key)
+    return create_client(cfg.url, cfg.key)
 
 
 @pytest.fixture

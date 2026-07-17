@@ -68,3 +68,13 @@ def test_uncertain_resolution_is_fail_closed():
     assert ci.knowledge_state == "UNCLASSIFIED"
     assert ci.trusted is False
     assert ci.alcohol_role is None
+
+
+def test_trace_flag_passes_through():
+    group = SimpleNamespace(
+        canonical_name="peanut", peanut_source=True, tree_nut_source=False,
+        knowledge_state="VERIFIED", alcohol_role="none", alcohol_content=None,
+        verdict_cap=None, uncertainty_flags=[],
+    )
+    ci = to_compliance_input(_resolved(group), trace=True)
+    assert ci.trace is True

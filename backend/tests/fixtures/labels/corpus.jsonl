@@ -1,0 +1,457 @@
+{"id": "simple_list", "raw": "milk, gelatin, E471", "must_include": ["milk", "gelatin", "e471"], "label_class": "A", "min_atoms": 2, "max_atoms": 40, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "parenthesis_flour", "raw": "Enriched Bleached Wheat Flour (Bleached Wheat Flour, Niacin, Folic Acid)", "must_include": ["bleached wheat flour", "niacin", "folic acid"], "must_not_include_brackets": true, "label_class": "B", "min_atoms": 2, "max_atoms": 40, "shadow_check": false}
+{"id": "bracket_flour", "raw": "Enriched Wheat Flour [Flour, Malted Barley Flour, Folic Acid]", "must_include": ["flour", "malted barley flour", "folic acid"], "must_not_include_brackets": true, "label_class": "C", "min_atoms": 2, "max_atoms": 40, "shadow_check": false}
+{"id": "trace_after_period", "raw": "Yeast. Contains 2% Or Less Of Each Of The Following: Sea Salt, Enzymes", "must_include": ["yeast", "sea salt", "enzymes"], "trace_atoms": ["sea salt", "enzymes"], "non_trace_atoms": ["yeast"], "label_class": "D", "min_atoms": 2, "max_atoms": 40, "shadow_check": false}
+{"id": "ingredients_prefix", "raw": "Ingredients: water, salt", "must_include": ["water", "salt"], "must_not_include_prefix": true, "label_class": "E", "min_atoms": 2, "max_atoms": 40, "shadow_check": false}
+{"id": "semicolon_eu", "raw": "water; sugar; citric acid", "must_include": ["water", "sugar", "citric acid"], "label_class": "F", "min_atoms": 2, "max_atoms": 40, "shadow_check": false}
+{"id": "may_contain_statement", "raw": "Ingredients: water, flour. May contain: peanuts, tree nuts", "must_include": ["water", "flour", "peanut", "tree nut"], "may_contain_atoms": ["peanut", "tree nut"], "non_may_contain_atoms": ["water", "flour"], "label_class": "G", "min_atoms": 2, "max_atoms": 40, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "sourdough_bread", "raw": "Ingredients: Enriched Wheat Flour [Flour, Malted Barley Flour, Reduced Iron, Niacin, Thiamin Mononitrate (Vitamin B1), Riboflavin (Vitamin B2), Folic Acid], Water, Sourdough (Wheat Flour), Wheat Gluten, Yeast. Contains 2% Or Less Of Each Of The Following: Extra Virgin Olive Oil, Sea Salt, Preservatives (Calcium Propionate, Sorbic Acid), Organic Grain Vinegar, Enzymes.", "must_include": ["water", "wheat gluten", "yeast", "enzymes", "malted barley flour"], "must_not_include_brackets": true, "trace_atoms": ["sea salt", "enzymes", "calcium propionate", "sorbic acid"], "must_not_include": ["preservatives"], "label_class": "CDE", "min_atoms": 2, "max_atoms": 40, "shadow_check": false}
+{"id": "simple_001", "label_class": "A", "raw": "water, salt", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_002", "label_class": "A", "raw": "water, sugar", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_003", "label_class": "A", "raw": "water, wheat flour", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_004", "label_class": "A", "raw": "water, wheat gluten", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_005", "label_class": "A", "raw": "water, malted barley flour", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_006", "label_class": "A", "raw": "water, yeast", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_007", "label_class": "A", "raw": "water, milk", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_008", "label_class": "A", "raw": "water, egg", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_009", "label_class": "A", "raw": "water, gelatin", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_010", "label_class": "A", "raw": "water, honey", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_011", "label_class": "A", "raw": "water, butter", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_012", "label_class": "A", "raw": "water, peanut", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_013", "label_class": "A", "raw": "water, soy", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_014", "label_class": "A", "raw": "salt, sugar", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_015", "label_class": "A", "raw": "salt, wheat flour", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_016", "label_class": "A", "raw": "salt, wheat gluten", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_017", "label_class": "A", "raw": "salt, malted barley flour", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_018", "label_class": "A", "raw": "salt, yeast", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_019", "label_class": "A", "raw": "salt, milk", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_020", "label_class": "A", "raw": "salt, egg", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_021", "label_class": "A", "raw": "salt, gelatin", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_022", "label_class": "A", "raw": "salt, honey", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_023", "label_class": "A", "raw": "salt, butter", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_024", "label_class": "A", "raw": "salt, peanut", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_025", "label_class": "A", "raw": "salt, soy", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_026", "label_class": "A", "raw": "sugar, wheat flour", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_027", "label_class": "A", "raw": "sugar, wheat gluten", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_028", "label_class": "A", "raw": "sugar, malted barley flour", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_029", "label_class": "A", "raw": "sugar, yeast", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_030", "label_class": "A", "raw": "sugar, milk", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_031", "label_class": "A", "raw": "sugar, egg", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_032", "label_class": "A", "raw": "sugar, gelatin", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_033", "label_class": "A", "raw": "sugar, honey", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_034", "label_class": "A", "raw": "sugar, butter", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_035", "label_class": "A", "raw": "sugar, peanut", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_036", "label_class": "A", "raw": "sugar, soy", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_037", "label_class": "A", "raw": "wheat flour, wheat gluten", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_038", "label_class": "A", "raw": "wheat flour, malted barley flour", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_039", "label_class": "A", "raw": "wheat flour, yeast", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_040", "label_class": "A", "raw": "wheat flour, milk", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_041", "label_class": "A", "raw": "wheat flour, egg", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_042", "label_class": "A", "raw": "wheat flour, gelatin", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_043", "label_class": "A", "raw": "wheat flour, honey", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_044", "label_class": "A", "raw": "wheat flour, butter", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_045", "label_class": "A", "raw": "wheat flour, peanut", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_046", "label_class": "A", "raw": "wheat flour, soy", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_047", "label_class": "A", "raw": "wheat gluten, malted barley flour", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_048", "label_class": "A", "raw": "wheat gluten, yeast", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_049", "label_class": "A", "raw": "wheat gluten, milk", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_050", "label_class": "A", "raw": "wheat gluten, egg", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_051", "label_class": "A", "raw": "wheat gluten, gelatin", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_052", "label_class": "A", "raw": "wheat gluten, honey", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_053", "label_class": "A", "raw": "wheat gluten, butter", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_054", "label_class": "A", "raw": "wheat gluten, peanut", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_055", "label_class": "A", "raw": "wheat gluten, soy", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_056", "label_class": "A", "raw": "malted barley flour, yeast", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_057", "label_class": "A", "raw": "malted barley flour, milk", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_058", "label_class": "A", "raw": "malted barley flour, egg", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_059", "label_class": "A", "raw": "malted barley flour, gelatin", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_060", "label_class": "A", "raw": "malted barley flour, honey", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_061", "label_class": "A", "raw": "malted barley flour, butter", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_062", "label_class": "A", "raw": "malted barley flour, peanut", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_063", "label_class": "A", "raw": "malted barley flour, soy", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_064", "label_class": "A", "raw": "yeast, milk", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_065", "label_class": "A", "raw": "yeast, egg", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_066", "label_class": "A", "raw": "yeast, gelatin", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_067", "label_class": "A", "raw": "yeast, honey", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_068", "label_class": "A", "raw": "yeast, butter", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_069", "label_class": "A", "raw": "yeast, peanut", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_070", "label_class": "A", "raw": "yeast, soy", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_071", "label_class": "A", "raw": "milk, egg", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_072", "label_class": "A", "raw": "milk, gelatin", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_073", "label_class": "A", "raw": "milk, honey", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_074", "label_class": "A", "raw": "milk, butter", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_075", "label_class": "A", "raw": "milk, peanut", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_076", "label_class": "A", "raw": "milk, soy", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_077", "label_class": "A", "raw": "egg, gelatin", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_078", "label_class": "A", "raw": "egg, honey", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_079", "label_class": "A", "raw": "egg, butter", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_080", "label_class": "A", "raw": "egg, peanut", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_081", "label_class": "A", "raw": "egg, soy", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_082", "label_class": "A", "raw": "gelatin, honey", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_083", "label_class": "A", "raw": "gelatin, butter", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_084", "label_class": "A", "raw": "gelatin, peanut", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_085", "label_class": "A", "raw": "gelatin, soy", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_086", "label_class": "A", "raw": "honey, butter", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_087", "label_class": "A", "raw": "honey, peanut", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_088", "label_class": "A", "raw": "honey, soy", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_089", "label_class": "A", "raw": "butter, peanut", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_090", "label_class": "A", "raw": "butter, soy", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_091", "label_class": "A", "raw": "peanut, soy", "min_atoms": 2, "max_atoms": 4}
+{"id": "simple_092", "label_class": "A", "raw": "water, salt, sugar", "min_atoms": 3, "max_atoms": 5}
+{"id": "simple_093", "label_class": "A", "raw": "water, salt, wheat flour", "min_atoms": 3, "max_atoms": 5}
+{"id": "simple_094", "label_class": "A", "raw": "water, salt, wheat gluten", "min_atoms": 3, "max_atoms": 5}
+{"id": "simple_095", "label_class": "A", "raw": "water, salt, malted barley flour", "min_atoms": 3, "max_atoms": 5}
+{"id": "simple_096", "label_class": "A", "raw": "water, salt, yeast", "min_atoms": 3, "max_atoms": 5}
+{"id": "simple_097", "label_class": "A", "raw": "water, salt, milk", "min_atoms": 3, "max_atoms": 5}
+{"id": "simple_098", "label_class": "A", "raw": "water, salt, egg", "min_atoms": 3, "max_atoms": 5}
+{"id": "simple_099", "label_class": "A", "raw": "water, salt, gelatin", "min_atoms": 3, "max_atoms": 5}
+{"id": "simple_100", "label_class": "A", "raw": "water, salt, honey", "min_atoms": 3, "max_atoms": 5}
+{"id": "shadow_vegan_0001", "label_class": "A", "raw": "water", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0002", "label_class": "A", "raw": "salt", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0003", "label_class": "A", "raw": "wheat flour", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0004", "label_class": "A", "raw": "yeast", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0005", "label_class": "A", "raw": "milk", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0006", "label_class": "A", "raw": "egg", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0007", "label_class": "A", "raw": "gelatin", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0008", "label_class": "A", "raw": "honey", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0009", "label_class": "A", "raw": "butter", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0010", "label_class": "A", "raw": "peanut", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0011", "label_class": "A", "raw": "sesame", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0012", "label_class": "A", "raw": "fish", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0013", "label_class": "A", "raw": "shrimp", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0014", "label_class": "A", "raw": "wheat", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0015", "label_class": "A", "raw": "barley", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0016", "label_class": "A", "raw": "water, salt", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0017", "label_class": "A", "raw": "water, wheat flour", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0018", "label_class": "A", "raw": "water, yeast", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0019", "label_class": "A", "raw": "water, milk", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0020", "label_class": "A", "raw": "water, egg", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0021", "label_class": "A", "raw": "water, gelatin", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0022", "label_class": "A", "raw": "water, honey", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0023", "label_class": "A", "raw": "water, butter", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0024", "label_class": "A", "raw": "water, peanut", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0025", "label_class": "A", "raw": "water, sesame", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0026", "label_class": "A", "raw": "water, fish", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0027", "label_class": "A", "raw": "water, shrimp", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0028", "label_class": "A", "raw": "water, wheat", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0029", "label_class": "A", "raw": "water, barley", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0030", "label_class": "A", "raw": "salt, wheat flour", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0031", "label_class": "A", "raw": "salt, yeast", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0032", "label_class": "A", "raw": "salt, milk", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0033", "label_class": "A", "raw": "salt, egg", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0034", "label_class": "A", "raw": "salt, gelatin", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0035", "label_class": "A", "raw": "salt, honey", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0036", "label_class": "A", "raw": "salt, butter", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0037", "label_class": "A", "raw": "salt, peanut", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0038", "label_class": "A", "raw": "salt, sesame", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0039", "label_class": "A", "raw": "salt, fish", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_vegan_0040", "label_class": "A", "raw": "salt, shrimp", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "shadow_gluten_free_0041", "label_class": "A", "raw": "water", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0042", "label_class": "A", "raw": "salt", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0043", "label_class": "A", "raw": "wheat flour", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0044", "label_class": "A", "raw": "yeast", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0045", "label_class": "A", "raw": "milk", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0046", "label_class": "A", "raw": "egg", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0047", "label_class": "A", "raw": "gelatin", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0048", "label_class": "A", "raw": "honey", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0049", "label_class": "A", "raw": "butter", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0050", "label_class": "A", "raw": "peanut", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0051", "label_class": "A", "raw": "sesame", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0052", "label_class": "A", "raw": "fish", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0053", "label_class": "A", "raw": "shrimp", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0054", "label_class": "A", "raw": "wheat", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0055", "label_class": "A", "raw": "barley", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0056", "label_class": "A", "raw": "water, salt", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0057", "label_class": "A", "raw": "water, wheat flour", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0058", "label_class": "A", "raw": "water, yeast", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0059", "label_class": "A", "raw": "water, milk", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0060", "label_class": "A", "raw": "water, egg", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0061", "label_class": "A", "raw": "water, gelatin", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0062", "label_class": "A", "raw": "water, honey", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0063", "label_class": "A", "raw": "water, butter", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0064", "label_class": "A", "raw": "water, peanut", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0065", "label_class": "A", "raw": "water, sesame", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0066", "label_class": "A", "raw": "water, fish", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0067", "label_class": "A", "raw": "water, shrimp", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0068", "label_class": "A", "raw": "water, wheat", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0069", "label_class": "A", "raw": "water, barley", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0070", "label_class": "A", "raw": "salt, wheat flour", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0071", "label_class": "A", "raw": "salt, yeast", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0072", "label_class": "A", "raw": "salt, milk", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0073", "label_class": "A", "raw": "salt, egg", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0074", "label_class": "A", "raw": "salt, gelatin", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0075", "label_class": "A", "raw": "salt, honey", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0076", "label_class": "A", "raw": "salt, butter", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0077", "label_class": "A", "raw": "salt, peanut", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0078", "label_class": "A", "raw": "salt, sesame", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0079", "label_class": "A", "raw": "salt, fish", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_gluten_free_0080", "label_class": "A", "raw": "salt, shrimp", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["gluten_free"]}
+{"id": "shadow_peanut_allergy_0081", "label_class": "A", "raw": "water", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0082", "label_class": "A", "raw": "salt", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0083", "label_class": "A", "raw": "wheat flour", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0084", "label_class": "A", "raw": "yeast", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0085", "label_class": "A", "raw": "milk", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0086", "label_class": "A", "raw": "egg", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0087", "label_class": "A", "raw": "gelatin", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0088", "label_class": "A", "raw": "honey", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0089", "label_class": "A", "raw": "butter", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0090", "label_class": "A", "raw": "peanut", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0091", "label_class": "A", "raw": "sesame", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0092", "label_class": "A", "raw": "fish", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0093", "label_class": "A", "raw": "shrimp", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0094", "label_class": "A", "raw": "wheat", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0095", "label_class": "A", "raw": "barley", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0096", "label_class": "A", "raw": "water, salt", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0097", "label_class": "A", "raw": "water, wheat flour", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0098", "label_class": "A", "raw": "water, yeast", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0099", "label_class": "A", "raw": "water, milk", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0100", "label_class": "A", "raw": "water, egg", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0101", "label_class": "A", "raw": "water, gelatin", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0102", "label_class": "A", "raw": "water, honey", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0103", "label_class": "A", "raw": "water, butter", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0104", "label_class": "A", "raw": "water, peanut", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0105", "label_class": "A", "raw": "water, sesame", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0106", "label_class": "A", "raw": "water, fish", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0107", "label_class": "A", "raw": "water, shrimp", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0108", "label_class": "A", "raw": "water, wheat", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0109", "label_class": "A", "raw": "water, barley", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0110", "label_class": "A", "raw": "salt, wheat flour", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0111", "label_class": "A", "raw": "salt, yeast", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0112", "label_class": "A", "raw": "salt, milk", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0113", "label_class": "A", "raw": "salt, egg", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0114", "label_class": "A", "raw": "salt, gelatin", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0115", "label_class": "A", "raw": "salt, honey", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0116", "label_class": "A", "raw": "salt, butter", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0117", "label_class": "A", "raw": "salt, peanut", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0118", "label_class": "A", "raw": "salt, sesame", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0119", "label_class": "A", "raw": "salt, fish", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_peanut_allergy_0120", "label_class": "A", "raw": "salt, shrimp", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "shadow_dairy_free_0121", "label_class": "A", "raw": "water", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0122", "label_class": "A", "raw": "salt", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0123", "label_class": "A", "raw": "wheat flour", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0124", "label_class": "A", "raw": "yeast", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0125", "label_class": "A", "raw": "milk", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0126", "label_class": "A", "raw": "egg", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0127", "label_class": "A", "raw": "gelatin", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0128", "label_class": "A", "raw": "honey", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0129", "label_class": "A", "raw": "butter", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0130", "label_class": "A", "raw": "peanut", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0131", "label_class": "A", "raw": "sesame", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0132", "label_class": "A", "raw": "fish", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0133", "label_class": "A", "raw": "shrimp", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0134", "label_class": "A", "raw": "wheat", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0135", "label_class": "A", "raw": "barley", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0136", "label_class": "A", "raw": "water, salt", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0137", "label_class": "A", "raw": "water, wheat flour", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0138", "label_class": "A", "raw": "water, yeast", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0139", "label_class": "A", "raw": "water, milk", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0140", "label_class": "A", "raw": "water, egg", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0141", "label_class": "A", "raw": "water, gelatin", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0142", "label_class": "A", "raw": "water, honey", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0143", "label_class": "A", "raw": "water, butter", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0144", "label_class": "A", "raw": "water, peanut", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0145", "label_class": "A", "raw": "water, sesame", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0146", "label_class": "A", "raw": "water, fish", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0147", "label_class": "A", "raw": "water, shrimp", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0148", "label_class": "A", "raw": "water, wheat", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0149", "label_class": "A", "raw": "water, barley", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0150", "label_class": "A", "raw": "salt, wheat flour", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0151", "label_class": "A", "raw": "salt, yeast", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0152", "label_class": "A", "raw": "salt, milk", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0153", "label_class": "A", "raw": "salt, egg", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0154", "label_class": "A", "raw": "salt, gelatin", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0155", "label_class": "A", "raw": "salt, honey", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0156", "label_class": "A", "raw": "salt, butter", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0157", "label_class": "A", "raw": "salt, peanut", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0158", "label_class": "A", "raw": "salt, sesame", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0159", "label_class": "A", "raw": "salt, fish", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_dairy_free_0160", "label_class": "A", "raw": "salt, shrimp", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["dairy_free"]}
+{"id": "shadow_egg_free_0161", "label_class": "A", "raw": "water", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0162", "label_class": "A", "raw": "salt", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0163", "label_class": "A", "raw": "wheat flour", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0164", "label_class": "A", "raw": "yeast", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0165", "label_class": "A", "raw": "milk", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0166", "label_class": "A", "raw": "egg", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0167", "label_class": "A", "raw": "gelatin", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0168", "label_class": "A", "raw": "honey", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0169", "label_class": "A", "raw": "butter", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0170", "label_class": "A", "raw": "peanut", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0171", "label_class": "A", "raw": "sesame", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0172", "label_class": "A", "raw": "fish", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0173", "label_class": "A", "raw": "shrimp", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0174", "label_class": "A", "raw": "wheat", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0175", "label_class": "A", "raw": "barley", "min_atoms": 1, "max_atoms": 3, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0176", "label_class": "A", "raw": "water, salt", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0177", "label_class": "A", "raw": "water, wheat flour", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0178", "label_class": "A", "raw": "water, yeast", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0179", "label_class": "A", "raw": "water, milk", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0180", "label_class": "A", "raw": "water, egg", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0181", "label_class": "A", "raw": "water, gelatin", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0182", "label_class": "A", "raw": "water, honey", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0183", "label_class": "A", "raw": "water, butter", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0184", "label_class": "A", "raw": "water, peanut", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0185", "label_class": "A", "raw": "water, sesame", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0186", "label_class": "A", "raw": "water, fish", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0187", "label_class": "A", "raw": "water, shrimp", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0188", "label_class": "A", "raw": "water, wheat", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0189", "label_class": "A", "raw": "water, barley", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0190", "label_class": "A", "raw": "salt, wheat flour", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0191", "label_class": "A", "raw": "salt, yeast", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0192", "label_class": "A", "raw": "salt, milk", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0193", "label_class": "A", "raw": "salt, egg", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0194", "label_class": "A", "raw": "salt, gelatin", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0195", "label_class": "A", "raw": "salt, honey", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0196", "label_class": "A", "raw": "salt, butter", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0197", "label_class": "A", "raw": "salt, peanut", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0198", "label_class": "A", "raw": "salt, sesame", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0199", "label_class": "A", "raw": "salt, fish", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "shadow_egg_free_0200", "label_class": "A", "raw": "salt, shrimp", "min_atoms": 2, "max_atoms": 4, "shadow_check": true, "restriction_ids": ["egg_free"]}
+{"id": "paren_0_0", "label_class": "B", "raw": "Enriched Wheat Flour (Niacin)", "min_atoms": 1, "max_atoms": 12, "must_not_include_brackets": true}
+{"id": "paren_0_1", "label_class": "B", "raw": "Enriched Wheat Flour (Niacin, Reduced Iron)", "min_atoms": 2, "max_atoms": 12, "must_not_include_brackets": true}
+{"id": "paren_0_2", "label_class": "B", "raw": "Enriched Wheat Flour (Niacin, Reduced Iron, Folic Acid)", "min_atoms": 2, "max_atoms": 12, "must_not_include_brackets": true}
+{"id": "paren_0_3", "label_class": "B", "raw": "Enriched Wheat Flour (Niacin, Reduced Iron, Folic Acid, Thiamine)", "min_atoms": 2, "max_atoms": 12, "must_not_include_brackets": true}
+{"id": "paren_0_4", "label_class": "B", "raw": "Enriched Wheat Flour (Niacin, Reduced Iron, Folic Acid, Thiamine, Riboflavin)", "min_atoms": 2, "max_atoms": 12, "must_not_include_brackets": true}
+{"id": "paren_1_0", "label_class": "B", "raw": "Wheat Flour (Niacin)", "min_atoms": 1, "max_atoms": 12, "must_not_include_brackets": true}
+{"id": "paren_1_1", "label_class": "B", "raw": "Wheat Flour (Niacin, Reduced Iron)", "min_atoms": 2, "max_atoms": 12, "must_not_include_brackets": true}
+{"id": "paren_1_2", "label_class": "B", "raw": "Wheat Flour (Niacin, Reduced Iron, Folic Acid)", "min_atoms": 2, "max_atoms": 12, "must_not_include_brackets": true}
+{"id": "paren_1_3", "label_class": "B", "raw": "Wheat Flour (Niacin, Reduced Iron, Folic Acid, Thiamine)", "min_atoms": 2, "max_atoms": 12, "must_not_include_brackets": true}
+{"id": "paren_1_4", "label_class": "B", "raw": "Wheat Flour (Niacin, Reduced Iron, Folic Acid, Thiamine, Riboflavin)", "min_atoms": 2, "max_atoms": 12, "must_not_include_brackets": true}
+{"id": "paren_2_0", "label_class": "B", "raw": "Bleached Wheat Flour (Niacin)", "min_atoms": 1, "max_atoms": 12, "must_not_include_brackets": true}
+{"id": "paren_2_1", "label_class": "B", "raw": "Bleached Wheat Flour (Niacin, Reduced Iron)", "min_atoms": 2, "max_atoms": 12, "must_not_include_brackets": true}
+{"id": "paren_2_2", "label_class": "B", "raw": "Bleached Wheat Flour (Niacin, Reduced Iron, Folic Acid)", "min_atoms": 2, "max_atoms": 12, "must_not_include_brackets": true}
+{"id": "paren_2_3", "label_class": "B", "raw": "Bleached Wheat Flour (Niacin, Reduced Iron, Folic Acid, Thiamine)", "min_atoms": 2, "max_atoms": 12, "must_not_include_brackets": true}
+{"id": "paren_2_4", "label_class": "B", "raw": "Bleached Wheat Flour (Niacin, Reduced Iron, Folic Acid, Thiamine, Riboflavin)", "min_atoms": 2, "max_atoms": 12, "must_not_include_brackets": true}
+{"id": "bracket_0", "label_class": "C", "raw": "Enriched Wheat Flour [Flour, Malted Barley Flour, Niacin]", "min_atoms": 2, "max_atoms": 12, "must_not_include_brackets": true}
+{"id": "bracket_1", "label_class": "C", "raw": "Whole Grain Blend [Wheat, Barley, Rye]", "min_atoms": 2, "max_atoms": 12, "must_not_include_brackets": true}
+{"id": "bracket_2", "label_class": "C", "raw": "Vitamin Blend [Niacin, Riboflavin, Folic Acid]", "min_atoms": 2, "max_atoms": 12, "must_not_include_brackets": true}
+{"id": "bracket_3", "label_class": "C", "raw": "Spice Mix [Pepper, Salt, Yeast]", "min_atoms": 2, "max_atoms": 12, "must_not_include_brackets": true}
+{"id": "bracket_var_0", "label_class": "C", "raw": "Water [Water, Salt, Sugar]", "min_atoms": 3, "max_atoms": 8, "must_not_include_brackets": true}
+{"id": "bracket_var_1", "label_class": "C", "raw": "Salt [Water, Salt, Sugar]", "min_atoms": 3, "max_atoms": 8, "must_not_include_brackets": true}
+{"id": "bracket_var_2", "label_class": "C", "raw": "Sugar [Water, Salt, Sugar]", "min_atoms": 3, "max_atoms": 8, "must_not_include_brackets": true}
+{"id": "bracket_var_3", "label_class": "C", "raw": "Wheat Flour [Water, Salt, Sugar]", "min_atoms": 3, "max_atoms": 8, "must_not_include_brackets": true}
+{"id": "bracket_var_4", "label_class": "C", "raw": "Wheat Gluten [Water, Salt, Sugar]", "min_atoms": 3, "max_atoms": 8, "must_not_include_brackets": true}
+{"id": "bracket_var_5", "label_class": "C", "raw": "Malted Barley Flour [Water, Salt, Sugar]", "min_atoms": 3, "max_atoms": 8, "must_not_include_brackets": true}
+{"id": "bracket_var_6", "label_class": "C", "raw": "Yeast [Water, Salt, Sugar]", "min_atoms": 3, "max_atoms": 8, "must_not_include_brackets": true}
+{"id": "bracket_var_7", "label_class": "C", "raw": "Milk [Water, Salt, Sugar]", "min_atoms": 3, "max_atoms": 8, "must_not_include_brackets": true}
+{"id": "bracket_var_8", "label_class": "C", "raw": "Egg [Water, Salt, Sugar]", "min_atoms": 3, "max_atoms": 8, "must_not_include_brackets": true}
+{"id": "bracket_var_9", "label_class": "C", "raw": "Gelatin [Water, Salt, Sugar]", "min_atoms": 3, "max_atoms": 8, "must_not_include_brackets": true}
+{"id": "bracket_var_10", "label_class": "C", "raw": "Honey [Water, Salt, Sugar]", "min_atoms": 3, "max_atoms": 8, "must_not_include_brackets": true}
+{"id": "bracket_var_11", "label_class": "C", "raw": "Butter [Water, Salt, Sugar]", "min_atoms": 3, "max_atoms": 8, "must_not_include_brackets": true}
+{"id": "bracket_var_12", "label_class": "C", "raw": "Peanut [Water, Salt, Sugar]", "min_atoms": 3, "max_atoms": 8, "must_not_include_brackets": true}
+{"id": "bracket_var_13", "label_class": "C", "raw": "Soy [Water, Salt, Sugar]", "min_atoms": 3, "max_atoms": 8, "must_not_include_brackets": true}
+{"id": "bracket_var_14", "label_class": "C", "raw": "Sesame [Water, Salt, Sugar]", "min_atoms": 3, "max_atoms": 8, "must_not_include_brackets": true}
+{"id": "bracket_var_15", "label_class": "C", "raw": "Fish [Water, Salt, Sugar]", "min_atoms": 3, "max_atoms": 8, "must_not_include_brackets": true}
+{"id": "bracket_var_16", "label_class": "C", "raw": "Shrimp [Water, Salt, Sugar]", "min_atoms": 3, "max_atoms": 8, "must_not_include_brackets": true}
+{"id": "bracket_var_17", "label_class": "C", "raw": "Wheat [Water, Salt, Sugar]", "min_atoms": 3, "max_atoms": 8, "must_not_include_brackets": true}
+{"id": "bracket_var_18", "label_class": "C", "raw": "Barley [Water, Salt, Sugar]", "min_atoms": 3, "max_atoms": 8, "must_not_include_brackets": true}
+{"id": "bracket_var_19", "label_class": "C", "raw": "Olive Oil [Water, Salt, Sugar]", "min_atoms": 3, "max_atoms": 8, "must_not_include_brackets": true}
+{"id": "trace_0_0", "label_class": "D", "raw": "Yeast. Contains 2% Or Less Of Each Of The Following: Sea Salt, Calcium Propionate", "min_atoms": 3, "max_atoms": 12, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "trace_0_1", "label_class": "D", "raw": "Yeast. Contains 2% Or Less Of Each Of The Following: Enzymes, Calcium Propionate", "min_atoms": 3, "max_atoms": 12, "shadow_check": false, "restriction_ids": null}
+{"id": "trace_0_2", "label_class": "D", "raw": "Yeast. Contains 2% Or Less Of Each Of The Following: Peanut, Calcium Propionate", "min_atoms": 3, "max_atoms": 12, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "trace_0_3", "label_class": "D", "raw": "Yeast. Contains 2% Or Less Of Each Of The Following: Soy Lecithin, Calcium Propionate", "min_atoms": 3, "max_atoms": 12, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "trace_1_0", "label_class": "D", "raw": "Water, Wheat Flour. Contains 2% Or Less Of Each Of The Following: Sea Salt, Calcium Propionate", "min_atoms": 3, "max_atoms": 12, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "trace_1_1", "label_class": "D", "raw": "Water, Wheat Flour. Contains 2% Or Less Of Each Of The Following: Enzymes, Calcium Propionate", "min_atoms": 3, "max_atoms": 12, "shadow_check": false, "restriction_ids": null}
+{"id": "trace_1_2", "label_class": "D", "raw": "Water, Wheat Flour. Contains 2% Or Less Of Each Of The Following: Peanut, Calcium Propionate", "min_atoms": 3, "max_atoms": 12, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "trace_1_3", "label_class": "D", "raw": "Water, Wheat Flour. Contains 2% Or Less Of Each Of The Following: Soy Lecithin, Calcium Propionate", "min_atoms": 3, "max_atoms": 12, "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "trace_2_0", "label_class": "D", "raw": "Sugar, Salt. Contains 2% Or Less Of Each Of The Following: Sea Salt, Calcium Propionate", "min_atoms": 3, "max_atoms": 12, "shadow_check": false, "restriction_ids": null}
+{"id": "trace_2_1", "label_class": "D", "raw": "Sugar, Salt. Contains 2% Or Less Of Each Of The Following: Enzymes, Calcium Propionate", "min_atoms": 3, "max_atoms": 12, "shadow_check": false, "restriction_ids": null}
+{"id": "trace_2_2", "label_class": "D", "raw": "Sugar, Salt. Contains 2% Or Less Of Each Of The Following: Peanut, Calcium Propionate", "min_atoms": 3, "max_atoms": 12, "shadow_check": false, "restriction_ids": null}
+{"id": "trace_2_3", "label_class": "D", "raw": "Sugar, Salt. Contains 2% Or Less Of Each Of The Following: Soy Lecithin, Calcium Propionate", "min_atoms": 3, "max_atoms": 12, "shadow_check": false, "restriction_ids": null}
+{"id": "prefix_0_Ing", "label_class": "E", "raw": "Ingredients: water, salt", "min_atoms": 2, "max_atoms": 8, "must_not_include_prefix": true}
+{"id": "prefix_0_ING", "label_class": "E", "raw": "INGREDIENTS - water, salt", "min_atoms": 2, "max_atoms": 8, "must_not_include_prefix": true}
+{"id": "prefix_0_Com", "label_class": "E", "raw": "Composition: water, salt", "min_atoms": 2, "max_atoms": 8, "must_not_include_prefix": true}
+{"id": "prefix_1_Ing", "label_class": "E", "raw": "Ingredients: milk, sugar, yeast", "min_atoms": 2, "max_atoms": 8, "must_not_include_prefix": true}
+{"id": "prefix_1_ING", "label_class": "E", "raw": "INGREDIENTS - milk, sugar, yeast", "min_atoms": 2, "max_atoms": 8, "must_not_include_prefix": true}
+{"id": "prefix_1_Com", "label_class": "E", "raw": "Composition: milk, sugar, yeast", "min_atoms": 2, "max_atoms": 8, "must_not_include_prefix": true}
+{"id": "prefix_2_Ing", "label_class": "E", "raw": "Ingredients: wheat flour, water, salt", "min_atoms": 2, "max_atoms": 8, "must_not_include_prefix": true}
+{"id": "prefix_2_ING", "label_class": "E", "raw": "INGREDIENTS - wheat flour, water, salt", "min_atoms": 2, "max_atoms": 8, "must_not_include_prefix": true}
+{"id": "prefix_2_Com", "label_class": "E", "raw": "Composition: wheat flour, water, salt", "min_atoms": 2, "max_atoms": 8, "must_not_include_prefix": true}
+{"id": "prefix_3_Ing", "label_class": "E", "raw": "Ingredients: soy, sesame, peanut", "min_atoms": 2, "max_atoms": 8, "must_not_include_prefix": true}
+{"id": "prefix_3_ING", "label_class": "E", "raw": "INGREDIENTS - soy, sesame, peanut", "min_atoms": 2, "max_atoms": 8, "must_not_include_prefix": true}
+{"id": "prefix_3_Com", "label_class": "E", "raw": "Composition: soy, sesame, peanut", "min_atoms": 2, "max_atoms": 8, "must_not_include_prefix": true}
+{"id": "semi_0", "label_class": "F", "raw": "water; salt; sugar", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_1", "label_class": "F", "raw": "salt; sugar; wheat flour", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_2", "label_class": "F", "raw": "sugar; wheat flour; wheat gluten", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_3", "label_class": "F", "raw": "wheat flour; wheat gluten; malted barley flour", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_4", "label_class": "F", "raw": "wheat gluten; malted barley flour; yeast", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_5", "label_class": "F", "raw": "malted barley flour; yeast; milk", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_6", "label_class": "F", "raw": "yeast; milk; egg", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_7", "label_class": "F", "raw": "milk; egg; gelatin", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_8", "label_class": "F", "raw": "egg; gelatin; honey", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_9", "label_class": "F", "raw": "gelatin; honey; butter", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_10", "label_class": "F", "raw": "honey; butter; peanut", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_11", "label_class": "F", "raw": "butter; peanut; soy", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_12", "label_class": "F", "raw": "peanut; soy; sesame", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_13", "label_class": "F", "raw": "soy; sesame; fish", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_14", "label_class": "F", "raw": "sesame; fish; shrimp", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_15", "label_class": "F", "raw": "fish; shrimp; wheat", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_16", "label_class": "F", "raw": "shrimp; wheat; barley", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_17", "label_class": "F", "raw": "wheat; barley; olive oil", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_18", "label_class": "F", "raw": "barley; olive oil; water", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_19", "label_class": "F", "raw": "olive oil; water; salt", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_20", "label_class": "F", "raw": "water; salt; sugar", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_21", "label_class": "F", "raw": "salt; sugar; wheat flour", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_22", "label_class": "F", "raw": "sugar; wheat flour; wheat gluten", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_23", "label_class": "F", "raw": "wheat flour; wheat gluten; malted barley flour", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_24", "label_class": "F", "raw": "wheat gluten; malted barley flour; yeast", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_25", "label_class": "F", "raw": "malted barley flour; yeast; milk", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_26", "label_class": "F", "raw": "yeast; milk; egg", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_27", "label_class": "F", "raw": "milk; egg; gelatin", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_28", "label_class": "F", "raw": "egg; gelatin; honey", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_29", "label_class": "F", "raw": "gelatin; honey; butter", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_30", "label_class": "F", "raw": "honey; butter; peanut", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_31", "label_class": "F", "raw": "butter; peanut; soy", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_32", "label_class": "F", "raw": "peanut; soy; sesame", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_33", "label_class": "F", "raw": "soy; sesame; fish", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_34", "label_class": "F", "raw": "sesame; fish; shrimp", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_35", "label_class": "F", "raw": "fish; shrimp; wheat", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_36", "label_class": "F", "raw": "shrimp; wheat; barley", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_37", "label_class": "F", "raw": "wheat; barley; olive oil", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_38", "label_class": "F", "raw": "barley; olive oil; water", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_39", "label_class": "F", "raw": "olive oil; water; salt", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_40", "label_class": "F", "raw": "water; salt; sugar", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_41", "label_class": "F", "raw": "salt; sugar; wheat flour", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_42", "label_class": "F", "raw": "sugar; wheat flour; wheat gluten", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_43", "label_class": "F", "raw": "wheat flour; wheat gluten; malted barley flour", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_44", "label_class": "F", "raw": "wheat gluten; malted barley flour; yeast", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_45", "label_class": "F", "raw": "malted barley flour; yeast; milk", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_46", "label_class": "F", "raw": "yeast; milk; egg", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_47", "label_class": "F", "raw": "milk; egg; gelatin", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_48", "label_class": "F", "raw": "egg; gelatin; honey", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_49", "label_class": "F", "raw": "gelatin; honey; butter", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_50", "label_class": "F", "raw": "honey; butter; peanut", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_51", "label_class": "F", "raw": "butter; peanut; soy", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_52", "label_class": "F", "raw": "peanut; soy; sesame", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_53", "label_class": "F", "raw": "soy; sesame; fish", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_54", "label_class": "F", "raw": "sesame; fish; shrimp", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_55", "label_class": "F", "raw": "fish; shrimp; wheat", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_56", "label_class": "F", "raw": "shrimp; wheat; barley", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_57", "label_class": "F", "raw": "wheat; barley; olive oil", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_58", "label_class": "F", "raw": "barley; olive oil; water", "min_atoms": 2, "max_atoms": 5}
+{"id": "semi_59", "label_class": "F", "raw": "olive oil; water; salt", "min_atoms": 2, "max_atoms": 5}
+{"id": "may_contain_0", "label_class": "G", "raw": "Ingredients: water, flour. May contain: peanuts", "min_atoms": 3, "max_atoms": 10, "may_contain_atoms": ["peanut"], "non_may_contain_atoms": ["water", "flour"], "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "may_contain_1", "label_class": "G", "raw": "Ingredients: water, flour. May contain: tree nuts", "min_atoms": 3, "max_atoms": 10, "may_contain_atoms": ["tree nut"], "non_may_contain_atoms": ["water", "flour"], "shadow_check": true, "restriction_ids": ["peanut_allergy"]}
+{"id": "may_contain_2", "label_class": "G", "raw": "Ingredients: water, flour. May contain: milk", "min_atoms": 3, "max_atoms": 10, "may_contain_atoms": ["milk"], "non_may_contain_atoms": ["water", "flour"], "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "may_contain_3", "label_class": "G", "raw": "Ingredients: water, flour. May contain: soy", "min_atoms": 3, "max_atoms": 10, "may_contain_atoms": ["soy"], "non_may_contain_atoms": ["water", "flour"], "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "may_contain_4", "label_class": "G", "raw": "Ingredients: water, flour. May contain: sesame", "min_atoms": 3, "max_atoms": 10, "may_contain_atoms": ["sesame"], "non_may_contain_atoms": ["water", "flour"]}
+{"id": "may_contain_5", "label_class": "G", "raw": "Ingredients: water, flour. May contain: egg", "min_atoms": 3, "max_atoms": 10, "may_contain_atoms": ["egg"], "non_may_contain_atoms": ["water", "flour"], "shadow_check": true, "restriction_ids": ["vegan"]}
+{"id": "composite_0", "label_class": "CDE", "raw": "Ingredients: Water, Water, Salt. Contains 2% Or Less Of Each Of The Following: Yeast, Enzymes.", "min_atoms": 4, "max_atoms": 20, "must_not_include_prefix": true}
+{"id": "composite_1", "label_class": "CDE", "raw": "Ingredients: Salt, Water, Salt. Contains 2% Or Less Of Each Of The Following: Yeast, Enzymes.", "min_atoms": 4, "max_atoms": 20, "must_not_include_prefix": true}
+{"id": "composite_2", "label_class": "CDE", "raw": "Ingredients: Sugar, Water, Salt. Contains 2% Or Less Of Each Of The Following: Yeast, Enzymes.", "min_atoms": 4, "max_atoms": 20, "must_not_include_prefix": true}
+{"id": "composite_3", "label_class": "CDE", "raw": "Ingredients: Wheat Flour, Water, Salt. Contains 2% Or Less Of Each Of The Following: Yeast, Enzymes.", "min_atoms": 4, "max_atoms": 20, "must_not_include_prefix": true}
+{"id": "composite_4", "label_class": "CDE", "raw": "Ingredients: Wheat Gluten, Water, Salt. Contains 2% Or Less Of Each Of The Following: Yeast, Enzymes.", "min_atoms": 4, "max_atoms": 20, "must_not_include_prefix": true}
+{"id": "composite_5", "label_class": "CDE", "raw": "Ingredients: Malted Barley Flour, Water, Salt. Contains 2% Or Less Of Each Of The Following: Yeast, Enzymes.", "min_atoms": 4, "max_atoms": 20, "must_not_include_prefix": true}
+{"id": "composite_6", "label_class": "CDE", "raw": "Ingredients: Yeast, Water, Salt. Contains 2% Or Less Of Each Of The Following: Yeast, Enzymes.", "min_atoms": 4, "max_atoms": 20, "must_not_include_prefix": true}
+{"id": "composite_7", "label_class": "CDE", "raw": "Ingredients: Milk, Water, Salt. Contains 2% Or Less Of Each Of The Following: Yeast, Enzymes.", "min_atoms": 4, "max_atoms": 20, "must_not_include_prefix": true}
+{"id": "composite_8", "label_class": "CDE", "raw": "Ingredients: Egg, Water, Salt. Contains 2% Or Less Of Each Of The Following: Yeast, Enzymes.", "min_atoms": 4, "max_atoms": 20, "must_not_include_prefix": true}
+{"id": "composite_9", "label_class": "CDE", "raw": "Ingredients: Gelatin, Water, Salt. Contains 2% Or Less Of Each Of The Following: Yeast, Enzymes.", "min_atoms": 4, "max_atoms": 20, "must_not_include_prefix": true}
+{"id": "composite_10", "label_class": "CDE", "raw": "Ingredients: Honey, Water, Salt. Contains 2% Or Less Of Each Of The Following: Yeast, Enzymes.", "min_atoms": 4, "max_atoms": 20, "must_not_include_prefix": true}
+{"id": "composite_11", "label_class": "CDE", "raw": "Ingredients: Butter, Water, Salt. Contains 2% Or Less Of Each Of The Following: Yeast, Enzymes.", "min_atoms": 4, "max_atoms": 20, "must_not_include_prefix": true}
+{"id": "composite_12", "label_class": "CDE", "raw": "Ingredients: Peanut, Water, Salt. Contains 2% Or Less Of Each Of The Following: Yeast, Enzymes.", "min_atoms": 4, "max_atoms": 20, "must_not_include_prefix": true}
+{"id": "composite_13", "label_class": "CDE", "raw": "Ingredients: Soy, Water, Salt. Contains 2% Or Less Of Each Of The Following: Yeast, Enzymes.", "min_atoms": 4, "max_atoms": 20, "must_not_include_prefix": true}
+{"id": "composite_14", "label_class": "CDE", "raw": "Ingredients: Sesame, Water, Salt. Contains 2% Or Less Of Each Of The Following: Yeast, Enzymes.", "min_atoms": 4, "max_atoms": 20, "must_not_include_prefix": true}
+{"id": "composite_15", "label_class": "CDE", "raw": "Ingredients: Fish, Water, Salt. Contains 2% Or Less Of Each Of The Following: Yeast, Enzymes.", "min_atoms": 4, "max_atoms": 20, "must_not_include_prefix": true}
+{"id": "composite_16", "label_class": "CDE", "raw": "Ingredients: Shrimp, Water, Salt. Contains 2% Or Less Of Each Of The Following: Yeast, Enzymes.", "min_atoms": 4, "max_atoms": 20, "must_not_include_prefix": true}
+{"id": "composite_17", "label_class": "CDE", "raw": "Ingredients: Wheat, Water, Salt. Contains 2% Or Less Of Each Of The Following: Yeast, Enzymes.", "min_atoms": 4, "max_atoms": 20, "must_not_include_prefix": true}
+{"id": "composite_18", "label_class": "CDE", "raw": "Ingredients: Barley, Water, Salt. Contains 2% Or Less Of Each Of The Following: Yeast, Enzymes.", "min_atoms": 4, "max_atoms": 20, "must_not_include_prefix": true}
+{"id": "composite_19", "label_class": "CDE", "raw": "Ingredients: Olive Oil, Water, Salt. Contains 2% Or Less Of Each Of The Following: Yeast, Enzymes.", "min_atoms": 4, "max_atoms": 20, "must_not_include_prefix": true}
