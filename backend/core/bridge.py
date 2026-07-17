@@ -8,7 +8,8 @@ if TYPE_CHECKING:
     from core.models.user_profile import UserProfile
 
 from core.evaluation.compliance_engine import ComplianceEngine
-from core.models.verdict import ComplianceVerdict
+from core.knowledge.ike2.verdict import to_external
+from core.models.verdict import ComplianceVerdict, VerdictStatus
 from core.parsing.ingredient_parser import preprocess_ingredients
 from core.normalization.parser import flatten_ingredients
 from core.normalization.normalizer import substance_key
@@ -205,6 +206,50 @@ def preprocess_ingredient_list(
                 display_by_canonical.setdefault(sk, s)
                 display_by_canonical.setdefault(a.lower().strip(), s)
     return flattened, trace_keys, display_by_canonical
+
+
+# ---------------------------------------------------------------------------
+# IKE-2 result -> ComplianceVerdict mapper
+# ---------------------------------------------------------------------------
+
+def map_ike2_to_compliance_verdict(
+    result, inputs, *, ontology_version: str = ""
+) -> ComplianceVerdict:
+    """Map an IKE-2 ``ComplianceResult`` (+ its ``ComplianceInput`` list) to the
+    external ``ComplianceVerdict`` shape. Status comes only from
+    ``VerdictStatus(to_external(result.verdict))`` — never reimplemented here.
+    """
+    status = VerdictStatus(to_external(result.verdict))
+
+    triggered_ingredients = list(dict.fromkeys(result.matched_contains or []))
+
+    triggered_restrictions = []
+    seen_restrictions = set()
+    for name, restriction in (result.breakdown or {}):
+        if name in triggered_ingredients and restriction not in seen_restrictions:
+            seen_restrictions.add(restriction)
+            triggered_restrictions.append(restriction)
+
+    uncertain_ingredients = []
+    for inp in inputs or []:
+        canonical_name = getattr(inp, "canonical_name", "") or ""
+        is_uncertain = (
+            not getattr(inp, "trusted", True)
+            or getattr(inp, "knowledge_state", "") in ("UNCLASSIFIED", "DISCOVERED")
+            or not canonical_name
+        )
+        if is_uncertain:
+            label = canonical_name or "unknown"
+            if label not in uncertain_ingredients:
+                uncertain_ingredients.append(label)
+
+    return ComplianceVerdict(
+        status=status,
+        triggered_restrictions=triggered_restrictions,
+        triggered_ingredients=triggered_ingredients,
+        uncertain_ingredients=uncertain_ingredients,
+        ontology_version=ontology_version,
+    )
 
 
 # ---------------------------------------------------------------------------
