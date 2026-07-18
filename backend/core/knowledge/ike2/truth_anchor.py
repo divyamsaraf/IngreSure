@@ -177,6 +177,12 @@ _add(["wheat flour", "enriched wheat flour", "bleached wheat flour"], "wheat",
      _f(gluten_source=True))
 _add(["wheat gluten"], "gluten", _f(gluten_source=True))
 _add(["malted barley flour"], "barley", _f(gluten_source=True))
+_add(["flour", "all purpose flour"], "flour", _f(gluten_source=True))
+_add(["sugar"], "sugar", _f(animal_origin=False, plant_origin=True))
+_add(["cane sugar"], "cane sugar", _f(animal_origin=False, plant_origin=True))
+_add(["beet sugar"], "beet sugar", _f(animal_origin=False, plant_origin=True))
+_add(["chicken"], "chicken", _f(animal_origin=True, animal_species="chicken"))
+_add(["potato"], "potato", _f(root_vegetable=True, plant_origin=True))
 _add(["water"], "water", _f())
 _add(["salt", "sea salt"], "salt", _f())
 _add(["yeast"], "yeast", _f())
@@ -196,6 +202,14 @@ _add(["vanilla extract"], "vanilla extract",
      _f(alcohol_content=1.0, alcohol_role="ingredient"))
 
 # --- Jain / no-onion-no-garlic ---------------------------------------------
+# Regional parsing rewrites "yam"/"suran" -> "elephant foot yam" and
+# "arbi"/"taro" -> "taro root" (see data/regional_ingredient_names.json), so the
+# resolver receives the canonical. Anchor those canonicals as root vegetables so
+# Jain avoids them offline. Bare "yam" is deliberately left unanchored: it is
+# region-ambiguous (IN elephant foot yam vs US dioscorea) and must reach Tier-3.
+_add(["elephant foot yam"], "elephant foot yam",
+     _f(root_vegetable=True, plant_origin=True))
+_add(["taro root"], "taro root", _f(root_vegetable=True, plant_origin=True))
 _add(["onion"], "onion", _f(onion_source=True, root_vegetable=True))
 _add(["garlic"], "garlic", _f(garlic_source=True, root_vegetable=True))
 _add(["shallot"], "shallot", _f(onion_source=True, root_vegetable=True))
@@ -218,3 +232,19 @@ def lookup(normalized_key: str) -> Optional[TruthAnchorFact]:
         if hit is not None:
             return hit
     return None
+
+
+def all_anchors() -> dict[str, TruthAnchorFact]:
+    """Every Tier-1 alias -> fact, including generated E-number anchors.
+
+    Hand-curated ``_ANCHORS`` wins on a key collision, same precedence as
+    ``lookup()`` (e.g. hand-curated "soy lecithin" must not be shadowed by the
+    more conservative generated E322 catalog entry of the same key).
+
+    Used to boot-seed the ResolutionCache (design §9.5) with zero network
+    calls; not used for lookup (``lookup`` remains the single source of truth
+    for that, including its normalization fallback).
+    """
+    merged = dict(_e_number_anchors())
+    merged.update(_ANCHORS)
+    return merged
