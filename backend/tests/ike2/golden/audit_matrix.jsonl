@@ -1,0 +1,18 @@
+{"cluster":"sugar_family","diet":"Vegan","allergens":[],"input":"sugar","expect_bucket":"safe","expect_reason_category":null,"expect_attribution":null}
+{"cluster":"sugar_family","diet":"Vegetarian","allergens":[],"input":"sugar","expect_bucket":"safe","expect_reason_category":null,"expect_attribution":null}
+{"cluster":"sugar_family","diet":"Hindu Vegetarian","allergens":[],"input":"sugar","expect_bucket":"safe","expect_reason_category":null,"expect_attribution":null}
+{"cluster":"sugar_family","diet":"Hindu Non Vegetarian","allergens":[],"input":"sugar","expect_bucket":"safe","expect_reason_category":null,"expect_attribution":null}
+{"cluster":"warn_compounds","diet":"Vegan","allergens":[],"input":"natural flavors","expect_bucket":"depends","expect_reason_category":"compound_umbrella","expect_attribution":null}
+{"cluster":"warn_compounds","diet":"Vegetarian","allergens":[],"input":"natural flavors","expect_bucket":"depends","expect_reason_category":"compound_umbrella","expect_attribution":null}
+{"cluster":"intent_garbage","diet":"Vegan","allergens":[],"input":"2+2","expect_bucket":"no_audit","expect_reason_category":null,"expect_attribution":null}
+{"cluster":"staples","diet":"Vegetarian","allergens":[],"input":"flour","expect_bucket":"safe","expect_reason_category":null,"expect_attribution":null}
+{"cluster":"meats_on_veg","diet":"Vegan","allergens":[],"input":"chicken","expect_bucket":"avoid","expect_reason_category":"diet_conflict","expect_attribution":null}
+{"cluster":"meats_on_veg","diet":"Vegetarian","allergens":[],"input":"chicken","expect_bucket":"avoid","expect_reason_category":"diet_conflict","expect_attribution":null}
+{"cluster":"meats_on_veg","diet":"Hindu Vegetarian","allergens":[],"input":"chicken","expect_bucket":"avoid","expect_reason_category":"diet_conflict","expect_attribution":null}
+{"cluster":"egg_hnv","diet":"Hindu Non Vegetarian","allergens":[],"input":"egg","expect_bucket":"safe","expect_reason_category":null,"expect_attribution":null}
+{"cluster":"species_unknown","diet":"Halal","allergens":[],"input":"collagen","expect_bucket":"depends","expect_reason_category":"source_ambiguous","expect_attribution":null}
+{"cluster":"gelatin_diet_vs_allergen","diet":"Hindu Vegetarian","allergens":["Fish"],"input":"gelatin","expect_bucket":"avoid","expect_reason_category":"diet_conflict","expect_attribution":"diet"}
+{"cluster":"breakdown_overwrite","diet":"Hindu Non Vegetarian","allergens":[],"input":"beef","expect_bucket":"avoid","expect_reason_category":"diet_conflict","expect_attribution":null}
+{"cluster":"jain_roots","diet":"Jain","allergens":[],"input":"potato","expect_bucket":"avoid","expect_reason_category":"diet_conflict","expect_attribution":null}
+{"cluster":"pescatarian_meats","diet":"Pescatarian","allergens":[],"input":"chicken","expect_bucket":"avoid","expect_reason_category":"diet_conflict","expect_attribution":null}
+{"cluster":"certainty_unknown","diet":"Vegan","allergens":[],"input":"zzzx_unknown_fixture_ingredient","expect_bucket":"depends","expect_reason_category":"unknown_ingredient","expect_attribution":null}
