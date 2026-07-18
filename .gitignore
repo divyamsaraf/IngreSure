@@ -41,3 +41,12 @@ PHASES.md
 skills-lock.json
 skills-cursor/
 .cursor/hooks.json.tddguard-bak
+
+# Local data staging / backups (regenerate locally; do not commit)
+data/*_staging.json
+data/*.bak
+data/*.truncated-*
+
+# Local design notes & data docs (keep out of remote)
+design-system/
+backend/data/README.md
