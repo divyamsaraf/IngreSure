@@ -11,7 +11,11 @@ import requests
 
 from core.config import get_ollama_url, get_ollama_model, LLM_RESPONSE_TIMEOUT, llm_enabled
 from core.models.verdict import ComplianceVerdict, VerdictStatus
-from core.response_composer import INGREDIENT_ALTERNATIVES, _format_user_ingredient_label
+from core.response_composer import (
+    INGREDIENT_ALTERNATIVES,
+    _attribution_kind,
+    _format_user_ingredient_label,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -212,5 +216,16 @@ def llm_compose_verdict_explanation(
         result, list(avoid_substances) + list(check_names)
     ):
         logger.info("LLM_VERDICT_EXPL rejected unflagged sensitive terms")
+        return None
+    # Attribution guard (spec §7.2): when the primary Avoid ingredient's FAIL
+    # is diet-attributed, the LLM must not contradict the template by saying
+    # "allergen(s)" -- fall back to the template rather than risk that copy.
+    if (
+        result
+        and avoid_substances
+        and _attribution_kind(verdict.triggered_restrictions) == "diet"
+        and re.search(r"allerg", result, re.IGNORECASE)
+    ):
+        logger.info("LLM_VERDICT_EXPL rejected allergen wording contradicting diet attribution")
         return None
     return _trim_explanation(result) if result else None
