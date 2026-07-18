@@ -1,11 +1,14 @@
 /**
  * Design tokens. Single source for JS-only use (e.g. inline styles, cardBg hex).
- * Brand colors (primary, secondary, safe, avoid, depends) match globals.css; prefer Tailwind classes (bg-primary, bg-secondary, etc.) in components so globals stay the single source for UI.
+ * Brand: primary (ink), accent (CTAs/links). Verdicts: safe / avoid / depends — never use verdict colors for CTAs.
+ * Prefer Tailwind classes (bg-primary, bg-accent, bg-safe, etc.) so globals.css stays the CSS source of truth.
  * In use: `gradients` (statusColors.card), `statusColors`, `colors`, `cardBg` (IngredientAuditCards).
  */
 export const colors = {
-  primary: '#0F172A',       // deep slate blue
-  secondary: '#10B981',     // emerald green
+  primary: '#0F172A', // deep slate blue (ink/text)
+  accent: '#0F766E', // teal — CTAs, links, nav, brand only
+  /** @deprecated Use `accent` for brand; kept as alias during migration */
+  secondary: '#0F766E',
   safe: '#10B981',
   avoid: '#EF4444',
   depends: '#F59E0B',
@@ -35,8 +38,8 @@ export const spacing = {
 }
 
 export const gradients = {
-  primaryCta: 'bg-gradient-to-r from-[#0F172A] to-[#10B981]',
-  primaryCtaHover: 'hover:from-[#0F172A] hover:to-[#10B981]',
+  primaryCta: 'bg-gradient-to-r from-[#0F172A] to-[#0F766E]',
+  primaryCtaHover: 'hover:from-[#0F172A] hover:to-[#0F766E]',
   safe: 'from-emerald-50 to-emerald-100',
   avoid: 'from-rose-50 to-rose-100',
   depends: 'from-amber-50 to-amber-100',
@@ -53,9 +56,9 @@ export const cardBg = {
 export const statusColors = {
   safe: {
     text: 'text-emerald-700',
-    pill: 'bg-secondary text-white border-0 shadow-card font-medium',
+    pill: 'bg-safe text-white border-0 shadow-card font-medium',
     card: gradients.safe,
-    bar: 'border-secondary',
+    bar: 'border-safe',
   },
   avoid: {
     text: 'text-rose-700',
@@ -70,4 +73,3 @@ export const statusColors = {
     bar: 'border-depends',
   },
 } as const
-

@@ -1,13 +1,14 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #F8FAFC; /* surface — global page wash */
+  --foreground: #0F172A;
   /* Design tokens (single source for Tailwind; see theme/tokens.ts for JS usage) */
   --color-primary: #0F172A;
-  --color-secondary: #10B981;
+  --color-accent: #0F766E; /* brand CTAs/links — never use for verdicts */
+  --color-secondary: #0F766E; /* alias of accent; prefer bg-accent / text-accent */
   --color-surface: #F8FAFC;
-  --color-safe: #10B981;
+  --color-safe: #10B981; /* verdict only */
   --color-avoid: #EF4444;
   --color-depends: #F59E0B;
   --shadow-card: 0 2px 8px rgba(0,0,0,0.08);
@@ -32,14 +33,15 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-primary: var(--color-primary);
+  --color-accent: var(--color-accent);
   --color-secondary: var(--color-secondary);
   --color-surface: var(--color-surface);
   --color-safe: var(--color-safe);
   --color-avoid: var(--color-avoid);
   --color-depends: var(--color-depends);
   --shadow-card: var(--shadow-card);
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-playfair), ui-serif, Georgia, serif;
+  --font-sans: var(--font-sans-custom), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-display), ui-serif, Georgia, serif;
   --font-mono: ui-monospace, monospace;
 }
 
@@ -47,6 +49,108 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+  font-feature-settings: "ss01" on, "cv11" on;
+  letter-spacing: -0.011em;
+}
+
+.font-display {
+  font-family: var(--font-display), ui-serif, Georgia, serif;
+  letter-spacing: -0.02em;
+}
+
+/* —— Global design utilities (use across pages; prefer these over one-off classes) —— */
+.ds-eyebrow {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.ds-link {
+  font-weight: 500;
+  color: var(--color-accent);
+  text-underline-offset: 2px;
+  transition: color 150ms ease;
+}
+
+.ds-link:hover {
+  text-decoration: underline;
+}
+
+.ds-prose {
+  font-size: 1rem;
+  line-height: 1.65;
+  color: rgb(71 85 105); /* slate-600 */
+}
+
+.ds-prose a {
+  font-weight: 500;
+  color: var(--color-accent);
+  text-underline-offset: 2px;
+}
+
+.ds-prose a:hover {
+  text-decoration: underline;
+}
+
+/* Long-form content pages (About, legal, FAQ body, For Business) */
+.ds-content-body {
+  font-size: 15px;
+  line-height: 1.7;
+  color: rgb(71 85 105); /* slate-600 */
+}
+
+@media (min-width: 768px) {
+  .ds-content-body {
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+}
+
+.ds-content-body a {
+  font-weight: 500;
+  color: var(--color-accent);
+  text-underline-offset: 2px;
+  transition: color 150ms ease;
+}
+
+.ds-content-body a:hover {
+  text-decoration: underline;
+}
+
+.ds-content-body strong {
+  font-weight: 600;
+  color: rgb(30 41 59); /* slate-800 */
+}
+
+.ds-content-body ul,
+.ds-content-body ol {
+  padding-left: 1.25rem;
+}
+
+.ds-content-body li + li {
+  margin-top: 0.5rem;
+}
+
+.ds-section {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  padding-top: 3.5rem;
+  padding-bottom: 3.5rem;
+}
+
+@media (min-width: 768px) {
+  .ds-section {
+    padding-top: 4.5rem;
+    padding-bottom: 4.5rem;
+  }
+}
+
+.ds-container {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 72rem;
 }
 
 .analysis-status-label {
@@ -145,5 +249,16 @@ body {
   40% {
     transform: scale(1);
     opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading-dot {
+    animation: none;
+    opacity: 0.7;
+  }
+
+  .group:hover .group-hover\:scale-\[1\.01\] {
+    transform: none;
   }
 }
