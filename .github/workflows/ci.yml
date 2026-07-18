@@ -8,6 +8,11 @@ on:
 jobs:
   backend:
     runs-on: ubuntu-latest
+    # CI has no Ollama server; disable the LLM so every step uses the
+    # deterministic fallbacks instead of retrying localhost:11434 (which
+    # only produced connection-refused log noise and slow timeouts).
+    env:
+      LLM_ENABLED: "false"
     defaults:
       run:
         working-directory: backend
