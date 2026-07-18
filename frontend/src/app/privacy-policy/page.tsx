@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import ContentPageLayout from '@/components/content/ContentPageLayout'
+import { ContentPageHeader } from '@/components/content/ContentPageHeader'
 import { ContentSection } from '@/components/content/ContentSection'
 import { CONTACT_EMAIL } from '@/lib/site'
 
@@ -12,12 +13,9 @@ export const metadata: Metadata = {
 export default function PrivacyPolicyPage() {
   return (
     <ContentPageLayout>
-      <header className="mb-10 border-b border-slate-200 pb-8">
-        <h1 className="font-serif text-3xl font-bold text-primary md:text-4xl">Privacy Policy</h1>
-        <p className="mt-2 text-sm text-slate-500">Last updated: June 2026</p>
-      </header>
+      <ContentPageHeader title="Privacy Policy" meta="Last updated: June 2026" />
 
-      <div className="space-y-10">
+      <div className="space-y-12">
         <ContentSection title="1. Overview">
           <p>
             IngreSure (&quot;we&quot;, &quot;us&quot;) provides ingredient safety guidance based on dietary and
@@ -105,11 +103,11 @@ export default function PrivacyPolicyPage() {
         <ContentSection title="10. Contact">
           <p>
             Questions about this policy can be sent to{' '}
-            <a href={`mailto:${CONTACT_EMAIL}`} className="font-medium text-secondary hover:underline">
+            <a href={`mailto:${CONTACT_EMAIL}`} className="ds-link">
               {CONTACT_EMAIL}
             </a>
             . You can also read our{' '}
-            <Link href="/terms-of-service" className="font-medium text-secondary hover:underline">
+            <Link href="/terms-of-service" className="ds-link">
               Terms of Service
             </Link>
             .

@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import ContentPageLayout from '@/components/content/ContentPageLayout'
+import { ContentPageHeader } from '@/components/content/ContentPageHeader'
+import { ContentSection } from '@/components/content/ContentSection'
 import { CONTACT_EMAIL } from '@/lib/site'
 
 export const metadata: Metadata = {
@@ -11,11 +13,9 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <ContentPageLayout>
-      <header className="mb-10 border-b border-slate-200 pb-8">
-        <h1 className="font-serif text-3xl font-bold text-primary md:text-4xl">About IngreSure</h1>
-      </header>
+      <ContentPageHeader title="About IngreSure" />
 
-      <div className="space-y-6 text-base leading-relaxed text-slate-600">
+      <div className="ds-content-body space-y-5">
         <p>
           IngreSure is for people who manage dietary restrictions, allergies, or religious dietary law
           and are tired of manually parsing ingredient labels. Paste a grocery list, a menu, or a
@@ -40,18 +40,53 @@ export default function AboutPage() {
           next. If something doesn&apos;t look right, we want to hear from you.
         </p>
 
-        {/* ADD FOUNDER BIO HERE IF DESIRED */}
+        <div className="pt-4">
+        <ContentSection title="Why I built this">
+          <p>
+            The originating moment was standing in a grocery aisle with a phone flashlight and a
+            half-remembered list of what a vegan friend could eat — staring at an ingredient panel that
+            used three different names for the same animal-derived additive. I had already done this
+            dance for allergens and for religious dietary rules. Every time, the internet answered with
+            a confident paragraph that could not show its work. That gap — between a chatty answer and
+            a defensible one — is what IngreSure exists to close.
+          </p>
+          <p>
+            The technical decision that followed was non-negotiable: the safety verdict itself must never
+            come from the language model. The LLM can parse a messy pasted label and write the
+            explanation in plain English, but Safe / Avoid / Depends is produced by an explicit rules
+            engine over a curated ingredient ontology. If those disagree someday, the rules win. That
+            split is slower to build than &quot;ask a model,&quot; and it is the reason I trust putting
+            this in front of people who actually need the answer.
+          </p>
+          <p>
+            What is still in progress is honest too: coverage grows every week and is not exhaustive;
+            some edge-case ingredients still land in Depends when we refuse to guess; the partner API
+            is in early access rather than production-hardened with SLAs. If you catch a wrong call,
+            that report is how the ontology improves — not a support ticket we hope you forget.
+          </p>
+        </ContentSection>
+        </div>
 
-        <p className="pt-4">
-          <Link href="/chat" className="font-medium text-secondary hover:underline">
+        <p className="border-t border-slate-200/80 pt-8 text-[15px]">
+          <Link href="/chat" className="ds-link">
             Try the Grocery Assistant
           </Link>
-          {' · '}
-          <Link href="/faq" className="font-medium text-secondary hover:underline">
+          <span className="mx-2 text-slate-300" aria-hidden>
+            ·
+          </span>
+          <Link href="/for-business" className="ds-link">
+            For Business
+          </Link>
+          <span className="mx-2 text-slate-300" aria-hidden>
+            ·
+          </span>
+          <Link href="/faq" className="ds-link">
             FAQ
           </Link>
-          {' · '}
-          <a href={`mailto:${CONTACT_EMAIL}`} className="font-medium text-secondary hover:underline">
+          <span className="mx-2 text-slate-300" aria-hidden>
+            ·
+          </span>
+          <a href={`mailto:${CONTACT_EMAIL}`} className="ds-link">
             {CONTACT_EMAIL}
           </a>
         </p>

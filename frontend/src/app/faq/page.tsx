@@ -1,8 +1,9 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import ContentPageLayout from '@/components/content/ContentPageLayout'
+import { ContentPageHeader } from '@/components/content/ContentPageHeader'
 import FaqAccordion from '@/components/content/FaqAccordion'
-import { CONTACT_EMAIL } from '@/lib/site'
+import { CONTACT_EMAIL, COVERAGE_DIETS_AND_ALLERGENS_SUMMARY } from '@/lib/site'
 
 export const metadata: Metadata = {
   title: 'FAQ | IngreSure',
@@ -37,8 +38,7 @@ const FAQ_ITEMS = [
   },
   {
     question: 'Which diets and allergens does IngreSure support?',
-    answer:
-      'Currently: Vegan, Halal, Jain, Hindu Vegetarian, and Kosher dietary profiles, along with 14+ common allergens. We are actively expanding this list.',
+    answer: COVERAGE_DIETS_AND_ALLERGENS_SUMMARY,
   },
   {
     question: 'I think a verdict was wrong. What should I do?',
@@ -50,29 +50,25 @@ const FAQ_ITEMS = [
     answer:
       "We're actively developing a B2B API for grocery, delivery, and food platforms. Contact us to learn more.",
   },
-] as const
+]
 
 export default function FaqPage() {
   return (
     <ContentPageLayout>
-      <header className="mb-10 border-b border-slate-200 pb-8">
-        <h1 className="font-serif text-3xl font-bold text-primary md:text-4xl">
-          Frequently Asked Questions
-        </h1>
-        <p className="mt-3 text-base leading-relaxed text-slate-600">
-          Quick answers about how IngreSure works, what we store, and what our verdicts mean.
-        </p>
-      </header>
+      <ContentPageHeader
+        title="Frequently Asked Questions"
+        description="Quick answers about how IngreSure works, what we store, and what our verdicts mean."
+      />
 
       <FaqAccordion items={[...FAQ_ITEMS]} />
 
-      <p className="mt-10 text-base leading-relaxed text-slate-600">
+      <p className="ds-content-body mt-10 border-t border-slate-200/80 pt-8">
         Still have questions? Email{' '}
-        <a href={`mailto:${CONTACT_EMAIL}`} className="font-medium text-secondary hover:underline">
+        <a href={`mailto:${CONTACT_EMAIL}`} className="ds-link">
           {CONTACT_EMAIL}
         </a>{' '}
         or read our{' '}
-        <Link href="/privacy-policy" className="font-medium text-secondary hover:underline">
+        <Link href="/privacy-policy" className="ds-link">
           Privacy Policy
         </Link>
         .

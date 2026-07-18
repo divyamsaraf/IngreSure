@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import ContentPageLayout from '@/components/content/ContentPageLayout'
+import { ContentPageHeader } from '@/components/content/ContentPageHeader'
 import { ContentSection } from '@/components/content/ContentSection'
 import { CONTACT_EMAIL } from '@/lib/site'
 
@@ -12,12 +13,9 @@ export const metadata: Metadata = {
 export default function TermsOfServicePage() {
   return (
     <ContentPageLayout>
-      <header className="mb-10 border-b border-slate-200 pb-8">
-        <h1 className="font-serif text-3xl font-bold text-primary md:text-4xl">Terms of Service</h1>
-        <p className="mt-2 text-sm text-slate-500">Last updated: June 2026</p>
-      </header>
+      <ContentPageHeader title="Terms of Service" meta="Last updated: June 2026" />
 
-      <div className="space-y-10">
+      <div className="space-y-12">
         <ContentSection title="1. Acceptance of Terms">
           <p>
             By using IngreSure (&quot;the Service&quot;), you agree to these Terms of Service. If you do not
@@ -28,7 +26,8 @@ export default function TermsOfServicePage() {
         <ContentSection title="2. What IngreSure Is">
           <p>
             IngreSure provides informational guidance about whether ingredients may be compatible with a
-            dietary profile (such as Vegan, Halal, Jain, Hindu Vegetarian, Kosher) or known allergens,
+            dietary profile (such as Vegan, Vegetarian, Halal, Jain, Hindu Vegetarian, or Kosher) or
+            known allergens,
             based on an ingredient database and automated rules engine.
           </p>
         </ContentSection>
@@ -102,11 +101,11 @@ export default function TermsOfServicePage() {
         <ContentSection title="9. Contact">
           <p>
             Questions about these Terms can be sent to{' '}
-            <a href={`mailto:${CONTACT_EMAIL}`} className="font-medium text-secondary hover:underline">
+            <a href={`mailto:${CONTACT_EMAIL}`} className="ds-link">
               {CONTACT_EMAIL}
             </a>
             . See also our{' '}
-            <Link href="/privacy-policy" className="font-medium text-secondary hover:underline">
+            <Link href="/privacy-policy" className="ds-link">
               Privacy Policy
             </Link>
             .

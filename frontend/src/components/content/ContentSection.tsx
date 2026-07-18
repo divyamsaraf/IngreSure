@@ -8,8 +8,10 @@ interface ContentSectionProps {
 export function ContentSection({ title, children }: ContentSectionProps) {
   return (
     <section className="scroll-mt-24">
-      <h2 className="font-serif text-xl font-semibold text-primary md:text-2xl">{title}</h2>
-      <div className="mt-3 space-y-3 text-base leading-relaxed text-slate-600">{children}</div>
+      <h2 className="font-display text-xl font-semibold tracking-tight text-primary md:text-[1.35rem]">
+        {title}
+      </h2>
+      <div className="ds-content-body mt-3.5 space-y-3.5">{children}</div>
     </section>
   )
 }
