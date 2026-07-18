@@ -540,9 +540,18 @@ function IngredientAuditCardsContent({ data, showPersonaliseNudge, onPersonalise
     target.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
-  const avoidItems = data.groups.find((g) => g.status === 'avoid')?.items ?? []
-  const checkItems = data.groups.find((g) => g.status === 'depends')?.items ?? []
-  const safeItems = data.groups.find((g) => g.status === 'safe')?.items ?? []
+  const avoidItems = useMemo(
+    () => data.groups.find((g) => g.status === 'avoid')?.items ?? [],
+    [data.groups],
+  )
+  const checkItems = useMemo(
+    () => data.groups.find((g) => g.status === 'depends')?.items ?? [],
+    [data.groups],
+  )
+  const safeItems = useMemo(
+    () => data.groups.find((g) => g.status === 'safe')?.items ?? [],
+    [data.groups],
+  )
 
   const counts = useMemo(
     () => ({
@@ -550,7 +559,7 @@ function IngredientAuditCardsContent({ data, showPersonaliseNudge, onPersonalise
       avoid: avoidItems.length,
       depends: checkItems.length,
     }),
-    [safeItems.length, avoidItems.length, checkItems.length],
+    [safeItems, avoidItems, checkItems],
   )
 
   const [avoidFullyExpanded, setAvoidFullyExpanded] = useState(false)
