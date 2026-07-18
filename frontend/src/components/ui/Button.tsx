@@ -28,10 +28,10 @@ export function Button(props: ButtonProps) {
   } = props
 
   const base =
-    'inline-flex items-center justify-center font-semibold transition-transform transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40 disabled:opacity-60 disabled:pointer-events-none'
+    'inline-flex items-center justify-center font-semibold transition-transform transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 disabled:opacity-60 disabled:pointer-events-none'
 
   const variantClasses: Record<Variant, string> = {
-    primary: 'bg-gradient-to-r from-primary to-secondary text-white shadow-lg shadow-emerald-500/30 hover:-translate-y-0.5 hover:shadow-emerald-500/50',
+    primary: 'bg-gradient-to-r from-primary to-accent text-white shadow-lg shadow-teal-800/25 hover:-translate-y-0.5 hover:shadow-teal-800/40',
     secondary:
       'bg-white text-slate-800 border border-slate-200 hover:bg-slate-50 hover:-translate-y-0.5 shadow-sm',
     ghost: 'bg-transparent text-slate-800 hover:bg-slate-50',
