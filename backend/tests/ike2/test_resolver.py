@@ -31,7 +31,10 @@ def test_unknown_ingredient_is_uncertain_not_safe(monkeypatch):
 
 
 def test_ambiguous_alias_no_region_uncertain(monkeypatch):
+    # An alias that misses Tier 1/2 and is region-ambiguous at Tier 3 must stay
+    # uncertain. ("yam" is no longer usable here: it is statically canonicalized
+    # to the Tier-1 root vegetable "elephant foot yam" for this India-context app.)
     import core.knowledge.ike2.stores.db as db
     monkeypatch.setattr(db, "disambiguate", lambda *a, **k: "ambiguous")
-    r = resolve("yam", region=None)
+    r = resolve("unmapped_ambiguous_alias", region=None)
     assert r.status == "uncertain"

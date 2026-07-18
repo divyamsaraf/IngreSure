@@ -144,3 +144,46 @@ def test_jain_relevant_roots(key, flag):
 def test_lard_and_tallow_are_distinct_species():
     assert lookup("lard").flags["animal_species"] == "pig"
     assert lookup("tallow").flags["animal_species"] == "cow"
+
+
+@pytest.mark.parametrize("key", ["sugar", "cane sugar", "beet sugar", "flour", "chicken", "potato"])
+def test_tier1_core_present(key):
+    assert lookup(key) is not None
+
+
+def test_sugar_plant_safe_flags():
+    f = lookup("sugar")
+    assert f.flags.get("animal_origin") is False
+    assert f.flags.get("plant_origin") is True
+    assert "bone_char" not in str(f.flags.get("uncertainty_flags") or [])
+
+
+def test_chicken_has_species():
+    f = lookup("chicken")
+    assert f.flags.get("animal_origin") is True
+    assert f.flags.get("animal_species") == "chicken"
+
+
+def test_potato_jain_friendly_flags():
+    f = lookup("potato")
+    assert f.flags.get("root_vegetable") is True
+    assert f.flags.get("plant_origin") is True
+
+
+@pytest.mark.parametrize("key", ["elephant foot yam", "taro root"])
+def test_regional_root_vegetables_resolve_offline(key):
+    # Regional parsing rewrites "yam"/"suran" -> "elephant foot yam" and
+    # "arbi"/"taro" -> "taro root"; the canonicals must be Tier-1 root
+    # vegetables so Jain avoids them without ever reaching Supabase.
+    f = lookup(key)
+    assert f is not None, key
+    assert f.flags.get("root_vegetable") is True
+    assert f.flags.get("plant_origin") is True
+
+
+@pytest.mark.parametrize("key", ["collagen", "rennet"])
+def test_species_unknown_animal_additives(key):
+    f = lookup(key)
+    assert f is not None
+    assert f.flags.get("animal_origin") is True
+    assert "animal_species" not in f.flags

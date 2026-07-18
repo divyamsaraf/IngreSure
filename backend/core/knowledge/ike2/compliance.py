@@ -157,6 +157,12 @@ def _species_trigger(flags: dict, rule) -> tuple[bool, bool]:
         if species == target:
             return True, False
 
+    # Egg/dairy/insect are identified non-meat sources — not "unknown cow/pig".
+    # Applying species-unknown caution here falsely UNCERTAIN/Depends eggs on
+    # hindu_non_vegetarian (and similar species diets) when they should SAFE.
+    if flags.get("egg_source") or flags.get("dairy_source") or flags.get("insect_derived"):
+        return False, False
+
     if species in (None, "") and flags.get("animal_origin"):
         return True, True
     return False, False
@@ -269,10 +275,15 @@ def evaluate(resolved, profile, rules) -> ComplianceResult:
             verdict, triggered, trace, caution = _verdict_for(r, rule, severity)
             verdicts.append(verdict)
             name = getattr(r, "canonical_name", "?")
-            breakdown[(name, rule.restriction)] = verdict
+            key = (name, rule.restriction)
+            prev = breakdown.get(key)
+            breakdown[key] = verdict if prev is None else max(prev, verdict)
             if triggered:
                 minor = bool(getattr(r, "trace", False)) or bool(getattr(r, "may_contain", False))
-                (matched_may_contain if minor else matched_contains).append(name)
+                if minor:
+                    matched_may_contain.append(name)
+                elif verdict == Verdict.FAIL:
+                    matched_contains.append(name)
             if verdict != Verdict.SAFE:
                 caution_reasons.append(f"{rule.restriction}:{name}")
             if caution:

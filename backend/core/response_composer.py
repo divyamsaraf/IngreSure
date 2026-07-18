@@ -7,6 +7,8 @@ import logging
 import re
 from typing import List, Optional, Dict, Any, Set
 
+from core.knowledge.ike2 import truth_anchor
+from core.knowledge.ike2.stores import local_ontology
 from core.models.verdict import ComplianceVerdict, VerdictStatus
 from core.normalization.normalizer import normalize_ingredient_key, substance_key, is_e_number_code
 
@@ -246,6 +248,51 @@ def _allergy_triggered(triggered_restrictions: List[str]) -> bool:
     )
 
 
+def _attribution_kind(triggered_restrictions: List[str]) -> str:
+    """'allergen' or 'diet' copy attribution for the primary Avoid ingredient
+    (spec §7.2). Diet/lifestyle wording wins whenever a non-allergy
+    restriction also FAILed for this ingredient -- allergen wording is
+    reserved for allergy-only FAILs (e.g. gelatin x Hindu Vegetarian + Fish
+    allergy must read as a diet conflict, not "your allergens")."""
+    restrictions = triggered_restrictions or []
+    allergy = [r for r in restrictions if (r or "").endswith("_allergy")]
+    diet = [r for r in restrictions if r and not r.endswith("_allergy")]
+    if allergy and not diet:
+        return "allergen"
+    return "diet"
+
+
+def _reason_category_for_avoid(triggered_restrictions: List[str]) -> str:
+    """Avoid reason_category per spec §8.2: diet_conflict unless the FAIL is
+    allergy-only for this ingredient."""
+    if _attribution_kind(triggered_restrictions) == "allergen":
+        return "allergen_conflict"
+    return "diet_conflict"
+
+
+_DEPENDS_REASON_TEXT: Dict[str, str] = {
+    "source_ambiguous": "source not specified on the label — check packaging",
+    "compound_umbrella": "umbrella term — may hide restricted sources",
+    "unverified": "could not be verified against your profile",
+    "unknown_ingredient": "unknown ingredient — could not be matched",
+}
+
+
+def _reason_category_for_uncertain(name: str) -> str:
+    """Classify a Depends (uncertain) ingredient per spec §8.2, using the same
+    Tier-1/Tier-2 facts resolution already consulted. Never returns
+    diet_conflict -- that category is Avoid-only (FAIL required)."""
+    fact = truth_anchor.lookup(name) or local_ontology.lookup(name)
+    if fact is None:
+        return "unknown_ingredient"
+    flags = fact.flags or {}
+    if flags.get("verdict_cap") == "WARN":
+        return "compound_umbrella"
+    if flags.get("animal_origin") and not flags.get("animal_species"):
+        return "source_ambiguous"
+    return "unverified"
+
+
 def _ingredient_reason_for_verdict(
     ingredient: str,
     triggered_restrictions: List[str],
@@ -255,7 +302,7 @@ def _ingredient_reason_for_verdict(
     the trigger is an allergy restriction.
     """
     base = _ingredient_reason(ingredient)
-    if not _allergy_triggered(triggered_restrictions):
+    if _attribution_kind(triggered_restrictions) != "allergen":
         return base
     # Map ingredient (normalized) to allergen-type wording where applicable
     norm = _normalize_for_match(ingredient.lower().strip())
@@ -500,7 +547,11 @@ def compose_verdict(
             user_label = triggered_to_input.get(ing, ing)
             name = format_audit_item_name(user_label, ing)
             verb = "are" if _is_plural(user_label) else "is"
-            intro = "Based on your **allergens**," if has_allergy and not has_diet else f"Based on your **{diet}** diet and **allergens**," if has_allergy and has_diet else f"Based on your **{diet}** diet,"
+            intro = (
+                f"Based on your **{diet}** diet,"
+                if _attribution_kind(restrictions) != "allergen"
+                else "Based on your **allergens**,"
+            )
             parts.append(
                 f"{intro} **{name}** {verb} **not suitable** — {reason}."
             )
@@ -619,7 +670,7 @@ def compose_verdict_explanation(
             _normalize_for_match(primary), []
         )
         alt_hint = f" Try {alts[0]} instead." if alts else ""
-        if _allergy_triggered(restrictions):
+        if _attribution_kind(restrictions) == "allergen":
             return (
                 f"{primary_name} is not suitable for your allergens ({reason}).{alt_hint}"
             )
@@ -753,6 +804,7 @@ def build_ingredient_audit_payload(
             "allergens": allergens if allergens else None,
             "alternatives": _alternatives(ing) or None,
             "reason": _ingredient_reason_for_verdict(ing, restrictions),
+            "reason_category": _reason_category_for_avoid(restrictions),
         })
     if avoid_items:
         groups.append({"status": "avoid", "items": avoid_items})
@@ -761,12 +813,14 @@ def build_ingredient_audit_payload(
     depends_items: List[Dict[str, Any]] = []
     for ing in uncertain:
         display_name = _display(ing)
+        category = _reason_category_for_uncertain(ing)
         depends_items.append({
             "name": display_name,
             "diets": [_restriction_label(r) for r in diet_restrictions] if diet_restrictions else None,
             "allergens": [_restriction_label(r) for r in allergy_restrictions] if allergy_restrictions else None,
             "alternatives": None,
-            "reason": _ingredient_reason(ing),
+            "reason": _DEPENDS_REASON_TEXT[category],
+            "reason_category": category,
         })
     if depends_items:
         groups.append({"status": "depends", "items": depends_items})

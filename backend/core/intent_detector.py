@@ -534,8 +534,132 @@ _BARE_QUERY_DENYLIST = frozenset(
         "list",
         "none",
         "nothing",
+        "namaste",
+        "namaskar",
+        "pranam",
+        "null",
+        "true",
+        "false",
+        "undefined",
     }
 )
+
+_GARBAGE_LITERAL_RE = re.compile(
+    r"^(?:null|true|false|undefined|nan|\{\}|\[\]|\(\))$",
+    re.IGNORECASE,
+)
+_MATH_EXPRESSION_RE = re.compile(r"^[\d\s+\-*/().=%]+$")
+_PROMPT_INJECTION_RE = re.compile(
+    r"\b(?:act\s+as|ignore\s+(?:all\s+)?(?:previous|prior)\s+instructions?"
+    r"|jailbreak|system\s+prompt|you\s+are\s+now|pretend\s+(?:to\s+be|you\s+are)"
+    r"|disregard\s+(?:all\s+)?(?:previous|prior))\b",
+    re.IGNORECASE,
+)
+_E_NUMBER_RE = re.compile(r"^e\s*\d{3,4}[a-z]?$", re.IGNORECASE)
+
+
+def _matches_known_ingredient(text: str) -> bool:
+    """True when text hits a Tier-1 truth anchor or Tier-2 local ontology alias."""
+    from core.knowledge.ike2.stores.local_ontology import lookup as tier2_lookup
+    from core.knowledge.ike2.truth_anchor import lookup as tier1_lookup
+    from core.normalization.normalizer import normalize_ingredient_key
+
+    raw = (text or "").strip().lower()
+    if not raw:
+        return False
+    canon = normalize_ingredient_key(raw)
+    for key in (raw, canon):
+        if tier1_lookup(key) is not None or tier2_lookup(key) is not None:
+            return True
+    return False
+
+
+_QWERTY_HOME_ROW = frozenset("asdfghjkl")
+
+
+def _looks_like_keyboard_mash(text: str) -> bool:
+    alpha = re.sub(r"[^a-z]", "", (text or "").lower())
+    if len(alpha) < 5:
+        return False
+    if all(c in _QWERTY_HOME_ROW for c in alpha):
+        return True
+    return not re.search(r"[aeiouy]", alpha)
+
+
+def _is_food_like_token(token: str) -> bool:
+    t = (token or "").strip()
+    if not t or len(t) < 2:
+        return False
+    if _matches_known_ingredient(t):
+        return True
+    low = t.lower()
+    compact = low.replace(" ", "")
+    if _E_NUMBER_RE.match(compact):
+        return True
+    if not re.match(r"^[a-z0-9][a-z0-9\s\-./()%]*$", low, re.IGNORECASE):
+        return False
+    alpha = re.sub(r"[^a-z]", "", low)
+    if len(alpha) >= 2 and re.search(r"[aeiouy]", alpha):
+        return True
+    return bool(re.search(r"\d", t))
+
+
+def _is_garbage_ingredient_line(text: str) -> bool:
+    low = (text or "").lower().strip()
+    if _GARBAGE_LITERAL_RE.match(low):
+        return True
+    if _PROMPT_INJECTION_RE.search(text):
+        return True
+    if _MATH_EXPRESSION_RE.match(text) and re.search(r"[+*/=]", text):
+        return True
+    return _looks_like_keyboard_mash(text)
+
+
+def _is_plausible_ingredient_query(text: str) -> bool:
+    """
+    Gate bare-ingredient fallback: accept known food aliases or food-like text;
+    reject math, literals, prompt injection, greetings, and keyboard mash.
+    """
+    t = (text or "").strip()
+    if not t or len(t) > 120 or "\n" in t:
+        return False
+    if re.search(r"https?://|www\.", t, re.IGNORECASE):
+        return False
+
+    cleaned = _clean_for_ingredients(t.strip(".,;:!? ").strip())
+    if not cleaned:
+        return False
+
+    low = cleaned.lower().strip()
+    if low in _BARE_QUERY_DENYLIST or low in _DIET_NAMES_LOWER:
+        return False
+    if _is_meta_ingredient_phrase(cleaned):
+        return False
+    if re.match(
+        r"^(?:check|analyze|evaluate|verify|test)\s+(?:this|these|that)\b",
+        cleaned,
+        re.IGNORECASE,
+    ):
+        return False
+    if re.search(r"\b(?:weather|forecast)\b", low):
+        return False
+    if re.match(r"^what'?s\b", low):
+        return False
+    if re.match(r"^will\s+it\b", low):
+        return False
+    if re.match(
+        r"^(?:what|how|why|when|where|who|which|tell\s+me\s+about|explain)\s+",
+        low,
+    ):
+        return False
+
+    if _matches_known_ingredient(cleaned):
+        return True
+    if _is_garbage_ingredient_line(cleaned):
+        return False
+
+    chunks = _split_by_comma_outside_parens(cleaned) if "," in cleaned else [cleaned]
+    return all(_is_food_like_token(c) for c in chunks if c.strip())
 
 
 def _bare_ingredients_fallback(text: str) -> List[str]:
@@ -758,9 +882,9 @@ def detect_intent(query: str) -> ParsedIntent:
         # Bare ingredient line: "milk", "eggs", "soy milk" (no comma / no "ingredients:")
         if not ingredients:
             target = remaining.strip()
-            if target:
+            if target and _is_plausible_ingredient_query(target):
                 ingredients = _bare_ingredients_fallback(target)
-            elif not profile_updates:
+            elif not profile_updates and _is_plausible_ingredient_query(base_text):
                 ingredients = _bare_ingredients_fallback(base_text)
 
     # Filter out diet names that leaked into ingredients
@@ -784,10 +908,11 @@ def detect_intent(query: str) -> ParsedIntent:
         return ParsedIntent(intent="GENERAL_QUESTION", original_query=query)
 
     # Last-resort: treat the whole query as potential ingredient text
-    fallback = _extract_ingredients_from_text(query)
-    if fallback:
-        fallback = [i for i in fallback if i.lower().strip() not in _DIET_NAMES_LOWER]
-    if fallback:
-        return ParsedIntent(intent="INGREDIENT_QUERY", ingredients=fallback, original_query=query)
+    if _is_plausible_ingredient_query(query):
+        fallback = _extract_ingredients_from_text(query)
+        if fallback:
+            fallback = [i for i in fallback if i.lower().strip() not in _DIET_NAMES_LOWER]
+        if fallback:
+            return ParsedIntent(intent="INGREDIENT_QUERY", ingredients=fallback, original_query=query)
 
     return ParsedIntent(intent="GENERAL_QUESTION", original_query=query)

@@ -108,10 +108,11 @@ def test_map_ike2_triggered_restrictions_excludes_safe_breakdown_rows():
     assert v.triggered_restrictions == ["vegan"]
 
 
-def test_map_ike2_may_contain_promoted_to_triggered_when_it_drives_warn():
+def test_map_ike2_may_contain_warn_goes_to_uncertain_not_triggered():
     """A may_contain/trace ingredient whose breakdown verdict is WARN (not
-    SAFE) drove the non-SAFE aggregate, so it must be attributed as
-    triggered -- not left only in informational_ingredients."""
+    FAIL) drove the non-SAFE aggregate, but WARN is Depends, never Avoid
+    (mapper contract, spec Sec 3.2/5.2) -- it belongs in uncertain_ingredients,
+    not triggered_ingredients."""
     inputs = [
         ComplianceInput(
             canonical_name="peanut",
@@ -131,9 +132,9 @@ def test_map_ike2_may_contain_promoted_to_triggered_when_it_drives_warn():
         breakdown={("peanut", "peanut_allergy"): Verdict.WARN},
     )
     v = map_ike2_to_compliance_verdict(result, inputs)
-    assert "peanut" in v.triggered_ingredients
-    assert "peanut_allergy" in v.triggered_restrictions
-    assert "peanut" not in v.informational_ingredients
+    assert "peanut" in v.uncertain_ingredients
+    assert "peanut" not in v.triggered_ingredients
+    assert "peanut_allergy" not in v.triggered_restrictions
 
 
 def test_map_ike2_may_contain_without_breakdown_stays_informational():
