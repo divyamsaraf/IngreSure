@@ -22,14 +22,14 @@ const variantClass: Record<PrimaryChatCtaVariant, string> = {
   onLight: [
     'gap-2 font-bold',
     'min-h-[52px] min-w-[min(100%,17.5rem)]',
-    'shadow-xl shadow-emerald-600/30 ring-2 ring-emerald-500/35 ring-offset-2 ring-offset-[#f8fafc]',
-    'hover:ring-emerald-500/55 md:min-h-[56px]',
+    'shadow-xl shadow-teal-800/25 ring-2 ring-accent/35 ring-offset-2 ring-offset-[#f8fafc]',
+    'hover:ring-accent/55 md:min-h-[56px]',
   ].join(' '),
   onDark: [
     'gap-2 font-bold',
     'min-h-[52px] min-w-[min(100%,17.5rem)]',
-    'shadow-xl ring-2 ring-emerald-400/45 ring-offset-2 ring-offset-slate-900',
-    'hover:ring-emerald-400/60 md:min-h-[56px]',
+    'shadow-xl ring-2 ring-teal-300/45 ring-offset-2 ring-offset-slate-900',
+    'hover:ring-teal-300/60 md:min-h-[56px]',
   ].join(' '),
   compact: ['gap-2 font-bold', 'min-h-[48px] md:min-h-[52px]'].join(' '),
 }
@@ -38,6 +38,8 @@ export interface PrimaryChatCtaProps {
   variant: PrimaryChatCtaVariant
   href?: string
   className?: string
+  /** Override button label (default: Try Grocery Assistant). Keep destination the same. */
+  label?: string
   'aria-label'?: string
 }
 
@@ -45,6 +47,7 @@ export function PrimaryChatCta({
   variant,
   href = '/chat',
   className = '',
+  label = PRIMARY_CHAT_CTA_LABEL,
   'aria-label': ariaLabel = PRIMARY_CHAT_ARIA_LABEL,
 }: PrimaryChatCtaProps) {
   const isCompact = variant === 'compact'
@@ -60,7 +63,7 @@ export function PrimaryChatCta({
       aria-label={ariaLabel}
     >
       <MessageCircle className={iconClass} aria-hidden />
-      {PRIMARY_CHAT_CTA_LABEL}
+      {label}
       <ArrowRight className={arrowClass} aria-hidden />
     </Button>
   )
