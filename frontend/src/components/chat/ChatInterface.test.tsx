@@ -41,12 +41,12 @@ describe('ChatInterface', () => {
     renderWithProvider()
 
     await waitFor(() => {
-      const input = screen.getByPlaceholderText(/Type ingredient/)
+      const input = screen.getByPlaceholderText(/Paste an ingredient/)
       expect(input).toBeInTheDocument()
       expect(input).not.toBeDisabled()
     })
 
-    const input = screen.getByPlaceholderText(/Type ingredient/)
+    const input = screen.getByPlaceholderText(/Paste an ingredient/)
     await userEvent.type(input, 'Is this vegan?')
 
     const form = input.closest('form')

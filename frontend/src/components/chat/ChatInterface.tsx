@@ -4,13 +4,18 @@ import React, { useState, useRef, useEffect } from 'react'
 import { Send, User, Bot, Loader2, X, Info } from 'lucide-react'
 import OnboardingModal from './OnboardingModal'
 import FormattedMessage from './FormattedMessage'
-import IngredientAuditCards, { type IngredientAuditData } from './IngredientAuditCards'
+import IngredientAuditCards from './IngredientAuditCards'
+import ChatEmptyPreview from './ChatEmptyPreview'
 import { type Message, streamChatResponse, stripStatusPlaceholders } from './streamChatResponse'
 import { UserProfile, profileToBackend, hasProfileRules } from '@/types/userProfile'
 import { useProfileContext } from '@/context/ProfileContext'
 import { useConfig } from '@/context/ConfigContext'
 import { PROFILE_BANNER_DISMISSED_KEY } from '@/constants/profileStorage'
-import { getOrCreateUserId, getAnonSessionToken, persistProfileToStorage } from '@/lib/profileStorage'
+import {
+  getOrCreateUserId,
+  getAnonSessionToken,
+  persistProfileToStorage,
+} from '@/lib/profileStorage'
 import { getDietIcon } from '@/lib/dietIcon'
 import { colors, spacing } from '@/theme/tokens'
 import { CHAT_PANEL_DISCLAIMER } from '@/constants/disclaimers'
@@ -25,50 +30,6 @@ function normalizeChatUrl(url: string): string {
   } catch {
     return url.startsWith('/') ? url : '/api/chat?mode=grocery'
   }
-}
-
-const EMPTY_STATE_EXAMPLE_QUERY =
-  'Ingredients: Sugar, Gelatin, Citric Acid, Natural Flavors, Red 40, Carnauba Wax'
-
-const EMPTY_STATE_EXAMPLE_AUDIT: IngredientAuditData = {
-  summary: '3 Safe, 1 Avoid, 2 Depends',
-  groups: [
-    {
-      status: 'avoid',
-      items: [
-        {
-          name: 'Gelatin',
-          status: 'avoid',
-          reason: 'animal-derived (bovine/porcine)',
-        },
-      ],
-    },
-    {
-      status: 'depends',
-      items: [
-        {
-          name: 'Natural Flavors',
-          status: 'depends',
-          reason: 'may contain animal derivatives — check with manufacturer',
-        },
-        {
-          name: 'Red 40',
-          status: 'depends',
-          reason: 'some Jain/vegan diets avoid synthetic dyes',
-        },
-      ],
-    },
-    {
-      status: 'safe',
-      items: [
-        { name: 'Sugar', status: 'safe' },
-        { name: 'Citric Acid', status: 'safe' },
-        { name: 'Carnauba Wax', status: 'safe' },
-      ],
-    },
-  ],
-  explanation:
-    'Based on a Vegan profile, Gelatin is not suitable — it is derived from animal collagen. Natural Flavors also carries a warning as the source is unspecified.',
 }
 
 interface ChatInterfaceProps {
@@ -99,6 +60,7 @@ export default function ChatInterface({
     const [bannerVisible, setBannerVisible] = useState(false)
     const [bannerExiting, setBannerExiting] = useState(false)
     const messagesEndRef = useRef<HTMLDivElement>(null)
+    const inputRef = useRef<HTMLTextAreaElement>(null)
 
     // Profile API base: /api (no double /api). apiEndpoint is e.g. /api/chat so base = /api, then /api/profile
     const profileApiBase = apiEndpoint.replace(/\/chat.*$/, '') || '/api'
@@ -191,26 +153,21 @@ export default function ChatInterface({
           })
     }
 
-    /* Recent checks hidden — re-enable with RecentChecksSection when needed
-    useEffect(() => {
-        setRecentChecks(loadRecentChecks())
-    }, [])
-
-    useEffect(() => {
-        const fromMessages = buildRecentChecksFromMessages(messages)
-        if (fromMessages.length === 0) return
-        setRecentChecks(fromMessages)
-        persistRecentChecks(fromMessages)
-    }, [messages])
-    */
-
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
     }, [messages, loading])
 
     useEffect(() => {
+        const el = inputRef.current
+        if (!el) return
+        el.style.height = 'auto'
+        el.style.height = `${Math.min(el.scrollHeight, 160)}px`
+    }, [input])
+
+    useEffect(() => {
         if (analysisStatus !== 'complete') return
-        const timer = window.setTimeout(() => setAnalysisStatus('fading'), 2000)
+        // Brief success flash then hide — avoid lingering "Analysis complete" chrome
+        const timer = window.setTimeout(() => setAnalysisStatus('hidden'), 900)
         return () => window.clearTimeout(timer)
     }, [analysisStatus])
 
@@ -312,7 +269,7 @@ export default function ChatInterface({
     )
 
     return (
-        <div className="flex flex-col h-full rounded-2xl bg-white shadow-sm border border-slate-100 overflow-hidden">
+        <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white/95 shadow-[0_8px_40px_rgba(15,23,42,0.06)] backdrop-blur-sm">
 
             {/* Onboarding Modal */}
             <OnboardingModal
@@ -327,7 +284,7 @@ export default function ChatInterface({
             <div className="sticky top-0 z-10 bg-white border-b border-slate-100 shrink-0 px-6 py-4">
                 <div className="flex items-center justify-between gap-4">
                     <div className="min-w-0">
-                        <h1 className="font-serif text-lg font-semibold text-slate-900 truncate">{title}</h1>
+                        <h1 className="font-display text-lg font-semibold text-slate-900 truncate">{title}</h1>
                         <p className="text-sm text-slate-500 truncate">{subtitle}</p>
                     </div>
                     <div className="flex items-center gap-1.5 shrink-0">
@@ -335,7 +292,7 @@ export default function ChatInterface({
                             <button
                                 type="button"
                                 onClick={() => setShowOnboarding(true)}
-                                className="inline-flex items-center gap-1.5 rounded-full border font-semibold text-[13px] px-2.5 py-1 bg-emerald-50 border-emerald-200 text-emerald-800 cursor-pointer transition-colors hover:bg-emerald-100"
+                                className="inline-flex items-center gap-1.5 rounded-full border font-semibold text-[13px] px-2.5 py-1 bg-teal-50 border-teal-200 text-teal-900 cursor-pointer transition-colors hover:bg-teal-100"
                                 title="Edit profile"
                                 aria-label="Edit profile"
                             >
@@ -347,7 +304,7 @@ export default function ChatInterface({
                         <button
                             type="button"
                             onClick={() => setShowOnboarding(true)}
-                            className="ml-1.5 text-[13px] font-medium cursor-pointer transition-colors hover:underline text-blue-600"
+                            className="ml-1.5 text-[13px] font-medium cursor-pointer transition-colors hover:underline text-accent"
                             aria-label="Edit profile"
                         >
                             Edit
@@ -357,7 +314,7 @@ export default function ChatInterface({
 
                 {bannerVisible && (
                     <div
-                        className={`mt-3 flex items-center gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-2.5 shadow-card transition-all duration-200 ${
+                        className={`mt-3 flex items-center gap-2 rounded-2xl border border-teal-200 bg-teal-50 px-4 py-2.5 shadow-card transition-all duration-200 ${
                             bannerExiting
                                 ? 'opacity-0 -translate-y-1 max-h-0 py-0 mt-0 overflow-hidden'
                                 : 'opacity-100 translate-y-0 animate-in slide-in-from-top-2 duration-200'
@@ -365,20 +322,20 @@ export default function ChatInterface({
                         role="region"
                         aria-label="Profile setup prompt"
                     >
-                        <p className="flex-1 min-w-0 text-sm text-emerald-800">
-                            👋 Set your diet for personalised results — takes 10 seconds.
+                        <p className="flex-1 min-w-0 text-sm text-teal-900">
+                            Set your diet for personalised results — takes about 10 seconds.
                         </p>
                         <button
                             type="button"
                             onClick={() => setShowOnboarding(true)}
-                            className="shrink-0 text-sm font-semibold text-emerald-800 hover:text-emerald-950 transition-colors"
+                            className="shrink-0 text-sm font-semibold text-teal-900 hover:text-teal-950 transition-colors"
                         >
                             Set up →
                         </button>
                         <button
                             type="button"
                             onClick={dismissProfileBanner}
-                            className="shrink-0 p-0.5 rounded text-emerald-600 hover:text-emerald-900 hover:bg-emerald-100 transition-colors"
+                            className="shrink-0 p-0.5 rounded text-accent hover:text-teal-900 hover:bg-teal-100 transition-colors"
                             aria-label="Dismiss profile setup banner"
                         >
                             <X className="w-4 h-4" />
@@ -389,7 +346,7 @@ export default function ChatInterface({
 
             {/* Profile save feedback */}
             {profileSaveStatus === 'success' && (
-                <div className="shrink-0 px-4 py-2 bg-emerald-50 border-b border-emerald-100 text-emerald-800 text-sm font-medium flex items-center justify-center gap-2" role="status" aria-live="polite">
+                <div className="shrink-0 px-4 py-2 bg-teal-50 border-b border-teal-100 text-teal-900 text-sm font-medium flex items-center justify-center gap-2" role="status" aria-live="polite">
                     Profile saved.
                 </div>
             )}
@@ -400,7 +357,7 @@ export default function ChatInterface({
                 </div>
             )}
             {reanalyseStatus && (
-                <div className="shrink-0 px-4 py-2 bg-emerald-50 border-b border-emerald-100 text-emerald-800 text-sm font-medium flex items-center justify-center gap-2" role="status" aria-live="polite">
+                <div className="shrink-0 px-4 py-2 bg-teal-50 border-b border-teal-100 text-teal-900 text-sm font-medium flex items-center justify-center gap-2" role="status" aria-live="polite">
                     {reanalyseStatus}
                 </div>
             )}
@@ -410,77 +367,63 @@ export default function ChatInterface({
                 className="flex-1 overflow-y-auto overflow-x-hidden min-h-0 px-6 pt-6 pb-3 scroll-smooth"
             >
                 {messages.length === 0 && (
-                    <>
-                        <div className="flex flex-col items-center text-center space-y-4 pb-2">
-                            <div className="w-16 h-16 rounded-2xl bg-white border border-slate-100 flex items-center justify-center shadow-card">
-                                <Bot className="w-8 h-8 text-slate-600" />
-                            </div>
-                            <div className="max-w-md space-y-2">
-                                <h3 className="font-bold text-2xl text-slate-800">What&apos;s on your mind?</h3>
-                                <p className="text-slate-500">Check ingredients for allergies, religious diets (Halal, Jain, Hindu), or hidden additives.</p>
-                                {!isProfileComplete && (
-                                    <p className="text-xs text-slate-400">Set your diet &amp; allergens above for personalized results.</p>
-                                )}
-                            </div>
-
-                            {!isProfileComplete && (
-                                <button
-                                    type="button"
-                                    onClick={() => setShowOnboarding(true)}
-                                    className="text-secondary font-bold bg-emerald-50 border border-emerald-200 px-6 py-3 rounded-full hover:bg-emerald-100 transition-colors"
-                                >
-                                    Setup my Safety Profile
-                                </button>
-                            )}
-
-                            <div className="flex flex-col items-stretch gap-2 w-full max-w-lg pt-1">
-                                {suggestions.map((s, i) => (
-                                    <button
-                                        key={i}
-                                        type="button"
-                                        disabled={chipsDisabled}
-                                        onClick={() => {
-                                            setInput(s)
-                                            void submitMessage(s)
-                                        }}
-                                        className="inline-flex items-center justify-between gap-3 w-full text-left text-chat-chip font-medium bg-white border border-slate-200 px-4 py-2.5 rounded-xl shadow-card transition-all duration-200 hover:border-secondary hover:text-secondary disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:border-slate-200 disabled:hover:text-inherit"
-                                    >
-                                        <span>{s}</span>
-                                        <span className="shrink-0 text-secondary" aria-hidden="true">→</span>
-                                    </button>
-                                ))}
-                            </div>
+                    <div className="flex flex-col items-center px-2 py-6 text-center sm:py-10">
+                        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-100 bg-teal-50 text-accent shadow-card">
+                            <Bot className="h-6 w-6" aria-hidden />
                         </div>
-
-                        <div className="space-y-6 w-full border-t border-slate-100 pt-6">
-                            <p
-                                className="text-chat-meta font-medium text-center"
-                                style={{ color: colors.muted }}
+                        <h3 className="font-display text-2xl font-semibold tracking-tight text-primary">
+                            Check what&apos;s in the label
+                        </h3>
+                        <p className="mt-2 max-w-md text-[15px] leading-relaxed text-slate-500">
+                            Paste ingredients below — or tap an example. You&apos;ll see Safe, Avoid,
+                            and Depends against your diet and allergens.
+                        </p>
+                        {!isProfileComplete && !bannerVisible && (
+                            <button
+                                type="button"
+                                onClick={() => setShowOnboarding(true)}
+                                className="mt-3 cursor-pointer text-sm font-semibold text-accent underline-offset-2 hover:underline"
                             >
-                                Example result — try your own ingredients below ↓
+                                Set diet &amp; allergens for a personal check
+                            </button>
+                        )}
+
+                        <ChatEmptyPreview
+                            onTryExample={() => {
+                                const example =
+                                    suggestions[0] ||
+                                    'Ingredients: Sugar, Gelatin, Citric Acid, Natural Flavors, Carnauba Wax'
+                                setInput(example)
+                                void submitMessage(example)
+                            }}
+                        />
+
+                        <div className="mt-6 flex w-full max-w-lg flex-col gap-2">
+                            <p className="text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                                More examples
                             </p>
-                            <div className="flex gap-3 justify-end animate-in slide-in-from-bottom-2 duration-300">
-                                <div className="max-w-[80%] sm:max-w-[75%] rounded-2xl shadow-card font-sans bg-primary text-white rounded-br-none px-4 py-4">
-                                    <div className="text-chat-body">
-                                        <FormattedMessage content={EMPTY_STATE_EXAMPLE_QUERY} isUser />
-                                    </div>
-                                </div>
-                                <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0 mt-1 shadow-card">
-                                    <User className="w-4 h-4 text-white" />
-                                </div>
-                            </div>
-                            <div className="flex gap-3 justify-start animate-in slide-in-from-bottom-2 duration-300">
-                                <div className="w-8 h-8 rounded-full bg-white border border-slate-100 flex items-center justify-center flex-shrink-0 mt-1 shadow-card">
-                                    <Bot className="w-4 h-4 text-slate-600" />
-                                </div>
-                                <div className="max-w-[80%] sm:max-w-[75%] rounded-2xl shadow-card font-sans bg-white border border-slate-100 text-primary rounded-bl-none px-4 py-4">
-                                    <div className="text-chat-body">
-                                        <IngredientAuditCards data={EMPTY_STATE_EXAMPLE_AUDIT} />
-                                    </div>
-                                </div>
-                            </div>
+                            {suggestions.map((s, i) => (
+                                <button
+                                    key={i}
+                                    type="button"
+                                    disabled={chipsDisabled}
+                                    onClick={() => {
+                                        setInput(s)
+                                        void submitMessage(s)
+                                    }}
+                                    className="inline-flex w-full cursor-pointer items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-left text-chat-chip font-medium text-slate-700 shadow-card transition-all hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:opacity-60"
+                                >
+                                    <span className="line-clamp-2">{s}</span>
+                                    <span className="shrink-0 text-accent" aria-hidden>
+                                        →
+                                    </span>
+                                </button>
+                            ))}
                         </div>
-                    </>
+                        <p className="mt-5 text-xs text-slate-400">
+                            Or paste your own list in the box below — Enter to send
+                        </p>
+                    </div>
                 )}
 
                 {messages.length > 0 && (
@@ -493,13 +436,7 @@ export default function ChatInterface({
                         analysisStatus !== 'hidden'
                     const showAnalysisStatus = isLastAssistant
                     const analysisStatusText =
-                        analysisStatus === 'checking'
-                            ? 'Checking ingredients...'
-                            : analysisStatus === 'error'
-                              ? 'Something went wrong'
-                              : analysisStatus === 'complete' || analysisStatus === 'fading'
-                                ? '✓ Analysis complete'
-                                : null
+                        analysisStatus === 'error' ? 'Something went wrong' : null
                     const displayContent =
                         msg.role === 'assistant' ? stripStatusPlaceholders(msg.content) : msg.content
                     const hasResultContent = !!(msg.audit || displayContent)
@@ -510,11 +447,9 @@ export default function ChatInterface({
                         !hasResultContent
                     const showStatusLabel =
                         showAnalysisStatus &&
-                        analysisStatusText &&
+                        !!analysisStatusText &&
                         !isPendingAssistant &&
-                        (analysisStatus === 'error' ||
-                            analysisStatus === 'complete' ||
-                            analysisStatus === 'fading')
+                        analysisStatus === 'error'
 
                     return (
                     <div key={idx} className={`flex gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-in slide-in-from-bottom-2 duration-300`}>
@@ -524,22 +459,20 @@ export default function ChatInterface({
                             </div>
                         )}
                         <div
-                            className={`max-w-[80%] sm:max-w-[75%] rounded-2xl shadow-card font-sans ${msg.role === 'user'
-                                ? 'bg-primary text-white rounded-br-none px-4 py-4'
-                                : 'bg-white border border-slate-100 text-primary rounded-bl-none px-4 py-4'
-                                }`}
+                            className={`rounded-2xl shadow-card font-sans ${
+                                msg.role === 'user'
+                                    ? 'max-w-[85%] sm:max-w-[75%] bg-primary text-white rounded-br-none px-4 py-3.5'
+                                    : msg.audit
+                                      ? 'max-w-full flex-1 bg-white border border-slate-100 text-primary rounded-bl-none px-4 py-4 sm:max-w-[min(100%,42rem)]'
+                                      : 'max-w-[85%] sm:max-w-[80%] bg-white border border-slate-100 text-primary rounded-bl-none px-4 py-3.5'
+                            }`}
                         >
                             <div className="text-chat-body">
                                 {showStatusLabel && analysisStatusText ? (
                                     <p
                                         role="status"
                                         aria-live="polite"
-                                        className={`analysis-status-label text-chat-meta text-slate-500 mb-2 ${analysisStatus === 'fading' ? 'opacity-0' : 'opacity-100'} ${analysisStatus === 'complete' || analysisStatus === 'fading' ? 'text-emerald-600' : ''}`}
-                                        onTransitionEnd={(e) => {
-                                            if (e.propertyName === 'opacity' && analysisStatus === 'fading') {
-                                                setAnalysisStatus('hidden')
-                                            }
-                                        }}
+                                        className="mb-2 text-chat-meta font-medium text-avoid"
                                     >
                                         {analysisStatusText}
                                     </p>
@@ -560,7 +493,7 @@ export default function ChatInterface({
                                         ) : null}
                                         <IngredientAuditCards
                                             data={msg.audit}
-                                            showPersonaliseNudge={showPersonaliseNudge}
+                                            showPersonaliseNudge={showPersonaliseNudge && !bannerVisible}
                                             onPersonalise={() => setShowOnboarding(true)}
                                         />
                                     </div>
@@ -585,78 +518,65 @@ export default function ChatInterface({
                         className="text-chat-meta font-medium text-center"
                         style={{ color: colors.muted, marginTop: spacing.inner }}
                     >
-                        Ask a follow-up or paste a new ingredient list ↓
+                        Paste another label or ask a follow-up below
                     </p>
                 )}
-
-                {/* Recent checks hidden for now
-                {recentChecks.length > 0 && (
-                    <div style={{ marginTop: spacing.inner }}>
-                        <RecentChecksSection
-                            entries={recentChecks}
-                            onSelect={(q) => setInput(q)}
-                        />
-                    </div>
-                )}
-                */}
 
                 <div ref={messagesEndRef} />
             </div>
 
             {/* Input area (sticky bottom) */}
-            <form onSubmit={handleSubmit} className="border-t border-slate-100 bg-white px-4 pt-2 pb-3 shrink-0">
-                <div
+            <form onSubmit={handleSubmit} className="shrink-0 border-t border-slate-100 bg-white px-4 pb-3 pt-2">
+                <p
                     role="note"
-                    aria-label={CHAT_PANEL_DISCLAIMER}
-                    className="mb-2 flex items-center gap-2 rounded-xl border border-slate-100 bg-slate-50/90 px-2.5 py-1.5 min-w-0"
+                    className="mb-2 text-[11px] leading-snug text-slate-500"
                 >
-                    <span
-                        className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-slate-200/70"
-                        aria-hidden="true"
-                    >
-                        <Info className="h-3 w-3 text-slate-500" strokeWidth={2.5} />
-                    </span>
-                    <div className="relative min-w-0 flex-1">
-                        <div className="overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-                            <p className="whitespace-nowrap pr-1 text-[10px] font-medium leading-none tracking-wide text-slate-500 sm:text-chat-meta">
-                                {CHAT_PANEL_DISCLAIMER}
-                            </p>
-                        </div>
-                        <span
-                            className="pointer-events-none absolute inset-y-0 right-0 w-6 bg-gradient-to-l from-slate-50/95 to-transparent sm:hidden"
-                            aria-hidden="true"
-                        />
-                    </div>
-                </div>
-                <div className="flex gap-3 items-center">
+                    <Info className="mr-1 inline h-3 w-3 align-text-bottom text-slate-400" aria-hidden />
+                    {CHAT_PANEL_DISCLAIMER}
+                </p>
+                <div className="flex items-end gap-3">
                     <div className="relative w-full">
-                        <input
-                            type="text"
+                        <textarea
+                            ref={inputRef}
+                            rows={1}
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
-                            placeholder="Type ingredient or question…"
-                            className={`w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl shadow-card focus:outline-none focus:ring-2 focus:ring-secondary/30 focus:border-secondary transition-all placeholder:text-slate-400 font-sans font-medium text-chat-input text-slate-700 ${input ? 'pr-10' : 'pr-4'}`}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' && !e.shiftKey) {
+                                    e.preventDefault()
+                                    if (!loading && input.trim() && profileLoaded) {
+                                        void submitMessage(input)
+                                    }
+                                }
+                            }}
+                            placeholder="Paste an ingredient list or ask a question…"
+                            className={`max-h-40 min-h-[52px] w-full resize-none overflow-y-auto rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 font-sans text-chat-input font-medium text-slate-700 shadow-card transition-all placeholder:text-slate-400 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30 ${input ? 'pr-10' : 'pr-4'}`}
                             disabled={loading || !profileLoaded}
+                            aria-label="Ingredient list or question"
                         />
                         {input ? (
                             <button
                                 type="button"
                                 onClick={() => setInput('')}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 p-0.5 rounded text-slate-400 hover:text-slate-600 hover:bg-slate-200 transition-colors"
+                                className="absolute right-3 top-3 rounded p-0.5 text-slate-400 transition-colors hover:bg-slate-200 hover:text-slate-600"
                                 aria-label="Clear input"
                             >
-                                <X className="w-4 h-4" />
+                                <X className="h-4 w-4" />
                             </button>
                         ) : null}
                     </div>
                     <button
                         type="submit"
                         disabled={loading || !input.trim() || !profileLoaded}
-                        className="shrink-0 inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-primary to-secondary p-3.5 text-white shadow-card transition-all hover:opacity-95 hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed"
+                        className="inline-flex h-[52px] w-[52px] shrink-0 cursor-pointer items-center justify-center rounded-2xl bg-gradient-to-r from-primary to-accent text-white shadow-card transition-all hover:opacity-95 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
+                        aria-label="Send"
                     >
-                        {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
+                        {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
                     </button>
                 </div>
+                {!profileLoaded ? (
+                    <p className="mt-1.5 text-[11px] text-slate-400">Loading your profile…</p>
+                ) : null}
             </form>
         </div>
     )

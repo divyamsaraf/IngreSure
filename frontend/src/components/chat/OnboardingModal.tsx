@@ -129,7 +129,7 @@ function OnboardingModalInner({
   }
 
   const chipTransition = 'transition-all duration-150 ease-in-out'
-  const chipSelected = `border-secondary bg-secondary text-white font-medium ${chipTransition}`
+  const chipSelected = `border-accent bg-accent text-white font-medium ${chipTransition}`
   const chipUnselected = (borderClass: string, hoverClass: string) =>
     `border-2 bg-transparent text-slate-700 ${borderClass} ${hoverClass} ${chipTransition}`
 
@@ -153,7 +153,7 @@ function OnboardingModalInner({
               } ${
                 selected
                   ? chipSelected
-                  : chipUnselected('border-slate-200', 'hover:border-emerald-200')
+                  : chipUnselected('border-slate-200', 'hover:border-teal-200')
               }`}
             >
               <span className="inline-flex items-center gap-1.5">
@@ -188,7 +188,7 @@ function OnboardingModalInner({
               className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-full border-2 text-sm ${
                 selected
                   ? chipSelected
-                  : chipUnselected('border-slate-200', 'hover:border-emerald-200')
+                  : chipUnselected('border-slate-200', 'hover:border-teal-200')
               }`}
             >
               {selected ? <span aria-hidden="true">✓</span> : null}
@@ -215,7 +215,7 @@ function OnboardingModalInner({
               className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border-2 text-sm ${
                 selected
                   ? chipSelected
-                  : chipUnselected('border-slate-100', 'hover:border-emerald-200')
+                  : chipUnselected('border-slate-100', 'hover:border-teal-200')
               }`}
             >
               {selected ? <span aria-hidden="true">✓</span> : null}
@@ -268,7 +268,7 @@ function OnboardingModalInner({
             }
           }}
           placeholder="Other (comma-separated)"
-          className="w-full p-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none"
+          className="w-full p-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-accent/20 focus:border-accent outline-none"
         />
       </div>
     </section>
@@ -279,7 +279,7 @@ function OnboardingModalInner({
       <p className="text-xs text-slate-500 mb-2">Step {step} of 2</p>
       <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
         <div
-          className="h-full bg-secondary transition-all duration-200 ease-in-out"
+          className="h-full bg-accent transition-all duration-200 ease-in-out"
           style={{ width: step === 1 ? '50%' : '100%' }}
         />
       </div>
@@ -290,7 +290,7 @@ function OnboardingModalInner({
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="bg-white rounded-2xl shadow-card w-full max-w-lg max-h-[90vh] overflow-hidden flex flex-col animate-in zoom-in-95 duration-200">
         {/* Header - sticky */}
-        <div className="bg-gradient-to-r from-primary to-secondary p-5 text-white shrink-0 sticky top-0">
+        <div className="bg-gradient-to-r from-primary to-accent p-5 text-white shrink-0 sticky top-0">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold">
               {editMode ? 'Edit profile' : 'Set your safety profile'}
@@ -363,14 +363,14 @@ function OnboardingModalInner({
             <button
               type="button"
               onClick={() => setStep(2)}
-              className="w-full bg-gradient-to-r from-primary to-secondary text-white py-3 rounded-[12px] font-bold hover:opacity-95 transition-opacity shadow-card"
+              className="w-full bg-gradient-to-r from-primary to-accent text-white py-3 rounded-[12px] font-bold hover:opacity-95 transition-opacity shadow-card"
             >
               Next →
             </button>
           ) : (
             <button
               onClick={handleSave}
-              className="w-full bg-gradient-to-r from-primary to-secondary text-white py-3 rounded-[12px] font-bold hover:opacity-95 transition-opacity shadow-card"
+              className="w-full bg-gradient-to-r from-primary to-accent text-white py-3 rounded-[12px] font-bold hover:opacity-95 transition-opacity shadow-card"
             >
               {editMode ? 'Save Changes' : 'Save & start chatting'}
             </button>

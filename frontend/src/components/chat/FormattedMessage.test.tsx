@@ -44,5 +44,36 @@ describe('FormattedMessage', () => {
     expect(screen.getByText('Line one')).toBeInTheDocument()
     expect(screen.getByText('Line two')).toBeInTheDocument()
   })
+
+  it('underlines annotated ingredient names in verdict colors', () => {
+    render(
+      <FormattedMessage
+        content="Gelatin is not suitable. Sugar is fine."
+        annotations={[
+          { name: 'Gelatin', status: 'avoid' },
+          { name: 'Sugar', status: 'safe' },
+        ]}
+      />,
+    )
+
+    const gelatin = screen.getByText('Gelatin')
+    const sugar = screen.getByText('Sugar')
+    expect(gelatin.className).toContain('decoration-avoid')
+    expect(sugar.className).toContain('decoration-safe')
+  })
+
+  it('annotates only the first mention so alternatives stay uncolored', () => {
+    const { container } = render(
+      <FormattedMessage
+        content="Egg is not suitable for a Jain diet (animal-derived). Try Flax egg instead."
+        annotations={[{ name: 'Egg', status: 'avoid' }]}
+      />,
+    )
+
+    const annotated = container.querySelectorAll('.decoration-avoid')
+    expect(annotated).toHaveLength(1)
+    expect(annotated[0].textContent).toBe('Egg')
+    expect(container.textContent).toContain('Flax egg')
+  })
 })
 

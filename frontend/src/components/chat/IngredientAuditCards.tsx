@@ -285,7 +285,12 @@ function IngredientRow({ item, status, accentColor, textClass }: IngredientRowPr
       }}
       title={buildItemTooltip(item, status)}
     >
-      <span className={`min-w-[90px] shrink-0 text-[13px] font-semibold ${textClass}`}>{item.name}</span>
+      <span
+        className={`min-w-[90px] shrink-0 text-[13px] font-semibold underline decoration-2 underline-offset-[3px] ${textClass}`}
+        style={{ textDecorationColor: accentColor }}
+      >
+        {item.name}
+      </span>
       {reason ? (
         <span className="min-w-0 flex-1 text-[12px] font-normal" style={{ color: colors.muted }}>
           {reason}
@@ -454,8 +459,11 @@ function SafeSection({ items, safeState, onToggle, onShowMore, onShowLess, secti
               <span
                 key={item.name}
                 title={buildItemTooltip(item, 'safe')}
-                className={`rounded-xl px-2.5 py-1 text-[12px] font-medium ${statusColors.safe.text}`}
-                style={{ backgroundColor: withOpacity(colors.safe, 0.15) }}
+                className={`rounded-xl px-2.5 py-1 text-[12px] font-medium underline decoration-2 underline-offset-[3px] ${statusColors.safe.text}`}
+                style={{
+                  backgroundColor: withOpacity(colors.safe, 0.15),
+                  textDecorationColor: colors.safe,
+                }}
               >
                 ✓ {item.name}
               </span>
@@ -547,7 +555,7 @@ function IngredientAuditCardsContent({ data, showPersonaliseNudge, onPersonalise
 
   const [avoidFullyExpanded, setAvoidFullyExpanded] = useState(false)
   const [avoidSearchQuery, setAvoidSearchQuery] = useState('')
-  const [checkExpanded, setCheckExpanded] = useState(false)
+  const [checkExpanded, setCheckExpanded] = useState(() => avoidItems.length === 0)
   const [safeState, setSafeState] = useState<1 | 2 | 3>(() => getInitialSafeState(avoidItems.length))
 
   const showAllSafeBanner = counts.avoid === 0 && counts.depends === 0 && counts.safe > 0
@@ -555,6 +563,15 @@ function IngredientAuditCardsContent({ data, showPersonaliseNudge, onPersonalise
   const processedExplanation = useMemo(
     () => processAuditExplanation(data.explanation, counts, profile.dietary_preference),
     [data.explanation, counts, profile.dietary_preference],
+  )
+
+  const explanationAnnotations = useMemo(
+    () => [
+      ...avoidItems.map((item) => ({ name: item.name, status: 'avoid' as const })),
+      ...checkItems.map((item) => ({ name: item.name, status: 'depends' as const })),
+      ...safeItems.map((item) => ({ name: item.name, status: 'safe' as const })),
+    ],
+    [avoidItems, checkItems, safeItems],
   )
 
   return (
@@ -624,6 +641,7 @@ function IngredientAuditCardsContent({ data, showPersonaliseNudge, onPersonalise
             content={processedExplanation}
             textClassName="text-chat-explanation"
             stripEmoji
+            annotations={explanationAnnotations}
           />
         </div>
       ) : null}
