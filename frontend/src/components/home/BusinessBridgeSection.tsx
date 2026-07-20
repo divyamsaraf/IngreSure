@@ -10,8 +10,8 @@ export default function BusinessBridgeSection() {
             Building checkout, menus, or recipes?
           </h2>
           <p className="mt-2 text-sm leading-relaxed text-slate-600 md:text-base">
-            We&apos;re onboarding early partners for allergen and dietary compliance inside your
-            product flow — not bolted on after the fact.
+            Add dietary and allergen checks to checkout, menus, or recipes — so your users know
+            what&apos;s safe before they buy or cook.
           </p>
         </div>
         <Link
