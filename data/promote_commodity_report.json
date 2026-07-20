@@ -1,20 +1,20 @@
 {
-  "timestamp": "2026-07-20T22:46:46.504279+00:00",
-  "before_count": 547,
-  "after_count": 961,
-  "usda_commodities_extracted": 321,
-  "grocery_seed_count": 202,
+  "timestamp": "2026-07-20T22:59:38.743163+00:00",
+  "before_count": 962,
+  "after_count": 1226,
+  "usda_commodities_extracted": 356,
+  "grocery_seed_count": 494,
   "usda_merge": {
-    "new": 297,
-    "merged": 24,
+    "new": 21,
+    "merged": 335,
     "skipped_protected": 0,
-    "aliases_added": 191
+    "aliases_added": 285
   },
   "seed_merge": {
-    "new": 117,
-    "merged": 85,
+    "new": 243,
+    "merged": 251,
     "skipped_protected": 0,
-    "aliases_added": 0
+    "aliases_added": 6
   },
   "dry_run": false
 }

@@ -30,6 +30,7 @@ _ONTOLOGY = _REPO / "data" / "ontology.json"
 _BACKUP = _REPO / "data" / "ontology.json.bak"
 _USDA_STAGING = _REPO / "data" / "usda_staging.json"
 _REPORT = _REPO / "data" / "promote_commodity_report.json"
+_EXPANDED_LIST = _REPO / "data" / "commodity_seed_lists" / "expanded_grocery.txt"
 
 _PROTECTED = frozenset({"VERIFIED", "LOCKED"})
 
@@ -45,6 +46,18 @@ _PLANT_CATEGORIES = (
 
 _SEAFOOD_CATEGORIES = (
     "finfish and shellfish products",
+)
+
+_MEAT_CATEGORIES = (
+    "poultry products",
+    "beef products",
+    "pork products",
+    "lamb, veal, and game products",
+    "sausages and luncheon meats",
+)
+
+_DAIRY_CATEGORIES = (
+    "dairy and egg products",
 )
 
 _SKIP_NAME = re.compile(
@@ -63,118 +76,98 @@ _PREP_TAIL = re.compile(
     re.I,
 )
 
+# Chat variants -> ontology canonical (also stored as aliases on the target).
+_ALIAS_TO_CANONICAL: dict[str, str] = {
+    "bell peppers": "bell pepper",
+    "scallions": "scallion",
+    "green onions": "scallion",
+    "spring onions": "scallion",
+    "corn starch": "cornstarch",
+    "cornflour": "cornstarch",
+    "açaí": "acai",
+    "açai": "acai",
+    "acai berry": "acai",
+    "dragonfruit": "dragon fruit",
+    "starfruit": "star fruit",
+    "sunchoke": "sunchokes",
+    "jerusalem artichoke": "sunchokes",
+    "jerusalem artichokes": "sunchokes",
+    "capres": "capers",  # common typo in lists
+    "zaatar": "za'atar",
+    "za atar": "za'atar",
+    "asafoetida": "asafetida",
+    "hing": "asafetida",
+    "chicken eggs": "egg",
+    "duck eggs": "duck egg",
+    "quail eggs": "quail egg",
+    "egg whites": "egg white",
+    "egg yolks": "egg yolk",
+    "swiss cheese": "swiss cheese",
+    "feta cheese": "feta",
+    "goat cheese": "goat cheese",
+    "okra pods": "okra",
+    "pepitas": "pumpkin seeds",
+    "sunflower kernels": "sunflower seeds",
+    "tiger nuts": "tigernuts",
+    "yam bean": "jicama",
+    "buffalo / bison": "bison",
+    "wild boar": "wild boar",
+    "powdered sugar": "powdered sugar",
+    "icing sugar": "powdered sugar",
+    "confectioners sugar": "powdered sugar",
+}
+
+_FISH = frozenset({
+    "anchovy", "anchovies", "bass", "carp", "cod", "flounder", "haddock",
+    "halibut", "herring", "mackerel", "mahimahi", "perch", "pike", "pollock",
+    "salmon", "sardine", "sardines", "snapper", "sole", "tilapia", "trout",
+    "tuna",
+})
+_BIRD = frozenset({
+    "chicken", "duck", "turkey", "quail", "pheasant", "goose", "ostrich", "squab",
+})
+_MAMMAL = frozenset({
+    "beef", "buffalo", "bison", "lamb", "veal", "venison", "pork", "goat",
+    "rabbit", "wild boar", "elk", "alligator", "kangaroo",
+})
+_DAIRY = frozenset({
+    "butter", "cheese", "milk", "yogurt", "cream", "sour cream", "cream cheese",
+    "cottage cheese", "ricotta", "mascarpone", "gorgonzola", "parmesan",
+    "cheddar", "mozzarella", "feta", "gouda", "brie", "swiss cheese",
+    "provolone", "buttermilk", "heavy cream", "evaporated milk",
+    "condensed milk", "goat milk", "goat cheese", "sheep milk", "feta cheese",
+    "ghee",
+})
+_EGG = frozenset({
+    "egg", "chicken eggs", "duck eggs", "quail eggs", "egg whites", "egg yolks",
+    "duck egg", "quail egg", "egg white", "egg yolk",
+})
+_ANIMAL_FAT = frozenset({"lard", "tallow"})
+_BEE = frozenset({"honey"})
+_PEANUT = frozenset({"peanut", "peanuts", "peanut oil"})
+_SESAME = frozenset({
+    "sesame", "sesame seeds", "black sesame seeds", "sesame oil", "tahini",
+})
+_TREE_NUT = frozenset({
+    "almond", "almonds", "walnut", "walnuts", "cashew", "cashews", "pistachio",
+    "pistachios", "pecan", "pecans", "hazelnut", "hazelnuts", "macadamia nuts",
+    "brazil nuts", "pine nuts", "chestnut", "chestnuts", "almond oil",
+    "walnut oil", "hazelnut oil", "almond flour", "coconut flour",
+})
+_SOY = frozenset({"soybeans", "edamame", "soy", "soya"})
+_GLUTEN = frozenset({
+    "wheat", "barley", "rye", "spelt", "kamut", "farro", "freekeh", "bulgur",
+    "couscous", "semolina", "barley malt syrup",
+})
+_MINERAL = frozenset({
+    "sea salt", "mineral water", "spring water", "baking powder", "baking soda",
+    "cream of tartar", "erythritol", "xylitol",
+})
+
 # Explicit grocery / produce seed — short names users actually type.
 # Flags are conservative commodity defaults (USDA/FoodEx2 class), not LOCKED.
-_GROCERY_SEED: list[dict[str, Any]] = [
-    # Vegetables
-    *[{"name": n, "plant_origin": True, "animal_origin": False} for n in [
-        "asparagus", "bamboo shoots", "bean sprouts", "beet", "bell pepper",
-        "bok choy", "broccoli", "brussels sprouts", "cabbage", "carrot",
-        "cauliflower", "celery", "chard", "collard greens", "cucumber",
-        "eggplant", "fennel", "green beans", "kale", "kohlrabi", "leek",
-        "lettuce", "mushroom", "mustard greens", "okra", "onion", "parsnip",
-        "pea", "potato", "radish", "rutabaga", "shallot", "spinach", "squash",
-        "sweet potato", "tomato", "turnip", "watercress", "yam",
-    ]],
-    # Fruits
-    *[{"name": n, "plant_origin": True, "animal_origin": False} for n in [
-        "apple", "apricot", "banana", "blackberry", "blueberry", "cantaloupe",
-        "cherry", "cranberry", "date", "fig", "grapefruit", "grape", "guava",
-        "honeydew melon", "kiwi", "lemon", "lime", "mango", "nectarine",
-        "orange", "papaya", "peach", "pear", "pineapple", "plum",
-        "pomegranate", "raspberry", "strawberry", "tangerine", "watermelon",
-    ]],
-    # Grains / starches
-    *[{"name": n, "plant_origin": True, "animal_origin": False} for n in [
-        "amaranth", "arrowroot starch", "buckwheat", "corn", "cornmeal",
-        "millet", "oat", "quinoa", "rice", "tapioca", "teff",
-    ]],
-    # Legumes
-    *[{"name": n, "plant_origin": True, "animal_origin": False} for n in [
-        "adzuki beans", "black beans", "black-eyed peas", "chickpea",
-        "fava beans", "great northern beans", "kidney beans", "lentil",
-        "lima beans", "mung beans", "navy beans", "pinto beans", "split peas",
-    ]],
-    # Oils
-    *[{"name": n, "plant_origin": True, "animal_origin": False} for n in [
-        "avocado oil", "canola oil", "coconut oil", "corn oil", "grapeseed oil",
-        "olive oil", "safflower oil", "sunflower oil",
-    ]],
-    # Spices / herbs
-    *[{"name": n, "plant_origin": True, "animal_origin": False} for n in [
-        "allspice", "basil", "bay leaves", "black pepper", "cardamom",
-        "cayenne pepper", "cilantro", "cinnamon", "cloves", "coriander",
-        "cumin", "curry powder", "dill", "fennel seeds", "garlic powder",
-        "ginger", "marjoram", "mint", "nutmeg", "onion powder", "oregano",
-        "paprika", "parsley", "rosemary", "saffron", "sage",
-        "thyme", "turmeric",
-    ]],
-    # Seeds / sweeteners / drinks / pantry (plant)
-    *[{"name": n, "plant_origin": True, "animal_origin": False} for n in [
-        "chia seeds", "flaxseeds", "hemp seeds", "pumpkin seeds",
-        "sunflower seeds", "agave nectar", "date sugar", "maple syrup",
-        "molasses", "raw cane sugar", "stevia", "chamomile tea", "coffee",
-        "green tea", "hibiscus tea", "agar-agar", "apple cider vinegar",
-        "balsamic vinegar", "cocoa powder", "vanilla bean", "almond milk",
-        "coconut milk", "hemp milk", "oat milk", "rice milk",
-        "blackstrap molasses", "coconut aminos", "dijon mustard",
-        "nutritional yeast", "tahini", "tomato paste", "tomato puree",
-        "vegetable broth",
-    ]],
-    # Minerals / leaveners — neither plant nor animal
-    *[{"name": n, "plant_origin": False, "animal_origin": False} for n in [
-        "sea salt", "mineral water", "spring water",
-        "baking powder", "baking soda", "cream of tartar",
-    ]],
-    # Roots / alliums needing extra flags
-    {"name": "garlic", "plant_origin": True, "animal_origin": False,
-     "root_vegetable": True, "garlic_source": True},
-    {"name": "onion", "plant_origin": True, "animal_origin": False,
-     "root_vegetable": True, "onion_source": True},
-    {"name": "shallot", "plant_origin": True, "animal_origin": False,
-     "root_vegetable": True, "onion_source": True},
-    {"name": "leek", "plant_origin": True, "animal_origin": False,
-     "root_vegetable": True, "onion_source": True},
-    {"name": "potato", "plant_origin": True, "animal_origin": False,
-     "root_vegetable": True},
-    {"name": "sweet potato", "plant_origin": True, "animal_origin": False,
-     "root_vegetable": True},
-    {"name": "yam", "plant_origin": True, "animal_origin": False,
-     "root_vegetable": True},
-    {"name": "beet", "plant_origin": True, "animal_origin": False,
-     "root_vegetable": True},
-    {"name": "carrot", "plant_origin": True, "animal_origin": False,
-     "root_vegetable": True},
-    {"name": "radish", "plant_origin": True, "animal_origin": False,
-     "root_vegetable": True},
-    {"name": "turnip", "plant_origin": True, "animal_origin": False,
-     "root_vegetable": True},
-    {"name": "parsnip", "plant_origin": True, "animal_origin": False,
-     "root_vegetable": True},
-    {"name": "rutabaga", "plant_origin": True, "animal_origin": False,
-     "root_vegetable": True},
-    # Seafood (so vegetarian Avoid is correct, not Depends)
-    *[{"name": n, "plant_origin": False, "animal_origin": True,
-       "animal_species": "fish"} for n in [
-        "anchovy", "bass", "carp", "cod", "flounder", "haddock", "halibut",
-        "herring", "mackerel", "mahimahi", "perch", "pike", "pollock",
-        "salmon", "sardine", "snapper", "sole", "tilapia", "trout", "tuna",
-    ]],
-    # Land meats
-    *[{"name": n, "plant_origin": False, "animal_origin": True,
-       "animal_species": "mammal"} for n in [
-        "beef", "buffalo", "bison", "lamb", "veal", "venison",
-    ]],
-    *[{"name": n, "plant_origin": False, "animal_origin": True,
-       "animal_species": "bird"} for n in [
-        "chicken", "duck", "turkey",
-    ]],
-    # Dairy
-    *[{"name": n, "plant_origin": False, "animal_origin": True,
-       "dairy_source": True} for n in [
-        "butter", "cheese", "milk", "yogurt",
-    ]],
-]
+_GROCERY_SEED: list[dict[str, Any]] = []  # built from expanded list + classifier below
+
 
 _DEFAULT_ENTRY: dict[str, Any] = {
     "derived_from": [],
@@ -269,10 +262,84 @@ def extract_commodity_head(canonical_name: str, category: str) -> str | None:
     return None
 
 
+def classify_flags(name: str) -> dict[str, Any]:
+    """Assign conservative diet/allergen flags from the commodity name."""
+    n = _norm(name)
+    n = _ALIAS_TO_CANONICAL.get(n, n)
+    flags: dict[str, Any] = {
+        "plant_origin": True,
+        "animal_origin": False,
+    }
+
+    if n in _MINERAL or n.endswith(" salt"):
+        return {"plant_origin": False, "animal_origin": False}
+
+    if n in _FISH or n.rstrip("s") in _FISH:
+        return {
+            "plant_origin": False,
+            "animal_origin": True,
+            "animal_species": "fish",
+            "fish_source": True,
+        }
+    if n in _BIRD:
+        return {"plant_origin": False, "animal_origin": True, "animal_species": "bird"}
+    if n in _MAMMAL:
+        return {"plant_origin": False, "animal_origin": True, "animal_species": "mammal"}
+    if n in _ANIMAL_FAT:
+        return {"plant_origin": False, "animal_origin": True, "animal_species": "mammal"}
+    if n in _BEE:
+        return {"plant_origin": False, "animal_origin": True, "bee_product": True}
+
+    plant_milks = (
+        "almond milk", "oat milk", "rice milk", "coconut milk", "hemp milk", "soy milk",
+    )
+    if n in plant_milks:
+        return {"plant_origin": True, "animal_origin": False}
+
+    if (
+        n in _DAIRY
+        or n.endswith(" cheese")
+        or n in ("goat milk", "sheep milk", "heavy cream", "sour cream")
+    ):
+        return {"plant_origin": False, "animal_origin": True, "dairy_source": True}
+
+    if n in _EGG or n.endswith(" egg") or n.endswith(" eggs") or n in ("egg white", "egg yolk"):
+        return {
+            "plant_origin": False,
+            "animal_origin": True,
+            "egg_source": True,
+            "animal_species": "bird",
+        }
+
+    if n in _PEANUT or "peanut" in n:
+        flags["peanut_source"] = True
+        flags["nut_source"] = "peanut"
+    if n in _SESAME or "sesame" in n:
+        flags["sesame_source"] = True
+    if n in _TREE_NUT or any(
+        tok in n
+        for tok in (
+            "almond", "walnut", "cashew", "pistachio", "pecan", "hazelnut",
+            "macadamia", "brazil nut", "pine nut", "chestnut",
+        )
+    ):
+        flags["tree_nut_source"] = True
+        if not flags.get("nut_source"):
+            flags["nut_source"] = "tree_nut"
+    if n in _SOY or n.startswith("soy"):
+        flags["soy_source"] = True
+    if n in _GLUTEN or any(g in n for g in ("wheat", "barley", "spelt", "semolina", "farro", "freekeh", "bulgur", "couscous")):
+        if "buckwheat" not in n:  # buckwheat is gluten-free
+            flags["gluten_source"] = True
+
+    return flags
+
+
 def _entry_from_flags(name: str, flags: dict[str, Any], *, source: str) -> dict[str, Any]:
+    canon = _ALIAS_TO_CANONICAL.get(_norm(name), _norm(name))
     entry = {
-        "id": _slug(name),
-        "canonical_name": _norm(name),
+        "id": _slug(canon),
+        "canonical_name": canon,
         "aliases": [],
         **{k: (list(v) if isinstance(v, list) else v) for k, v in _DEFAULT_ENTRY.items()},
     }
@@ -280,14 +347,16 @@ def _entry_from_flags(name: str, flags: dict[str, Any], *, source: str) -> dict[
         if k in ("name", "aliases"):
             continue
         entry[k] = v
-    roots = _root_flags(name)
+    roots = _root_flags(canon)
     for k, v in roots.items():
         if v:
             entry[k] = True
+    # Keep original spelling as alias when remapped.
+    if _norm(name) != canon:
+        entry["aliases"] = [name]
     entry["knowledge_state"] = "AUTO_CLASSIFIED"
     # Do NOT put provenance in uncertainty_flags — IKE-2 treats any
-    # uncertainty_flags as verdict uncertainty (Depends). Provenance belongs
-    # in knowledge_state / optional non-gating metadata only.
+    # uncertainty_flags as verdict uncertainty (Depends).
     entry["uncertainty_flags"] = []
     return entry
 
@@ -298,6 +367,7 @@ def load_usda_commodities() -> list[dict[str, Any]]:
     data = json.loads(_USDA_STAGING.read_text(encoding="utf-8"))
     rows = data.get("ingredients") or []
     by_head: dict[str, dict[str, Any]] = {}
+    allowed_cats = _PLANT_CATEGORIES + _SEAFOOD_CATEGORIES + _MEAT_CATEGORIES + _DAIRY_CATEGORIES
 
     for raw in rows:
         if not isinstance(raw, dict):
@@ -306,10 +376,11 @@ def load_usda_commodities() -> list[dict[str, Any]]:
         cat_l = cat.lower()
         is_plant_cat = any(cat_l.startswith(c) for c in _PLANT_CATEGORIES)
         is_fish_cat = any(cat_l.startswith(c) for c in _SEAFOOD_CATEGORIES)
-        if not is_plant_cat and not is_fish_cat:
+        is_meat_cat = any(cat_l.startswith(c) for c in _MEAT_CATEGORIES)
+        is_dairy_cat = any(cat_l.startswith(c) for c in _DAIRY_CATEGORIES)
+        if not any(cat_l.startswith(c) for c in allowed_cats):
             continue
         if is_plant_cat and not raw.get("plant_origin"):
-            # Still allow if category is plant (some oils flagged oddly)
             if not cat_l.startswith("fats and oils"):
                 continue
         head = extract_commodity_head(raw.get("canonical_name") or "", cat)
@@ -322,8 +393,8 @@ def load_usda_commodities() -> list[dict[str, Any]]:
         if head_n not in by_head:
             flags = {
                 "plant_origin": bool(raw.get("plant_origin")) or is_plant_cat,
-                "animal_origin": bool(raw.get("animal_origin")) or is_fish_cat,
-                "dairy_source": bool(raw.get("dairy_source")),
+                "animal_origin": bool(raw.get("animal_origin")) or is_fish_cat or is_meat_cat or is_dairy_cat,
+                "dairy_source": bool(raw.get("dairy_source")) or is_dairy_cat,
                 "egg_source": bool(raw.get("egg_source")),
                 "gluten_source": bool(raw.get("gluten_source")),
                 "soy_source": bool(raw.get("soy_source")),
@@ -337,6 +408,14 @@ def load_usda_commodities() -> list[dict[str, Any]]:
                 flags["plant_origin"] = False
                 flags["animal_origin"] = True
                 flags["animal_species"] = "fish"
+                flags["fish_source"] = True
+            if is_meat_cat:
+                flags["plant_origin"] = False
+                flags["animal_origin"] = True
+            if is_dairy_cat and not flags.get("egg_source"):
+                flags["plant_origin"] = False
+                flags["animal_origin"] = True
+                flags["dairy_source"] = True
             entry = _entry_from_flags(head_n, flags, source="usda")
             entry["aliases"] = []
             by_head[head_n] = entry
@@ -349,11 +428,10 @@ def load_usda_commodities() -> list[dict[str, Any]]:
             if an and an not in seen:
                 existing["aliases"].append(a if isinstance(a, str) else str(a))
                 seen.add(an)
-        # OR boolean flags
         for flag in (
             "plant_origin", "animal_origin", "dairy_source", "egg_source",
             "gluten_source", "soy_source", "sesame_source", "root_vegetable",
-            "onion_source", "garlic_source",
+            "onion_source", "garlic_source", "fish_source",
         ):
             if raw.get(flag):
                 existing[flag] = True
@@ -362,21 +440,50 @@ def load_usda_commodities() -> list[dict[str, Any]]:
 
 
 def load_grocery_seed() -> list[dict[str, Any]]:
-    by_name: dict[str, dict[str, Any]] = {}
+    """Load expanded grocery list + any inline seed; classify flags automatically."""
+    names: list[str] = []
+    if _EXPANDED_LIST.exists():
+        raw_text = _EXPANDED_LIST.read_text(encoding="utf-8")
+        names.extend(x.strip() for x in raw_text.split(",") if x.strip())
     for raw in _GROCERY_SEED:
-        name = _norm(raw["name"])
-        entry = _entry_from_flags(name, raw, source="grocery_seed")
-        if name in by_name:
+        names.append(raw["name"])
+
+    by_name: dict[str, dict[str, Any]] = {}
+    for name in names:
+        flags = classify_flags(name)
+        # Allow inline seed overrides
+        for raw in _GROCERY_SEED:
+            if _norm(raw["name"]) == _norm(name):
+                flags.update({k: v for k, v in raw.items() if k != "name"})
+        entry = _entry_from_flags(name, flags, source="grocery_seed")
+        key = entry["canonical_name"]
+        if key in by_name:
+            existing = by_name[key]
             for flag in (
                 "plant_origin", "animal_origin", "dairy_source", "egg_source",
-                "root_vegetable", "onion_source", "garlic_source",
+                "root_vegetable", "onion_source", "garlic_source", "fish_source",
+                "peanut_source", "tree_nut_source", "sesame_source", "soy_source",
+                "gluten_source", "bee_product",
             ):
-                if raw.get(flag):
-                    by_name[name][flag] = True
-            if raw.get("animal_species"):
-                by_name[name]["animal_species"] = raw["animal_species"]
+                if entry.get(flag):
+                    existing[flag] = True
+            if entry.get("animal_species") and not existing.get("animal_species"):
+                existing["animal_species"] = entry["animal_species"]
+            # merge aliases
+            seen = {_norm(a) for a in existing.get("aliases") or []}
+            seen.add(key)
+            for a in entry.get("aliases") or []:
+                if _norm(a) not in seen:
+                    existing.setdefault("aliases", []).append(a)
+                    seen.add(_norm(a))
+            if _norm(name) != key and _norm(name) not in seen:
+                existing.setdefault("aliases", []).append(name)
         else:
-            by_name[name] = entry
+            if _norm(name) != key:
+                entry.setdefault("aliases", [])
+                if name not in entry["aliases"]:
+                    entry["aliases"].append(name)
+            by_name[key] = entry
     return list(by_name.values())
 
 
