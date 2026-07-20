@@ -25,6 +25,8 @@ jobs:
           cache-dependency-path: backend/requirements.txt
       - name: Install dependencies
         run: pip install -r requirements.txt
+      - name: Check secrets hygiene (no SERVICE_ROLE / NEXT_PUBLIC_*SECRET* in frontend/)
+        run: python scripts/check_secrets_hygiene.py
       - name: Verify E-number catalog
         run: python scripts/verify_e_number_catalog.py --fail-on-error
       - name: Check E-number artifact drift

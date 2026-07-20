@@ -37,20 +37,27 @@ except ImportError:
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Rate limiting (per-IP) — limiter wired to app after FastAPI init below
+# Rate limiting: limiter + caller-key resolution centralized in core.security.rate_limit
+# (X-API-Key > Authorization Bearer > IP; see that module for RATE_LIMIT_* / B2B_API_KEYS env vars).
+from core.security.rate_limit import (
+    limiter,
+    rate_limit as _rate_limit,
+    chat_rate_limit,
+    RATE_LIMIT_PROFILE_READ,
+    RATE_LIMIT_PROFILE_WRITE,
+)
+from core.security.cors_guard import validate_cors_origins
+from core.security.input_sanitize import sanitize_chat_query, validate_profile_lists
+from core.security.tenancy import resolve_caller
+
 try:
-    from slowapi import Limiter, _rate_limit_exceeded_handler
-    from slowapi.util import get_remote_address
+    from slowapi import _rate_limit_exceeded_handler
     from slowapi.errors import RateLimitExceeded
     from slowapi.middleware import SlowAPIMiddleware
-    limiter = Limiter(key_func=get_remote_address)
 except ImportError:
-    limiter = None  # optional: slowapi not installed
-
-
-def _rate_limit(limit: str):
-    """Apply rate limit decorator when slowapi is available; no-op otherwise."""
-    return limiter.limit(limit) if limiter else lambda f: f
+    _rate_limit_exceeded_handler = None
+    RateLimitExceeded = None
+    SlowAPIMiddleware = None
 
 
 # Request body size limits (aligned with frontend BFF)
@@ -156,9 +163,11 @@ if limiter is not None:
 
 app.add_middleware(BodySizeLimitMiddleware)
 
-# CORS: use CORS_ORIGINS env (comma-separated) when set; otherwise allow all (dev)
+# CORS: use CORS_ORIGINS env (comma-separated) when set; otherwise allow all (dev).
+# In production (ENVIRONMENT=production), an empty or "*" CORS policy is refused at startup.
 _cors_origins_raw = os.environ.get("CORS_ORIGINS", "").strip()
 CORS_ORIGINS = [o.strip() for o in _cors_origins_raw.split(",") if o.strip()] if _cors_origins_raw else ["*"]
+validate_cors_origins(CORS_ORIGINS, PRODUCTION)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=CORS_ORIGINS,
@@ -192,6 +201,29 @@ def _user_id_from_auth(request: Request) -> Optional[str]:
         return None
     token = auth[7:].strip()
     return verify_anon_token(token) if token else None
+
+
+def _resolve_profile_identity(request: Request, requested_user_id: str) -> tuple[str, Optional[str]]:
+    """
+    Resolve the effective (user_id, org_id) for a /profile request, enforcing tenant isolation:
+      - B2B API key (X-API-Key or Authorization Bearer, see core.security.tenancy): caller is
+        scoped to its own org; the end-user is the X-User-Id header if given, else requested_user_id.
+      - Verified anon-session token (Authorization Bearer): the token's user_id MUST match
+        requested_user_id, else 403 (prevents user A's token from reading/writing user B's profile).
+      - Neither: no server-verified identity; falls back to the client-supplied requested_user_id
+        (unchanged legacy behaviour — see docs/auth-and-identity.md).
+    """
+    caller = resolve_caller(request)
+    if caller.org_id:
+        return (caller.user_id or requested_user_id), caller.org_id
+    if caller.user_id:
+        if caller.user_id != requested_user_id:
+            raise HTTPException(
+                status_code=403,
+                detail="Authenticated identity does not match the requested user_id.",
+            )
+        return caller.user_id, None
+    return requested_user_id, None
 
 
 def _validate_user_id(user_id: str) -> None:
@@ -333,13 +365,15 @@ def _default_profile_response(user_id: str):
 
 
 @app.get("/profile/{user_id}")
-@_rate_limit("120/minute")
+@_rate_limit(RATE_LIMIT_PROFILE_READ)
 async def get_profile(request: Request, user_id: str):
-    """Get persisted profile by user_id."""
+    """Get persisted profile by user_id. Enforces tenant isolation (see _resolve_profile_identity)."""
     _validate_user_id(user_id)
+    effective_user_id, org_id = _resolve_profile_identity(request, user_id)
+    _validate_user_id(effective_user_id)
     try:
         from core.profile_storage import get_profile as get_stored
-        profile = get_stored(user_id)
+        profile = get_stored(effective_user_id, org_id=org_id)
         if profile is None:
             return _default_profile_response(user_id)
         return profile.to_dict()
@@ -349,14 +383,19 @@ async def get_profile(request: Request, user_id: str):
 
 
 @app.post("/profile")
-@_rate_limit("60/minute")
+@_rate_limit(RATE_LIMIT_PROFILE_WRITE)
 async def create_or_update_profile(request: Request, body: ProfileBody):
-    """Create or update profile. Merge: only provided fields are updated. When Authorization Bearer is valid, its user_id is used."""
+    """Create or update profile. Merge: only provided fields are updated. Enforces tenant isolation (see _resolve_profile_identity)."""
     started_at = datetime.now(timezone.utc)
     resolved_user_id = None
+    org_id = None
     try:
-        resolved_user_id = _user_id_from_auth(request) or body.user_id
+        resolved_user_id, org_id = _resolve_profile_identity(request, body.user_id)
         _validate_user_id(resolved_user_id)
+        try:
+            validate_profile_lists(body.allergens, body.lifestyle)
+        except ValueError as ve:
+            raise HTTPException(status_code=400, detail=str(ve))
     except HTTPException as he:
         completed_at = datetime.now(timezone.utc)
         record_request_history(
@@ -380,13 +419,14 @@ async def create_or_update_profile(request: Request, body: ProfileBody):
     try:
         profile = update_profile_partial(
             resolved_user_id,
+            org_id=org_id,
             dietary_preference=body.dietary_preference,
             allergens=body.allergens,
             lifestyle=body.lifestyle,
         )
         if profile is None:
-            profile = get_or_create_profile(resolved_user_id)
-            save_profile(profile)
+            profile = get_or_create_profile(resolved_user_id, org_id=org_id)
+            save_profile(profile, org_id=org_id)
         logger.info("PROFILE_UPDATE user_id=%s dietary_preference=%s", redact_pii(resolved_user_id), redact_pii(profile.dietary_preference))
         completed_at = datetime.now(timezone.utc)
         record_request_history(
@@ -428,7 +468,7 @@ async def create_or_update_profile(request: Request, body: ProfileBody):
 
 
 @app.post("/chat/grocery")
-@_rate_limit("60/minute")
+@_rate_limit(chat_rate_limit)
 async def chat_grocery(request: Request, body: ChatRequest):
     """
     Conversational Grocery Safety Assistant.
@@ -440,7 +480,7 @@ async def chat_grocery(request: Request, body: ChatRequest):
       4. Compliance Engine  - deterministic evaluation against ontology + restrictions
       5. Response Composer  - template-based responses, LLM for greetings/general only
     """
-    query = body.query if body.query is not None else ""
+    query = sanitize_chat_query(body.query if body.query is not None else "")
     started_at = datetime.now(timezone.utc)
     if len(query) > MAX_CHAT_QUERY_LENGTH:
         uid_short = _user_id_from_auth(request) or body.user_id

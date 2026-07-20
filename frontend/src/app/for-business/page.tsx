@@ -81,7 +81,7 @@ export default function ForBusinessPage() {
             </StatusRow>
             <StatusRow status="in-development">REST API for partner integration</StatusRow>
             <StatusRow status="planned">Multi-region data coverage (EU, Canada, India)</StatusRow>
-            <StatusRow status="planned">SLA and rate-limit tiers for production traffic</StatusRow>
+            <StatusRow status="in-development">SLA and rate-limit tiers for production traffic</StatusRow>
           </ul>
         </ContentSection>
 
