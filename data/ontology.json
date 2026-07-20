@@ -3043,7 +3043,7 @@
       "synthetic": false,
       "fungal": false,
       "insect_derived": false,
-      "animal_species": null,
+      "animal_species": "bird",
       "egg_source": true,
       "dairy_source": false,
       "gluten_source": false,
@@ -7264,7 +7264,8 @@
       "alcohol_content": null,
       "uncertainty_flags": [],
       "regions": [],
-      "knowledge_state": "AUTO_CLASSIFIED"
+      "knowledge_state": "AUTO_CLASSIFIED",
+      "tree_nut_source": true
     },
     {
       "id": "oat_milk",
@@ -25875,7 +25876,8 @@
       "fermented": false,
       "uncertainty_flags": [],
       "regions": [],
-      "knowledge_state": "AUTO_CLASSIFIED"
+      "knowledge_state": "AUTO_CLASSIFIED",
+      "tree_nut_source": true
     },
     {
       "id": "silk_original_creamer",

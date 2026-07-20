@@ -18,8 +18,12 @@ def test_local_ontology_resolves_alias_and_short_name(monkeypatch):
         lambda path=None: rows,
     )
     local_ontology.reset_cache()
-    assert local_ontology.lookup("broccoli") is not None
-    assert local_ontology.lookup("Broccoli, raw") is not None
-    assert local_ontology.lookup("broccolis") is not None
-    fact = local_ontology.lookup("broccoli")
-    assert fact.flags.get("plant_origin") is True
+    try:
+        assert local_ontology.lookup("broccoli") is not None
+        assert local_ontology.lookup("Broccoli, raw") is not None
+        assert local_ontology.lookup("broccolis") is not None
+        fact = local_ontology.lookup("broccoli")
+        assert fact.flags.get("plant_origin") is True
+    finally:
+        # Drop the monkeypatched index so later tests see the real ontology.
+        local_ontology.reset_cache()

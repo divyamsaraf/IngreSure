@@ -21,11 +21,16 @@ import argparse
 import json
 import re
 import shutil
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
 _REPO = Path(__file__).resolve().parents[2]
+_BACKEND = _REPO / "backend"
+if str(_BACKEND) not in sys.path:
+    sys.path.insert(0, str(_BACKEND))
+
 _ONTOLOGY = _REPO / "data" / "ontology.json"
 _BACKUP = _REPO / "data" / "ontology.json.bak"
 _USDA_STAGING = _REPO / "data" / "usda_staging.json"
@@ -264,7 +269,13 @@ def extract_commodity_head(canonical_name: str, category: str) -> str | None:
 
 
 def classify_flags(name: str) -> dict[str, Any]:
-    """Assign conservative diet/allergen flags from the commodity name."""
+    """Assign conservative diet/allergen flags from the commodity name.
+
+    Diet/origin heuristics live here; allergen bits are finalized by
+    ``derive_identity_flags`` so ETL and chat share one derivation path.
+    """
+    from core.knowledge.ike2.flag_derive import derive_identity_flags
+
     n = _norm(name)
     n = _ALIAS_TO_CANONICAL.get(n, n)
     flags: dict[str, Any] = {
@@ -276,64 +287,46 @@ def classify_flags(name: str) -> dict[str, Any]:
         return {"plant_origin": False, "animal_origin": False}
 
     if n in _FISH or n.rstrip("s") in _FISH:
-        return {
+        flags = {
             "plant_origin": False,
             "animal_origin": True,
             "animal_species": "fish",
-            "fish_source": True,
         }
-    if n in _BIRD:
-        return {"plant_origin": False, "animal_origin": True, "animal_species": "bird"}
-    if n in _MAMMAL:
-        return {"plant_origin": False, "animal_origin": True, "animal_species": "mammal"}
-    if n in _ANIMAL_FAT:
-        return {"plant_origin": False, "animal_origin": True, "animal_species": "mammal"}
-    if n in _BEE:
-        return {"plant_origin": False, "animal_origin": True, "bee_product": True}
-
-    plant_milks = (
-        "almond milk", "oat milk", "rice milk", "coconut milk", "hemp milk", "soy milk",
-    )
-    if n in plant_milks:
-        return {"plant_origin": True, "animal_origin": False}
-
-    if (
-        n in _DAIRY
-        or n.endswith(" cheese")
-        or n in ("goat milk", "sheep milk", "heavy cream", "sour cream")
-    ):
-        return {"plant_origin": False, "animal_origin": True, "dairy_source": True}
-
-    if n in _EGG or n.endswith(" egg") or n.endswith(" eggs") or n in ("egg white", "egg yolk"):
-        return {
-            "plant_origin": False,
-            "animal_origin": True,
-            "egg_source": True,
-            "animal_species": "bird",
-        }
-
-    if n in _PEANUT or "peanut" in n:
-        flags["peanut_source"] = True
-        flags["nut_source"] = "peanut"
-    if n in _SESAME or "sesame" in n:
-        flags["sesame_source"] = True
-    if n in _TREE_NUT or any(
-        tok in n
-        for tok in (
-            "almond", "walnut", "cashew", "pistachio", "pecan", "hazelnut",
-            "macadamia", "brazil nut", "pine nut", "chestnut",
+    elif n in _BIRD:
+        flags = {"plant_origin": False, "animal_origin": True, "animal_species": "bird"}
+    elif n in _MAMMAL:
+        flags = {"plant_origin": False, "animal_origin": True, "animal_species": "mammal"}
+    elif n in _ANIMAL_FAT:
+        flags = {"plant_origin": False, "animal_origin": True, "animal_species": "mammal"}
+    elif n in _BEE:
+        flags = {"plant_origin": False, "animal_origin": True, "bee_product": True}
+    else:
+        plant_milks = (
+            "almond milk", "oat milk", "rice milk", "coconut milk", "hemp milk", "soy milk",
         )
-    ):
-        flags["tree_nut_source"] = True
-        if not flags.get("nut_source"):
-            flags["nut_source"] = "tree_nut"
-    if n in _SOY or n.startswith("soy"):
-        flags["soy_source"] = True
-    if n in _GLUTEN or any(g in n for g in ("wheat", "barley", "spelt", "semolina", "farro", "freekeh", "bulgur", "couscous")):
-        if "buckwheat" not in n:  # buckwheat is gluten-free
-            flags["gluten_source"] = True
+        if n in plant_milks:
+            flags = {"plant_origin": True, "animal_origin": False}
+        elif (
+            n in _DAIRY
+            or n.endswith(" cheese")
+            or n in ("goat milk", "sheep milk", "heavy cream", "sour cream")
+        ):
+            flags = {"plant_origin": False, "animal_origin": True, "dairy_source": True}
+        elif n in _EGG or n.endswith(" egg") or n.endswith(" eggs") or n in ("egg white", "egg yolk"):
+            flags = {
+                "plant_origin": False,
+                "animal_origin": True,
+                "egg_source": True,
+                "animal_species": "bird",
+            }
+        else:
+            if n in _GLUTEN or any(
+                g in n for g in ("wheat", "barley", "spelt", "semolina", "farro", "freekeh", "bulgur", "couscous")
+            ):
+                if "buckwheat" not in n:
+                    flags["gluten_source"] = True
 
-    return flags
+    return derive_identity_flags(n, flags, animal_species=flags.get("animal_species"))
 
 
 def _entry_from_flags(name: str, flags: dict[str, Any], *, source: str) -> dict[str, Any]:
