@@ -47,14 +47,30 @@ def _row_to_fact(raw: dict) -> Optional[TruthAnchorFact]:
 
 
 def _build_index() -> dict[str, TruthAnchorFact]:
+    """Index by canonical name first, then aliases/id (setdefault — never overwrite)."""
     index: dict[str, TruthAnchorFact] = {}
+    rows: list[tuple[dict, TruthAnchorFact]] = []
     for raw in load_ontology_records():
         fact = _row_to_fact(raw)
         if fact is None:
             continue
+        rows.append((raw, fact))
+
+    # Pass 1: canonical names win every key they own.
+    for raw, fact in rows:
         key = normalize_ingredient_key(raw.get("canonical_name") or "")
         if key:
             index.setdefault(key, fact)
+
+    # Pass 2: aliases + id fill gaps only (chat often sends short forms / plurals).
+    for raw, fact in rows:
+        labels = list(raw.get("aliases") or [])
+        if raw.get("id"):
+            labels.append(str(raw["id"]))
+        for label in labels:
+            key = normalize_ingredient_key(label)
+            if key:
+                index.setdefault(key, fact)
     return index
 
 

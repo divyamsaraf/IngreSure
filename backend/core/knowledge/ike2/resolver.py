@@ -15,6 +15,7 @@ from core.evaluation.resolution_trust import is_trusted_for_compliance
 from core.knowledge.ike2 import resolution_cache as cache
 from core.knowledge.ike2 import truth_anchor
 from core.knowledge.ike2.stores import db, local_ontology
+from core.normalization.normalizer import normalize_ingredient_key
 
 logger = logging.getLogger(__name__)
 
@@ -51,14 +52,18 @@ def _is_well_formed_db_row(group) -> bool:
 
 def resolve(atom: str, region: Optional[str]) -> ResolvedIngredient:
     cache.seed_tier1()
-    key = cache.cache_key(atom, region)
+    # Normalize once: chat lists often arrive Title-Cased ("Beets"), while
+    # Tier-3 aliases are stored as normalized keys ("beets"). Passing the raw
+    # atom into db.* made Title Case miss rows that lowercase would hit.
+    norm = normalize_ingredient_key(atom) or (atom or "").strip()
+    key = cache.cache_key(norm, region)
 
     cached = cache.get(key)
     if cached is not None:
         return cached
 
     # Tier 1 -- bundled core anchor; overrides everything else, zero network.
-    fact = truth_anchor.lookup(atom)
+    fact = truth_anchor.lookup(norm)
     if fact is not None:
         out = ResolvedIngredient(
             group=fact,
@@ -72,7 +77,7 @@ def resolve(atom: str, region: Optional[str]) -> ResolvedIngredient:
         return out
 
     # Tier 2 -- local ontology file; lazy write-through, zero network.
-    local_fact = local_ontology.lookup(atom)
+    local_fact = local_ontology.lookup(norm)
     if local_fact is not None:
         out = ResolvedIngredient(
             group=local_fact,
@@ -89,9 +94,9 @@ def resolve(atom: str, region: Optional[str]) -> ResolvedIngredient:
     # (timeout, missing config, unexpected exception) degrades to a silent
     # miss and must never raise into chat (design §9.6).
     try:
-        if db.disambiguate(atom, region) == "ambiguous":
+        if db.disambiguate(norm, region) == "ambiguous":
             return _uncertain("L3_db_alias", "db")
-        group = db.resolve_alias(atom, region)
+        group = db.resolve_alias(norm, region)
     except Exception as exc:
         logger.warning("IKE2 Tier-3 resolution error for %r: %s", atom, exc)
         return _uncertain("L3_db_error", "db")
