@@ -7,18 +7,17 @@ export default function BusinessBridgeSection() {
       <div className="mx-auto flex max-w-6xl flex-col gap-6 rounded-2xl border border-slate-200 bg-white px-6 py-8 md:flex-row md:items-center md:justify-between md:px-10 md:py-10">
         <div className="max-w-xl">
           <h2 className="font-display text-2xl font-bold tracking-tight text-primary md:text-3xl">
-            Building checkout, menus, or recipes?
+            Building for people with diets or allergies?
           </h2>
           <p className="mt-2 text-sm leading-relaxed text-slate-600 md:text-base">
-            Add dietary and allergen checks to checkout, menus, or recipes — so your users know
-            what&apos;s safe before they buy or cook.
+            Give them a clear answer in checkout, menus, or recipes — and keep their trust.
           </p>
         </div>
         <Link
           href="/for-business"
           className="inline-flex shrink-0 items-center gap-2 self-start rounded-xl border border-accent/30 bg-teal-50 px-5 py-3 text-sm font-semibold text-accent transition-colors hover:bg-teal-100/80 md:self-center"
         >
-          IngreSure for platforms
+          Partner with IngreSure
           <ArrowRight className="h-4 w-4" aria-hidden />
         </Link>
       </div>
