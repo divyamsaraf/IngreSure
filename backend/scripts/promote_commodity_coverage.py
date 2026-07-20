@@ -36,6 +36,8 @@ _BACKUP = _REPO / "data" / "ontology.json.bak"
 _USDA_STAGING = _REPO / "data" / "usda_staging.json"
 _REPORT = _REPO / "data" / "promote_commodity_report.json"
 _EXPANDED_LIST = _REPO / "data" / "commodity_seed_lists" / "expanded_grocery.txt"
+_IDENTITY_EXPAND = _REPO / "data" / "commodity_seed_lists" / "identity_expand.txt"
+_VARIANT_ALIASES = _REPO / "data" / "commodity_seed_lists" / "variant_aliases.json"
 
 _PROTECTED = frozenset({"VERIFIED", "LOCKED"})
 
@@ -126,7 +128,9 @@ _FISH = frozenset({
     "anchovy", "anchovies", "bass", "carp", "cod", "flounder", "haddock",
     "halibut", "herring", "mackerel", "mahimahi", "perch", "pike", "pollock",
     "salmon", "sardine", "sardines", "snapper", "sole", "tilapia", "trout",
-    "tuna",
+    "tuna", "barramundi", "amberjack", "catfish", "grouper", "hake",
+    "kingfish", "turbot", "eel", "sea bass", "sea bream", "john dory",
+    "plaice", "pompano", "bonito",
 })
 _BIRD = frozenset({
     "chicken", "duck", "turkey", "quail", "pheasant", "goose", "ostrich", "squab",
@@ -141,7 +145,9 @@ _DAIRY = frozenset({
     "cheddar", "mozzarella", "feta", "gouda", "brie", "swiss cheese",
     "provolone", "buttermilk", "heavy cream", "evaporated milk",
     "condensed milk", "goat milk", "goat cheese", "sheep milk", "feta cheese",
-    "ghee",
+    "ghee", "camembert", "blue cheese", "edam", "emmental", "comte", "comté",
+    "quark", "colby", "fontina", "stilton", "monterey jack", "cotija",
+    "brick cheese", "buffalo mozzarella",
 })
 _EGG = frozenset({
     "egg", "chicken eggs", "duck eggs", "quail eggs", "egg whites", "egg yolks",
@@ -227,43 +233,34 @@ def _root_flags(name: str) -> dict[str, bool]:
 
 
 def extract_commodity_head(canonical_name: str, category: str) -> str | None:
-    """Turn 'Broccoli, raw' / 'Spices, cumin seed' into a short chat-friendly head."""
+    """Turn dump names into short chat-friendly heads (shared safe rules)."""
+    from core.knowledge.ike2.commodity_head import simple_commodity_head
+
     name = (canonical_name or "").strip()
     if not name or _SKIP_NAME.search(name):
         return None
+    # Prefer shared safe extractor (single-comma prep / spices).
+    head = simple_commodity_head(name)
+    if head:
+        return head
+
     low = name.lower()
     cat = (category or "").lower()
-
-    m = re.match(r"^spices,\s*(.+)$", low)
-    if m:
-        head = re.sub(r",?\s*dried$", "", m.group(1)).strip()
-        head = re.sub(r"\s+seed$", " seed", head).strip()
-        if 2 <= len(head) <= 40 and " and " not in head:
-            return head
-
-    if ", raw" in low:
-        head = low.split(",", 1)[0].strip()
-        if " and " in head or " with " in head:
-            return None
-        if len(head.split()) > 4:
-            return None
-        if 2 <= len(head) <= 40:
-            return head
 
     # Oils / simple plant names without heavy prep
     if cat.startswith("fats and oils") and low.endswith(" oil"):
         if len(low.split()) <= 4 and "mayonnaise" not in low:
-            return low
+            return _norm(low)
 
     if "," not in low and len(low.split()) <= 3 and 2 <= len(low) <= 40:
-        if any(cat.startswith(c) for c in _PLANT_CATEGORIES + _SEAFOOD_CATEGORIES):
-            return low
+        if any(cat.startswith(c) for c in _PLANT_CATEGORIES + _SEAFOOD_CATEGORIES + _MEAT_CATEGORIES + _DAIRY_CATEGORIES):
+            return _norm(low)
 
-    # Strip one prep tail: "lentils, dry" -> lentils
+    # Strip one prep tail: "lentils, dry" -> lentils (multi-token prep already handled above)
     stripped = _PREP_TAIL.sub("", low).strip()
     if stripped != low and "," not in stripped and len(stripped.split()) <= 3:
         if 2 <= len(stripped) <= 40 and " and " not in stripped:
-            return stripped
+            return _norm(stripped)
 
     return None
 
@@ -434,11 +431,12 @@ def load_usda_commodities() -> list[dict[str, Any]]:
 
 
 def load_grocery_seed() -> list[dict[str, Any]]:
-    """Load expanded grocery list + any inline seed; classify flags automatically."""
+    """Load expanded grocery + identity expand lists; classify flags automatically."""
     names: list[str] = []
-    if _EXPANDED_LIST.exists():
-        raw_text = _EXPANDED_LIST.read_text(encoding="utf-8")
-        names.extend(x.strip() for x in raw_text.split(",") if x.strip())
+    for path in (_EXPANDED_LIST, _IDENTITY_EXPAND):
+        if path.exists():
+            raw_text = path.read_text(encoding="utf-8")
+            names.extend(x.strip() for x in raw_text.replace("\n", " ").split(",") if x.strip())
     for raw in _GROCERY_SEED:
         names.append(raw["name"])
 
@@ -479,6 +477,37 @@ def load_grocery_seed() -> list[dict[str, Any]]:
                     entry["aliases"].append(name)
             by_name[key] = entry
     return list(by_name.values())
+
+
+def apply_variant_aliases_as_row_aliases(ingredients: list[dict[str, Any]]) -> int:
+    """Attach curated L2 variant phrases onto target ontology rows (offline M2–M7)."""
+    if not _VARIANT_ALIASES.exists():
+        return 0
+    data = json.loads(_VARIANT_ALIASES.read_text(encoding="utf-8"))
+    aliases = data.get("aliases") or {}
+    idx = _index_ontology(ingredients)
+    added = 0
+    for src, dst in aliases.items():
+        if str(src).startswith("_"):
+            continue
+        sn, dn = _norm(src), _norm(dst)
+        if not sn or not dn or sn == dn:
+            continue
+        target = idx.get(dn)
+        if target is None:
+            continue
+        if (target.get("knowledge_state") or "") in _PROTECTED:
+            # Still allow alias attach on protected rows (routing only).
+            pass
+        cur = list(target.get("aliases") or [])
+        seen = {_norm(a) for a in cur}
+        seen.add(_norm(target.get("canonical_name") or ""))
+        if sn not in seen:
+            cur.append(src)
+            target["aliases"] = cur
+            idx.setdefault(sn, target)
+            added += 1
+    return added
 
 
 def _index_ontology(ingredients: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
@@ -585,6 +614,7 @@ def promote(*, dry_run: bool = False) -> dict[str, Any]:
     seed = load_grocery_seed()
     stats_usda = merge_into_ontology(ingredients, usda)
     stats_seed = merge_into_ontology(ingredients, seed)
+    alias_added = apply_variant_aliases_as_row_aliases(ingredients)
 
     report = {
         "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -592,6 +622,7 @@ def promote(*, dry_run: bool = False) -> dict[str, Any]:
         "after_count": len(ingredients),
         "usda_commodities_extracted": len(usda),
         "grocery_seed_count": len(seed),
+        "variant_aliases_attached": alias_added,
         "usda_merge": stats_usda,
         "seed_merge": stats_seed,
         "dry_run": dry_run,

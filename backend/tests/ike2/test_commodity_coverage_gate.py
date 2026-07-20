@@ -114,3 +114,34 @@ def test_expanded_list_peanut_names_carry_peanut_source_via_seam():
         assert r.status == "resolved" and r.trusted, name
         inp = to_compliance_input(r, query_atom=name)
         assert inp.flags.get("peanut_source") is True, name
+
+
+def test_dump_style_short_names_resolve_via_live_ontology():
+    """Regression class: USDA-style rows must be reachable as chat short names."""
+    from core.knowledge.ike2.commodity_head import simple_commodity_head
+    from core.knowledge.ike2.etl.load_ontology import load_ontology_records
+    from core.normalization.normalizer import normalize_ingredient_key
+
+    samples: list[tuple[str, str]] = []
+    for raw in load_ontology_records():
+        canon = raw.get("canonical_name") or ""
+        head = simple_commodity_head(canon)
+        if not head:
+            continue
+        if head == normalize_ingredient_key(canon):
+            continue
+        samples.append((head, canon))
+        if len(samples) >= 40:
+            break
+    if len(samples) < 5:
+        for probe in ("broccoli, raw", "spinach, raw", "kale, raw", "carrot, raw", "onion, raw"):
+            h = simple_commodity_head(probe)
+            if h:
+                samples.append((h, probe))
+    assert len(samples) >= 5, "expected dump-style heads to probe"
+    misses = []
+    for head, canon in samples:
+        r = resolve(head, None)
+        if r.status != "resolved" or not r.trusted:
+            misses.append((head, canon, r.status))
+    assert misses == [], f"short-name misses: {misses[:15]}"

@@ -286,6 +286,44 @@ UnknownIngredientQueue + per-ingredient UNCERTAIN/Depends
 - Deployed with the app; no live dependency.
 - Trust: treat static file rows as `source=static` → `is_trusted_for_compliance(..., "static", "high")` when flags are complete enough; if a row lacks required fields, fail closed to Depends (`unverified`), never invent SAFE.
 
+### 9.3.1 Synonymy ladder (string → identity) — locked
+
+Coverage gaps (cuts, geo qualifiers, part morphology, orthography) are **exact-key** misses, not fail-closed bugs. Expand coverage with a deterministic ladder **in front of / inside** the tier walk. Runtime fuzzy / edit-distance / LLM resolve remain **out** (IKE-2 design §11).
+
+```text
+L0 Normalize     — NFKC, lower, punct fold (incl. apostrophe), explicit plural/variant map
+L1 Exact         — Truth Anchor / ontology canonical / indexed aliases (canonical wins)
+L2 Structured    — curated variant_aliases (cuts, geo fish, dairy synonyms); longest-phrase first
+L3 Facet strip   — allowlisted inert facets only; accept only if residual already resolves
+L4 Offline ETL   — promote / unknown-queue proposals → ontology next deploy
+L5 Unknown       — UNCERTAIN / Depends; enqueue; never invent SAFE
+```
+
+**Miss-class taxonomy (owners):**
+
+| Class | Examples | Owner |
+|-------|----------|-------|
+| M1 Absent identity | Barramundi, Kombu, Camembert | Seed/promote new rows + `derive_identity_flags` |
+| M2 Cut/part | Beef brisket | Curated L2 alias → parent |
+| M3 Species/geo | Atlantic salmon | L2 alias or L3 geo drop if residual hits |
+| M4 Morphology | Basil leaves | L3 allowlisted part strip if residual hits |
+| M5 Processed form | Apple puree/juice | Explicit equivalence edges only; else own row |
+| M6 Dairy varieties | Camembert | Seed dairy varieties |
+| M7 Compound animal | Bacon fat | Curated row/alias with animal flags |
+| M8 Orthography | Baker's yeast | L0 apostrophe/punct folding |
+| M9 Head asymmetry | Promote vs runtime head | Shared `commodity_head` rules |
+| M10 Ambiguous | Yam-class | Stay UNCERTAIN |
+| M11 Incomplete flags | Malformed DB | Stay uncertain; fix ETL |
+| M12 Offline gap | Tier-3-only | Promote into `ontology.json` |
+
+**Do:** longest-phrase match before strip (`peanut butter`, `water chestnut`); canonical/`setdefault` wins collisions; protect VERIFIED/LOCKED on promote; CI promote-drift + variant-recall gates.
+
+**Don’t:** strip `juice`/`puree`/`butter`/`chestnut` generically; first-token parent (`cabbage bok choy`→`cabbage`); silent pick among ambiguous L2 keys (prefer refuse / disambiguation table); open stemming.
+
+**L3 facet strip rule:** strip closed facet tokens (`raw|fresh|frozen|…`, `leaves|fillets`, geo adjectives) **only when** the residual key resolves via L1/L2/L3. Never invent a parent that is not already known.
+
+**Observability:** L5 outcomes may carry a lightweight `miss_class` tag (M1–M12 shape heuristics) for offline promote prioritization; tags never change the verdict.
+
 ### 9.4 Tier 3 — Supabase
 
 - Dynamic enrichment / newly discovered aliases / live updates without redeploy.

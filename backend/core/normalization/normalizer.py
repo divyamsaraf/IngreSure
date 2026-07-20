@@ -238,6 +238,7 @@ def normalize_ingredient_key(text: str) -> str:
     Normalize a raw ingredient string for lookup.
     - Unicode NFKC normalization (regional scripts, compatibility).
     - Lowercase, strip, remove excess punctuation and whitespace.
+    - Fold apostrophes (Baker's yeast → bakers yeast) so OCR/chat forms share a key.
     - Apply known variants (e.g. inglass -> isinglass).
     - No substring or fuzzy matching.
     """
@@ -245,6 +246,8 @@ def normalize_ingredient_key(text: str) -> str:
         return ""
     t = unicodedata.normalize("NFKC", text).lower().strip()
     t = t.replace("*", "").replace(".", "")
+    # M8 orthography: possessive / curly apostrophes must not block alias hits.
+    t = t.replace("'", "").replace("\u2019", "").replace("\u2018", "")
     t = re.sub(r"[,;:\-\u2013\u2014]+", " ", t)
     t = re.sub(r"\s+", " ", t)
     t = t.strip()
