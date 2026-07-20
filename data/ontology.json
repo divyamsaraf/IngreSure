@@ -996,7 +996,7 @@
       "egg_source": false,
       "dairy_source": false,
       "gluten_source": false,
-      "nut_source": "tree_nut",
+      "nut_source": null,
       "soy_source": false,
       "sesame_source": false,
       "alcohol_content": null,
@@ -1006,7 +1006,8 @@
       "fermented": false,
       "uncertainty_flags": [],
       "regions": [],
-      "knowledge_state": "AUTO_CLASSIFIED"
+      "knowledge_state": "AUTO_CLASSIFIED",
+      "tree_nut_source": false
     },
     {
       "id": "palm_oil",
@@ -2679,7 +2680,8 @@
       "fermented": false,
       "uncertainty_flags": [],
       "regions": [],
-      "knowledge_state": "AUTO_CLASSIFIED"
+      "knowledge_state": "AUTO_CLASSIFIED",
+      "fish_source": true
     },
     {
       "id": "tuna",
@@ -7571,7 +7573,8 @@
       "alcohol_content": null,
       "uncertainty_flags": [],
       "regions": [],
-      "knowledge_state": "AUTO_CLASSIFIED"
+      "knowledge_state": "AUTO_CLASSIFIED",
+      "tree_nut_source": false
     },
     {
       "id": "mustard",
@@ -7923,7 +7926,8 @@
       "nut_source": null,
       "alcohol_content": null,
       "uncertainty_flags": [],
-      "regions": []
+      "regions": [],
+      "fish_source": true
     },
     {
       "id": "bone_char",
@@ -20566,7 +20570,8 @@
       "fermented": false,
       "uncertainty_flags": [],
       "regions": [],
-      "knowledge_state": "AUTO_CLASSIFIED"
+      "knowledge_state": "AUTO_CLASSIFIED",
+      "fish_source": true
     },
     {
       "id": "cucumber",
@@ -21286,7 +21291,8 @@
       "fermented": false,
       "uncertainty_flags": [],
       "regions": [],
-      "knowledge_state": "AUTO_CLASSIFIED"
+      "knowledge_state": "AUTO_CLASSIFIED",
+      "fish_source": true
     },
     {
       "id": "fruit_cocktail",
@@ -21907,7 +21913,8 @@
       "fermented": false,
       "uncertainty_flags": [],
       "regions": [],
-      "knowledge_state": "AUTO_CLASSIFIED"
+      "knowledge_state": "AUTO_CLASSIFIED",
+      "fish_source": true
     },
     {
       "id": "jerusalem_artichokes",
@@ -23149,7 +23156,8 @@
       "fermented": false,
       "uncertainty_flags": [],
       "regions": [],
-      "knowledge_state": "AUTO_CLASSIFIED"
+      "knowledge_state": "AUTO_CLASSIFIED",
+      "fish_source": true
     },
     {
       "id": "mothbeans",
@@ -24132,7 +24140,8 @@
       "fermented": false,
       "uncertainty_flags": [],
       "regions": [],
-      "knowledge_state": "AUTO_CLASSIFIED"
+      "knowledge_state": "AUTO_CLASSIFIED",
+      "peanut_source": true
     },
     {
       "id": "pears",
@@ -25581,7 +25590,8 @@
       "fermented": false,
       "uncertainty_flags": [],
       "regions": [],
-      "knowledge_state": "AUTO_CLASSIFIED"
+      "knowledge_state": "AUTO_CLASSIFIED",
+      "fish_source": true
     },
     {
       "id": "salsify",
@@ -26978,7 +26988,8 @@
       "fermented": false,
       "uncertainty_flags": [],
       "regions": [],
-      "knowledge_state": "AUTO_CLASSIFIED"
+      "knowledge_state": "AUTO_CLASSIFIED",
+      "fish_source": true
     },
     {
       "id": "vegetable_juice_cocktail",
@@ -30330,7 +30341,8 @@
       "fermented": false,
       "uncertainty_flags": [],
       "regions": [],
-      "knowledge_state": "AUTO_CLASSIFIED"
+      "knowledge_state": "AUTO_CLASSIFIED",
+      "fish_source": true
     },
     {
       "id": "carp",
@@ -30358,7 +30370,8 @@
       "fermented": false,
       "uncertainty_flags": [],
       "regions": [],
-      "knowledge_state": "AUTO_CLASSIFIED"
+      "knowledge_state": "AUTO_CLASSIFIED",
+      "fish_source": true
     },
     {
       "id": "flounder",
@@ -30386,7 +30399,8 @@
       "fermented": false,
       "uncertainty_flags": [],
       "regions": [],
-      "knowledge_state": "AUTO_CLASSIFIED"
+      "knowledge_state": "AUTO_CLASSIFIED",
+      "fish_source": true
     },
     {
       "id": "haddock",
@@ -30414,7 +30428,8 @@
       "fermented": false,
       "uncertainty_flags": [],
       "regions": [],
-      "knowledge_state": "AUTO_CLASSIFIED"
+      "knowledge_state": "AUTO_CLASSIFIED",
+      "fish_source": true
     },
     {
       "id": "halibut",
@@ -30442,7 +30457,8 @@
       "fermented": false,
       "uncertainty_flags": [],
       "regions": [],
-      "knowledge_state": "AUTO_CLASSIFIED"
+      "knowledge_state": "AUTO_CLASSIFIED",
+      "fish_source": true
     },
     {
       "id": "herring",
@@ -30470,7 +30486,8 @@
       "fermented": false,
       "uncertainty_flags": [],
       "regions": [],
-      "knowledge_state": "AUTO_CLASSIFIED"
+      "knowledge_state": "AUTO_CLASSIFIED",
+      "fish_source": true
     },
     {
       "id": "mackerel",
@@ -30498,7 +30515,8 @@
       "fermented": false,
       "uncertainty_flags": [],
       "regions": [],
-      "knowledge_state": "AUTO_CLASSIFIED"
+      "knowledge_state": "AUTO_CLASSIFIED",
+      "fish_source": true
     },
     {
       "id": "mahimahi",
@@ -30526,7 +30544,8 @@
       "fermented": false,
       "uncertainty_flags": [],
       "regions": [],
-      "knowledge_state": "AUTO_CLASSIFIED"
+      "knowledge_state": "AUTO_CLASSIFIED",
+      "fish_source": true
     },
     {
       "id": "perch",
@@ -30554,7 +30573,8 @@
       "fermented": false,
       "uncertainty_flags": [],
       "regions": [],
-      "knowledge_state": "AUTO_CLASSIFIED"
+      "knowledge_state": "AUTO_CLASSIFIED",
+      "fish_source": true
     },
     {
       "id": "pike",
@@ -30582,7 +30602,8 @@
       "fermented": false,
       "uncertainty_flags": [],
       "regions": [],
-      "knowledge_state": "AUTO_CLASSIFIED"
+      "knowledge_state": "AUTO_CLASSIFIED",
+      "fish_source": true
     },
     {
       "id": "pollock",
@@ -30610,7 +30631,8 @@
       "fermented": false,
       "uncertainty_flags": [],
       "regions": [],
-      "knowledge_state": "AUTO_CLASSIFIED"
+      "knowledge_state": "AUTO_CLASSIFIED",
+      "fish_source": true
     },
     {
       "id": "sardine",
@@ -30638,7 +30660,8 @@
       "fermented": false,
       "uncertainty_flags": [],
       "regions": [],
-      "knowledge_state": "AUTO_CLASSIFIED"
+      "knowledge_state": "AUTO_CLASSIFIED",
+      "fish_source": true
     },
     {
       "id": "snapper",
@@ -30666,7 +30689,8 @@
       "fermented": false,
       "uncertainty_flags": [],
       "regions": [],
-      "knowledge_state": "AUTO_CLASSIFIED"
+      "knowledge_state": "AUTO_CLASSIFIED",
+      "fish_source": true
     },
     {
       "id": "sole",
@@ -30694,7 +30718,8 @@
       "fermented": false,
       "uncertainty_flags": [],
       "regions": [],
-      "knowledge_state": "AUTO_CLASSIFIED"
+      "knowledge_state": "AUTO_CLASSIFIED",
+      "fish_source": true
     },
     {
       "id": "tilapia",
@@ -30722,7 +30747,8 @@
       "fermented": false,
       "uncertainty_flags": [],
       "regions": [],
-      "knowledge_state": "AUTO_CLASSIFIED"
+      "knowledge_state": "AUTO_CLASSIFIED",
+      "fish_source": true
     },
     {
       "id": "trout",
@@ -30750,7 +30776,8 @@
       "fermented": false,
       "uncertainty_flags": [],
       "regions": [],
-      "knowledge_state": "AUTO_CLASSIFIED"
+      "knowledge_state": "AUTO_CLASSIFIED",
+      "fish_source": true
     },
     {
       "id": "buffalo",
@@ -31742,7 +31769,7 @@
       "egg_source": false,
       "dairy_source": false,
       "gluten_source": false,
-      "nut_source": "tree_nut",
+      "nut_source": null,
       "soy_source": false,
       "sesame_source": false,
       "alcohol_content": null,
@@ -31753,7 +31780,7 @@
       "uncertainty_flags": [],
       "regions": [],
       "knowledge_state": "AUTO_CLASSIFIED",
-      "tree_nut_source": true
+      "tree_nut_source": false
     },
     {
       "id": "zucchini",
@@ -33512,7 +33539,7 @@
       "egg_source": false,
       "dairy_source": false,
       "gluten_source": false,
-      "nut_source": "tree_nut",
+      "nut_source": null,
       "soy_source": false,
       "sesame_source": false,
       "alcohol_content": null,
@@ -33523,7 +33550,7 @@
       "uncertainty_flags": [],
       "regions": [],
       "knowledge_state": "AUTO_CLASSIFIED",
-      "tree_nut_source": true
+      "tree_nut_source": false
     },
     {
       "id": "chickpea_flour",

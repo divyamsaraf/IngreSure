@@ -152,7 +152,8 @@ _TREE_NUT = frozenset({
     "almond", "almonds", "walnut", "walnuts", "cashew", "cashews", "pistachio",
     "pistachios", "pecan", "pecans", "hazelnut", "hazelnuts", "macadamia nuts",
     "brazil nuts", "pine nuts", "chestnut", "chestnuts", "almond oil",
-    "walnut oil", "hazelnut oil", "almond flour", "coconut flour",
+    "walnut oil", "hazelnut oil", "almond flour",
+    # coconut and water chestnut are NOT tree-nut allergens for our rules
 })
 _SOY = frozenset({"soybeans", "edamame", "soy", "soya"})
 _GLUTEN = frozenset({
