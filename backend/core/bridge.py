@@ -70,8 +70,11 @@ ALLERGEN_TO_RESTRICTION_ID: Dict[str, str] = {
     "nuts": "tree_nut_allergy",
     "tree_nut": "tree_nut_allergy",
     "tree_nuts": "tree_nut_allergy",
+    "treenut": "tree_nut_allergy",
     "soy": "soy_allergy",
+    "soya": "soy_allergy",
     "shellfish": "shellfish_allergy",
+    "shell_fish": "shellfish_allergy",
     "fish": "fish_allergy",
     "sesame": "sesame_allergy",
     "onion": "onion_allergy",
@@ -84,6 +87,7 @@ ALLERGEN_TO_RESTRICTION_ID: Dict[str, str] = {
     "eggs": "egg_free",
     "mustard": "mustard_allergy",
     "celery": "celery_allergy",
+    "lupin": "lupin_allergy",
     "raisin": "raisin_allergy",
     "raisins": "raisin_allergy",
 }
@@ -280,12 +284,17 @@ def map_ike2_to_compliance_verdict(
 
     triggered_restrictions = []
     seen_restrictions = set()
+    triggered_restrictions_by_ingredient: Dict[str, list] = {}
     for (name, restriction), verdict in (result.breakdown or {}).items():
         if verdict != Verdict.FAIL:
             continue
-        if name in triggered_ingredients and restriction not in seen_restrictions:
-            seen_restrictions.add(restriction)
-            triggered_restrictions.append(restriction)
+        if name in triggered_ingredients:
+            per = triggered_restrictions_by_ingredient.setdefault(name, [])
+            if restriction not in per:
+                per.append(restriction)
+            if restriction not in seen_restrictions:
+                seen_restrictions.add(restriction)
+                triggered_restrictions.append(restriction)
 
     display_map = input_display_map or {}
     triggered_ingredient_to_input: Dict[str, str] = {}
@@ -299,8 +308,15 @@ def map_ike2_to_compliance_verdict(
     # -- never left to fall through to Safe just because it never FAILed.
     uncertain_ingredients = []
     for name, verdict in per_ingredient_verdict.items():
-        if verdict in (Verdict.WARN, Verdict.UNCERTAIN) and name not in triggered_ingredients:
-            uncertain_ingredients.append(name)
+        if verdict not in (Verdict.WARN, Verdict.UNCERTAIN):
+            continue
+        if name in triggered_ingredients:
+            continue
+        label = (name or "").strip()
+        if not label:
+            continue
+        if label not in uncertain_ingredients:
+            uncertain_ingredients.append(label)
 
     for idx, inp in enumerate(inputs or []):
         canonical_name = getattr(inp, "canonical_name", "") or ""
@@ -310,11 +326,12 @@ def map_ike2_to_compliance_verdict(
             or not canonical_name
         )
         if is_uncertain:
-            # canonical_name is "" for unresolved atoms, so fall back to the
-            # raw atom/input text (position-keyed) rather than the literal
-            # "unknown" -- lets the audit exclude these from Safe by substance.
+            # Prefer canonical identity; fall back to position-keyed raw text
+            # for legacy empty-canonical unresolved inputs.
             raw = display_map.get(_UNRESOLVED_POS_KEY.format(idx))
-            label = canonical_name or raw or "unknown"
+            label = (canonical_name or raw or "").strip()
+            if not label:
+                continue
             if label not in uncertain_ingredients and label not in triggered_ingredients:
                 uncertain_ingredients.append(label)
 
@@ -325,6 +342,7 @@ def map_ike2_to_compliance_verdict(
         triggered_restrictions=triggered_restrictions,
         triggered_ingredients=triggered_ingredients,
         triggered_ingredient_to_input=triggered_ingredient_to_input or None,
+        triggered_restrictions_by_ingredient=triggered_restrictions_by_ingredient,
         uncertain_ingredients=uncertain_ingredients,
         informational_ingredients=informational_ingredients,
         confidence_score=confidence_score,
@@ -386,7 +404,12 @@ def _run_ike2_compliance(
     if prepared_decomposed is not None:
         for idx, atom in enumerate(prepared_decomposed):
             resolved = ike2_resolver.resolve(atom.name, region)
-            ci = to_compliance_input(resolved, trace=atom.trace, may_contain=atom.may_contain)
+            ci = to_compliance_input(
+                resolved,
+                trace=atom.trace,
+                may_contain=atom.may_contain,
+                query_atom=atom.name,
+            )
             inputs.append(ci)
             # DecomposedItem carries no original display text (it's already
             # post-decompose), so atom.name is the best available display.
@@ -396,7 +419,12 @@ def _run_ike2_compliance(
         for raw in ingredients or []:
             for atom in ike2_input_layer.parse_atoms(raw):
                 resolved = ike2_resolver.resolve(atom.name, region)
-                ci = to_compliance_input(resolved, trace=atom.trace, may_contain=atom.may_contain)
+                ci = to_compliance_input(
+                    resolved,
+                    trace=atom.trace,
+                    may_contain=atom.may_contain,
+                    query_atom=atom.name,
+                )
                 inputs.append(ci)
                 _record_display(display_map, idx, ci.canonical_name, raw)
                 idx += 1

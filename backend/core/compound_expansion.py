@@ -43,6 +43,29 @@ _PLANT_MODIFIERS: Set[str] = {
     "peanut", "walnut", "pistachio", "macadamia", "pecan",
 }
 
+# Multi-word forms that are ingredients in their own right. Expanding them to
+# a nested keyword ("wine vinegar" → "wine", "soy lecithin" → "soy") produces
+# wrong Avoid/Safe cards (Halal flags vinegar as wine; soy lecithin loses identity).
+_KEEP_WHOLE_SUFFIXES: Set[str] = {
+    "vinegar", "lecithin", "extract", "sauce", "juice", "syrup",
+    "starch", "flour", "powder", "paste", "puree", "purée",
+}
+
+
+def _keep_as_whole_ingredient(name: str) -> bool:
+    """True when a multi-word name must not be torn into restricted keywords."""
+    words = (name or "").lower().split()
+    if len(words) <= 1:
+        return False
+    if words[-1] in _KEEP_WHOLE_SUFFIXES:
+        return True
+    # Tier-1 curated facts win over keyword expansion (soy lecithin, fish oil, …).
+    try:
+        from core.knowledge.ike2 import truth_anchor
+    except Exception:
+        return False
+    return truth_anchor.lookup(name) is not None
+
 
 def find_sub_ingredients(name: str) -> List[str]:
     """Extract known restricted-ingredient keywords from a compound name.
@@ -107,7 +130,15 @@ def expand_compounds(ingredients: List[str]) -> Tuple[List[str], Dict[str, str]]
                 expanded.append(ing)
             continue
 
-        # 3. Multi-word: extract known ingredient keywords
+        # 3. Whole multi-word ingredient (vinegar, lecithin, Tier-1 hit, …)
+        if _keep_as_whole_ingredient(ing):
+            key = ing.lower().strip()
+            if key not in seen:
+                seen.add(key)
+                expanded.append(ing)
+            continue
+
+        # 4. Multi-word product: extract known ingredient keywords
         subs = find_sub_ingredients(ing)
         if subs:
             covered: Set[str] = set()

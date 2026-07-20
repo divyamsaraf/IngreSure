@@ -18,6 +18,7 @@ BOOL_FLAGS = (
     "synthetic",
     "fungal",
     "insect_derived",
+    "bee_product",
     "egg_source",
     "dairy_source",
     "gluten_source",
@@ -103,6 +104,8 @@ def map_record(raw: dict, canonical_source: str, default_state: str):
 
     if row["insect_derived"]:
         row["animal_origin"] = True
+    if row.get("bee_product"):
+        row["animal_origin"] = True
 
     # Legacy free-text `nut_source` -> specific peanut / tree-nut allergen flags.
     _map_nut_source(raw, row)
@@ -112,6 +115,9 @@ def map_record(raw: dict, canonical_source: str, default_state: str):
     row["alcohol_content"] = raw.get("alcohol_content")
     row["alcohol_role"] = _alcohol_role(raw)
     row["uncertainty_flags"] = list(raw.get("uncertainty_flags") or [])
+    # Curated "never firm-SAFE" caps must survive Tier-2/bulk ingestion.
+    if raw.get("verdict_cap"):
+        row["verdict_cap"] = raw.get("verdict_cap")
     row["knowledge_state"] = default_state
     row["primary_source_url"] = raw.get("primary_source_url") or raw.get("source_url")
     row["classification_method"] = f"bulk:{canonical_source}"

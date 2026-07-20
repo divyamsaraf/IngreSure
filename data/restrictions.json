@@ -155,6 +155,12 @@
           "action": "FAIL"
         },
         {
+          "field": "bee_product",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
+        },
+        {
           "field": "root_vegetable",
           "operator": "equals",
           "value": true,
@@ -283,6 +289,12 @@
           "operator": "equals",
           "value": true,
           "action": "FAIL"
+        },
+        {
+          "field": "insect_derived",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
         }
       ]
     },
@@ -302,6 +314,12 @@
         },
         {
           "field": "egg_source",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
+        },
+        {
+          "field": "insect_derived",
           "operator": "equals",
           "value": true,
           "action": "FAIL"
@@ -327,6 +345,12 @@
           "operator": "equals",
           "value": true,
           "action": "FAIL"
+        },
+        {
+          "field": "insect_derived",
+          "operator": "equals",
+          "value": true,
+          "action": "FAIL"
         }
       ]
     },
@@ -339,15 +363,9 @@
       "severity": "STRICT",
       "rules": [
         {
-          "field": "animal_species",
-          "operator": "in_list",
-          "value": [
-            "cow",
-            "pig",
-            "chicken",
-            "lamb",
-            "goat"
-          ],
+          "field": "meat_land_derived",
+          "operator": "equals",
+          "value": true,
           "action": "FAIL"
         }
       ]

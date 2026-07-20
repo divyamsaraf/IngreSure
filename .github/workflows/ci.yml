@@ -35,6 +35,8 @@ jobs:
         run: python scripts/generate_label_corpus.py --check
       - name: Label corpus shadow gate
         run: python scripts/ike2_label_corpus_shadow.py --fail-below-threshold
+      - name: Must-never-Safe gate
+        run: python -m pytest tests/ike2/test_must_never_be_safe.py tests/ike2/test_golden_safety_budget.py -q
       - name: Run tests
         run: python -m pytest tests/ -q
 

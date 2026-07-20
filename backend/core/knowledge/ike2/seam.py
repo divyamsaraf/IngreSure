@@ -41,15 +41,22 @@ def _derive_alcohol_role(explicit, alcohol_content) -> Optional[str]:
 
 
 def to_compliance_input(
-    resolved, *, trace: bool = False, may_contain: bool = False
+    resolved,
+    *,
+    trace: bool = False,
+    may_contain: bool = False,
+    query_atom: Optional[str] = None,
 ) -> ComplianceInput:
     group = resolved.group
     trusted = bool(getattr(resolved, "trusted", False))
 
     # Unresolved (L5 / ambiguous): nothing to assert -> fail-closed UNCERTAIN.
+    # Keep the original atom text as identity so multiple unknowns do not collapse
+    # onto one empty breakdown key (and so the audit never shows a bare "Unknown").
     if group is None:
+        identity = (query_atom or "").strip()
         return ComplianceInput(
-            canonical_name="", flags={}, knowledge_state="UNCLASSIFIED",
+            canonical_name=identity, flags={}, knowledge_state="UNCLASSIFIED",
             trusted=False, alcohol_role=None, verdict_cap=None,
             trace=trace, may_contain=may_contain,
         )

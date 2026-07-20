@@ -38,6 +38,11 @@ _RESTRICTION_DISPLAY: Dict[str, str] = {
     "fish_allergy": "fish allergy",
     "sesame_allergy": "sesame allergy",
     "raisin_allergy": "raisin allergy",
+    "mustard_allergy": "mustard allergy",
+    "celery_allergy": "celery allergy",
+    "lupin_allergy": "lupin allergy",
+    "onion_allergy": "onion allergy",
+    "garlic_allergy": "garlic allergy",
     "no_alcohol": "no-alcohol",
     "no_onion": "no-onion",
     "no_garlic": "no-garlic",
@@ -212,6 +217,28 @@ def _is_product_word(ingredient: str) -> bool:
     return ingredient.lower().strip() in _PRODUCT_WORDS
 
 
+def _is_compound_container_shell(
+    ingredient: str,
+    display_names: Optional[Dict[str, str]],
+) -> bool:
+    """True when a product word is only a shell around a compound display name.
+
+    ``burger`` next to triggered ``chicken`` from ``burger with chicken`` should
+    not appear in Safe. A standalone query ``pasta`` / ``bread`` must remain.
+    """
+    if not _is_product_word(ingredient):
+        return False
+    dn = display_names or {}
+    if not dn:
+        return False
+    word = ingredient.lower().strip()
+    for compound in dn.values():
+        c = (compound or "").lower().strip()
+        if c and word in c.split() and c != word:
+            return True
+    return False
+
+
 def _diet_label(profile: Any) -> str:
     """Extract a human-readable diet label from profile."""
     if hasattr(profile, "dietary_preference"):
@@ -240,32 +267,81 @@ def _ingredient_reason(ingredient: str) -> str:
     return "may conflict with your dietary requirements"
 
 
-def _allergy_triggered(triggered_restrictions: List[str]) -> bool:
-    """True if any triggered restriction is an allergy."""
+def _profile_allergen_restriction_ids(profile: Any) -> Set[str]:
+    """Restriction IDs that came from the user's allergen list (not diet preference).
+
+    Milk/egg/wheat allergens map to dairy_free/egg_free/gluten_free (no ``_allergy``
+    suffix). Without this set, those FAILs would be stamped as diet chips on cards.
+    """
+    from core.bridge import ALLERGEN_TO_RESTRICTION_ID
+
+    out: Set[str] = set()
+    for a in getattr(profile, "allergens", None) or []:
+        key = (str(a) or "").lower().strip().replace(" ", "_").replace("-", "_")
+        rid = ALLERGEN_TO_RESTRICTION_ID.get(key)
+        if rid:
+            out.add(rid)
+    return out
+
+
+def _is_allergen_restriction(restriction_id: str, profile_allergen_rids: Optional[Set[str]] = None) -> bool:
+    if not restriction_id:
+        return False
+    if restriction_id.endswith("_allergy"):
+        return True
+    return restriction_id in (profile_allergen_rids or set())
+
+
+def _split_restrictions_for_ui(
+    restrictions: List[str],
+    profile_allergen_rids: Optional[Set[str]] = None,
+) -> tuple[List[str], List[str]]:
+    """Split FAIL restriction ids into (diet_ids, allergen_ids) for Avoid cards."""
+    diets: List[str] = []
+    allergens: List[str] = []
+    for r in restrictions or []:
+        if _is_allergen_restriction(r, profile_allergen_rids):
+            allergens.append(r)
+        elif r:
+            diets.append(r)
+    return diets, allergens
+
+
+def _allergy_triggered(
+    triggered_restrictions: List[str],
+    profile_allergen_rids: Optional[Set[str]] = None,
+) -> bool:
+    """True if any triggered restriction is an allergy (incl. milk→dairy_free)."""
     return any(
-        (r or "").endswith("_allergy")
+        _is_allergen_restriction(r, profile_allergen_rids)
         for r in (triggered_restrictions or [])
     )
 
 
-def _attribution_kind(triggered_restrictions: List[str]) -> str:
+def _attribution_kind(
+    triggered_restrictions: List[str],
+    profile_allergen_rids: Optional[Set[str]] = None,
+) -> str:
     """'allergen' or 'diet' copy attribution for the primary Avoid ingredient
     (spec §7.2). Diet/lifestyle wording wins whenever a non-allergy
     restriction also FAILed for this ingredient -- allergen wording is
     reserved for allergy-only FAILs (e.g. gelatin x Hindu Vegetarian + Fish
     allergy must read as a diet conflict, not "your allergens")."""
     restrictions = triggered_restrictions or []
-    allergy = [r for r in restrictions if (r or "").endswith("_allergy")]
-    diet = [r for r in restrictions if r and not r.endswith("_allergy")]
+    allergy = [r for r in restrictions if _is_allergen_restriction(r, profile_allergen_rids)]
+    diet = [r for r in restrictions if r and not _is_allergen_restriction(r, profile_allergen_rids)]
     if allergy and not diet:
         return "allergen"
     return "diet"
 
 
-def _reason_category_for_avoid(triggered_restrictions: List[str]) -> str:
+def _reason_category_for_avoid(
+    triggered_restrictions: List[str],
+    profile_allergen_rids: Optional[Set[str]] = None,
+) -> str:
     """Avoid reason_category per spec §8.2: diet_conflict unless the FAIL is
     allergy-only for this ingredient."""
-    if _attribution_kind(triggered_restrictions) == "allergen":
+    if _attribution_kind(triggered_restrictions, profile_allergen_rids) == "allergen":
         return "allergen_conflict"
     return "diet_conflict"
 
@@ -296,13 +372,14 @@ def _reason_category_for_uncertain(name: str) -> str:
 def _ingredient_reason_for_verdict(
     ingredient: str,
     triggered_restrictions: List[str],
+    profile_allergen_rids: Optional[Set[str]] = None,
 ) -> str:
     """
     Reason for a triggered ingredient. Prefer 'contains your allergen' when
     the trigger is an allergy restriction.
     """
     base = _ingredient_reason(ingredient)
-    if _attribution_kind(triggered_restrictions) != "allergen":
+    if _attribution_kind(triggered_restrictions, profile_allergen_rids) != "allergen":
         return base
     # Map ingredient (normalized) to allergen-type wording where applicable
     norm = _normalize_for_match(ingredient.lower().strip())
@@ -318,6 +395,12 @@ def _ingredient_reason_for_verdict(
         return "contains your allergen (sesame)"
     if "shellfish" in base or norm in ("shrimp", "prawn", "crab", "lobster", "squid", "octopus"):
         return "contains your allergen (shellfish)"
+    if norm in ("milk", "butter", "cream", "cheese", "whey", "casein", "lactose", "yogurt", "ghee", "curd"):
+        return "contains your allergen (milk/dairy)"
+    if norm in ("egg", "eggs", "albumin", "ovalbumin") or "egg" in norm:
+        return "contains your allergen (egg)"
+    if norm in ("wheat", "gluten", "barley", "rye", "flour") or "gluten" in base:
+        return "contains your allergen (gluten/wheat)"
     if "fish" in base or norm in ("fish", "tuna", "salmon", "anchovy", "sardine"):
         return "contains your allergen (fish)"
     # Already has allergen wording in INGREDIENT_REASONS or generic
@@ -375,10 +458,23 @@ def _build_audit_exclusion_keys(
 
 
 def _is_excluded_from_safe(ingredient: str, excluded: Set[str]) -> bool:
-    return (
+    if (
         _ingredient_audit_key(ingredient) in excluded
         or _normalize_for_match(ingredient) in excluded
-    )
+    ):
+        return True
+    # Alias → canonical (seasoning → spices): if the resolved Tier-1/2
+    # canonical is already Avoid/Depends, the raw input must not land in Safe.
+    fact = truth_anchor.lookup(ingredient) or local_ontology.lookup(ingredient)
+    if fact is not None:
+        canon = fact.canonical_name or ""
+        if (
+            (substance_key(canon) or canon) in excluded
+            or _normalize_for_match(canon) in excluded
+            or canon.lower() in excluded
+        ):
+            return True
+    return False
 
 
 def count_safe_audit_ingredients(ingredients: List[str], verdict: ComplianceVerdict) -> int:
@@ -507,7 +603,10 @@ def compose_verdict(
     ]
 
     # Filter out product/container words from safe list (not real ingredients)
-    meaningful_safe = [i for i in safe_ingredients if not _is_product_word(i)]
+    meaningful_safe = [
+        i for i in safe_ingredients
+        if not _is_compound_container_shell(i, dn)
+    ]
 
     # Suppress safe ingredients whose compound display is already used by a
     # triggered ingredient (e.g. "butter chicken" has butter=safe, chicken=triggered
@@ -531,8 +630,18 @@ def compose_verdict(
     # ------ NOT_SAFE ------
     if verdict.status == VerdictStatus.NOT_SAFE:
         restrictions = verdict.triggered_restrictions or []
-        has_allergy = _allergy_triggered(restrictions)
-        has_diet = any(not (r or "").endswith("_allergy") for r in restrictions)
+        by_ingredient = verdict.triggered_restrictions_by_ingredient or {}
+        allergen_rids = _profile_allergen_restriction_ids(profile)
+        has_allergy = _allergy_triggered(restrictions, allergen_rids)
+        has_diet = any(
+            r and not _is_allergen_restriction(r, allergen_rids) for r in restrictions
+        )
+
+        def _item_restrictions(ing: str) -> List[str]:
+            for key in (ing, substance_key(ing) or "", (ing or "").lower().strip()):
+                if key and key in by_ingredient:
+                    return list(by_ingredient[key] or [])
+            return list(restrictions)
 
         def _lead_text() -> str:
             if has_allergy and has_diet:
@@ -543,13 +652,14 @@ def compose_verdict(
 
         if len(triggered) == 1 and not meaningful_safe and not uncertain:
             ing = triggered[0]
-            reason = _ingredient_reason_for_verdict(ing, restrictions)
+            item_r = _item_restrictions(ing)
+            reason = _ingredient_reason_for_verdict(ing, item_r, allergen_rids)
             user_label = triggered_to_input.get(ing, ing)
             name = format_audit_item_name(user_label, ing)
             verb = "are" if _is_plural(user_label) else "is"
             intro = (
                 f"Based on your **{diet}** diet,"
-                if _attribution_kind(restrictions) != "allergen"
+                if _attribution_kind(item_r, allergen_rids) != "allergen"
                 else "Based on your **allergens**,"
             )
             parts.append(
@@ -558,7 +668,8 @@ def compose_verdict(
         elif triggered:
             parts.append(_lead_text())
             for ing in triggered:
-                reason = _ingredient_reason_for_verdict(ing, restrictions)
+                item_r = _item_restrictions(ing)
+                reason = _ingredient_reason_for_verdict(ing, item_r, allergen_rids)
                 user_label = triggered_to_input.get(ing, ing)
                 display_name = format_audit_item_name(user_label, ing)
                 parts.append(f"- ❌ **{display_name}** — {reason}")
@@ -661,16 +772,25 @@ def compose_verdict_explanation(
 
     if triggered:
         primary = triggered[0]
+        by_ingredient = verdict.triggered_restrictions_by_ingredient or {}
+        allergen_rids = _profile_allergen_restriction_ids(profile)
+        primary_restrictions = None
+        for key in (primary, substance_key(primary) or "", (primary or "").lower().strip()):
+            if key and key in by_ingredient:
+                primary_restrictions = list(by_ingredient[key] or [])
+                break
+        if primary_restrictions is None:
+            primary_restrictions = list(restrictions)
         primary_name = format_audit_item_name(
             triggered_to_input.get(primary, primary),
             primary,
         )
-        reason = _ingredient_reason_for_verdict(primary, restrictions)
+        reason = _ingredient_reason_for_verdict(primary, primary_restrictions, allergen_rids)
         alts = INGREDIENT_ALTERNATIVES.get(primary.lower()) or INGREDIENT_ALTERNATIVES.get(
             _normalize_for_match(primary), []
         )
         alt_hint = f" Try {alts[0]} instead." if alts else ""
-        if _attribution_kind(restrictions) == "allergen":
+        if _attribution_kind(primary_restrictions, allergen_rids) == "allergen":
             return (
                 f"{primary_name} is not suitable for your allergens ({reason}).{alt_hint}"
             )
@@ -751,7 +871,9 @@ def build_ingredient_audit_payload(
     triggered = verdict.triggered_ingredients or []
     triggered_to_input = verdict.triggered_ingredient_to_input or {}
     restrictions = verdict.triggered_restrictions or []
+    by_ingredient = verdict.triggered_restrictions_by_ingredient or {}
     uncertain = verdict.uncertain_ingredients or []
+    allergen_rids = _profile_allergen_restriction_ids(profile)
 
     def _display(ing: str) -> str:
         key = ing.lower().strip()
@@ -774,16 +896,20 @@ def build_ingredient_audit_payload(
                 return alts
         return []
 
+    def _restrictions_for(ing: str) -> List[str]:
+        """Per-ingredient FAIL restrictions; fall back to global only if missing."""
+        for key in (ing, substance_key(ing) or "", (ing or "").lower().strip()):
+            if key and key in by_ingredient:
+                return list(by_ingredient[key] or [])
+        return list(restrictions)
+
     excluded_keys = _build_audit_exclusion_keys(triggered, triggered_to_input, uncertain)
     safe_list = [
         i for i in ingredients
         if not _is_excluded_from_safe(i, excluded_keys)
     ]
-    # Filter product words from safe list
-    safe_list = [i for i in safe_list if not _is_product_word(i)]
-
-    allergy_restrictions = [r for r in restrictions if (r or "").endswith("_allergy")]
-    diet_restrictions = [r for r in restrictions if r and not r.endswith("_allergy")]
+    # Drop compound shells (burger in "burger with chicken"), not standalone pasta.
+    safe_list = [i for i in safe_list if not _is_compound_container_shell(i, dn)]
 
     groups: List[Dict[str, Any]] = []
 
@@ -796,28 +922,30 @@ def build_ingredient_audit_payload(
             continue
         seen_avoid.add(sk)
         display_name = _avoid_display(ing)
-        diets = [_restriction_label(r) for r in diet_restrictions]
-        allergens = [_restriction_label(r) for r in allergy_restrictions]
+        item_restrictions = _restrictions_for(ing)
+        diet_ids, allergen_ids = _split_restrictions_for_ui(item_restrictions, allergen_rids)
+        diets = [_restriction_label(r) for r in diet_ids]
+        allergens = [_restriction_label(r) for r in allergen_ids]
         avoid_items.append({
             "name": display_name,
             "diets": diets if diets else None,
             "allergens": allergens if allergens else None,
             "alternatives": _alternatives(ing) or None,
-            "reason": _ingredient_reason_for_verdict(ing, restrictions),
-            "reason_category": _reason_category_for_avoid(restrictions),
+            "reason": _ingredient_reason_for_verdict(ing, item_restrictions, allergen_rids),
+            "reason_category": _reason_category_for_avoid(item_restrictions, allergen_rids),
         })
     if avoid_items:
         groups.append({"status": "avoid", "items": avoid_items})
 
-    # Depends
+    # Depends — do not stamp Avoid FAIL restrictions onto uncertain items
     depends_items: List[Dict[str, Any]] = []
     for ing in uncertain:
         display_name = _display(ing)
         category = _reason_category_for_uncertain(ing)
         depends_items.append({
             "name": display_name,
-            "diets": [_restriction_label(r) for r in diet_restrictions] if diet_restrictions else None,
-            "allergens": [_restriction_label(r) for r in allergy_restrictions] if allergy_restrictions else None,
+            "diets": None,
+            "allergens": None,
             "alternatives": None,
             "reason": _DEPENDS_REASON_TEXT[category],
             "reason_category": category,

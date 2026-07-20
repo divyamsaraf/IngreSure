@@ -15,6 +15,7 @@ from core.response_composer import (
     INGREDIENT_ALTERNATIVES,
     _attribution_kind,
     _format_user_ingredient_label,
+    _profile_allergen_restriction_ids,
 )
 
 logger = logging.getLogger(__name__)
@@ -220,10 +221,19 @@ def llm_compose_verdict_explanation(
     # Attribution guard (spec §7.2): when the primary Avoid ingredient's FAIL
     # is diet-attributed, the LLM must not contradict the template by saying
     # "allergen(s)" -- fall back to the template rather than risk that copy.
+    allergen_rids = _profile_allergen_restriction_ids(profile)
+    primary_rids = list(verdict.triggered_restrictions or [])
+    by_ing = getattr(verdict, "triggered_restrictions_by_ingredient", None) or {}
+    if avoid_substances:
+        primary_name = (avoid_substances[0] or "").lower().strip()
+        for key in (primary_name, avoid_substances[0]):
+            if key in by_ing:
+                primary_rids = list(by_ing[key] or [])
+                break
     if (
         result
         and avoid_substances
-        and _attribution_kind(verdict.triggered_restrictions) == "diet"
+        and _attribution_kind(primary_rids, allergen_rids) == "diet"
         and re.search(r"allerg", result, re.IGNORECASE)
     ):
         logger.info("LLM_VERDICT_EXPL rejected allergen wording contradicting diet attribution")

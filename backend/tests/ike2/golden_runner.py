@@ -13,11 +13,20 @@ from core.knowledge.ike2.seam import to_compliance_input
 from core.knowledge.ike2.verdict import to_external
 
 CORPUS = pathlib.Path(__file__).parent / "golden" / "corpus.jsonl"
+MUST_NEVER_SAFE = pathlib.Path(__file__).parent / "golden" / "must_never_be_safe.jsonl"
 
 
 def load_corpus() -> list[dict]:
     cases = []
     for line in CORPUS.read_text().splitlines():
+        if line.strip():
+            cases.append(json.loads(line))
+    return cases
+
+
+def load_must_never_be_safe() -> list[dict]:
+    cases = []
+    for line in MUST_NEVER_SAFE.read_text().splitlines():
         if line.strip():
             cases.append(json.loads(line))
     return cases
@@ -35,7 +44,12 @@ def run_case(case: dict) -> str:
     for atom in parse_atoms(case["raw_input"]):
         resolved = safe_resolve(atom.name, case.get("region"))
         inputs.append(
-            to_compliance_input(resolved, trace=atom.trace, may_contain=atom.may_contain)
+            to_compliance_input(
+                resolved,
+                trace=atom.trace,
+                may_contain=atom.may_contain,
+                query_atom=atom.name,
+            )
         )
     raw_profile = case["profile"]
     restrictions = raw_profile.get("restrictions", raw_profile)
@@ -51,7 +65,12 @@ def run_case_full(case: dict):
         resolved = safe_resolve(atom.name, case.get("region"))
         resolved_rows.append(resolved)
         inputs.append(
-            to_compliance_input(resolved, trace=atom.trace, may_contain=atom.may_contain)
+            to_compliance_input(
+                resolved,
+                trace=atom.trace,
+                may_contain=atom.may_contain,
+                query_atom=atom.name,
+            )
         )
     raw_profile = case["profile"]
     restrictions = raw_profile.get("restrictions", raw_profile)

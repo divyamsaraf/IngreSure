@@ -48,6 +48,7 @@ values
   ('halal',             'animal_species',   'eq', 'pig',  'FAIL', 'DISCOVERED'),
   ('halal',             'insect_derived',   'eq', 'true', 'FAIL', 'DISCOVERED'),
   ('kosher',            'animal_species',   'in_list', '["pig","shellfish"]', 'FAIL', 'DISCOVERED'),
+  ('kosher',            'shellfish_source', 'eq', 'true', 'FAIL', 'DISCOVERED'),
   ('kosher',            'insect_derived',   'eq', 'true', 'FAIL', 'DISCOVERED'),
   ('hindu_vegetarian',  'meat_fish_derived','eq', 'true', 'FAIL', 'DISCOVERED'),
   ('hindu_vegetarian',  'egg_source',       'eq', 'true', 'FAIL', 'DISCOVERED'),
@@ -57,6 +58,7 @@ values
   ('jain',              'meat_fish_derived','eq', 'true', 'FAIL', 'DISCOVERED'),
   ('jain',              'egg_source',       'eq', 'true', 'FAIL', 'DISCOVERED'),
   ('jain',              'insect_derived',   'eq', 'true', 'FAIL', 'DISCOVERED'),
+  ('jain',              'bee_product',      'eq', 'true', 'FAIL', 'DISCOVERED'),
   ('jain',              'root_vegetable',   'eq', 'true', 'FAIL', 'DISCOVERED'),
   ('jain',              'alcohol_content',  'gt', '0',    'FAIL', 'DISCOVERED'),
   ('jain',              'onion_source',     'eq', 'true', 'FAIL', 'DISCOVERED'),
@@ -64,9 +66,12 @@ values
   ('jain',              'fermented',        'eq', 'true', 'WARN', 'DISCOVERED'),
   ('jain',              'fungal',           'eq', 'true', 'FAIL', 'DISCOVERED'),
   ('vegetarian',        'meat_fish_derived','eq', 'true', 'FAIL', 'DISCOVERED'),
+  ('vegetarian',        'insect_derived',   'eq', 'true', 'FAIL', 'DISCOVERED'),
   ('lacto_vegetarian',  'meat_fish_derived','eq', 'true', 'FAIL', 'DISCOVERED'),
   ('lacto_vegetarian',  'egg_source',       'eq', 'true', 'FAIL', 'DISCOVERED'),
+  ('lacto_vegetarian',  'insect_derived',   'eq', 'true', 'FAIL', 'DISCOVERED'),
   ('ovo_vegetarian',    'meat_fish_derived','eq', 'true', 'FAIL', 'DISCOVERED'),
   ('ovo_vegetarian',    'dairy_source',     'eq', 'true', 'FAIL', 'DISCOVERED'),
-  ('pescatarian',       'animal_species',   'in_list', '["cow","pig","chicken","lamb","goat"]', 'FAIL', 'DISCOVERED')
+  ('ovo_vegetarian',    'insect_derived',   'eq', 'true', 'FAIL', 'DISCOVERED'),
+  ('pescatarian',       'meat_land_derived','eq', 'true', 'FAIL', 'DISCOVERED')
 on conflict (category, field, coalesce(region, 'GLOBAL')) do nothing;

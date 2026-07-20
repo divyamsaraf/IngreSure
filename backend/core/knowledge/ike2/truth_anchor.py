@@ -89,7 +89,7 @@ _add(["lanolin", "wool grease", "wool wax", "wool fat"], "lanolin", _f(animal_or
 _add(["rennet", "animal rennet"], "rennet", _f(animal_origin=True))
 _add(["pepsin"], "pepsin", _f(animal_origin=True))
 _add(["collagen"], "collagen", _f(animal_origin=True))
-_add(["honey"], "honey", _f(animal_origin=True, insect_derived=True))
+_add(["honey"], "honey", _f(animal_origin=True, bee_product=True))
 _add(["castoreum"], "castoreum", _f(animal_origin=True))
 _add(["lactitol"], "lactitol", _f(animal_origin=True, dairy_source=True))
 _add(["lysozyme"], "lysozyme", _f(animal_origin=True, egg_source=True))
@@ -148,7 +148,7 @@ _add(["butter"], "butter", _f(animal_origin=True, dairy_source=True))
 _add(["cream"], "cream", _f(animal_origin=True, dairy_source=True))
 _add(["cheese"], "cheese", _f(animal_origin=True, dairy_source=True))
 _add(["ghee"], "ghee", _f(animal_origin=True, dairy_source=True))
-_add(["yogurt"], "yogurt", _f(animal_origin=True, dairy_source=True))
+_add(["yogurt", "yoghurt"], "yogurt", _f(animal_origin=True, dairy_source=True))
 _add(["curd"], "curd", _f(animal_origin=True, dairy_source=True))
 _add(["egg", "eggs"], "egg", _f(animal_origin=True, egg_source=True))
 _add(["egg white"], "egg white", _f(animal_origin=True, egg_source=True))
@@ -200,6 +200,15 @@ _add(["sake"], "sake", _f(alcohol_content=1.0, alcohol_role="ingredient"))
 _add(["liqueur"], "liqueur", _f(alcohol_content=1.0, alcohol_role="ingredient"))
 _add(["vanilla extract"], "vanilla extract",
      _f(alcohol_content=1.0, alcohol_role="ingredient"))
+# Culinary vinegars made from wine retain alcohol-relevant identity for Halal/Jain.
+_add(["wine vinegar", "red wine vinegar", "white wine vinegar"], "wine vinegar",
+     _f(alcohol_content=1.0, alcohol_role="ingredient"))
+# Culinary plant vinegars without wine identity — Halal/Kosher-safe when anchored.
+_add(["apple cider vinegar", "cider vinegar"], "apple cider vinegar",
+     _f(animal_origin=False, plant_origin=True, alcohol_role="none"))
+_add(["balsamic vinegar"], "balsamic vinegar",
+     _f(animal_origin=False, plant_origin=True, alcohol_role="none"))
+_add_compound(["natural flavoring", "natural flavouring"], "natural flavors")
 
 # --- Jain / no-onion-no-garlic ---------------------------------------------
 # Regional parsing rewrites "yam"/"suran" -> "elephant foot yam" and
@@ -218,7 +227,19 @@ _add(["chives"], "chives", _f(onion_source=True))
 
 # --- compound / umbrella terms (never firm-SAFE) -----------------------------
 _add_compound(["natural flavors", "natural flavor"], "natural flavors")
-_add_compound(["spices", "seasoning", "seasonings"], "spices")
+_add_compound(["artificial flavors", "artificial flavor"], "artificial flavors")
+_add_compound(["flavor", "flavors", "flavour", "flavours"], "flavor")
+_add_compound(["spices", "spice", "seasoning", "seasonings"], "spices")
+_add_compound(["herbs and spices", "herbs & spices"], "spices")
+_add_compound(
+    ["preservatives", "preservative"],
+    "preservatives",
+)
+_add_compound(
+    ["colors", "colours", "color", "colour", "coloring", "colouring"],
+    "colors",
+)
+# enzymes already registered above near water/salt
 
 
 def lookup(normalized_key: str) -> Optional[TruthAnchorFact]:

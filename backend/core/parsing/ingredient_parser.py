@@ -306,7 +306,16 @@ def _segments_for_clause(clause: str) -> List[tuple[str, bool]]:
             if collapsed != seg:
                 segments.append((collapsed, inline_trace))
             else:
-                for piece in split_by_nesting(seg):
+                pieces = list(split_by_nesting(seg))
+                # Nesting split turns "Preservatives (A, B)" into
+                # ["Preservatives", "A", "B"]. The category word is only a
+                # header when children were expanded — drop it so the umbrella
+                # does not double-count beside its listed constituents.
+                if len(pieces) > 1:
+                    head = normalize_ingredient_key(pieces[0])
+                    if head in _STRUCTURAL_HEADERS:
+                        pieces = pieces[1:]
+                for piece in pieces:
                     segments.append((piece, inline_trace))
     return segments
 
@@ -426,7 +435,16 @@ def preprocess_ingredients(
             if _is_may_contain_section(part) or _is_allergen_contains_section(part):
                 may_contain_until_end = True
             key = norm_fn(part_clean)
-            if not key or key in _STRUCTURAL_HEADERS:
+            # Structural category words (spices, flavors, preservatives) are
+            # headers when they introduce a parenthetical list. A bare token
+            # the user typed ("Are spices safe?") is a real ingredient and
+            # must NOT be dropped — otherwise compound umbrellas vanish and
+            # falsely land in Safe.
+            if not key:
+                continue
+            if key in _STRUCTURAL_HEADERS and (
+                "(" in part or "[" in part or "{" in part or ":" in part
+            ):
                 continue
             if key in result_by_key:
                 result_by_key[key]["trace"] = result_by_key[key]["trace"] or is_trace
