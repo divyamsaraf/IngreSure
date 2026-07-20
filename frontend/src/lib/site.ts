@@ -34,10 +34,18 @@ export const COVERAGE = {
     'Hindu Non Vegetarian',
   ] as const,
   dietCountLabel: '8 diet frameworks',
+  /** Live Tier-2 commodity rows after promote (approx; update with ontology growth). */
+  ontologyCommodityCount: 1375,
+  ontologyCountLabel: '1,300+ commodities',
+  ontologyDetail: 'File-backed ontology + curated variant aliases',
   rulesPromise: 'Rules, not LLM',
   rulesDetail: 'Safety call comes from explicit logic',
   privacyPromise: 'No signup',
   privacyDetail: 'Profile stays on your device',
+  failClosedPromise: 'Fail-closed',
+  failClosedDetail: 'Unknown ingredients never invent Safe',
+  securityPromise: 'B2B security foundation',
+  securityDetail: 'Rate limits, CORS, tenant isolation, secrets hygiene',
 } as const
 
 /** FAQ / long-form copy derived from COVERAGE so pages stay aligned. */
@@ -54,6 +62,8 @@ export const TRUST_SIGNALS = [
     label: COVERAGE.dietCountLabel,
     detail: 'Religious & lifestyle diets supported',
   },
+  { label: COVERAGE.ontologyCountLabel, detail: COVERAGE.ontologyDetail },
   { label: COVERAGE.rulesPromise, detail: COVERAGE.rulesDetail },
+  { label: COVERAGE.failClosedPromise, detail: COVERAGE.failClosedDetail },
   { label: COVERAGE.privacyPromise, detail: COVERAGE.privacyDetail },
 ] as const

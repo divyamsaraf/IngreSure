@@ -101,8 +101,12 @@ def normalize_query_for_typos(text: str) -> str:
 
 def detect_diet(message: str) -> Optional[str]:
     """
-    If the message contains any diet keyword, return the canonical diet name.
-    Uses longest-first matching so 'hindu veg' wins over 'hindu'.
+    If the message contains any diet keyword as a substring, return the canonical
+    diet name. Longest-first so 'hindu veg' wins over 'hindu'.
+
+    Used for *display / third-person question* helpers — NOT for mutating
+    ``dietary_preference`` on grocery atoms. Prefer ``_extract_diet`` /
+    ``_PROFILE_PATTERNS`` for profile writes.
     """
     msg = (message or "").lower().strip()
     if not msg:
@@ -120,6 +124,10 @@ _PROFILE_PATTERNS = [
     re.compile(rf"\b(?:my\s+religion\s+is|i\s+practice)\s+({_DIET_REGEX})\b", re.IGNORECASE),
     re.compile(rf"\b(?:i\s+eat)\s+({_DIET_REGEX})\b", re.IGNORECASE),
     re.compile(rf"\bswitch(?:ing)?\s+(?:to|my\s+diet\s+to)\s+({_DIET_REGEX})\b", re.IGNORECASE),
+    re.compile(
+        rf"\b(?:change|set|update)\s+(?:my\s+)?diet\s+to\s+({_DIET_REGEX})\b",
+        re.IGNORECASE,
+    ),
     # Bare diet keyword: "Jain", "hindu veg", "Halal", "vegan" (whole input)
     re.compile(rf"^\s*({_DIET_REGEX})\s*(?:diet|lifestyle)?\s*$", re.IGNORECASE),
 ]
@@ -980,11 +988,9 @@ def detect_intent(query: str) -> ParsedIntent:
     elif trailing_diet:
         profile_updates["dietary_preference"] = trailing_diet
         remaining = base_text  # Use only the ingredient portion
-    else:
-        # Simple rule: if user mentions any diet keyword, update profile to that diet
-        detected = detect_diet(query)
-        if detected:
-            profile_updates["dietary_preference"] = detected
+    # NOTE: Do NOT fall back to substring detect_diet(query). That wrongly treats
+    # grocery atoms like "Kosher salt" / "vegan cheese" / "halal chicken" as
+    # profile updates (design: only explicit cues mutate dietary_preference).
 
     # Check for "allergens none" / "no allergies" / "clear allergens" → set allergens to []
     q_stripped = remaining.strip()

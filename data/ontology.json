@@ -1182,7 +1182,9 @@
     {
       "id": "cream",
       "canonical_name": "cream",
-      "aliases": [],
+      "aliases": [
+        "dairy cream"
+      ],
       "derived_from": [],
       "contains": [],
       "may_contain": [],
@@ -1396,7 +1398,11 @@
         "milk, dry, nonfat, regular, with added vitamin a and vitamin d",
         "milk, dry, nonfat, regular, without added vitamin a and vitamin d",
         "milk, dry, whole, with added vitamin d",
-        "milk, dry, whole, without added vitamin d"
+        "milk, dry, whole, without added vitamin d",
+        "dairy milk",
+        "whole milk",
+        "skim milk",
+        "low fat milk"
       ],
       "derived_from": [],
       "contains": [],
@@ -2027,7 +2033,9 @@
         "pork tenderloin",
         "pork fat",
         "ground pork",
-        "tenderloin pork"
+        "tenderloin pork",
+        "pork loin, fresh, backribs, bone-in, cooked-roasted, lean only",
+        "pork loin, fresh, backribs, bone-in, raw, lean only"
       ],
       "derived_from": [],
       "contains": [],
@@ -2848,7 +2856,8 @@
       "canonical_name": "cod",
       "aliases": [
         "atlantic cod",
-        "cod fillets"
+        "cod fillets",
+        "black cod"
       ],
       "derived_from": [],
       "contains": [],
@@ -2906,12 +2915,15 @@
     {
       "id": "shrimp",
       "canonical_name": "shrimp",
-      "aliases": [],
+      "aliases": [
+        "shrimps",
+        "prawns"
+      ],
       "derived_from": [],
       "contains": [],
       "may_contain": [],
       "animal_origin": true,
-      "plant_origin": false,
+      "plant_origin": true,
       "synthetic": false,
       "fungal": false,
       "insect_derived": false,
@@ -2929,17 +2941,25 @@
       "fermented": false,
       "uncertainty_flags": [],
       "regions": [],
-      "shellfish_source": true
+      "shellfish_source": true,
+      "knowledge_state": "AUTO_CLASSIFIED"
     },
     {
       "id": "crab",
       "canonical_name": "crab",
-      "aliases": [],
+      "aliases": [
+        "blue crab",
+        "dungeness crab",
+        "king crab",
+        "crab meat",
+        "crab claws",
+        "crab sticks"
+      ],
       "derived_from": [],
       "contains": [],
       "may_contain": [],
       "animal_origin": true,
-      "plant_origin": false,
+      "plant_origin": true,
       "synthetic": false,
       "fungal": false,
       "insect_derived": false,
@@ -2957,17 +2977,22 @@
       "fermented": false,
       "uncertainty_flags": [],
       "regions": [],
-      "shellfish_source": true
+      "shellfish_source": true,
+      "knowledge_state": "AUTO_CLASSIFIED"
     },
     {
       "id": "lobster",
       "canonical_name": "lobster",
-      "aliases": [],
+      "aliases": [
+        "lobster meat",
+        "lobster claws",
+        "lobster tails"
+      ],
       "derived_from": [],
       "contains": [],
       "may_contain": [],
       "animal_origin": true,
-      "plant_origin": false,
+      "plant_origin": true,
       "synthetic": false,
       "fungal": false,
       "insect_derived": false,
@@ -2985,17 +3010,21 @@
       "fermented": false,
       "uncertainty_flags": [],
       "regions": [],
-      "shellfish_source": true
+      "shellfish_source": true,
+      "knowledge_state": "AUTO_CLASSIFIED"
     },
     {
       "id": "clam",
       "canonical_name": "clam",
-      "aliases": [],
+      "aliases": [
+        "clam juice",
+        "clam broth"
+      ],
       "derived_from": [],
       "contains": [],
       "may_contain": [],
       "animal_origin": true,
-      "plant_origin": false,
+      "plant_origin": true,
       "synthetic": false,
       "fungal": false,
       "insect_derived": false,
@@ -3013,7 +3042,8 @@
       "fermented": false,
       "uncertainty_flags": [],
       "regions": [],
-      "shellfish_source": true
+      "shellfish_source": true,
+      "knowledge_state": "AUTO_CLASSIFIED"
     },
     {
       "id": "oyster",
@@ -3023,7 +3053,7 @@
       "contains": [],
       "may_contain": [],
       "animal_origin": true,
-      "plant_origin": false,
+      "plant_origin": true,
       "synthetic": false,
       "fungal": false,
       "insect_derived": false,
@@ -3041,7 +3071,8 @@
       "fermented": false,
       "uncertainty_flags": [],
       "regions": [],
-      "shellfish_source": true
+      "shellfish_source": true,
+      "knowledge_state": "AUTO_CLASSIFIED"
     },
     {
       "id": "shellfish",
@@ -3250,7 +3281,10 @@
     {
       "id": "wheat",
       "canonical_name": "wheat",
-      "aliases": [],
+      "aliases": [
+        "durum flour",
+        "durum wheat"
+      ],
       "derived_from": [],
       "contains": [],
       "may_contain": [],
@@ -3305,7 +3339,14 @@
     {
       "id": "flour",
       "canonical_name": "flour",
-      "aliases": [],
+      "aliases": [
+        "bread flour",
+        "cake flour",
+        "pastry flour",
+        "plain flour",
+        "self raising flour",
+        "biscuit flour"
+      ],
       "derived_from": [],
       "contains": [],
       "may_contain": [],
@@ -3345,7 +3386,10 @@
         "rice, white, long-grain, regular, raw, unenriched",
         "rice, white, medium-grain, raw, enriched",
         "rice, white, medium-grain, raw, unenriched",
-        "rice, white, short-grain, raw, unenriched"
+        "rice, white, short-grain, raw, unenriched",
+        "black rice",
+        "rice flour",
+        "rice flour white"
       ],
       "derived_from": [],
       "contains": [],
@@ -3406,7 +3450,8 @@
         "corn, sweet, white, raw",
         "corn, sweet, yellow and white kernels,  fresh, raw",
         "Corn, sweet, yellow and white kernels, husked, kernels cut off, raw",
-        "corn, sweet, yellow, raw"
+        "corn, sweet, yellow, raw",
+        "baby corn"
       ],
       "derived_from": [],
       "contains": [],
@@ -3576,7 +3621,9 @@
     {
       "id": "oats",
       "canonical_name": "oats",
-      "aliases": [],
+      "aliases": [
+        "oat flour"
+      ],
       "derived_from": [],
       "contains": [],
       "may_contain": [],
@@ -3605,7 +3652,8 @@
       "id": "barley",
       "canonical_name": "barley",
       "aliases": [
-        "barley, pearled, raw"
+        "barley, pearled, raw",
+        "barley flour"
       ],
       "derived_from": [],
       "contains": [],
@@ -3634,7 +3682,10 @@
     {
       "id": "rye",
       "canonical_name": "rye",
-      "aliases": [],
+      "aliases": [
+        "rye flour",
+        "dark rye flour"
+      ],
       "derived_from": [],
       "contains": [],
       "may_contain": [],
@@ -4277,7 +4328,8 @@
       "canonical_name": "carrot",
       "aliases": [
         "carrots, raw",
-        "carrot juice"
+        "carrot juice",
+        "carrot juice, canned"
       ],
       "derived_from": [],
       "contains": [],
@@ -4308,7 +4360,9 @@
       "canonical_name": "ginger",
       "aliases": [
         "fresh ginger",
-        "ginger root"
+        "ginger root",
+        "ginger root, raw",
+        "ground ginger"
       ],
       "derived_from": [],
       "contains": [],
@@ -4381,7 +4435,8 @@
         "mooli",
         "radishes, oriental, raw",
         "radishes, raw",
-        "radishes, white icicle, raw"
+        "radishes, white icicle, raw",
+        "radish roots"
       ],
       "derived_from": [],
       "contains": [],
@@ -5859,7 +5914,9 @@
     {
       "id": "walnut",
       "canonical_name": "walnut",
-      "aliases": [],
+      "aliases": [
+        "black walnuts"
+      ],
       "derived_from": [],
       "contains": [],
       "may_contain": [],
@@ -7754,7 +7811,8 @@
         "celery, cooked, boiled, drained, without salt",
         "celery, raw",
         "celery stalks",
-        "celery leaves"
+        "celery leaves",
+        "celery roots"
       ],
       "animal_origin": false,
       "plant_origin": true,
@@ -7822,7 +7880,8 @@
       "aliases": [
         "cassia",
         "cinnamon bark",
-        "cinnamon powder"
+        "cinnamon powder",
+        "ground cinnamon"
       ],
       "animal_origin": false,
       "plant_origin": true,
@@ -8102,7 +8161,11 @@
       "id": "raisin",
       "canonical_name": "raisin",
       "aliases": [
-        "raisins"
+        "raisins",
+        "golden raisins",
+        "raisins golden",
+        "raisins black",
+        "sultanas"
       ],
       "derived_from": [],
       "contains": [],
@@ -8125,7 +8188,8 @@
       "garlic_source": false,
       "fermented": false,
       "uncertainty_flags": [],
-      "regions": []
+      "regions": [],
+      "knowledge_state": "AUTO_CLASSIFIED"
     },
     {
       "id": "e100",
@@ -17757,7 +17821,8 @@
       "id": "arrowroot",
       "canonical_name": "arrowroot",
       "aliases": [
-        "arrowroot, raw"
+        "arrowroot, raw",
+        "arrowroot powder"
       ],
       "derived_from": [],
       "contains": [],
@@ -19115,7 +19180,8 @@
         "blueberries, frozen, sweetened",
         "blueberries, frozen, unsweetened (includes foods for usda's food distribution program)",
         "blueberries, raw",
-        "blueberries, fresh, raw"
+        "blueberries, fresh, raw",
+        "dried blueberries"
       ],
       "derived_from": [],
       "contains": [],
@@ -19979,7 +20045,8 @@
         "cherries, sour, red, raw",
         "cherries, sweet, dark red, raw",
         "Cherries, dark red, sweet, raw",
-        "cherries, sweet, raw"
+        "cherries, sweet, raw",
+        "dried cherries"
       ],
       "derived_from": [],
       "contains": [],
@@ -20158,7 +20225,8 @@
       "id": "chicory",
       "canonical_name": "chicory",
       "aliases": [
-        "chicory, witloof, raw"
+        "chicory, witloof, raw",
+        "chicory root"
       ],
       "derived_from": [],
       "contains": [],
@@ -20558,7 +20626,8 @@
       "canonical_name": "cranberries",
       "aliases": [
         "cranberries, dried, sweetened (includes foods for usda's food distribution program)",
-        "cranberries, raw"
+        "cranberries, raw",
+        "dried cranberries"
       ],
       "derived_from": [],
       "contains": [],
@@ -21320,7 +21389,8 @@
         "Figs, Mission, Dried, Region 2, Pure Composite, CY0100R",
         "Figs, Pass 2, Region 2, Pure Composite, CY010GR",
         "Figs, Mission, Dried, Region 4, Mixed Composite, CY0100T",
-        "figs, raw"
+        "figs, raw",
+        "dried figs"
       ],
       "derived_from": [],
       "contains": [],
@@ -21853,7 +21923,8 @@
       "canonical_name": "hearts of palm",
       "aliases": [
         "hearts of palm, canned",
-        "hearts of palm, raw"
+        "hearts of palm, raw",
+        "heart of palm"
       ],
       "derived_from": [],
       "contains": [],
@@ -24359,7 +24430,11 @@
         "peas, edible-podded, raw",
         "peas, green, raw",
         "peas, green, split, mature seeds, raw",
-        "peas, mature seeds, sprouted, raw"
+        "peas, mature seeds, sprouted, raw",
+        "english peas",
+        "field peas",
+        "snow peas",
+        "sugar peas"
       ],
       "derived_from": [],
       "contains": [],
@@ -27992,7 +28067,8 @@
       "id": "apricot",
       "canonical_name": "apricot",
       "aliases": [
-        "apricots, raw"
+        "apricots, raw",
+        "dried apricots"
       ],
       "derived_from": [],
       "contains": [],
@@ -28083,7 +28159,8 @@
       "canonical_name": "blueberry",
       "aliases": [
         "blueberries, raw",
-        "blueberries, fresh, raw"
+        "blueberries, fresh, raw",
+        "bilberries"
       ],
       "derived_from": [],
       "contains": [],
@@ -28723,7 +28800,9 @@
     {
       "id": "buckwheat",
       "canonical_name": "buckwheat",
-      "aliases": [],
+      "aliases": [
+        "buckwheat flour"
+      ],
       "derived_from": [],
       "contains": [],
       "may_contain": [],
@@ -28919,7 +28998,9 @@
     {
       "id": "fava_beans",
       "canonical_name": "fava beans",
-      "aliases": [],
+      "aliases": [
+        "broad beans"
+      ],
       "derived_from": [],
       "contains": [],
       "may_contain": [],
@@ -29408,7 +29489,9 @@
     {
       "id": "cloves",
       "canonical_name": "cloves",
-      "aliases": [],
+      "aliases": [
+        "ground cloves"
+      ],
       "derived_from": [],
       "contains": [],
       "may_contain": [],
@@ -29436,7 +29519,9 @@
     {
       "id": "coriander",
       "canonical_name": "coriander",
-      "aliases": [],
+      "aliases": [
+        "ground coriander"
+      ],
       "derived_from": [],
       "contains": [],
       "may_contain": [],
@@ -29464,7 +29549,10 @@
     {
       "id": "cumin",
       "canonical_name": "cumin",
-      "aliases": [],
+      "aliases": [
+        "black cumin",
+        "ground cumin"
+      ],
       "derived_from": [],
       "contains": [],
       "may_contain": [],
@@ -29642,7 +29730,9 @@
     {
       "id": "nutmeg",
       "canonical_name": "nutmeg",
-      "aliases": [],
+      "aliases": [
+        "ground nutmeg"
+      ],
       "derived_from": [],
       "contains": [],
       "may_contain": [],
@@ -30170,7 +30260,9 @@
     {
       "id": "green_tea",
       "canonical_name": "green tea",
-      "aliases": [],
+      "aliases": [
+        "green tea leaves"
+      ],
       "derived_from": [],
       "contains": [],
       "may_contain": [],
@@ -30721,7 +30813,8 @@
       "canonical_name": "herring",
       "aliases": [
         "atlantic herring",
-        "herring fillets"
+        "herring fillets",
+        "herring roe"
       ],
       "derived_from": [],
       "contains": [],
@@ -32490,7 +32583,9 @@
     {
       "id": "dates",
       "canonical_name": "dates",
-      "aliases": [],
+      "aliases": [
+        "dried dates"
+      ],
       "derived_from": [],
       "contains": [],
       "may_contain": [],
@@ -32546,7 +32641,9 @@
     {
       "id": "mangoes",
       "canonical_name": "mangoes",
-      "aliases": [],
+      "aliases": [
+        "dried mango"
+      ],
       "derived_from": [],
       "contains": [],
       "may_contain": [],
@@ -33224,7 +33321,9 @@
     {
       "id": "huckleberries",
       "canonical_name": "huckleberries",
-      "aliases": [],
+      "aliases": [
+        "huckleberry"
+      ],
       "derived_from": [],
       "contains": [],
       "may_contain": [],
@@ -33588,7 +33687,9 @@
     {
       "id": "brown_rice",
       "canonical_name": "brown rice",
-      "aliases": [],
+      "aliases": [
+        "brown rice flour"
+      ],
       "derived_from": [],
       "contains": [],
       "may_contain": [],
@@ -33929,7 +34030,10 @@
     {
       "id": "chickpeas",
       "canonical_name": "chickpeas",
-      "aliases": [],
+      "aliases": [
+        "garbanzo flour",
+        "chickpea flour"
+      ],
       "derived_from": [],
       "contains": [],
       "may_contain": [],
@@ -36007,7 +36111,9 @@
     {
       "id": "galangal",
       "canonical_name": "galangal",
-      "aliases": [],
+      "aliases": [
+        "galangal root"
+      ],
       "derived_from": [],
       "contains": [],
       "may_contain": [],
@@ -38335,7 +38441,8 @@
       "id": "feta",
       "canonical_name": "feta",
       "aliases": [
-        "Feta cheese"
+        "Feta cheese",
+        "bulgarian feta"
       ],
       "derived_from": [],
       "contains": [],
@@ -38512,7 +38619,10 @@
     {
       "id": "heavy_cream",
       "canonical_name": "heavy cream",
-      "aliases": [],
+      "aliases": [
+        "heavy whipping cream",
+        "whipping cream"
+      ],
       "derived_from": [],
       "contains": [],
       "may_contain": [],
@@ -38625,7 +38735,8 @@
       "id": "goat_cheese",
       "canonical_name": "goat cheese",
       "aliases": [
-        "goat cheese soft"
+        "goat cheese soft",
+        "feta goat cheese"
       ],
       "derived_from": [],
       "contains": [],
@@ -40829,7 +40940,9 @@
     {
       "id": "porcini_mushrooms",
       "canonical_name": "porcini mushrooms",
-      "aliases": [],
+      "aliases": [
+        "porcini"
+      ],
       "derived_from": [],
       "contains": [],
       "may_contain": [],
@@ -42655,6 +42768,352 @@
       "may_contain": [],
       "animal_origin": false,
       "plant_origin": false,
+      "synthetic": false,
+      "fungal": false,
+      "insect_derived": false,
+      "animal_species": null,
+      "egg_source": false,
+      "dairy_source": false,
+      "gluten_source": false,
+      "nut_source": null,
+      "soy_source": false,
+      "sesame_source": false,
+      "alcohol_content": null,
+      "root_vegetable": false,
+      "onion_source": false,
+      "garlic_source": false,
+      "fermented": false,
+      "uncertainty_flags": [],
+      "regions": [],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "id": "mussel",
+      "canonical_name": "mussel",
+      "aliases": [
+        "blue mussels"
+      ],
+      "derived_from": [],
+      "contains": [],
+      "may_contain": [],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "fungal": false,
+      "insect_derived": false,
+      "animal_species": null,
+      "egg_source": false,
+      "dairy_source": false,
+      "gluten_source": false,
+      "nut_source": null,
+      "soy_source": false,
+      "sesame_source": false,
+      "alcohol_content": null,
+      "root_vegetable": false,
+      "onion_source": false,
+      "garlic_source": false,
+      "fermented": false,
+      "uncertainty_flags": [],
+      "regions": [],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "id": "mussels",
+      "canonical_name": "mussels",
+      "aliases": [],
+      "derived_from": [],
+      "contains": [],
+      "may_contain": [],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "fungal": false,
+      "insect_derived": false,
+      "animal_species": null,
+      "egg_source": false,
+      "dairy_source": false,
+      "gluten_source": false,
+      "nut_source": null,
+      "soy_source": false,
+      "sesame_source": false,
+      "alcohol_content": null,
+      "root_vegetable": false,
+      "onion_source": false,
+      "garlic_source": false,
+      "fermented": false,
+      "uncertainty_flags": [],
+      "regions": [],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "id": "clams",
+      "canonical_name": "clams",
+      "aliases": [],
+      "derived_from": [],
+      "contains": [],
+      "may_contain": [],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "fungal": false,
+      "insect_derived": false,
+      "animal_species": null,
+      "egg_source": false,
+      "dairy_source": false,
+      "gluten_source": false,
+      "nut_source": null,
+      "soy_source": false,
+      "sesame_source": false,
+      "alcohol_content": null,
+      "root_vegetable": false,
+      "onion_source": false,
+      "garlic_source": false,
+      "fermented": false,
+      "uncertainty_flags": [],
+      "regions": [],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "id": "oysters",
+      "canonical_name": "oysters",
+      "aliases": [],
+      "derived_from": [],
+      "contains": [],
+      "may_contain": [],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "fungal": false,
+      "insect_derived": false,
+      "animal_species": null,
+      "egg_source": false,
+      "dairy_source": false,
+      "gluten_source": false,
+      "nut_source": null,
+      "soy_source": false,
+      "sesame_source": false,
+      "alcohol_content": null,
+      "root_vegetable": false,
+      "onion_source": false,
+      "garlic_source": false,
+      "fermented": false,
+      "uncertainty_flags": [],
+      "regions": [],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "id": "scallop",
+      "canonical_name": "scallop",
+      "aliases": [],
+      "derived_from": [],
+      "contains": [],
+      "may_contain": [],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "fungal": false,
+      "insect_derived": false,
+      "animal_species": null,
+      "egg_source": false,
+      "dairy_source": false,
+      "gluten_source": false,
+      "nut_source": null,
+      "soy_source": false,
+      "sesame_source": false,
+      "alcohol_content": null,
+      "root_vegetable": false,
+      "onion_source": false,
+      "garlic_source": false,
+      "fermented": false,
+      "uncertainty_flags": [],
+      "regions": [],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "id": "scallops",
+      "canonical_name": "scallops",
+      "aliases": [],
+      "derived_from": [],
+      "contains": [],
+      "may_contain": [],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "fungal": false,
+      "insect_derived": false,
+      "animal_species": null,
+      "egg_source": false,
+      "dairy_source": false,
+      "gluten_source": false,
+      "nut_source": null,
+      "soy_source": false,
+      "sesame_source": false,
+      "alcohol_content": null,
+      "root_vegetable": false,
+      "onion_source": false,
+      "garlic_source": false,
+      "fermented": false,
+      "uncertainty_flags": [],
+      "regions": [],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "id": "squid",
+      "canonical_name": "squid",
+      "aliases": [],
+      "derived_from": [],
+      "contains": [],
+      "may_contain": [],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "fungal": false,
+      "insect_derived": false,
+      "animal_species": null,
+      "egg_source": false,
+      "dairy_source": false,
+      "gluten_source": false,
+      "nut_source": null,
+      "soy_source": false,
+      "sesame_source": false,
+      "alcohol_content": null,
+      "root_vegetable": false,
+      "onion_source": false,
+      "garlic_source": false,
+      "fermented": false,
+      "uncertainty_flags": [],
+      "regions": [],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "id": "crayfish",
+      "canonical_name": "crayfish",
+      "aliases": [
+        "crawfish"
+      ],
+      "derived_from": [],
+      "contains": [],
+      "may_contain": [],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "fungal": false,
+      "insect_derived": false,
+      "animal_species": null,
+      "egg_source": false,
+      "dairy_source": false,
+      "gluten_source": false,
+      "nut_source": null,
+      "soy_source": false,
+      "sesame_source": false,
+      "alcohol_content": null,
+      "root_vegetable": false,
+      "onion_source": false,
+      "garlic_source": false,
+      "fermented": false,
+      "uncertainty_flags": [],
+      "regions": [],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "id": "caviar",
+      "canonical_name": "caviar",
+      "aliases": [],
+      "derived_from": [],
+      "contains": [],
+      "may_contain": [],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "fungal": false,
+      "insect_derived": false,
+      "animal_species": null,
+      "egg_source": false,
+      "dairy_source": false,
+      "gluten_source": false,
+      "nut_source": null,
+      "soy_source": false,
+      "sesame_source": false,
+      "alcohol_content": null,
+      "root_vegetable": false,
+      "onion_source": false,
+      "garlic_source": false,
+      "fermented": false,
+      "uncertainty_flags": [],
+      "regions": [],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "id": "tea",
+      "canonical_name": "tea",
+      "aliases": [
+        "black tea"
+      ],
+      "derived_from": [],
+      "contains": [],
+      "may_contain": [],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "fungal": false,
+      "insect_derived": false,
+      "animal_species": null,
+      "egg_source": false,
+      "dairy_source": false,
+      "gluten_source": false,
+      "nut_source": null,
+      "soy_source": false,
+      "sesame_source": false,
+      "alcohol_content": null,
+      "root_vegetable": false,
+      "onion_source": false,
+      "garlic_source": false,
+      "fermented": false,
+      "uncertainty_flags": [],
+      "regions": [],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "id": "pandan",
+      "canonical_name": "pandan",
+      "aliases": [
+        "pandan leaves"
+      ],
+      "derived_from": [],
+      "contains": [],
+      "may_contain": [],
+      "animal_origin": false,
+      "plant_origin": true,
+      "synthetic": false,
+      "fungal": false,
+      "insect_derived": false,
+      "animal_species": null,
+      "egg_source": false,
+      "dairy_source": false,
+      "gluten_source": false,
+      "nut_source": null,
+      "soy_source": false,
+      "sesame_source": false,
+      "alcohol_content": null,
+      "root_vegetable": false,
+      "onion_source": false,
+      "garlic_source": false,
+      "fermented": false,
+      "uncertainty_flags": [],
+      "regions": [],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "id": "morel_mushrooms",
+      "canonical_name": "morel mushrooms",
+      "aliases": [
+        "morels"
+      ],
+      "derived_from": [],
+      "contains": [],
+      "may_contain": [],
+      "animal_origin": false,
+      "plant_origin": true,
       "synthetic": false,
       "fungal": false,
       "insect_derived": false,

@@ -9,7 +9,7 @@ import { COVERAGE } from '@/lib/site'
 export const metadata: Metadata = {
   title: 'For Business | IngreSure',
   description:
-    'Allergen and dietary compliance for platforms — checkout, menu, and recipe flows. Early B2B partner access.',
+    'Allergen and dietary compliance for platforms — fail-closed verdicts, commodity coverage, and a B2B security foundation. Early partner access.',
 }
 
 type StatusKind = 'live' | 'in-development' | 'planned'
@@ -68,27 +68,71 @@ export default function ForBusinessPage() {
             Onboarding early B2B partners
           </p>
         }
-        description="Allergen and dietary compliance, built into your checkout, menu, or recipe flow — not bolted on after the fact."
+        description="Allergen and dietary compliance, built into your checkout, menu, or recipe flow — deterministic rules, fail-closed unknowns, not bolted on after the fact."
       />
 
       <div className="space-y-12">
         <ContentSection title="Status">
           <ul className="space-y-3.5" aria-label="Product and API status">
             <StatusRow status="live">
-              Ingredient resolution engine, covering {COVERAGE.allergenEngineRuleCount} allergen-related
+              Deterministic resolution engine with {COVERAGE.allergenEngineRuleCount} allergen-related
               rules and {COVERAGE.dietFrameworks.length} dietary frameworks (
               {COVERAGE.dietFrameworks.join(', ')})
             </StatusRow>
+            <StatusRow status="live">
+              Commodity coverage at scale — {COVERAGE.ontologyCountLabel} in the live file ontology,
+              plus curated variant aliases (cuts, geo fish, part forms) so grocery lists resolve
+              offline without inventing Safe
+            </StatusRow>
+            <StatusRow status="live">
+              Fail-closed compliance: unknown or ambiguous ingredients return Depends — never a
+              false Safe from missing knowledge
+            </StatusRow>
+            <StatusRow status="live">
+              B2B security foundation: chat rate limits, production CORS allowlists, tenant-scoped
+              data access, input sanitization, and CI secrets hygiene
+            </StatusRow>
+            <StatusRow status="live">
+              Intent hygiene: grocery atoms (e.g. Kosher salt) audit ingredients; only explicit cues
+              (&quot;I am vegan&quot;, &quot;switch to…&quot;) change dietary preference
+            </StatusRow>
             <StatusRow status="in-development">REST API for partner integration</StatusRow>
+            <StatusRow status="in-development">
+              SLA and rate-limit tiers for production partner traffic
+            </StatusRow>
             <StatusRow status="planned">Multi-region data coverage (EU, Canada, India)</StatusRow>
-            <StatusRow status="in-development">SLA and rate-limit tiers for production traffic</StatusRow>
+          </ul>
+        </ContentSection>
+
+        <ContentSection title="What you get">
+          <ul className="list-disc space-y-2.5 pl-5">
+            <li>
+              <span className="font-medium text-slate-800">Structured verdicts</span> — Safe / Avoid /
+              Depends per ingredient, with audit-ready reasons tied to diet and allergen rules.
+            </li>
+            <li>
+              <span className="font-medium text-slate-800">Rules, not LLM guesses</span> —{' '}
+              {COVERAGE.rulesDetail}. Language can explain; it does not decide safety.
+            </li>
+            <li>
+              <span className="font-medium text-slate-800">Offline-capable staples</span> — Tier-1
+              truth anchor + Tier-2 ontology answer known foods even when enrichment APIs are down.
+            </li>
+            <li>
+              <span className="font-medium text-slate-800">Coverage that keeps growing</span> — CI
+              gates on promote drift and variant recall so commodity expansions do not silently
+              regress.
+            </li>
           </ul>
         </ContentSection>
 
         <ContentSection title="How it fits into your product">
           <ol className="list-decimal space-y-2.5 pl-5">
             <li>Your users&apos; ingredient data goes in — a delivery order, a menu item, a recipe.</li>
-            <li>IngreSure resolves it against dietary rules and allergen data, not keyword matching.</li>
+            <li>
+              IngreSure normalizes and resolves each atom against curated knowledge (not fuzzy
+              keyword matching), then evaluates dietary and allergen rules.
+            </li>
             <li>
               You get a structured verdict back — safe, avoid, or needs review — to show your users
               directly.
