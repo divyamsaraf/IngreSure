@@ -684,11 +684,10 @@ def compose_verdict(
         if meaningful_safe:
             if len(meaningful_safe) == 1:
                 s = meaningful_safe[0]
-                verb = "are" if _is_plural(s) else "is"
-                parts.append(f"\n✅ **{_show(s)}** {verb} fine for your diet.")
+                parts.append(f"\n✅ **{_show(s)}** didn't trigger any of your restrictions.")
             else:
                 safe_str = ", ".join(f"**{_show(s)}**" for s in meaningful_safe)
-                parts.append(f"\nThe rest are ✅ safe: {safe_str}.")
+                parts.append(f"\nThe rest ✅ didn't trigger any of your restrictions: {safe_str}.")
 
         # Show UNCERTAIN / Depends ingredients
         if uncertain:
@@ -708,12 +707,13 @@ def compose_verdict(
 
         if len(meaningful_ings) == 1:
             ing = meaningful_ings[0]
-            verb = "are" if _is_plural(ing) else "is"
-            parts.append(f"✅ **{_show(ing)}** {verb} perfectly fine for your **{diet}** diet.")
+            parts.append(
+                f"✅ No disqualifying ingredients found on this label for your **{diet}** diet — **{_show(ing)}** checks out."
+            )
         else:
             ing_str = ", ".join(f"**{_show(i)}**" for i in meaningful_ings)
             parts.append(
-                f"✅ All good — {ing_str} are compatible with your **{diet}** diet."
+                f"✅ No disqualifying ingredients found on this label for your **{diet}** diet — {ing_str} all check out."
             )
         if verdict.informational_ingredients and verdict.confidence_score < 1.0:
             minors = ", ".join(verdict.informational_ingredients)
@@ -762,12 +762,11 @@ def compose_verdict_explanation(
     if verdict.status == VerdictStatus.SAFE and not triggered and not uncertain:
         if len(meaningful) == 1:
             return (
-                f"Based on your {diet} profile, this ingredient looks suitable "
-                f"with no conflicts detected."
+                f"No disqualifying ingredients found on this label for your {diet} profile."
             )
         return (
-            f"All {safe_count} ingredients appear compatible with your {diet} profile. "
-            f"No allergens or diet restrictions were triggered."
+            f"No disqualifying ingredients found on this label for your {diet} profile — "
+            f"all {safe_count} ingredients checked out."
         )
 
     if triggered:
@@ -979,4 +978,6 @@ def build_ingredient_audit_payload(
         "groups": groups,
         "explanation": explanation_text.strip() or None,
         "explanation_source": explanation_source,
+        # Display-only tier (never gates the verdict) — see ComplianceVerdict.evidence_tier.
+        "confidence_tier": getattr(verdict, "evidence_tier", "standard"),
     }

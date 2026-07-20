@@ -25,7 +25,10 @@ _RESPONSE_SYSTEM_PROMPT = """You are a friendly ingredient safety assistant. You
 _VERDICT_EXPLANATION_SYSTEM = """You are an ingredient safety assistant writing a brief verdict explanation.
 Write exactly 1-2 short sentences (maximum 45 words total). No bullet lists or markdown.
 Do NOT repeat ingredient names already shown in Avoid/Check/Safe cards.
-Give one practical takeaway: why it is flagged or what to choose instead. No emojis."""
+Give one practical takeaway: why it is flagged or what to choose instead. No emojis.
+Never claim the product is "safe to eat", guaranteed safe, or medically certified — this is a
+label-scoped ingredient check, not a medical or religious certification. Only say that no
+disqualifying ingredients were found for the stated profile."""
 
 
 def _trim_explanation(text: str, max_sentences: int = 2, max_chars: int = 260) -> str:
@@ -152,6 +155,25 @@ def _explanation_introduces_unflagged_terms(text: str, flagged: List[str]) -> bo
     return False
 
 
+_ABSOLUTE_SAFETY_CLAIM_PATTERNS = (
+    r"safe to (?:eat|consume)",
+    r"guarantee(?:d|s)?\s+safe",
+    r"100%\s*safe",
+    r"certified\s+safe",
+    r"medically\s+(?:safe|certified|approved)",
+)
+
+
+def _explanation_makes_absolute_safety_claim(text: str) -> bool:
+    """Reject LLM copy that overreaches into an absolute/medical guarantee.
+    Safe must read as label-scoped ("no disqualifying ingredients found"),
+    never as a blanket "safe to eat" claim (Phase 3 product-honesty)."""
+    if not text:
+        return False
+    lowered = text.lower()
+    return any(re.search(p, lowered) for p in _ABSOLUTE_SAFETY_CLAIM_PATTERNS)
+
+
 def _explanation_species_mismatch(text: str, flagged: List[str]) -> bool:
     """True when explanation names a different meat species than flagged ingredients."""
     from core.external_apis.enrichment_relevance import species_groups_in_text
@@ -184,8 +206,9 @@ def llm_compose_verdict_explanation(
 
     if verdict.status == VerdictStatus.SAFE and not avoid_substances and not check_names:
         prompt = (
-            f"All {safe_count} ingredients suit a {diet_phrase} diet. "
-            f"One short confirmation sentence. Do NOT list names."
+            f"No disqualifying ingredients were found among the {safe_count} ingredients on this "
+            f"label for a {diet_phrase} diet. One short confirmation sentence scoped to this label "
+            f"only — do NOT say it is safe to eat or medically guaranteed. Do NOT list names."
         )
     elif avoid_substances:
         primary = avoid_substances[0]
@@ -212,6 +235,9 @@ def llm_compose_verdict_explanation(
 
     result = _call_ollama(_VERDICT_EXPLANATION_SYSTEM, prompt, timeout=LLM_RESPONSE_TIMEOUT)
     if result and _looks_like_ingredient_list(result):
+        return None
+    if result and _explanation_makes_absolute_safety_claim(result):
+        logger.info("LLM_VERDICT_EXPL rejected absolute safety claim")
         return None
     if result and _explanation_introduces_unflagged_terms(
         result, list(avoid_substances) + list(check_names)

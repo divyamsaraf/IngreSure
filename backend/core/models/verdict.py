@@ -26,6 +26,11 @@ class ComplianceVerdict:
     informational_ingredients: list[str] = field(default_factory=list)  # minor <2%, do not reduce confidence
     confidence_score: float = 0.0
     ontology_version: str = ""
+    # Display-only evidence tier for the audit UI (never gates the verdict
+    # itself): "verified" when every resolved ingredient rests on
+    # LOCKED/VERIFIED knowledge, "limited" when any ingredient is untrusted
+    # or from a low-trust/unclassified source, else "standard".
+    evidence_tier: str = "standard"
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -40,4 +45,5 @@ class ComplianceVerdict:
             "informational_ingredients": list(self.informational_ingredients),
             "confidence_score": self.confidence_score,
             "ontology_version": self.ontology_version,
+            "evidence_tier": self.evidence_tier,
         }

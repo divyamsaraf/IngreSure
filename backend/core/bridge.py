@@ -234,6 +234,39 @@ def preprocess_ingredient_list(
 # disjoint from real canonical/substance-key strings.
 _UNRESOLVED_POS_KEY = "\x00pos:{}"
 
+# Mirrors core.knowledge.ike2.compliance._KS_RANK (kept separate since that
+# name is private and this ranking drives a display-only tier, never a
+# gating decision).
+_EVIDENCE_KS_RANK = {
+    "UNCLASSIFIED": 0,
+    "DISCOVERED": 1,
+    "AUTO_CLASSIFIED": 2,
+    "CLASSIFIED": 3,
+    "VERIFIED": 4,
+    "LOCKED": 5,
+}
+
+
+def _compute_evidence_tier(inputs) -> str:
+    """Confidence tier for the audit UI (product honesty, Phase 3): 'verified'
+    when every resolved ingredient rests on LOCKED/VERIFIED knowledge,
+    'limited' when any ingredient is untrusted or from a low-trust/
+    unclassified source, else 'standard'. Never affects the verdict itself."""
+    ranks = []
+    for inp in inputs or []:
+        if not getattr(inp, "trusted", False):
+            return "limited"
+        ks = getattr(inp, "knowledge_state", "") or "UNCLASSIFIED"
+        ranks.append(_EVIDENCE_KS_RANK.get(ks, 0))
+    if not ranks:
+        return "standard"
+    lowest = min(ranks)
+    if lowest >= _EVIDENCE_KS_RANK["VERIFIED"]:
+        return "verified"
+    if lowest <= _EVIDENCE_KS_RANK["DISCOVERED"]:
+        return "limited"
+    return "standard"
+
 
 def map_ike2_to_compliance_verdict(
     result, inputs, *, ontology_version: str = "", input_display_map: dict | None = None
@@ -347,6 +380,7 @@ def map_ike2_to_compliance_verdict(
         informational_ingredients=informational_ingredients,
         confidence_score=confidence_score,
         ontology_version=ontology_version,
+        evidence_tier=_compute_evidence_tier(inputs),
     )
 
 
