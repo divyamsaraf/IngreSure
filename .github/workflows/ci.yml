@@ -31,8 +31,11 @@ jobs:
         run: python scripts/verify_e_number_catalog.py --fail-on-error
       - name: Check E-number artifact drift
         run: |
+          # Upgrade fields in memory only; never rewrite e_number_catalog.json in CI.
           python scripts/generate_ike2_e_numbers.py
           git diff --exit-code core/knowledge/ike2/truth_anchor_e_numbers.json ../data/layer1_e_numbers.json
+          # Catalog must stay untouched by the generator default path.
+          git diff --exit-code -- ../data/e_number_catalog.json
       - name: Check label corpus drift
         run: python scripts/generate_label_corpus.py --check
       - name: False-Safe shadow gate (label corpus; fails on any false-Safe or match-rate drop)
