@@ -4,11 +4,13 @@ import ContentPageLayout from '@/components/content/ContentPageLayout'
 import { ContentPageHeader } from '@/components/content/ContentPageHeader'
 import { ContentSection } from '@/components/content/ContentSection'
 import { CONTACT_EMAIL } from '@/lib/site'
+import { buildPageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
-  title: 'Privacy Policy | IngreSure',
-  description: 'How IngreSure collects and uses data when you check ingredient safety.',
-}
+export const metadata: Metadata = buildPageMetadata({
+  title: 'Privacy Policy',
+  description: `How IngreSure handles ingredient queries and privacy. No account required. Contact: ${CONTACT_EMAIL}.`,
+  path: '/privacy-policy',
+})
 
 export default function PrivacyPolicyPage() {
   return (

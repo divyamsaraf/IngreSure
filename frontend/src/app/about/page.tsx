@@ -4,12 +4,14 @@ import ContentPageLayout from '@/components/content/ContentPageLayout'
 import { ContentPageHeader } from '@/components/content/ContentPageHeader'
 import { ContentSection } from '@/components/content/ContentSection'
 import { BRAND, CONTACT_EMAIL, COVERAGE } from '@/lib/site'
+import { buildPageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
-  title: 'About | IngreSure',
+export const metadata: Metadata = buildPageMetadata({
+  title: 'About IngreSure',
   description:
-    'IngreSure helps people with diets and allergies know what is safe to eat — with clear answers, not guesswork.',
-}
+    'Why we built IngreSure: clear diet and allergen answers for grocery lists and labels — rules decide safety, not AI guesswork. No signup required.',
+  path: '/about',
+})
 
 /**
  * About page — mission and trust for people (and a light path for platforms).

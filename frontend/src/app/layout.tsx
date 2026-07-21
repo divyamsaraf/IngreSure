@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Newsreader } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/components/Navbar";
+import { ConfigProvider } from "@/context/ConfigContext";
+import { ProfileProvider } from "@/context/ProfileContext";
+import { Analytics } from "@vercel/analytics/react";
+import { buildRootMetadata, buildSiteJsonLd } from "@/lib/seo";
 
 /**
  * Body/UI: Plus Jakarta Sans (taste: avoid Inter default).
@@ -18,30 +23,22 @@ const newsreader = Newsreader({
   weight: ["400", "500", "600", "700"],
 });
 
-export const metadata: Metadata = {
-  title: "IngreSure - Ingredient safety you can verify",
-  description:
-    "Paste a label or menu. Get Safe / Avoid / Depends audits for your diet and allergens — rules-based, not guesswork. No signup.",
-  openGraph: {
-    title: "IngreSure — Know what's inside",
-    description: "Eat with confidence. Personalized ingredient audits without an account.",
-    type: "website",
-  },
-};
-
-import Navbar from "@/components/Navbar";
-import { ConfigProvider } from "@/context/ConfigContext";
-import { ProfileProvider } from "@/context/ProfileContext";
-import { Analytics } from "@vercel/analytics/react";
+export const metadata: Metadata = buildRootMetadata();
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const jsonLd = buildSiteJsonLd();
+
   return (
     <html lang="en" className={`${jakarta.variable} ${newsreader.variable}`}>
       <body className="antialiased font-sans" suppressHydrationWarning>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <ConfigProvider>
           <ProfileProvider>
             <Navbar />

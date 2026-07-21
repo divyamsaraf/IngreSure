@@ -3,12 +3,23 @@ import ContentPageLayout from '@/components/content/ContentPageLayout'
 import { ContentPageHeader } from '@/components/content/ContentPageHeader'
 import { ContentSection } from '@/components/content/ContentSection'
 import RequestAccessForm from '@/components/business/RequestAccessForm'
+import { buildPageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
-  title: 'For Business | IngreSure',
+export const metadata: Metadata = buildPageMetadata({
+  title: 'For Business — Diet & allergen checks for food platforms',
   description:
-    'Reduce allergen and diet mistakes in grocery, delivery, restaurants, and recipes — before they become claims, recalls, or lost customers.',
-}
+    'Reduce allergen and diet mistakes in grocery, delivery, restaurants, and recipes — before they become claims, recalls, or lost customers. Partner with IngreSure.',
+  path: '/for-business',
+  keywords: [
+    'allergen compliance API',
+    'food allergy software for restaurants',
+    'dietary restriction platform',
+    'grocery allergen checker B2B',
+    'menu allergen compliance',
+    'food safety partner',
+    'IngreSure business',
+  ],
+})
 
 /**
  * Partner sales page (content + sales + risk framing).

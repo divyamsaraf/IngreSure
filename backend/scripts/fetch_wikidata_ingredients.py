@@ -35,7 +35,7 @@ _DEFAULT_OFF_STAGING = _repo / "data" / "off_staging.json"
 _DEFAULT_USDA_STAGING = _repo / "data" / "usda_staging.json"
 
 WIKIDATA_HEADERS = {
-    "User-Agent": "IngreSure-DB-Builder/1.0 (food safety app; contact@ingresure.com)",
+    "User-Agent": "IngreSure-DB-Builder/1.0 (food safety app; divyam.saraf@gmail.com)",
     "Accept": "application/sparql-results+json",
 }
 
