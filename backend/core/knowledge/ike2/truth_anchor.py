@@ -292,6 +292,25 @@ def lookup(normalized_key: str) -> Optional[TruthAnchorFact]:
     return None
 
 
+def is_compound_umbrella(name: str) -> bool:
+    """True when name is a Tier-1 compound/umbrella registered via _add_compound.
+
+    Uses ``_COMPOUND_CANONICALS`` + ``lookup`` — the same set that caps
+    natural flavors / spices / dish shells to verdict_cap=WARN.
+    """
+    from core.normalization.normalizer import normalize_ingredient_key
+
+    if not name or not str(name).strip():
+        return False
+    key = normalize_ingredient_key(str(name).strip())
+    if key in _COMPOUND_CANONICALS:
+        return True
+    fact = lookup(key) or lookup(str(name).strip())
+    if fact is None:
+        return False
+    return fact.canonical_name in _COMPOUND_CANONICALS
+
+
 def all_anchors() -> dict[str, TruthAnchorFact]:
     """Every Tier-1 alias -> fact, including generated E-number anchors.
 
