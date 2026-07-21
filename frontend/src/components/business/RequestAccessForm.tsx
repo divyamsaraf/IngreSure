@@ -2,7 +2,15 @@
 
 import { useState, type FormEvent } from 'react'
 
-const USE_CASES = ['Food delivery', 'Grocery app', 'Recipe app', 'Other'] as const
+const USE_CASES = [
+  'Grocery / retail app',
+  'Food delivery / marketplace',
+  'Restaurant / meal kit',
+  'Recipe or meal-planning app',
+  'Corporate dining / catering',
+  'CPG / private label',
+  'Other',
+] as const
 
 type FormState = 'idle' | 'submitting' | 'success' | 'error'
 
@@ -11,6 +19,7 @@ export default function RequestAccessForm() {
   const [useCase, setUseCase] = useState<(typeof USE_CASES)[number] | ''>('')
   const [monthlyVolume, setMonthlyVolume] = useState('')
   const [email, setEmail] = useState('')
+  const [problemFocus, setProblemFocus] = useState('')
   const [state, setState] = useState<FormState>('idle')
   const [error, setError] = useState('')
 
@@ -27,6 +36,7 @@ export default function RequestAccessForm() {
           use_case: useCase,
           monthly_volume: monthlyVolume,
           email,
+          problem_focus: problemFocus || undefined,
         }),
       })
       if (!res.ok) {
@@ -112,6 +122,20 @@ export default function RequestAccessForm() {
         />
       </div>
       <div>
+        <label htmlFor="problem_focus" className="block text-[13px] font-medium text-slate-700">
+          What risk are you trying to reduce? <span className="font-normal text-slate-500">(optional)</span>
+        </label>
+        <textarea
+          id="problem_focus"
+          name="problem_focus"
+          rows={3}
+          value={problemFocus}
+          onChange={(e) => setProblemFocus(e.target.value)}
+          placeholder="e.g. allergen flags at checkout, diet filters on menus, recipe personalization…"
+          className={`${fieldClass} resize-y min-h-[5.5rem]`}
+        />
+      </div>
+      <div>
         <label htmlFor="email" className="block text-[13px] font-medium text-slate-700">
           Work email
         </label>
@@ -136,7 +160,7 @@ export default function RequestAccessForm() {
         disabled={state === 'submitting'}
         className="mt-1 w-full cursor-pointer rounded-xl bg-accent px-5 py-3 text-[15px] font-semibold text-white shadow-card transition-opacity hover:opacity-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {state === 'submitting' ? 'Sending…' : 'Request access'}
+        {state === 'submitting' ? 'Sending…' : 'Request a conversation'}
       </button>
     </form>
   )

@@ -7,10 +7,11 @@ export default function BusinessBridgeSection() {
       <div className="mx-auto flex max-w-6xl flex-col gap-6 rounded-2xl border border-slate-200 bg-white px-6 py-8 md:flex-row md:items-center md:justify-between md:px-10 md:py-10">
         <div className="max-w-xl">
           <h2 className="font-display text-2xl font-bold tracking-tight text-primary md:text-3xl">
-            Building for people with diets or allergies?
+            One wrong ingredient can cost more than a refund
           </h2>
           <p className="mt-2 text-sm leading-relaxed text-slate-600 md:text-base">
-            Give them a clear answer in checkout, menus, or recipes — and keep their trust.
+            Help customers avoid allergen and diet mistakes — before they become claims, recalls, or
+            lost trust.
           </p>
         </div>
         <Link
