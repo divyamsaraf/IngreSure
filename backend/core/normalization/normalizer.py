@@ -233,13 +233,15 @@ def _apply_regional_canonical(t: str) -> str:
     return t
 
 
-def normalize_ingredient_key(text: str) -> str:
+def normalize_ingredient_key(text: str, *, apply_regional: bool = True) -> str:
     """
     Normalize a raw ingredient string for lookup.
     - Unicode NFKC normalization (regional scripts, compatibility).
     - Lowercase, strip, remove excess punctuation and whitespace.
     - Fold apostrophes (Baker's yeast → bakers yeast) so OCR/chat forms share a key.
     - Apply known variants (e.g. inglass -> isinglass).
+    - Optional static regional remap (bajra → pearl millet). Resolver may retry
+      with apply_regional=False so remap-into-void cannot hide a live regional key.
     - No substring or fuzzy matching.
     """
     if not text or not isinstance(text, str):
@@ -252,6 +254,8 @@ def normalize_ingredient_key(text: str) -> str:
     t = re.sub(r"\s+", " ", t)
     t = t.strip()
     t = _apply_known_variants(t)
+    if not apply_regional:
+        return t
     regional = _apply_regional_canonical(t)
     return regional if regional != t else t
 

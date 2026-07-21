@@ -9,6 +9,8 @@ Rules (fail-closed for allergens):
   - tree-nut tokens => tree_nut_source, with explicit non-triggers
     (water chestnut, coconut*, nutmeg, butternut squash)
   - egg tokens => egg_source, never from \"eggplant\"
+  - wheat/atta/maida/semolina/suji => gluten_source (never buckwheat)
+  - groundnut => peanut_source (not tree-nut)
 """
 from __future__ import annotations
 
@@ -32,6 +34,13 @@ _NON_TREE_NUT_PHRASES = (
     "butternut",
     "groundnut oil",  # regional peanut name handled via peanut; do not also tree-nut
 )
+
+_GLUTEN_NAMES = frozenset({
+    "wheat", "wheat flour", "whole wheat flour", "atta", "maida", "semolina",
+    "suji", "sooji", "rava", "all purpose flour", "allpurpose flour",
+    "barley", "rye", "spelt", "kamut", "farro", "freekeh", "bulgur",
+    "couscous", "seitan", "graham flour", "durum", "durum wheat",
+})
 
 _SHELLFISH_SPECIES = frozenset({
     "shellfish", "crustacean", "crustaceans", "mollusk", "mollusks",
@@ -90,8 +99,21 @@ def derive_identity_flags(
         return out
 
     # --- name tokens => allergen flags ---
-    if _has_token(name, "peanut") or name.startswith("peanut"):
+    if (
+        _has_token(name, "peanut")
+        or name.startswith("peanut")
+        or _has_token(name, "groundnut")
+        or name.startswith("groundnut")
+        or "groundnut" in name
+    ):
         out["peanut_source"] = True
+
+    if name in _GLUTEN_NAMES or (
+        _has_token(name, "wheat")
+        and "buckwheat" not in name
+        and "buck wheat" not in name
+    ):
+        out["gluten_source"] = True
 
     if _has_token(name, "sesame") or "sesame" in name:
         out["sesame_source"] = True

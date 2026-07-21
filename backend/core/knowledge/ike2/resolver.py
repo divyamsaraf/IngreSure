@@ -94,7 +94,14 @@ def resolve(atom: str, region: Optional[str]) -> ResolvedIngredient:
 
     out = _resolve_uncached(norm, region, atom=atom)
     if out.status != "resolved":
-        for alt_norm in _alternate_keys(norm):
+        candidates = list(_alternate_keys(norm))
+        # Remap invariant: if static regional remap pointed at a missing English
+        # key, still try the pre-regional form (e.g. bajra) before L5.
+        bare = normalize_ingredient_key(atom, apply_regional=False) or ""
+        if bare and bare != norm and bare not in candidates:
+            candidates.append(bare)
+            candidates.extend(_alternate_keys(bare))
+        for alt_norm in candidates:
             alt_key = cache.cache_key(alt_norm, region)
             alt_cached = cache.get(alt_key)
             if alt_cached is not None and alt_cached.status == "resolved":

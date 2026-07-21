@@ -50,6 +50,22 @@ def _row_to_fact(raw: dict) -> Optional[TruthAnchorFact]:
     )
 
 
+def _index_keys_for_label(label: str) -> list[str]:
+    """Index both pre-regional and post-regional forms of a label.
+
+    Regional remap runs inside ``normalize_ingredient_key`` by default. If we
+    only stored the remapped key, a bare regional name could still miss when
+    the English target was never promoted. Storing both closes that gap.
+    """
+    bare = normalize_ingredient_key(label, apply_regional=False)
+    remapped = normalize_ingredient_key(label, apply_regional=True)
+    out: list[str] = []
+    for k in (bare, remapped):
+        if k and k not in out:
+            out.append(k)
+    return out
+
+
 def _build_index() -> dict[str, TruthAnchorFact]:
     """Index canonicals first, then aliases/id/auto-heads (setdefault — never overwrite)."""
     index: dict[str, TruthAnchorFact] = {}
@@ -62,8 +78,7 @@ def _build_index() -> dict[str, TruthAnchorFact]:
 
     # Pass 1: canonical names win every key they own.
     for raw, fact in rows:
-        key = normalize_ingredient_key(raw.get("canonical_name") or "")
-        if key:
+        for key in _index_keys_for_label(raw.get("canonical_name") or ""):
             index.setdefault(key, fact)
 
     # Pass 2: aliases + id fill gaps only.
@@ -72,8 +87,7 @@ def _build_index() -> dict[str, TruthAnchorFact]:
         if raw.get("id"):
             labels.append(str(raw["id"]))
         for label in labels:
-            key = normalize_ingredient_key(label)
-            if key:
+            for key in _index_keys_for_label(label):
                 index.setdefault(key, fact)
 
     # Pass 3: safe dump-style heads (``X, raw`` → ``x``) fill remaining gaps.
@@ -95,16 +109,17 @@ def _index() -> dict[str, TruthAnchorFact]:
 def lookup(normalized_key: str) -> Optional[TruthAnchorFact]:
     if not normalized_key:
         return None
-    canon = normalize_ingredient_key(normalized_key)
     index = _index()
-    hit = index.get(normalized_key) or index.get(canon)
-    if hit is not None:
-        return hit
+    for key in _index_keys_for_label(normalized_key):
+        hit = index.get(key)
+        if hit is not None:
+            return hit
     # Last chance inside Tier-2: treat the query itself as a dump-style label.
     from core.knowledge.ike2.commodity_head import simple_commodity_head
 
-    head = simple_commodity_head(canon)
-    if head and head != canon:
+    bare = normalize_ingredient_key(normalized_key, apply_regional=False)
+    head = simple_commodity_head(bare)
+    if head and head != bare:
         return index.get(head)
     return None
 
