@@ -242,6 +242,33 @@ def test_uncertain_resolve_marks_insufficient_and_depends():
     assert d["internal_verdict"] == "UNCERTAIN"
     assert d["evidence_class"] == "insufficient"
     assert d["miss_class"] == "M1_absent"
+
+
+def test_depends_from_uncertainty_can_have_empty_rule_ids():
+    """KS/uncertainty Depends is not a trigger — rule_ids may be empty."""
+    resolved = SimpleNamespace(
+        status="resolved", source="ontology",
+        resolution_layer="L2_local_ontology", trusted=True,
+        miss_class=None, group=None,
+    )
+    inp = ComplianceInput(
+        canonical_name="mystery plant",
+        flags={"plant_origin": True, "animal_origin": False},
+        knowledge_state="DISCOVERED", trusted=True,
+        alcohol_role="none", verdict_cap=None, trace=False,
+    )
+    # Cell verdict WARN/UNCERTAIN via breakdown only — no triggered rules
+    result = ComplianceResult(
+        Verdict.WARN, [], [], [],
+        {("mystery plant", "vegan"): Verdict.WARN},
+        matched_rules=[],
+    )
+    chain = build_chain_from_resolve(
+        atom="mystery plant", resolved=resolved, compliance_result=result,
+        restriction_id="vegan", compliance_input=inp,
+    )
+    assert chain.verdict == "Depends"
+    assert chain.rule_ids == []
 ```
 
 - [ ] **Step 2: Run tests to verify they fail**
@@ -261,13 +288,19 @@ def rule_identity(rule) -> str:
     trigger = getattr(rule, "trigger_flag", None)
     if kind == "flag" and trigger:
         return f"{restriction}:{trigger}"
+    if kind in ("meat_fish_derived", "meat_land_derived", "alcohol"):
+        return f"{restriction}:{kind}"
     match_value = getattr(rule, "match_value", None)
-    if match_value is not None and kind in ("species_match", "species_in_list", "alcohol_content"):
-        return f"{restriction}:{kind}:{match_value}"
+    if kind in ("species_match", "species_in_list", "alcohol_content") and match_value is not None:
+        if isinstance(match_value, (list, tuple)):
+            mv = ",".join(str(x) for x in match_value)
+        else:
+            mv = str(match_value)
+        return f"{restriction}:{kind}:{mv}"
     return f"{restriction}:{kind}"
 ```
 
-In `compliance.py` `ComplianceResult.__init__`, add `matched_rules=None` defaulting to `[]`.  
+In `compliance.py` `ComplianceResult.__init__`, add `matched_rules=None` and assign **`self.matched_rules = list(matched_rules or [])`** (never a mutable default shared across instances).
 In `evaluate`, when a rule is evaluated, append:
 
 ```python
@@ -355,10 +388,20 @@ class EvidenceChain:
         return asdict(self)
 
 
-def _evidence_class(flags: dict, miss_class: Optional[str], verdict: Verdict) -> str:
+def _evidence_class(
+    flags: dict,
+    miss_class: Optional[str],
+    verdict: Verdict,
+    *,
+    verdict_cap: Optional[str] = None,
+) -> str:
     if miss_class or verdict in (Verdict.UNCERTAIN, Verdict.WARN):
         if not flags:
             return "insufficient"
+    # Compound/umbrella before plant — else spices audit as closed_form_plant.
+    cap = verdict_cap or flags.get("verdict_cap")
+    if cap == "WARN":
+        return "dual_or_compound"
     # Allergen-adjacent BEFORE animalish so fish/shellfish audit as allergen.
     if is_allergen_adjacent(flags):
         return "allergen"
@@ -366,8 +409,6 @@ def _evidence_class(flags: dict, miss_class: Optional[str], verdict: Verdict) ->
         return "animal"
     if flags.get("plant_origin") and not flags.get("animal_origin"):
         return "closed_form_plant"
-    if flags.get("verdict_cap") == "WARN":
-        return "dual_or_compound"
     return "insufficient"
 
 
@@ -448,6 +489,9 @@ def build_chain_from_resolve(
         restriction_id=restriction_id,
     )
     miss = getattr(resolved, "miss_class", None)
+    verdict_cap = None
+    if compliance_input is not None:
+        verdict_cap = getattr(compliance_input, "verdict_cap", None)
 
     return EvidenceChain(
         atom=atom,
@@ -462,7 +506,9 @@ def build_chain_from_resolve(
         ),
         verdict=to_audit_bucket(engine_verdict),
         internal_verdict=to_external(engine_verdict),
-        evidence_class=_evidence_class(flags, miss, engine_verdict),
+        evidence_class=_evidence_class(
+            flags, miss, engine_verdict, verdict_cap=verdict_cap
+        ),
         miss_class=miss,
         restriction_id=restriction_id,
         resolution_layer=getattr(resolved, "resolution_layer", None),
