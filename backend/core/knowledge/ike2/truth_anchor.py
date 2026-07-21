@@ -30,8 +30,12 @@ def _add(keys, canonical, flags, *, knowledge_state: str = "LOCKED"):
             _ANCHORS[k] = fact
 
 
+_COMPOUND_CANONICALS: set[str] = set()
+
+
 def _add_compound(keys, canonical):
     """Unresolvable compound terms: never firm-SAFE (design §4B)."""
+    _COMPOUND_CANONICALS.add(canonical)
     _add(keys, canonical, _f(verdict_cap="WARN"), knowledge_state="VERIFIED")
 
 

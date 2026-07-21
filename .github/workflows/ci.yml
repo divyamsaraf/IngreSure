@@ -31,8 +31,11 @@ jobs:
         run: python scripts/verify_e_number_catalog.py --fail-on-error
       - name: Check E-number artifact drift
         run: |
+          # Upgrade fields in memory only; never rewrite e_number_catalog.json in CI.
           python scripts/generate_ike2_e_numbers.py
           git diff --exit-code core/knowledge/ike2/truth_anchor_e_numbers.json ../data/layer1_e_numbers.json
+          # Catalog must stay untouched by the generator default path.
+          git diff --exit-code -- ../data/e_number_catalog.json
       - name: Check label corpus drift
         run: python scripts/generate_label_corpus.py --check
       - name: False-Safe shadow gate (label corpus; fails on any false-Safe or match-rate drop)
@@ -41,8 +44,8 @@ jobs:
         run: python -m pytest tests/ike2/test_must_never_be_safe.py tests/ike2/test_golden_safety_budget.py -q
       - name: Commodity coverage promote + USDA head gate
         run: |
-          python scripts/ensure_commodity_coverage.py
-          # Report JSON has a run timestamp; ontology + seed lists are the contract.
+          # Validate recall only — do not rewrite ontology/seed lists in CI.
+          python scripts/ensure_commodity_coverage.py --check-only
           git diff --exit-code -- ../data/ontology.json ../data/commodity_seed_lists/
       - name: Run tests
         run: python -m pytest tests/ -q

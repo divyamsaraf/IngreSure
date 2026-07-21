@@ -53,8 +53,19 @@ def _upgrade_catalog_entries(entries: list[dict]) -> list[dict]:
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description="Generate IKE-2 E-number artifacts")
     parser.add_argument("--catalog", type=Path, default=DEFAULT_CATALOG)
-    parser.add_argument("--upgrade-catalog", action="store_true", default=True)
+    parser.add_argument(
+        "--upgrade-catalog",
+        action="store_true",
+        default=True,
+        help="Fill missing IKE-2 optional fields in memory before generating artifacts",
+    )
     parser.add_argument("--no-upgrade-catalog", dest="upgrade_catalog", action="store_false")
+    parser.add_argument(
+        "--write-catalog",
+        action="store_true",
+        default=False,
+        help="Persist upgraded catalog JSON to disk (off by default so CI drift checks stay clean)",
+    )
     args = parser.parse_args(argv)
 
     with open(args.catalog, encoding="utf-8") as fh:
@@ -63,7 +74,11 @@ def main(argv=None) -> int:
     if args.upgrade_catalog:
         entries = _upgrade_catalog_entries(entries)
         catalog["entries"] = entries
-        args.catalog.write_text(json.dumps(catalog, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        if args.write_catalog:
+            args.catalog.write_text(
+                json.dumps(catalog, indent=2, ensure_ascii=False) + "\n",
+                encoding="utf-8",
+            )
 
     anchor_map = build_anchor_facts(entries)
     layer1 = layer1_records(entries)
@@ -75,6 +90,7 @@ def main(argv=None) -> int:
         "truth_anchor_keys": len(anchor_map),
         "layer1_groups": len(layer1),
         "catalog_entries": len(entries),
+        "catalog_written": bool(args.upgrade_catalog and args.write_catalog),
     }, indent=2))
     return 0
 

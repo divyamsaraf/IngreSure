@@ -850,6 +850,41 @@ def _scrub_compound_never_firm(ingredients: list[dict[str, Any]]) -> int:
     return removed
 
 
+def _scrub_contradictory_identity_flags(ingredients: list[dict[str, Any]]) -> int:
+    """Clear impossible OR-merge pollution (fish≠dairy, egg≠dairy, fish≠sesame)."""
+    fixed = 0
+    for row in ingredients:
+        canon = _norm(row.get("canonical_name") or "")
+        species = str(row.get("animal_species") or "").lower()
+        is_fish = bool(row.get("fish_source")) or species == "fish" or canon == "fish"
+        is_shellfish = (
+            bool(row.get("shellfish_source"))
+            or species == "shellfish"
+            or canon in {
+                "shrimp", "crab", "lobster", "clam", "oyster", "mussel",
+                "scallop", "prawn", "clams", "oysters", "mussels", "scallops",
+            }
+        )
+        is_egg = bool(row.get("egg_source")) and (
+            canon in ("egg", "eggs") or species in ("bird", "chicken", "hen")
+        )
+        changed = False
+        if is_fish or is_shellfish:
+            for flag in ("dairy_source", "egg_source", "sesame_source", "plant_origin"):
+                if row.get(flag):
+                    row[flag] = False
+                    changed = True
+            if not row.get("animal_origin"):
+                row["animal_origin"] = True
+                changed = True
+        if is_egg and row.get("dairy_source"):
+            row["dairy_source"] = False
+            changed = True
+        if changed:
+            fixed += 1
+    return fixed
+
+
 def _index_ontology(ingredients: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
     idx: dict[str, dict[str, Any]] = {}
     for ing in ingredients:
@@ -965,6 +1000,7 @@ def promote(*, dry_run: bool = False) -> dict[str, Any]:
     stats_regional = merge_into_ontology(ingredients, regional_seeds)
     alias_added = apply_variant_aliases_as_row_aliases(ingredients)
     scrubbed = _scrub_compound_never_firm(ingredients)
+    identity_scrubbed = _scrub_contradictory_identity_flags(ingredients)
 
     report = {
         "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -978,6 +1014,7 @@ def promote(*, dry_run: bool = False) -> dict[str, Any]:
         "regional_seed_count": len(regional_seeds),
         "variant_aliases_attached": alias_added,
         "compound_rows_scrubbed": scrubbed,
+        "identity_flags_scrubbed": identity_scrubbed,
         "usda_merge": stats_usda,
         "seed_merge": stats_seed,
         "nin_merge": stats_nin,

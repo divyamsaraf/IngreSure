@@ -173,6 +173,20 @@ class SupabaseWriter:
     def update_group(self, gid, result):
         update = dict(result.merged_flags)
         update["knowledge_state"] = result.knowledge_state
+        # Reconcile ORs sticky plant_origin from older bad rows onto animal
+        # commodities; the DB CHECK dual_origin_requires_uncertainty rejects
+        # that unless uncertainty is set. Prefer clearing plant on seafood /
+        # explicit animal-only rows; otherwise attach uncertainty.
+        if update.get("animal_origin") and update.get("plant_origin"):
+            if (
+                update.get("fish_source")
+                or update.get("shellfish_source")
+                or str(update.get("animal_species") or "").lower()
+                in ("fish", "shellfish")
+            ):
+                update["plant_origin"] = False
+            else:
+                update["uncertainty_flags"] = ["dual_origin"]
         self.c.table("ike2_ingredient_groups").update(update).eq("id", gid).execute()
 
     def upsert_ingredient(self, gid, normalized_name, source):

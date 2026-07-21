@@ -26627,7 +26627,7 @@
     "knowledge_state": "LOCKED",
     "alias_type": "common"
   },
-  "baker's ammonia": {
+  "bakers ammonia": {
     "canonical_name": "ammonium carbonates",
     "flags": {
       "animal_origin": false,
@@ -27584,7 +27584,7 @@
     "knowledge_state": "LOCKED",
     "alias_type": "common"
   },
-  "glauber's salt": {
+  "glaubers salt": {
     "canonical_name": "sodium sulphates",
     "flags": {
       "animal_origin": false,
@@ -37461,7 +37461,7 @@
     "knowledge_state": "LOCKED",
     "alias_type": "common"
   },
-  "sweet'n low": {
+  "sweetn low": {
     "canonical_name": "saccharin and its salts",
     "flags": {
       "animal_origin": false,
