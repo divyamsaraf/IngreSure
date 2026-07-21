@@ -10,8 +10,10 @@ Usage (repo root or backend/):
   python backend/scripts/ensure_commodity_coverage.py
   python backend/scripts/ensure_commodity_coverage.py --check-only
 
-CI should run without --check-only so promote is applied, then ``git diff
---exit-code`` on ontology proves the committed tree already includes promotion.
+CI must use ``--check-only`` so ontology / seed lists stay untouched; ``git diff
+--exit-code`` then proves the committed tree already satisfies coverage gates.
+Locally, run without ``--check-only`` to promote, then commit the ontology
+(and seed list) updates.
 """
 from __future__ import annotations
 
