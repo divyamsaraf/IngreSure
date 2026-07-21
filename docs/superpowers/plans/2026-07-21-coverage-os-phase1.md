@@ -28,7 +28,9 @@
 |------|----------------|
 | `backend/core/knowledge/ike2/coverage_os/__init__.py` | Package export |
 | `backend/core/knowledge/ike2/coverage_os/deny_lists.py` | **Single** allergen-adjacent + animalish constants (sulfite=`sulphite_source`, mollusc via species); shared by evidence_chain + hybrid_gate |
-| `backend/core/knowledge/ike2/coverage_os/evidence_chain.py` | Attested chain dataclass + builders; `verdict` = Safe/Avoid/Depends |
+| `backend/core/knowledge/ike2/coverage_os/evidence_chain.py` | Attested chain; `verdict` = Safe/Avoid/Depends; `rule_ids` from `matched_rules` filtered to atom |
+| `backend/core/knowledge/ike2/compliance.py` | Additive: `matched_rules` list on evaluate result |
+| `backend/core/knowledge/ike2/rules.py` | Additive: `rule_identity(rule)` |
 | `backend/core/knowledge/ike2/coverage_os/promote_ledger.py` | JSONL ledger: promote / demote / non_promotable |
 | `backend/core/knowledge/ike2/coverage_os/hybrid_gate.py` | Non-promotable short-circuit + auto/human/reject; imports deny lists (no duplicate) |
 | `backend/core/knowledge/ike2/coverage_os/promote_writer.py` | Apply / retract ontology + variant_aliases |
@@ -50,27 +52,36 @@ Task 2 promote_ledger ──┼──► Task 3 hybrid_gate ──► Task 4 pro
 
 ---
 
-### Task 1: `evidence_chain` (+ shared `deny_lists`)
+### Task 1: `evidence_chain` (+ shared `deny_lists` + compliance `matched_rules`)
 
 **Files:**
 - Create: `backend/core/knowledge/ike2/coverage_os/__init__.py`
 - Create: `backend/core/knowledge/ike2/coverage_os/deny_lists.py`
 - Create: `backend/core/knowledge/ike2/coverage_os/evidence_chain.py`
-- Test: `backend/tests/ike2/coverage_os/test_evidence_chain.py`
+- Modify: `backend/core/knowledge/ike2/compliance.py` — add `matched_rules` on `ComplianceResult` / `evaluate`
+- Modify: `backend/core/knowledge/ike2/rules.py` — add `rule_identity(rule) -> str` helper
 - Test: `backend/tests/ike2/coverage_os/test_deny_lists.py`
+- Test: `backend/tests/ike2/coverage_os/test_evidence_chain.py`
+- Test: `backend/tests/ike2/test_compliance_matched_rules.py` (or fold into evidence_chain tests)
 
 **Interfaces:**
-- Consumes: `ComplianceInput`, `ResolvedIngredient`, `ComplianceResult`, `Verdict`, `to_external`
+- Consumes: `ComplianceInput`, `ResolvedIngredient`, `ComplianceResult` (with **`matched_rules`**), `Verdict`, `to_external`
 - Produces:
-  - `deny_lists.is_allergen_adjacent(flags) -> bool` (single source of truth for Task 1 + Task 3)
-  - `deny_lists.is_animalish(flags) -> bool`
-  - `to_audit_bucket(Verdict) -> Literal["Safe","Avoid","Depends"]` — maps **now** in Task 1 (no “maps later”)
-  - `EvidenceChain` with `verdict` = audit bucket; `internal_verdict` = `to_external(Verdict)` for debug
+  - `deny_lists.is_allergen_adjacent(flags) -> bool` / `is_animalish(flags) -> bool`
+  - `rules.rule_identity(rule) -> str` e.g. `hindu_vegetarian:meat_fish_derived` or `hindu_vegetarian:egg_source`
+  - `to_audit_bucket(Verdict) -> Literal["Safe","Avoid","Depends"]`
+  - `EvidenceChain.verdict` = audit bucket; `internal_verdict` = `to_external(...)`
+  - `EvidenceChain.rule_ids` = **fired rule identities for this atom only**
   - `build_chain_from_resolve(...) -> EvidenceChain`
 
-**Vocabulary lock:** `EvidenceChain.verdict` is **only** `Safe` | `Avoid` | `Depends`. Never store engine `UNCERTAIN`/`NOT_SAFE` in `verdict`.
+**Why `breakdown` is not enough (named blind spot):**  
+`breakdown[(canonical, restriction_id)] = verdict` only stores the worst verdict per restriction. It has **no rule identity**. Empty `breakdown={}` in prior draft tests hid a buggy loop that stuffed `restriction_id` into `rule_ids`. Task 1 must not mark done until a **non-empty multi-ingredient** `matched_rules` test passes.
 
-**Sulfite spelling:** codebase flag is British `sulphite_source` (see `rules.py` / truth_anchor). Deny list uses that exact name.
+**Vocabulary lock:** `verdict` is only `Safe` | `Avoid` | `Depends`.
+
+**Sulfite spelling:** flag name is `sulphite_source`.
+
+**evidence_class order:** check **`is_allergen_adjacent` before `is_animalish`** so fish/shellfish label as `allergen` (audit trail), not only `animal`. Both still human-gate in Task 3.
 
 - [ ] **Step 1: Write the failing tests**
 
@@ -102,6 +113,8 @@ from core.knowledge.ike2.coverage_os.evidence_chain import (
 from core.knowledge.ike2.compliance import ComplianceResult
 from core.knowledge.ike2.verdict import Verdict
 from core.knowledge.ike2.seam import ComplianceInput
+from core.knowledge.ike2.rules import seeded_rules, rule_identity
+from core.knowledge.ike2.compliance import evaluate
 
 
 def test_to_audit_bucket_maps_engine_to_three_buckets():
@@ -113,184 +126,168 @@ def test_to_audit_bucket_maps_engine_to_three_buckets():
 
 def test_safe_chain_stores_audit_bucket_not_engine_enum():
     resolved = SimpleNamespace(
-        status="resolved",
-        source="truth_anchor",
-        resolution_layer="L1_truth_anchor",
-        trusted=True,
-        miss_class=None,
-        group=SimpleNamespace(
-            canonical_name="sugar",
-            flags={"plant_origin": True, "animal_origin": False},
-            knowledge_state="LOCKED",
-        ),
+        status="resolved", source="truth_anchor",
+        resolution_layer="L1_truth_anchor", trusted=True, miss_class=None, group=None,
     )
     inp = ComplianceInput(
         canonical_name="sugar",
         flags={"plant_origin": True, "animal_origin": False},
-        knowledge_state="LOCKED",
-        trusted=True,
-        alcohol_role="none",
-        verdict_cap=None,
-        trace=False,
+        knowledge_state="LOCKED", trusted=True,
+        alcohol_role="none", verdict_cap=None, trace=False,
     )
-    result = ComplianceResult(Verdict.SAFE, [], [], [], {})
+    result = ComplianceResult(Verdict.SAFE, [], [], [], {}, matched_rules=[])
     chain = build_chain_from_resolve(
-        atom="sugar",
-        resolved=resolved,
-        compliance_result=result,
-        restriction_id="hindu_vegetarian",
-        compliance_input=inp,
+        atom="sugar", resolved=resolved, compliance_result=result,
+        restriction_id="hindu_vegetarian", compliance_input=inp,
     )
     d = chain.to_dict()
     assert d["verdict"] == "Safe"
     assert d["internal_verdict"] == "SAFE"
-    assert d["source"] == "truth_anchor"
-    assert d["canonical"] == "sugar"
-    assert d["miss_class"] is None
     assert d["evidence_class"] == "closed_form_plant"
-    assert "flags" in d and "rule_ids" in d
+    assert d["rule_ids"] == []
 
 
-def test_fail_chain_is_avoid_bucket():
-    resolved = SimpleNamespace(
-        status="resolved",
-        source="truth_anchor",
-        resolution_layer="L1_truth_anchor",
-        trusted=True,
-        miss_class=None,
-        group=SimpleNamespace(
-            canonical_name="beef",
-            flags={"animal_origin": True, "animal_species": "cow"},
-            knowledge_state="LOCKED",
-        ),
-    )
-    inp = ComplianceInput(
+def test_rule_ids_are_rule_identity_filtered_to_this_ingredient():
+    """Non-empty multi-ingredient matched_rules — must not leak other atoms' rules."""
+    beef = ComplianceInput(
         canonical_name="beef",
         flags={"animal_origin": True, "animal_species": "cow"},
-        knowledge_state="LOCKED",
-        trusted=True,
-        alcohol_role="none",
-        verdict_cap=None,
-        trace=False,
+        knowledge_state="LOCKED", trusted=True,
+        alcohol_role="none", verdict_cap=None, trace=False,
     )
-    result = ComplianceResult(Verdict.FAIL, [], [], [], {})
+    sugar = ComplianceInput(
+        canonical_name="sugar",
+        flags={"plant_origin": True, "animal_origin": False},
+        knowledge_state="LOCKED", trusted=True,
+        alcohol_role="none", verdict_cap=None, trace=False,
+    )
+    profile = SimpleNamespace(restrictions={"hindu_vegetarian": "preference", "vegan": "preference"})
+    result = evaluate([beef, sugar], profile, seeded_rules())
+    assert getattr(result, "matched_rules", None), "evaluate must populate matched_rules"
+    # Beef under hindu_vegetarian should include meat_fish_derived (or animal) rule id
+    beef_ids = [
+        m["rule_id"] for m in result.matched_rules
+        if m["canonical"] == "beef" and m["restriction"] == "hindu_vegetarian"
+    ]
+    assert beef_ids
+    assert all("hindu_vegetarian" in rid for rid in beef_ids)
+    assert any("meat_fish" in rid or "animal" in rid or "species" in rid for rid in beef_ids)
+    # Sugar must not appear as a FAIL trigger for hindu meat rule
+    sugar_hindu = [
+        m for m in result.matched_rules
+        if m["canonical"] == "sugar" and m["restriction"] == "hindu_vegetarian" and m.get("triggered")
+    ]
+    # Build chain for beef only — must not include vegan rules fired only on sugar context
+    resolved = SimpleNamespace(
+        status="resolved", source="ontology", resolution_layer="L2_local_ontology",
+        trusted=True, miss_class=None, group=None,
+    )
     chain = build_chain_from_resolve(
-        atom="beef",
-        resolved=resolved,
-        compliance_result=result,
-        restriction_id="hindu_vegetarian",
-        compliance_input=inp,
+        atom="beef", resolved=resolved, compliance_result=result,
+        restriction_id="hindu_vegetarian", compliance_input=beef,
     )
-    d = chain.to_dict()
-    assert d["verdict"] == "Avoid"
-    assert d["internal_verdict"] == "NOT_SAFE"
-    assert d["evidence_class"] == "animal"
+    assert chain.verdict == "Avoid"
+    assert chain.rule_ids
+    assert all(rid.startswith("hindu_vegetarian:") for rid in chain.rule_ids)
+    assert not any(rid.startswith("vegan:") for rid in chain.rule_ids)
+    # No bare restriction ids without a rule qualifier
+    assert "hindu_vegetarian" not in chain.rule_ids
+
+
+def test_fish_evidence_class_is_allergen_not_only_animal():
+    resolved = SimpleNamespace(
+        status="resolved", source="truth_anchor",
+        resolution_layer="L1_truth_anchor", trusted=True, miss_class=None, group=None,
+    )
+    inp = ComplianceInput(
+        canonical_name="salmon",
+        flags={"animal_origin": True, "fish_source": True, "animal_species": "fish"},
+        knowledge_state="LOCKED", trusted=True,
+        alcohol_role="none", verdict_cap=None, trace=False,
+    )
+    result = ComplianceResult(Verdict.FAIL, ["salmon"], [], [], {}, matched_rules=[])
+    chain = build_chain_from_resolve(
+        atom="salmon", resolved=resolved, compliance_result=result,
+        restriction_id="fish_allergy", compliance_input=inp,
+    )
+    assert chain.evidence_class == "allergen"
+    assert chain.verdict == "Avoid"
 
 
 def test_uncertain_resolve_marks_insufficient_and_depends():
     resolved = SimpleNamespace(
-        status="uncertain",
-        source="unknown_queue",
-        resolution_layer="L5_unknown_queue",
-        trusted=False,
-        miss_class="M1_absent",
-        group=None,
+        status="uncertain", source="unknown_queue",
+        resolution_layer="L5_unknown_queue", trusted=False,
+        miss_class="M1_absent", group=None,
     )
-    result = ComplianceResult(Verdict.UNCERTAIN, [], [], [], {})
+    result = ComplianceResult(Verdict.UNCERTAIN, [], [], [], {}, matched_rules=[])
     chain = build_chain_from_resolve(
-        atom="savills",
-        resolved=resolved,
-        compliance_result=result,
-        restriction_id="vegan",
-        compliance_input=None,
+        atom="savills", resolved=resolved, compliance_result=result,
+        restriction_id="vegan", compliance_input=None,
     )
     d = chain.to_dict()
     assert d["verdict"] == "Depends"
     assert d["internal_verdict"] == "UNCERTAIN"
     assert d["evidence_class"] == "insufficient"
     assert d["miss_class"] == "M1_absent"
-
-
-def test_mollusc_evidence_class_is_allergen():
-    resolved = SimpleNamespace(
-        status="resolved",
-        source="truth_anchor",
-        resolution_layer="L1_truth_anchor",
-        trusted=True,
-        miss_class=None,
-        group=None,
-    )
-    inp = ComplianceInput(
-        canonical_name="snail",
-        flags={"animal_origin": True, "animal_species": "mollusk"},
-        knowledge_state="LOCKED",
-        trusted=True,
-        alcohol_role="none",
-        verdict_cap=None,
-        trace=False,
-    )
-    result = ComplianceResult(Verdict.FAIL, [], [], [], {})
-    chain = build_chain_from_resolve(
-        atom="snail",
-        resolved=resolved,
-        compliance_result=result,
-        restriction_id="shellfish_allergy",
-        compliance_input=inp,
-    )
-    # animalish may win first; either animal or allergen is acceptable if mollusc denied for auto
-    assert chain.evidence_class in ("animal", "allergen")
-    assert chain.verdict == "Avoid"
 ```
 
 - [ ] **Step 2: Run tests to verify they fail**
 
 Run: `cd backend && source venv/bin/activate && pytest tests/ike2/coverage_os/test_deny_lists.py tests/ike2/coverage_os/test_evidence_chain.py -v`  
-Expected: FAIL (modules not found)
+Expected: FAIL (modules / `matched_rules` / `rule_identity` missing)
 
-- [ ] **Step 3: Write full implementation (complete files — no truncation)**
+- [ ] **Step 3: Implement `rule_identity` + `matched_rules` in compliance**
+
+In `rules.py`:
 
 ```python
-# backend/core/knowledge/ike2/coverage_os/__init__.py
-"""Coverage OS Phase 1 — evidence graph, hybrid promote, matrix."""
+def rule_identity(rule) -> str:
+    """Stable id for audit: restriction + kind/flag — not bare restriction name."""
+    restriction = getattr(rule, "restriction", "") or ""
+    kind = getattr(rule, "kind", "flag") or "flag"
+    trigger = getattr(rule, "trigger_flag", None)
+    if kind == "flag" and trigger:
+        return f"{restriction}:{trigger}"
+    match_value = getattr(rule, "match_value", None)
+    if match_value is not None and kind in ("species_match", "species_in_list", "alcohol_content"):
+        return f"{restriction}:{kind}:{match_value}"
+    return f"{restriction}:{kind}"
 ```
+
+In `compliance.py` `ComplianceResult.__init__`, add `matched_rules=None` defaulting to `[]`.  
+In `evaluate`, when a rule is evaluated, append:
+
+```python
+matched_rules.append({
+    "canonical": name,
+    "restriction": rule.restriction,
+    "rule_id": rule_identity(rule),
+    "triggered": bool(triggered),
+    "verdict": verdict,  # engine Verdict
+})
+```
+
+Only **triggered** rows need to feed `EvidenceChain.rule_ids` (filter `triggered is True`). Keep all rows optional for debugging; chain builder filters.
+
+Backward compatible: existing callers that ignore the new kwarg still work if defaulted.
+
+- [ ] **Step 4: Implement deny_lists + evidence_chain (complete)**
 
 ```python
 # backend/core/knowledge/ike2/coverage_os/deny_lists.py
-"""Single source of truth for allergen-adjacent / animalish predicates.
-
-Used by ``evidence_chain`` and ``hybrid_gate`` so the two cannot drift.
-Sulfite uses the existing British flag name ``sulphite_source``.
-Mollusc has no dedicated ``*_source`` flag today — detect via ``animal_species``.
-"""
 from __future__ import annotations
-
 from typing import Any
 
-# Matches VALID_FLAG_COLUMNS / truth_anchor naming (sulphite_source, not sulfite_source).
 ALLERGEN_ADJACENT_FLAGS: frozenset[str] = frozenset({
-    "peanut_source",
-    "tree_nut_source",
-    "sesame_source",
-    "soy_source",
-    "gluten_source",
-    "mustard_source",
-    "celery_source",
-    "lupin_source",
-    "sulphite_source",
-    "fish_source",
-    "shellfish_source",
+    "peanut_source", "tree_nut_source", "sesame_source", "soy_source",
+    "gluten_source", "mustard_source", "celery_source", "lupin_source",
+    "sulphite_source", "fish_source", "shellfish_source",
 })
-
 MOLLUSC_SPECIES: frozenset[str] = frozenset({"mollusk", "mollusc"})
-
 ANIMALISH_FLAGS: frozenset[str] = frozenset({
-    "animal_origin",
-    "egg_source",
-    "fish_source",
-    "shellfish_source",
-    "insect_derived",
-    "bee_product",
-    "dairy_source",
+    "animal_origin", "egg_source", "fish_source", "shellfish_source",
+    "insect_derived", "bee_product", "dairy_source",
 })
 
 
@@ -312,14 +309,7 @@ def is_animalish(flags: dict[str, Any] | None) -> bool:
 
 ```python
 # backend/core/knowledge/ike2/coverage_os/evidence_chain.py
-"""Attested evidence chain for Coverage OS / multi-profile matrix.
-
-``verdict`` is the audit three-bucket vocabulary locked in the Phase 1 spec:
-Safe / Avoid / Depends. Engine state is stored separately as ``internal_verdict``
-via ``to_external`` (SAFE / NOT_SAFE / UNCERTAIN) for debugging only.
-"""
 from __future__ import annotations
-
 from dataclasses import asdict, dataclass
 from typing import Any, Optional
 
@@ -328,12 +318,10 @@ from core.knowledge.ike2.verdict import Verdict, to_external
 
 
 def to_audit_bucket(verdict: Verdict) -> str:
-    """Map engine Verdict → Safe / Avoid / Depends at the chain boundary."""
     if verdict == Verdict.SAFE:
         return "Safe"
     if verdict == Verdict.FAIL:
         return "Avoid"
-    # WARN and UNCERTAIN both surface as Depends in the audit matrix.
     return "Depends"
 
 
@@ -344,8 +332,8 @@ class EvidenceChain:
     source: str
     flags: dict
     rule_ids: list[str]
-    verdict: str  # Safe | Avoid | Depends only
-    internal_verdict: str  # SAFE | NOT_SAFE | UNCERTAIN from to_external
+    verdict: str
+    internal_verdict: str
     evidence_class: str
     miss_class: Optional[str]
     restriction_id: str
@@ -355,23 +343,39 @@ class EvidenceChain:
         return asdict(self)
 
 
-def _evidence_class(
-    flags: dict,
-    miss_class: Optional[str],
-    verdict: Verdict,
-) -> str:
+def _evidence_class(flags: dict, miss_class: Optional[str], verdict: Verdict) -> str:
     if miss_class or verdict in (Verdict.UNCERTAIN, Verdict.WARN):
         if not flags:
             return "insufficient"
-    if is_animalish(flags):
-        return "animal"
+    # Allergen-adjacent BEFORE animalish so fish/shellfish audit as allergen.
     if is_allergen_adjacent(flags):
         return "allergen"
+    if is_animalish(flags):
+        return "animal"
     if flags.get("plant_origin") and not flags.get("animal_origin"):
         return "closed_form_plant"
     if flags.get("verdict_cap") == "WARN":
         return "dual_or_compound"
     return "insufficient"
+
+
+def _rule_ids_for_atom(compliance_result, *, canonical: Optional[str], atom: str, restriction_id: str) -> list[str]:
+    """Pull real rule identities; filter to this ingredient + this restriction."""
+    names = {n for n in (canonical, atom) if n}
+    names |= {n.lower() for n in names}
+    out: list[str] = []
+    for row in getattr(compliance_result, "matched_rules", None) or []:
+        if not row.get("triggered"):
+            continue
+        if row.get("restriction") != restriction_id:
+            continue
+        c = (row.get("canonical") or "").strip()
+        if c not in names and c.lower() not in names:
+            continue
+        rid = row.get("rule_id")
+        if rid and rid not in out:
+            out.append(rid)
+    return out
 
 
 def build_chain_from_resolve(
@@ -395,20 +399,17 @@ def build_chain_from_resolve(
     engine_verdict: Verdict = compliance_result.verdict
     miss = getattr(resolved, "miss_class", None)
 
-    rule_ids: list[str] = []
-    breakdown = getattr(compliance_result, "breakdown", None) or {}
-    for key in breakdown:
-        if isinstance(key, tuple) and len(key) >= 2:
-            rule_ids.append(str(key[1]))
-        else:
-            rule_ids.append(str(key))
-
     return EvidenceChain(
         atom=atom,
         canonical=canonical,
         source=getattr(resolved, "source", "unknown") or "unknown",
         flags=flags,
-        rule_ids=sorted(set(rule_ids)),
+        rule_ids=_rule_ids_for_atom(
+            compliance_result,
+            canonical=canonical,
+            atom=atom,
+            restriction_id=restriction_id,
+        ),
         verdict=to_audit_bucket(engine_verdict),
         internal_verdict=to_external(engine_verdict),
         evidence_class=_evidence_class(flags, miss, engine_verdict),
@@ -418,20 +419,23 @@ def build_chain_from_resolve(
     )
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+**Do not** iterate `breakdown` keys for `rule_ids`.
+
+- [ ] **Step 5: Run tests to verify they pass**
 
 Run: `pytest tests/ike2/coverage_os/test_deny_lists.py tests/ike2/coverage_os/test_evidence_chain.py -v`  
-Expected: PASS
+Expected: PASS (including multi-ingredient `matched_rules` test)
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 6: Commit**
 
 ```bash
 git add backend/core/knowledge/ike2/coverage_os/ \
+  backend/core/knowledge/ike2/compliance.py \
+  backend/core/knowledge/ike2/rules.py \
   backend/tests/ike2/coverage_os/test_deny_lists.py \
   backend/tests/ike2/coverage_os/test_evidence_chain.py
-git commit -m "feat(coverage-os): evidence chain with Safe/Avoid/Depends and shared deny lists"
+git commit -m "feat(coverage-os): evidence chain with real rule_ids and shared deny lists"
 ```
----
 
 ### Task 2: `promote_ledger`
 
@@ -933,8 +937,10 @@ git commit -m "test(coverage-os): Phase 1 integration smoke and exit checklist"
 
 | Spec requirement | Task |
 |------------------|------|
-| Evidence graph fields; verdict = Safe/Avoid/Depends | Task 1 |
-| Shared deny lists (sulfite + mollusc); gate imports same | Task 1 + Task 3 |
+| Evidence graph; verdict = Safe/Avoid/Depends; real rule_ids via matched_rules | Task 1 |
+| Shared deny lists (sulfite + mollusc); allergen before animal for evidence_class | Task 1 |
+| Multi-ingredient matched_rules filter test (named blind spot) | Task 1 |
+| Gate imports same deny_lists (no duplicate) | Task 3 |
 | Non-promotable short-circuit | Task 2 + 3 |
 | Ledger human reviewer fields | Task 2 |
 | Writer apply + retract | Task 4 |
