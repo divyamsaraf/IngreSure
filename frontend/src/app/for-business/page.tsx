@@ -3,6 +3,7 @@ import ContentPageLayout from '@/components/content/ContentPageLayout'
 import { ContentPageHeader } from '@/components/content/ContentPageHeader'
 import { ContentSection } from '@/components/content/ContentSection'
 import RequestAccessForm from '@/components/business/RequestAccessForm'
+import { SEO_KEYWORDS_BUSINESS } from '@/lib/site'
 import { buildPageMetadata } from '@/lib/seo'
 
 export const metadata: Metadata = buildPageMetadata({
@@ -10,15 +11,7 @@ export const metadata: Metadata = buildPageMetadata({
   description:
     'Reduce allergen and diet mistakes in grocery, delivery, restaurants, and recipes — before they become claims, recalls, or lost customers. Partner with IngreSure.',
   path: '/for-business',
-  keywords: [
-    'allergen compliance API',
-    'food allergy software for restaurants',
-    'dietary restriction platform',
-    'grocery allergen checker B2B',
-    'menu allergen compliance',
-    'food safety partner',
-    'IngreSure business',
-  ],
+  keywords: SEO_KEYWORDS_BUSINESS,
 })
 
 /**

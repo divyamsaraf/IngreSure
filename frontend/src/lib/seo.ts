@@ -15,6 +15,18 @@ type PageSeoInput = {
   noIndex?: boolean
 }
 
+function uniqueKeywords(keywords: readonly string[]): string[] {
+  const seen = new Set<string>()
+  const out: string[] = []
+  for (const k of keywords) {
+    const key = k.trim().toLowerCase()
+    if (!key || seen.has(key)) continue
+    seen.add(key)
+    out.push(k.trim())
+  }
+  return out
+}
+
 /** Shared Next.js Metadata for marketing / content pages. */
 export function buildPageMetadata({
   title,
@@ -29,7 +41,7 @@ export function buildPageMetadata({
   return {
     title: fullTitle,
     description,
-    keywords: [...keywords],
+    keywords: uniqueKeywords(keywords),
     authors: [{ name: BRAND.name, url: SITE_URL }],
     creator: BRAND.name,
     publisher: BRAND.name,
@@ -74,7 +86,7 @@ export function buildRootMetadata(): Metadata {
     },
     description: BRAND.seoDescriptionDefault,
     applicationName: BRAND.name,
-    keywords: [...SEO_KEYWORDS],
+    keywords: uniqueKeywords(SEO_KEYWORDS),
     authors: [{ name: BRAND.name, url: SITE_URL }],
     creator: BRAND.name,
     publisher: BRAND.name,
@@ -124,6 +136,7 @@ export function buildSiteJsonLd(): Record<string, unknown> {
         email: CONTACT_EMAIL,
         description: BRAND.seoDescriptionDefault,
         sameAs: [],
+        knowsAbout: uniqueKeywords(SEO_KEYWORDS).slice(0, 40),
       },
       {
         '@type': 'WebSite',
@@ -133,6 +146,7 @@ export function buildSiteJsonLd(): Record<string, unknown> {
         description: BRAND.seoDescriptionDefault,
         publisher: { '@id': `${SITE_URL}/#organization` },
         inLanguage: 'en-US',
+        keywords: uniqueKeywords(SEO_KEYWORDS).join(', '),
         potentialAction: {
           '@type': 'SearchAction',
           target: {
