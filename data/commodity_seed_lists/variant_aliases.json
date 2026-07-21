@@ -369,6 +369,18 @@
     "golden raisins": "raisins",
     "raisins golden": "raisins",
     "raisins black": "raisins",
-    "sultanas": "raisins"
+    "sultanas": "raisins",
+    "flax seeds": "flaxseeds",
+    "flax seed": "flaxseeds",
+    "flaxseed": "flaxseeds",
+    "linseeds": "flaxseeds",
+    "linseed": "flaxseeds",
+    "ragi": "finger millet",
+    "nachni": "finger millet",
+    "kezhvaragu": "finger millet",
+    "indian cottage cheese": "paneer",
+    "asafoetida": "asafetida",
+    "heeng": "asafetida",
+    "hing": "asafetida"
   }
 }

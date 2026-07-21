@@ -38,6 +38,10 @@ _REPORT = _REPO / "data" / "promote_commodity_report.json"
 _EXPANDED_LIST = _REPO / "data" / "commodity_seed_lists" / "expanded_grocery.txt"
 _IDENTITY_EXPAND = _REPO / "data" / "commodity_seed_lists" / "identity_expand.txt"
 _VARIANT_ALIASES = _REPO / "data" / "commodity_seed_lists" / "variant_aliases.json"
+_LAYER1_NIN = _REPO / "data" / "layer1_nin.json"
+_LAYER1_IFCT = _REPO / "data" / "layer1_ifct.json"
+_LAYER1_FOODEX2 = _REPO / "data" / "layer1_foodex2.json"
+_REGIONAL_NAMES = _REPO / "data" / "regional_ingredient_names.json"
 
 _PROTECTED = frozenset({"VERIFIED", "LOCKED"})
 
@@ -147,7 +151,7 @@ _DAIRY = frozenset({
     "condensed milk", "goat milk", "goat cheese", "sheep milk", "feta cheese",
     "ghee", "camembert", "blue cheese", "edam", "emmental", "comte", "comté",
     "quark", "colby", "fontina", "stilton", "monterey jack", "cotija",
-    "brick cheese", "buffalo mozzarella",
+    "brick cheese", "buffalo mozzarella", "paneer",
 })
 _EGG = frozenset({
     "egg", "chicken eggs", "duck eggs", "quail eggs", "egg whites", "egg yolks",
@@ -174,6 +178,44 @@ _GLUTEN = frozenset({
 _MINERAL = frozenset({
     "sea salt", "mineral water", "spring water", "baking powder", "baking soda",
     "cream of tartar", "erythritol", "xylitol",
+})
+
+# Prepared / multi-ingredient / coffee-dessert dishes — never invent firm
+# dairy/egg/meat flags. Composition varies (e.g. affogato may include gelato
+# with dairy and/or egg; vegan versions exist). Tier-1 WARN or L5 Depends.
+_COMPOUND_NEVER_FIRM_SEED = frozenset({
+    "affogato", "tempered spices", "tadka", "tarka",
+    "tiramisu", "latte", "cappuccino", "macchiato", "mocha", "frappe",
+    "milkshake", "hot chocolate", "sundae", "parfait", "souffle", "soufflé",
+    "spinach souffle", "omelette", "omelet", "quiche", "pancake", "waffle",
+    "french toast", "burrito", "taco", "pizza", "veggie burger",
+    "ice cream sandwich", "ice cream", "gelato", "custard", "mousse",
+    "cheesecake", "smoothie", "protein shake",
+})
+
+_COMPOUND_DISH_RE = re.compile(
+    r"\b("
+    r"affogato|tiramisu|latte|cappuccino|macchiato|mocha|frappe|milkshake|"
+    r"sundae|parfait|souffle|soufflé|omelette|omelet|quiche|pancake|waffle|"
+    r"burrito|taco|pizza|smoothie|milkshake|cheesecake|mousse|tiramisu|"
+    r"sandwich|burger"
+    r")\b|\bice cream\b|\bhot chocolate\b|\bfrench toast\b|\bwith\b",
+    re.I,
+)
+
+# FoodEx2 / IFCT additive-ish labels — not grocery whole foods.
+_ADDITIVE_LABEL_RE = re.compile(
+    r"\b("
+    r"regulator|essence|flavour|flavor|additive|sweetener|colouring|coloring|"
+    r"emulsifier|stabiliser|stabilizer|thickener|preservative|agent|"
+    r"acesulfame|advantame|aspartame|sucralose|saccharin"
+    r")\b|^(acid|acids|acidity regulator)$",
+    re.I,
+)
+
+# NIN / regional aliases that collide with a different Western identity.
+_DANGEROUS_ALIASES = frozenset({
+    "cottage cheese",  # Western cottage cheese ≠ paneer
 })
 
 # Explicit grocery / produce seed — short names users actually type.
@@ -442,6 +484,8 @@ def load_grocery_seed() -> list[dict[str, Any]]:
 
     by_name: dict[str, dict[str, Any]] = {}
     for name in names:
+        if _is_compound_dish_name(name):
+            continue
         flags = classify_flags(name)
         # Allow inline seed overrides
         for raw in _GROCERY_SEED:
@@ -479,6 +523,281 @@ def load_grocery_seed() -> list[dict[str, Any]]:
     return list(by_name.values())
 
 
+def _static_regional_pairs() -> list[tuple[str, str]]:
+    """(regional_key, english_canonical) from curated regional file + built-ins."""
+    pairs: list[tuple[str, str]] = []
+    try:
+        from core.external_apis.regional_names import _BUILTIN_REGIONAL, _load_static, _static_only_regional
+
+        _load_static()
+        for k, v in _static_only_regional.items():
+            pairs.append((k.replace("_", " "), v))
+        for k, v in _BUILTIN_REGIONAL.items():
+            pairs.append((k.replace("_", " "), v))
+    except Exception:
+        pass
+    if _REGIONAL_NAMES.exists():
+        data = json.loads(_REGIONAL_NAMES.read_text(encoding="utf-8"))
+        for entry in data.get("mappings") or []:
+            can = (entry.get("canonical") or "").strip()
+            if not can:
+                continue
+            for name in entry.get("regional") or []:
+                if name and str(name).strip():
+                    pairs.append((str(name).strip(), can))
+    # dedupe
+    seen: set[tuple[str, str]] = set()
+    out: list[tuple[str, str]] = []
+    for a, b in pairs:
+        key = (_norm(a), _norm(b))
+        if key in seen or not key[0] or not key[1]:
+            continue
+        seen.add(key)
+        out.append((a, b))
+    return out
+
+
+def _is_compound_dish_name(name: str) -> bool:
+    n = _norm(name)
+    if not n:
+        return False
+    if n in _COMPOUND_NEVER_FIRM_SEED:
+        return True
+    return bool(_COMPOUND_DISH_RE.search(n))
+
+
+def _is_promotable_short_food(name: str, flags: dict[str, Any]) -> bool:
+    """Strict bar: short whole-food identity with origin signal; no dishes/additives."""
+    n = _norm(name)
+    if not n or "," in n:
+        return False
+    if len(n.split()) > 3 or not (2 <= len(n) <= 40):
+        return False
+    if " and " in n or " with " in n:
+        return False
+    if _is_compound_dish_name(n):
+        return False
+    if _ADDITIVE_LABEL_RE.search(n):
+        return False
+    if flags.get("plant_origin") or flags.get("animal_origin"):
+        return True
+    if n in _MINERAL or n.endswith(" salt"):
+        return True
+    return False
+
+
+def _flags_from_layer1_row(raw: dict[str, Any]) -> dict[str, Any]:
+    from core.knowledge.ike2.flag_derive import derive_identity_flags
+
+    name = (raw.get("canonical_name") or "").strip()
+    flags: dict[str, Any] = {
+        "plant_origin": bool(raw.get("plant_origin")),
+        "animal_origin": bool(raw.get("animal_origin")),
+        "dairy_source": bool(raw.get("dairy_source")),
+        "egg_source": bool(raw.get("egg_source")),
+        "gluten_source": bool(raw.get("gluten_source")),
+        "soy_source": bool(raw.get("soy_source")),
+        "sesame_source": bool(raw.get("sesame_source")),
+        "fish_source": bool(raw.get("fish_source")),
+        "root_vegetable": bool(raw.get("root_vegetable")),
+        "onion_source": bool(raw.get("onion_source")),
+        "garlic_source": bool(raw.get("garlic_source")),
+    }
+    if raw.get("animal_species"):
+        flags["animal_species"] = raw["animal_species"]
+    flags = derive_identity_flags(name, flags, animal_species=flags.get("animal_species"))
+    for alias in raw.get("aliases") or []:
+        flags = derive_identity_flags(str(alias), flags, animal_species=flags.get("animal_species"))
+    return flags
+
+
+def load_layer1_regional_foods(path: Path, *, source: str) -> list[dict[str, Any]]:
+    """Promote short, flagged whole foods from IFCT / FoodEx2 (strict filter)."""
+    if not path.exists():
+        return []
+    rows = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(rows, list):
+        return []
+    by_canon: dict[str, dict[str, Any]] = {}
+    for raw in rows:
+        if not isinstance(raw, dict):
+            continue
+        name = (raw.get("canonical_name") or "").strip()
+        if not name:
+            continue
+        flags = _flags_from_layer1_row(raw)
+        if not _is_promotable_short_food(name, flags):
+            continue
+        entry = _entry_from_flags(name, flags, source=source)
+        entry["uncertainty_flags"] = []
+        entry["knowledge_state"] = "AUTO_CLASSIFIED"
+        if raw.get("regions"):
+            entry["regions"] = list(raw["regions"])
+        elif raw.get("region"):
+            entry["regions"] = [raw["region"]]
+        aliases: list[str] = []
+        seen = {_norm(entry["canonical_name"])}
+        for a in raw.get("aliases") or []:
+            an = _norm(a)
+            # Skip FoodEx2 code-like aliases
+            if an.startswith("foodex") or ":" in an:
+                continue
+            if an and an not in seen and an not in _DANGEROUS_ALIASES:
+                aliases.append(str(a))
+                seen.add(an)
+        entry["aliases"] = aliases
+        key = entry["canonical_name"]
+        if key in by_canon:
+            existing = by_canon[key]
+            for flag in (
+                "plant_origin", "animal_origin", "dairy_source", "egg_source",
+                "gluten_source", "soy_source", "sesame_source", "fish_source",
+                "peanut_source", "tree_nut_source", "root_vegetable",
+                "onion_source", "garlic_source",
+            ):
+                if entry.get(flag):
+                    existing[flag] = True
+            eseen = {_norm(a) for a in existing.get("aliases") or []}
+            eseen.add(_norm(existing.get("canonical_name") or ""))
+            for a in aliases:
+                if _norm(a) not in eseen:
+                    existing.setdefault("aliases", []).append(a)
+        else:
+            by_canon[key] = entry
+    return list(by_canon.values())
+
+
+def load_nin_commodities() -> list[dict[str, Any]]:
+    """Promote curated NIN India foods into chat Tier-2 (design 2026-07-20)."""
+    from core.knowledge.ike2.flag_derive import derive_identity_flags
+
+    if not _LAYER1_NIN.exists():
+        return []
+    rows = json.loads(_LAYER1_NIN.read_text(encoding="utf-8"))
+    if not isinstance(rows, list):
+        return []
+
+    # Reverse regional map: English target -> regional names (and vice versa).
+    regional_by_any: dict[str, set[str]] = {}
+    for regional, english in _static_regional_pairs():
+        rn, en = _norm(regional), _norm(english)
+        regional_by_any.setdefault(rn, set()).update({regional, english})
+        regional_by_any.setdefault(en, set()).update({regional, english})
+
+    by_canon: dict[str, dict[str, Any]] = {}
+    for raw in rows:
+        if not isinstance(raw, dict):
+            continue
+        name = (raw.get("canonical_name") or "").strip()
+        if not name:
+            continue
+        flags: dict[str, Any] = {
+            "plant_origin": bool(raw.get("plant_origin")),
+            "animal_origin": bool(raw.get("animal_origin")),
+            "dairy_source": bool(raw.get("dairy_source")),
+            "egg_source": bool(raw.get("egg_source")),
+            "gluten_source": bool(raw.get("gluten_source")),
+            "soy_source": bool(raw.get("soy_source")),
+            "sesame_source": bool(raw.get("sesame_source")),
+            "fish_source": bool(raw.get("fish_source")),
+            "root_vegetable": bool(raw.get("root_vegetable")),
+            "onion_source": bool(raw.get("onion_source")),
+            "garlic_source": bool(raw.get("garlic_source")),
+        }
+        if raw.get("animal_species"):
+            flags["animal_species"] = raw["animal_species"]
+        # Derive from canonical + aliases (atta→gluten, groundnut→peanut, …).
+        flags = derive_identity_flags(name, flags, animal_species=flags.get("animal_species"))
+        for alias in raw.get("aliases") or []:
+            flags = derive_identity_flags(str(alias), flags, animal_species=flags.get("animal_species"))
+
+        entry = _entry_from_flags(name, flags, source="nin")
+        entry["uncertainty_flags"] = []
+        entry["knowledge_state"] = "AUTO_CLASSIFIED"
+        if raw.get("regions"):
+            entry["regions"] = list(raw["regions"])
+        elif raw.get("region"):
+            entry["regions"] = [raw["region"]]
+
+        aliases: list[str] = []
+        seen = {_norm(entry["canonical_name"])}
+        for a in raw.get("aliases") or []:
+            an = _norm(a)
+            if an and an not in seen and an not in _DANGEROUS_ALIASES:
+                aliases.append(str(a))
+                seen.add(an)
+        # Attach regional English + regional keys that point at this identity.
+        for probe in (name, entry["canonical_name"], *list(raw.get("aliases") or [])):
+            for extra in regional_by_any.get(_norm(probe), ()):
+                en = _norm(extra)
+                if en and en not in seen:
+                    aliases.append(extra)
+                    seen.add(en)
+        # Remapped form of the NIN name (bajra → pearl millet) must be an alias.
+        remapped = _ALIAS_TO_CANONICAL.get(_norm(name), _norm(name))
+        try:
+            from core.normalization.normalizer import normalize_ingredient_key
+
+            remapped_n = normalize_ingredient_key(name, apply_regional=True)
+            if remapped_n and remapped_n not in seen:
+                aliases.append(remapped_n)
+                seen.add(remapped_n)
+        except Exception:
+            pass
+        if remapped and remapped not in seen:
+            aliases.append(remapped)
+            seen.add(remapped)
+        entry["aliases"] = aliases
+
+        key = entry["canonical_name"]
+        if key in by_canon:
+            existing = by_canon[key]
+            for flag in (
+                "plant_origin", "animal_origin", "dairy_source", "egg_source",
+                "gluten_source", "soy_source", "sesame_source", "fish_source",
+                "peanut_source", "tree_nut_source", "root_vegetable",
+                "onion_source", "garlic_source",
+            ):
+                if entry.get(flag):
+                    existing[flag] = True
+            eseen = {_norm(a) for a in existing.get("aliases") or []}
+            eseen.add(_norm(existing.get("canonical_name") or ""))
+            for a in aliases:
+                if _norm(a) not in eseen:
+                    existing.setdefault("aliases", []).append(a)
+                    eseen.add(_norm(a))
+        else:
+            by_canon[key] = entry
+    return list(by_canon.values())
+
+
+def load_regional_target_seeds() -> list[dict[str, Any]]:
+    """Ensure every static regional English target has a Tier-2 row (plant default)."""
+    names: list[str] = []
+    for regional, english in _static_regional_pairs():
+        names.append(english)
+        names.append(regional)
+    by_name: dict[str, dict[str, Any]] = {}
+    for name in names:
+        if _is_compound_dish_name(name):
+            continue
+        flags = classify_flags(name)
+        entry = _entry_from_flags(name, flags, source="regional_seed")
+        entry["uncertainty_flags"] = []
+        key = entry["canonical_name"]
+        if key in by_name:
+            existing = by_name[key]
+            seen = {_norm(a) for a in existing.get("aliases") or []}
+            seen.add(key)
+            if _norm(name) != key and _norm(name) not in seen:
+                existing.setdefault("aliases", []).append(name)
+        else:
+            if _norm(name) != key:
+                entry.setdefault("aliases", []).append(name)
+            by_name[key] = entry
+    return list(by_name.values())
+
+
 def apply_variant_aliases_as_row_aliases(ingredients: list[dict[str, Any]]) -> int:
     """Attach curated L2 variant phrases onto target ontology rows (offline M2–M7)."""
     if not _VARIANT_ALIASES.exists():
@@ -508,6 +827,27 @@ def apply_variant_aliases_as_row_aliases(ingredients: list[dict[str, Any]]) -> i
             idx.setdefault(sn, target)
             added += 1
     return added
+
+
+def _scrub_compound_never_firm(ingredients: list[dict[str, Any]]) -> int:
+    """Remove invented firm rows for compounds; strip dangerous aliases (paneer≠cottage cheese)."""
+    removed = 0
+    kept: list[dict[str, Any]] = []
+    for row in ingredients:
+        canon = _norm(row.get("canonical_name") or "")
+        if _is_compound_dish_name(canon):
+            removed += 1
+            continue
+        aliases = [
+            a for a in (row.get("aliases") or [])
+            if _norm(a) not in _DANGEROUS_ALIASES and not _is_compound_dish_name(a)
+        ]
+        if len(aliases) != len(row.get("aliases") or []):
+            row["aliases"] = aliases
+            removed += 1
+        kept.append(row)
+    ingredients[:] = kept
+    return removed
 
 
 def _index_ontology(ingredients: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
@@ -561,6 +901,7 @@ def merge_into_ontology(
             "plant_origin", "animal_origin", "dairy_source", "egg_source",
             "gluten_source", "soy_source", "sesame_source", "root_vegetable",
             "onion_source", "garlic_source", "fungal", "insect_derived",
+            "fish_source", "peanut_source", "tree_nut_source", "shellfish_source",
         ):
             if row.get(flag):
                 existing[flag] = True
@@ -612,9 +953,18 @@ def promote(*, dry_run: bool = False) -> dict[str, Any]:
 
     usda = load_usda_commodities()
     seed = load_grocery_seed()
+    nin = load_nin_commodities()
+    ifct = load_layer1_regional_foods(_LAYER1_IFCT, source="ifct")
+    foodex = load_layer1_regional_foods(_LAYER1_FOODEX2, source="foodex2")
+    regional_seeds = load_regional_target_seeds()
     stats_usda = merge_into_ontology(ingredients, usda)
     stats_seed = merge_into_ontology(ingredients, seed)
+    stats_nin = merge_into_ontology(ingredients, nin)
+    stats_ifct = merge_into_ontology(ingredients, ifct)
+    stats_foodex = merge_into_ontology(ingredients, foodex)
+    stats_regional = merge_into_ontology(ingredients, regional_seeds)
     alias_added = apply_variant_aliases_as_row_aliases(ingredients)
+    scrubbed = _scrub_compound_never_firm(ingredients)
 
     report = {
         "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -622,9 +972,18 @@ def promote(*, dry_run: bool = False) -> dict[str, Any]:
         "after_count": len(ingredients),
         "usda_commodities_extracted": len(usda),
         "grocery_seed_count": len(seed),
+        "nin_count": len(nin),
+        "ifct_count": len(ifct),
+        "foodex2_count": len(foodex),
+        "regional_seed_count": len(regional_seeds),
         "variant_aliases_attached": alias_added,
+        "compound_rows_scrubbed": scrubbed,
         "usda_merge": stats_usda,
         "seed_merge": stats_seed,
+        "nin_merge": stats_nin,
+        "ifct_merge": stats_ifct,
+        "foodex2_merge": stats_foodex,
+        "regional_merge": stats_regional,
         "dry_run": dry_run,
     }
 
