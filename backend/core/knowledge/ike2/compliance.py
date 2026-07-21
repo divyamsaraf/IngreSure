@@ -1,6 +1,7 @@
 from typing import Optional
 
 from core.knowledge.ike2 import truth_anchor
+from core.knowledge.ike2.rules import rule_identity
 from core.knowledge.ike2.verdict import Verdict, aggregate
 
 # Knowledge-state ranking for the C2 min_knowledge_state gate.
@@ -42,12 +43,14 @@ class ComplianceResult:
         matched_may_contain,
         caution_reasons,
         breakdown,
+        matched_rules=None,
     ):
         self.verdict = verdict
         self.matched_contains = matched_contains
         self.matched_may_contain = matched_may_contain
         self.caution_reasons = caution_reasons
         self.breakdown = breakdown
+        self.matched_rules = list(matched_rules or [])
 
     def __eq__(self, other):
         if isinstance(other, Verdict):
@@ -364,6 +367,7 @@ def evaluate(resolved, profile, rules) -> ComplianceResult:
     matched_may_contain = []
     caution_reasons = []
     breakdown = {}
+    matched_rules = []
 
     covered = set()
     for r in resolved:
@@ -378,6 +382,13 @@ def evaluate(resolved, profile, rules) -> ComplianceResult:
             key = (name, rule.restriction)
             prev = breakdown.get(key)
             breakdown[key] = verdict if prev is None else max(prev, verdict)
+            matched_rules.append({
+                "canonical": name,
+                "restriction": rule.restriction,
+                "rule_id": rule_identity(rule),
+                "triggered": bool(triggered),
+                "verdict": verdict,
+            })
             if triggered:
                 minor = bool(getattr(r, "trace", False)) or bool(getattr(r, "may_contain", False))
                 if minor:
@@ -403,4 +414,5 @@ def evaluate(resolved, profile, rules) -> ComplianceResult:
         matched_may_contain,
         caution_reasons,
         breakdown,
+        matched_rules=matched_rules,
     )

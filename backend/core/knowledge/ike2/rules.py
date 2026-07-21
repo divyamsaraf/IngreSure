@@ -155,6 +155,25 @@ def _to_rule(row) -> SimpleNamespace:
     )
 
 
+def rule_identity(rule) -> str:
+    """Stable id for audit: restriction + kind/flag — not bare restriction name."""
+    restriction = getattr(rule, "restriction", "") or ""
+    kind = getattr(rule, "kind", "flag") or "flag"
+    trigger = getattr(rule, "trigger_flag", None)
+    if kind == "flag" and trigger:
+        return f"{restriction}:{trigger}"
+    if kind in ("meat_fish_derived", "meat_land_derived", "alcohol"):
+        return f"{restriction}:{kind}"
+    match_value = getattr(rule, "match_value", None)
+    if kind in ("species_match", "species_in_list", "alcohol_content") and match_value is not None:
+        if isinstance(match_value, (list, tuple)):
+            mv = ",".join(str(x) for x in match_value)
+        else:
+            mv = str(match_value)
+        return f"{restriction}:{kind}:{mv}"
+    return f"{restriction}:{kind}"
+
+
 def seeded_rules():
     """The canonical rule set as compliance objects, with no DB dependency."""
     return [_to_rule(row) for row in RULE_SEED]
