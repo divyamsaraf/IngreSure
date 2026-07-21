@@ -79,6 +79,10 @@ Task 2 promote_ledger ──┼──► Task 3 hybrid_gate ──► Task 4 pro
 
 **Vocabulary lock:** `verdict` is only `Safe` | `Avoid` | `Depends`.
 
+**Verdict grain lock (roundtable 2026-07-21):**  
+`EvidenceChain.verdict` MUST come from **`breakdown[(canonical, restriction_id)]`** (fallback: worst triggered `matched_rules` row for that atom+restriction). **Never** use aggregate `ComplianceResult.verdict` for a per-atom chain. Missing breakdown key → Depends/`UNCERTAIN` (fail-closed), do not inherit paste-level FAIL.  
+Required regression: `evaluate([beef, sugar], …)` → sugar×`hindu_vegetarian` is **Safe**, beef×`hindu_vegetarian` is **Avoid**.
+
 **Sulfite spelling:** flag name is `sulphite_source`.
 
 **evidence_class order:** check **`is_allergen_adjacent` before `is_animalish`** so fish/shellfish label as `allergen` (audit trail), not only `animal`. Both still human-gate in Task 3.
@@ -192,6 +196,14 @@ def test_rule_ids_are_rule_identity_filtered_to_this_ingredient():
     assert not any(rid.startswith("vegan:") for rid in chain.rule_ids)
     # No bare restriction ids without a rule qualifier
     assert "hindu_vegetarian" not in chain.rule_ids
+
+    # Same evaluate result: sugar must NOT inherit Avoid from beef (verdict grain)
+    sugar_chain = build_chain_from_resolve(
+        atom="sugar", resolved=resolved, compliance_result=result,
+        restriction_id="hindu_vegetarian", compliance_input=sugar,
+    )
+    assert sugar_chain.verdict == "Safe"
+    assert sugar_chain.rule_ids == []
 
 
 def test_fish_evidence_class_is_allergen_not_only_animal():
@@ -378,6 +390,39 @@ def _rule_ids_for_atom(compliance_result, *, canonical: Optional[str], atom: str
     return out
 
 
+def _engine_verdict_for_cell(compliance_result, *, canonical: Optional[str], atom: str, restriction_id: str) -> Verdict:
+    """Per-(ingredient, restriction) verdict — never paste-level aggregate."""
+    breakdown = getattr(compliance_result, "breakdown", None) or {}
+    for name in (canonical, atom):
+        if not name:
+            continue
+        if (name, restriction_id) in breakdown:
+            return breakdown[(name, restriction_id)]
+        # case-fold fallback
+        for (c, r), v in breakdown.items():
+            if r == restriction_id and str(c).lower() == str(name).lower():
+                return v
+    # Fallback: worst triggered matched_rules row for this cell
+    worst = None
+    names = {n for n in (canonical, atom) if n}
+    names |= {n.lower() for n in names}
+    for row in getattr(compliance_result, "matched_rules", None) or []:
+        if not row.get("triggered"):
+            continue
+        if row.get("restriction") != restriction_id:
+            continue
+        c = (row.get("canonical") or "").strip()
+        if c not in names and c.lower() not in names:
+            continue
+        v = row.get("verdict")
+        if v is None:
+            continue
+        worst = v if worst is None else max(worst, v)
+    if worst is not None:
+        return worst
+    return Verdict.UNCERTAIN
+
+
 def build_chain_from_resolve(
     *,
     atom: str,
@@ -396,7 +441,12 @@ def build_chain_from_resolve(
         flags = dict(getattr(g, "flags", None) or {})
         canonical = getattr(g, "canonical_name", None)
 
-    engine_verdict: Verdict = compliance_result.verdict
+    engine_verdict = _engine_verdict_for_cell(
+        compliance_result,
+        canonical=canonical,
+        atom=atom,
+        restriction_id=restriction_id,
+    )
     miss = getattr(resolved, "miss_class", None)
 
     return EvidenceChain(
