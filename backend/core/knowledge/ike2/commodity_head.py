@@ -15,7 +15,10 @@ from typing import Iterable
 
 from core.normalization.normalizer import normalize_ingredient_key
 
-_PREP = r"raw|dried|dry|fresh|frozen|unprepared|canned|smoked|cooked"
+_PREP = (
+    r"raw|dried|dry|fresh|frozen|unprepared|canned|smoked|cooked|"
+    r"ground|pure|shelled|distilled|whole|mixed"
+)
 
 # Exactly one comma, then a prep token — safe to expose the left side as a chat key.
 _SIMPLE_PREP_COMMA = re.compile(
@@ -42,12 +45,34 @@ _PART_SUFFIX = frozenset({
     "leaves", "leaf", "fillets", "fillet", "steaks", "steak",
     "stalks", "stalk", "sprigs", "sprig", "pods", "pod",
     "bulb", "bulbs", "cloves", "flakes", "strips",
+    "coarse", "fine", "powder", "strands", "chunks", "pearls",
 })
 
 # Geographic / breed adjectives (M3). Drop leading token only.
 _GEO_PREFIX = frozenset({
     "atlantic", "pacific", "alaska", "alaskan", "norwegian", "scottish",
     "wild", "farmed",
+})
+
+# Color / grade adjectives on allowlisted commodity heads only
+# (``white rice`` → ``rice``). Never ``white chocolate`` (not in heads).
+_COLOR_PREFIX = frozenset({
+    "white", "brown", "red", "black", "green", "yellow", "dark", "light",
+})
+_COLOR_STRIP_HEADS = frozenset({
+    "rice", "flour", "sugar", "pepper", "onion", "onions", "bean", "beans",
+    "corn", "potato", "potatoes", "tea", "wine", "vinegar", "mustard",
+    "sesame", "cabbage", "quinoa", "lentil", "lentils", "pea", "peas",
+})
+
+# Head-first grocery phrasing (``salt himalayan``, ``vinegar balsamic``).
+# Rotate the head noun to the end so Adj+Noun forms can resolve.
+_HEAD_FIRST_NOUNS = frozenset({
+    "salt", "sugar", "vinegar", "oil", "flour", "milk", "rice", "pepper",
+    "seed", "seeds", "syrup", "sauce", "cheese", "bean", "beans", "pea",
+    "peas", "onion", "onions", "potato", "potatoes", "squash", "tea",
+    "wine", "water", "cream", "yogurt", "butter", "juice", "paste",
+    "starch", "broth", "stock", "bouillon",
 })
 
 # Never strip these (false-Safe / wrong identity risk).
@@ -145,6 +170,16 @@ def facet_reduction_candidates(name: str) -> list[str]:
             if len(parts) >= 3 and parts[-1] in _PART_SUFFIX:
                 mid = " ".join(parts[1:-1]).strip()
                 _add(_accept_head(mid) or mid)
+        if (
+            first in _COLOR_PREFIX
+            and len(parts) == 2
+            and parts[1] in _COLOR_STRIP_HEADS
+        ):
+            _add(parts[1])
+        # salt himalayan → himalayan salt; vinegar apple cider → apple cider vinegar
+        if first in _HEAD_FIRST_NOUNS and len(parts) >= 2:
+            rotated = " ".join(parts[1:] + parts[:1])
+            _add(normalize_ingredient_key(rotated) or rotated)
 
     return out
 

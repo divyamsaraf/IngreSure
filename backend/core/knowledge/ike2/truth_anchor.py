@@ -130,6 +130,15 @@ _add(["mussel"], "mussel", _f(animal_origin=True, shellfish_source=True))
 _add(["scallop"], "scallop", _f(animal_origin=True, shellfish_source=True))
 _add(["squid"], "squid", _f(animal_origin=True, shellfish_source=True))
 _add(["octopus"], "octopus", _f(animal_origin=True, shellfish_source=True))
+_add(["seafood"], "seafood",
+     _f(animal_origin=True, fish_source=True, shellfish_source=True))
+_add(["snail", "snails", "escargot"], "snail",
+     _f(animal_origin=True, animal_species="mollusk"))
+_add(
+    ["worcestershire sauce", "worcestershire", "worcester sauce"],
+    "worcestershire sauce",
+    _f(animal_origin=True, fish_source=True),
+)
 
 # --- common allergens: peanuts / tree nuts -----------------------------------
 _add(["peanut", "peanut butter", "peanut oil"], "peanut", _f(peanut_source=True))
@@ -157,6 +166,7 @@ _add(["curd"], "curd", _f(animal_origin=True, dairy_source=True))
 _add(["egg", "eggs"], "egg", _f(animal_origin=True, egg_source=True))
 _add(["egg white"], "egg white", _f(animal_origin=True, egg_source=True))
 _add(["egg yolk"], "egg yolk", _f(animal_origin=True, egg_source=True))
+_add(["yolk", "yolks", "egg yolks"], "egg yolk", _f(animal_origin=True, egg_source=True))
 _add(["albumin"], "albumin", _f(animal_origin=True, egg_source=True))
 _add(["ovalbumin"], "ovalbumin", _f(animal_origin=True, egg_source=True))
 
