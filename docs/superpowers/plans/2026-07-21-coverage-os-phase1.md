@@ -83,11 +83,13 @@ Task 2 promote_ledger ──┼──► Task 3 hybrid_gate ──► Task 4 pro
 `EvidenceChain.verdict` MUST come from **`breakdown[(canonical, restriction_id)]`** (fallback: worst triggered `matched_rules` row for that atom+restriction). **Never** use aggregate `ComplianceResult.verdict` for a per-atom chain. Missing breakdown key → Depends/`UNCERTAIN` (fail-closed), do not inherit paste-level FAIL.  
 Required regression: `evaluate([beef, sugar], …)` → sugar×`hindu_vegetarian` is **Safe**, beef×`hindu_vegetarian` is **Avoid**.
 
+**Unit-test grain note:** Hand-built `ComplianceResult` fixtures for Safe/Avoid chains **must** include a per-cell `breakdown[(canonical, restriction)]` entry (or triggered `matched_rules`); empty `breakdown={}` with only aggregate `Verdict.SAFE`/`FAIL` is invalid under this lock and must not be used.
+
 **Sulfite spelling:** flag name is `sulphite_source`.
 
 **evidence_class order:** check **`is_allergen_adjacent` before `is_animalish`** so fish/shellfish label as `allergen` (audit trail), not only `animal`. Both still human-gate in Task 3.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```python
 # backend/tests/ike2/coverage_os/test_deny_lists.py
@@ -139,7 +141,11 @@ def test_safe_chain_stores_audit_bucket_not_engine_enum():
         knowledge_state="LOCKED", trusted=True,
         alcohol_role="none", verdict_cap=None, trace=False,
     )
-    result = ComplianceResult(Verdict.SAFE, [], [], [], {}, matched_rules=[])
+    result = ComplianceResult(
+        Verdict.SAFE, [], [], [],
+        {("sugar", "hindu_vegetarian"): Verdict.SAFE},
+        matched_rules=[],
+    )
     chain = build_chain_from_resolve(
         atom="sugar", resolved=resolved, compliance_result=result,
         restriction_id="hindu_vegetarian", compliance_input=inp,
@@ -217,7 +223,11 @@ def test_fish_evidence_class_is_allergen_not_only_animal():
         knowledge_state="LOCKED", trusted=True,
         alcohol_role="none", verdict_cap=None, trace=False,
     )
-    result = ComplianceResult(Verdict.FAIL, ["salmon"], [], [], {}, matched_rules=[])
+    result = ComplianceResult(
+        Verdict.FAIL, ["salmon"], [], [],
+        {("salmon", "fish_allergy"): Verdict.FAIL},
+        matched_rules=[],
+    )
     chain = build_chain_from_resolve(
         atom="salmon", resolved=resolved, compliance_result=result,
         restriction_id="fish_allergy", compliance_input=inp,
@@ -271,12 +281,12 @@ def test_depends_from_uncertainty_can_have_empty_rule_ids():
     assert chain.rule_ids == []
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `cd backend && source venv/bin/activate && pytest tests/ike2/coverage_os/test_deny_lists.py tests/ike2/coverage_os/test_evidence_chain.py -v`  
 Expected: FAIL (modules / `matched_rules` / `rule_identity` missing)
 
-- [ ] **Step 3: Implement `rule_identity` + `matched_rules` in compliance**
+- [x] **Step 3: Implement `rule_identity` + `matched_rules` in compliance**
 
 In `rules.py`:
 
@@ -317,7 +327,7 @@ Only **triggered** rows need to feed `EvidenceChain.rule_ids` (filter `triggered
 
 Backward compatible: existing callers that ignore the new kwarg still work if defaulted.
 
-- [ ] **Step 4: Implement deny_lists + evidence_chain (complete)**
+- [x] **Step 4: Implement deny_lists + evidence_chain (complete)**
 
 ```python
 # backend/core/knowledge/ike2/coverage_os/deny_lists.py
@@ -517,12 +527,12 @@ def build_chain_from_resolve(
 
 **Do not** iterate `breakdown` keys for `rule_ids`.
 
-- [ ] **Step 5: Run tests to verify they pass**
+- [x] **Step 5: Run tests to verify they pass**
 
 Run: `pytest tests/ike2/coverage_os/test_deny_lists.py tests/ike2/coverage_os/test_evidence_chain.py -v`  
 Expected: PASS (including multi-ingredient `matched_rules` test)
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add backend/core/knowledge/ike2/coverage_os/ \
@@ -657,18 +667,46 @@ git commit -m "feat(coverage-os): add versioned promote ledger with non-promotab
 - Test: `backend/tests/ike2/coverage_os/test_hybrid_gate.py`
 
 **Interfaces:**
-- Consumes: `PromoteLedger.find_non_promotable`, candidate flags dict, **`deny_lists.is_allergen_adjacent` / `is_animalish`** (do **not** copy flag frozensets into this module)
+- Consumes: `PromoteLedger.find_non_promotable`, candidate flags dict, ontology mapping (for collision), **`deny_lists.is_allergen_adjacent` / `is_animalish`** (do **not** copy flag frozensets into this module)
 - Produces:
+  - `has_dual_origin_collision(candidate_name, ontology) -> bool` — predicate #4
+  - `is_umbrella_term(candidate_name, flags=None) -> bool` — predicate #5
   - `GateDecision` with `action: Literal["auto_promote","human_approval","rejected"]`, `rule_id`, `reason`
-  - `decide_promote(*, candidate_key, flags, ledger: PromoteLedger, name_collision_animal: bool = False, is_umbrella: bool = False) -> GateDecision`
+  - `decide_promote(*, candidate_key, candidate_name, flags, ledger, ontology) -> GateDecision`
+
+**Named blind spot (closed 2026-07-21):** Do **not** accept `name_collision_animal` / `is_umbrella` as inert bool defaults. `decide_promote` **must compute** predicates #4 and #5 internally (or via the helpers above) every call. Callers pass `candidate_name` + `ontology`; they never pass pre-baked booleans that default to False.
 
 **Allergen-adjacent:** call `is_allergen_adjacent(flags)` from `deny_lists.py` only. Sulfite = `sulphite_source`; mollusc = `animal_species` in `{mollusk, mollusc}` (encoded inside that helper).
+
+**Detection contracts:**
+
+```python
+def has_dual_origin_collision(candidate_name: str, ontology: dict) -> bool:
+    """True if candidate_name (or an alias key) already resolves to an
+    animalish / allergen-adjacent ontology row (flags on that row).
+    Ontology shape: {"ingredients": [{"canonical_name"|"name", "flags"|"aliases", ...}, ...]}.
+    """
+
+def is_umbrella_term(candidate_name: str, flags: dict | None = None) -> bool:
+    """True if flags.verdict_cap == WARN, or name matches closed umbrella set
+    (natural flavors / spices / flavor / enzymes / dish umbrellas mirroring
+    truth_anchor compound keys), or looks like an E-number token (e\\d{3}).
+    """
+```
 
 - [ ] **Step 1: Write the failing test**
 
 ```python
-from core.knowledge.ike2.coverage_os.hybrid_gate import decide_promote
+from core.knowledge.ike2.coverage_os.hybrid_gate import (
+    decide_promote,
+    has_dual_origin_collision,
+    is_umbrella_term,
+)
 from core.knowledge.ike2.coverage_os.promote_ledger import PromoteLedger, candidate_key
+
+
+def _empty_ontology():
+    return {"ingredients": []}
 
 
 def test_non_promotable_short_circuits(tmp_path):
@@ -677,53 +715,100 @@ def test_non_promotable_short_circuits(tmp_path):
     led.append_non_promotable(key, "human_reject", "corpus", "junk")
     d = decide_promote(
         candidate_key=key,
+        candidate_name="roman",
         flags={"plant_origin": True},
         ledger=led,
+        ontology=_empty_ontology(),
     )
     assert d.action == "rejected"
     assert "non_promotable" in d.reason
 
 
-def test_broccoli_auto_promotes():
-    # ledger empty
-    from pathlib import Path
-    import tempfile
-    led = PromoteLedger(Path(tempfile.mkdtemp()) / "l.jsonl")
+def test_broccoli_auto_promotes(tmp_path):
+    led = PromoteLedger(tmp_path / "l.jsonl")
     d = decide_promote(
         candidate_key=candidate_key("broccoli", "broccoli"),
+        candidate_name="broccoli",
         flags={"plant_origin": True, "animal_origin": False},
         ledger=led,
+        ontology=_empty_ontology(),
     )
     assert d.action == "auto_promote"
     assert d.rule_id == "closed_form_plant_v1"
 
 
-def test_sulphite_goes_human():
-    led = PromoteLedger(__import__("pathlib").Path(__import__("tempfile").mkdtemp()) / "l.jsonl")
+def test_sulphite_goes_human(tmp_path):
+    led = PromoteLedger(tmp_path / "l.jsonl")
     d = decide_promote(
         candidate_key=candidate_key("dried apricot", "dried apricot"),
+        candidate_name="dried apricot",
         flags={"plant_origin": True, "sulphite_source": True},
         ledger=led,
+        ontology=_empty_ontology(),
     )
     assert d.action == "human_approval"
 
 
-def test_mollusc_species_goes_human():
-    led = PromoteLedger(__import__("pathlib").Path(__import__("tempfile").mkdtemp()) / "l.jsonl")
+def test_mollusc_species_goes_human(tmp_path):
+    led = PromoteLedger(tmp_path / "l.jsonl")
     d = decide_promote(
         candidate_key=candidate_key("snail", "snail"),
+        candidate_name="snail",
         flags={"animal_origin": True, "animal_species": "mollusk"},
         ledger=led,
+        ontology=_empty_ontology(),
     )
     assert d.action == "human_approval"
 
 
-def test_beef_goes_human_not_auto():
-    led = PromoteLedger(__import__("pathlib").Path(__import__("tempfile").mkdtemp()) / "l.jsonl")
+def test_beef_goes_human_not_auto(tmp_path):
+    led = PromoteLedger(tmp_path / "l.jsonl")
     d = decide_promote(
         candidate_key=candidate_key("beef", "beef"),
+        candidate_name="beef",
         flags={"animal_origin": True, "animal_species": "cow"},
         ledger=led,
+        ontology=_empty_ontology(),
+    )
+    assert d.action == "human_approval"
+
+
+def test_dual_origin_name_collision_goes_human(tmp_path):
+    """Predicate #4 — name also keys an animal/allergen ontology row."""
+    led = PromoteLedger(tmp_path / "l.jsonl")
+    ontology = {
+        "ingredients": [
+            {
+                "canonical_name": "gelatin",
+                "aliases": ["gelatine"],
+                "flags": {"animal_origin": True, "animal_species": "cow"},
+            }
+        ]
+    }
+    assert has_dual_origin_collision("gelatine", ontology) is True
+    d = decide_promote(
+        candidate_key=candidate_key("gelatine", "gelatin"),
+        candidate_name="gelatine",
+        flags={"plant_origin": True, "animal_origin": False},  # candidate flags look plant-only
+        ledger=led,
+        ontology=ontology,
+    )
+    assert d.action == "human_approval"
+    assert "collision" in d.reason.lower() or "dual" in d.reason.lower()
+
+
+def test_umbrella_term_goes_human(tmp_path):
+    """Predicate #5 — compound/process umbrella must not auto-promote."""
+    led = PromoteLedger(tmp_path / "l.jsonl")
+    assert is_umbrella_term("natural flavors", {"plant_origin": True}) is True
+    assert is_umbrella_term("broccoli", {"plant_origin": True}) is False
+    assert is_umbrella_term("mystery", {"plant_origin": True, "verdict_cap": "WARN"}) is True
+    d = decide_promote(
+        candidate_key=candidate_key("natural flavors", "natural flavors"),
+        candidate_name="natural flavors",
+        flags={"plant_origin": True, "animal_origin": False},
+        ledger=led,
+        ontology=_empty_ontology(),
     )
     assert d.action == "human_approval"
 ```
@@ -737,23 +822,24 @@ Expected: FAIL
 
 Order inside `decide_promote`:
 1. If `ledger.find_non_promotable(candidate_key)` → `rejected`
-2. If `is_animalish(flags)` or `is_allergen_adjacent(flags)` or dual collision or umbrella → `human_approval`
-3. If plant-only closed-form → `auto_promote` with `rule_id="closed_form_plant_v1"`
-4. Else → `human_approval` (fail-closed to human, never silent auto)
+2. Compute `collision = has_dual_origin_collision(candidate_name, ontology)` and `umbrella = is_umbrella_term(candidate_name, flags)` — **never default these to False without computing**
+3. If `is_animalish(flags)` or `is_allergen_adjacent(flags)` or `collision` or `umbrella` → `human_approval`
+4. If plant-only closed-form → `auto_promote` with `rule_id="closed_form_plant_v1"`
+5. Else → `human_approval` (fail-closed to human, never silent auto)
 
 Import allergen/animal checks **only** from `deny_lists` — no local duplicate frozensets.
 
 - [ ] **Step 4: Run test to verify it passes**
 
 Run: `pytest tests/ike2/coverage_os/test_hybrid_gate.py -v`  
-Expected: PASS
+Expected: PASS (incl. collision + umbrella tests)
 
 - [ ] **Step 5: Commit**
 
 ```bash
 git add backend/core/knowledge/ike2/coverage_os/hybrid_gate.py \
   backend/tests/ike2/coverage_os/test_hybrid_gate.py
-git commit -m "feat(coverage-os): hybrid promote gate with non-promotable short-circuit"
+git commit -m "feat(coverage-os): hybrid promote gate with collision and umbrella detection"
 ```
 
 ---
@@ -769,20 +855,27 @@ git commit -m "feat(coverage-os): hybrid promote gate with non-promotable short-
 - Produces:
   - `apply_promotion(entry, *, ontology_path, aliases_path) -> None`
   - `retract_promotion(entry, *, ontology_path, aliases_path) -> None`
+  - `commit_promotion(entry, ledger, *, ontology_path, aliases_path, **ledger_kwargs) -> None` — **write first, then** `ledger.append_promoted(...)`; on write failure raise and leave ledger without a promoted entry
   - Optional: `mirror_l3_inject(entry) -> None` stub that logs "derived mirror; not source of truth" (no hard fail if Supabase down)
 
 **Behavior:**
-- `apply`: add/update ingredient row in `ontology.json` ingredients list OR add alias key in `variant_aliases.json` per payload `kind` (`ontology_row` | `variant_alias`)
+- `apply`: add/update ingredient row in `ontology.json` ingredients list OR add alias key in `variant_aliases.json` per payload `write_kind` (`ontology_row` | `variant_alias`)
 - `retract`: remove the alias key or mark/remove the ontology row that this ledger version added (payload must include enough to reverse; store `inverse` in ledger payload at promote time)
 - Never leave half-written JSON (write temp + replace)
-- On failure: raise; caller leaves ledger pending
+- On failure: raise; caller / `commit_promotion` leaves ledger pending (no `promoted` row)
 
-- [ ] **Step 1: Write the failing test**
+- [ ] **Step 1: Write the failing tests**
 
 ```python
 import json
 from pathlib import Path
-from core.knowledge.ike2.coverage_os.promote_writer import apply_promotion, retract_promotion
+from unittest.mock import patch
+from core.knowledge.ike2.coverage_os.promote_writer import (
+    apply_promotion,
+    retract_promotion,
+    commit_promotion,
+)
+from core.knowledge.ike2.coverage_os.promote_ledger import PromoteLedger, candidate_key
 
 
 def _base_ontology(tmp: Path) -> Path:
@@ -815,6 +908,67 @@ def test_apply_and_retract_variant_alias(tmp_path):
     retract_promotion(entry, ontology_path=ont, aliases_path=al)
     aliases = json.loads(al.read_text())["aliases"]
     assert "salt himalayan" not in aliases
+
+
+def test_apply_and_retract_ontology_row(tmp_path):
+    """Symmetric path — most Coverage OS candidates are new ingredient facts."""
+    ont = _base_ontology(tmp_path)
+    al = _base_aliases(tmp_path)
+    entry = {
+        "kind": "promoted",
+        "payload": {
+            "write_kind": "ontology_row",
+            "canonical_name": "broccoli",
+            "flags": {"plant_origin": True, "animal_origin": False},
+            "inverse": {
+                "write_kind": "ontology_row",
+                "canonical_name": "broccoli",
+            },
+        },
+    }
+    apply_promotion(entry, ontology_path=ont, aliases_path=al)
+    ingredients = json.loads(ont.read_text())["ingredients"]
+    row = next(i for i in ingredients if i.get("canonical_name") == "broccoli")
+    assert row["flags"]["plant_origin"] is True
+    assert row.get("coverage_os_managed") is True
+    retract_promotion(entry, ontology_path=ont, aliases_path=al)
+    ingredients = json.loads(ont.read_text())["ingredients"]
+    assert not any(i.get("canonical_name") == "broccoli" for i in ingredients)
+
+
+def test_write_failure_leaves_ledger_pending(tmp_path):
+    """Write fails → no promoted ledger row (never mark promoted that was not written)."""
+    ont = _base_ontology(tmp_path)
+    al = _base_aliases(tmp_path)
+    led = PromoteLedger(tmp_path / "l.jsonl")
+    key = candidate_key("broccoli", "broccoli")
+    entry = {
+        "kind": "promoted",
+        "candidate_key": key,
+        "payload": {
+            "write_kind": "ontology_row",
+            "canonical_name": "broccoli",
+            "flags": {"plant_origin": True},
+            "inverse": {"write_kind": "ontology_row", "canonical_name": "broccoli"},
+        },
+    }
+    with patch(
+        "core.knowledge.ike2.coverage_os.promote_writer.apply_promotion",
+        side_effect=OSError("disk full"),
+    ):
+        try:
+            commit_promotion(
+                entry,
+                led,
+                ontology_path=ont,
+                aliases_path=al,
+                rule_id="closed_form_plant_v1",
+                source="test",
+            )
+            assert False, "expected OSError"
+        except OSError:
+            pass
+    assert led.latest_promoted(key) is None
 ```
 
 - [ ] **Step 2: Run test to verify it fails**
@@ -824,12 +978,12 @@ Expected: FAIL
 
 - [ ] **Step 3: Write minimal implementation**
 
-Use atomic replace. For ontology rows, payload includes `canonical_name` + flags; inverse removes by canonical_name if `coverage_os_managed: true` marker was set on apply.
+Use atomic replace. For ontology rows, payload includes `canonical_name` + flags; set `coverage_os_managed: true` on apply; inverse removes by canonical_name if that marker is set. `commit_promotion` calls `apply_promotion` then `ledger.append_promoted` — never reverse that order.
 
 - [ ] **Step 4: Run test to verify it passes**
 
 Run: `pytest tests/ike2/coverage_os/test_promote_writer.py -v`  
-Expected: PASS
+Expected: PASS (alias path, ontology-row path, write-failure/ledger-pending)
 
 - [ ] **Step 5: Commit**
 
@@ -1037,6 +1191,8 @@ git commit -m "test(coverage-os): Phase 1 integration smoke and exit checklist"
 | Shared deny lists (sulfite + mollusc); allergen before animal for evidence_class | Task 1 |
 | Multi-ingredient matched_rules filter test (named blind spot) | Task 1 |
 | Gate imports same deny_lists (no duplicate) | Task 3 |
+| Gate computes dual-origin collision + umbrella (no inert bool defaults) | Task 3 |
+| Writer ontology-row apply/retract + write-failure leaves ledger pending | Task 4 |
 | Non-promotable short-circuit | Task 2 + 3 |
 | Ledger human reviewer fields | Task 2 |
 | Writer apply + retract | Task 4 |
