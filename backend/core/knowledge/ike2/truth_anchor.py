@@ -239,6 +239,29 @@ _add_compound(
     ["colors", "colours", "color", "colour", "coloring", "colouring"],
     "colors",
 )
+# Prepared / multi-ingredient dishes — composition unknown; never invent dairy/egg/meat.
+_add_compound(["affogato"], "affogato")
+_add_compound(["tempered spices", "tadka", "tarka"], "tempered spices")
+_add_compound(["tiramisu"], "tiramisu")
+_add_compound(["latte", "cafe latte", "caffè latte"], "latte")
+_add_compound(["cappuccino"], "cappuccino")
+_add_compound(["macchiato", "cafe macchiato"], "macchiato")
+_add_compound(["mocha", "cafe mocha"], "mocha")
+_add_compound(["frappe", "frappé"], "frappe")
+_add_compound(["milkshake"], "milkshake")
+_add_compound(["hot chocolate", "hot cocoa"], "hot chocolate")
+_add_compound(["sundae"], "sundae")
+_add_compound(["parfait"], "parfait")
+_add_compound(["souffle", "soufflé", "spinach souffle"], "souffle")
+_add_compound(["omelette", "omelet"], "omelette")
+_add_compound(["quiche"], "quiche")
+_add_compound(["ice cream sandwich"], "ice cream sandwich")
+_add_compound(["ice cream"], "ice cream")
+_add_compound(["gelato"], "gelato")
+_add_compound(["custard"], "custard")
+_add_compound(["mousse"], "mousse")
+_add_compound(["cheesecake"], "cheesecake")
+_add_compound(["veggie burger", "veggie burgers"], "veggie burger")
 # enzymes already registered above near water/salt
 
 
