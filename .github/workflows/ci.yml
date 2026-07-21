@@ -25,6 +25,8 @@ jobs:
           cache-dependency-path: backend/requirements.txt
       - name: Install dependencies
         run: pip install -r requirements.txt
+      - name: Check secrets hygiene (no SERVICE_ROLE / NEXT_PUBLIC_*SECRET* in frontend/)
+        run: python scripts/check_secrets_hygiene.py
       - name: Verify E-number catalog
         run: python scripts/verify_e_number_catalog.py --fail-on-error
       - name: Check E-number artifact drift
@@ -33,8 +35,15 @@ jobs:
           git diff --exit-code core/knowledge/ike2/truth_anchor_e_numbers.json ../data/layer1_e_numbers.json
       - name: Check label corpus drift
         run: python scripts/generate_label_corpus.py --check
-      - name: Label corpus shadow gate
+      - name: False-Safe shadow gate (label corpus; fails on any false-Safe or match-rate drop)
         run: python scripts/ike2_label_corpus_shadow.py --fail-below-threshold
+      - name: Must-never-Safe gate
+        run: python -m pytest tests/ike2/test_must_never_be_safe.py tests/ike2/test_golden_safety_budget.py -q
+      - name: Commodity coverage promote + USDA head gate
+        run: |
+          python scripts/ensure_commodity_coverage.py
+          # Report JSON has a run timestamp; ontology + seed lists are the contract.
+          git diff --exit-code -- ../data/ontology.json ../data/commodity_seed_lists/
       - name: Run tests
         run: python -m pytest tests/ -q
 

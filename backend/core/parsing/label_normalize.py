@@ -15,6 +15,7 @@ _PROTECTED_AND_PHRASES = re.compile(
     r"vitamins?\s+and\s+minerals|minerals?\s+and\s+vitamins|"
     r"onion\s+and\s+leek|celery\s+and\s+carrot|"
     r"disodium\s+inosinate\s+and\s+disodium\s+guanylate|"
+    r"mono(?:glycerides?)?\s+and\s+di(?:glycerides?)?|"
     r"fruits?\s+and\s+vegetables|"
     r"herbs?\s+and\s+spices"
     r")\b",

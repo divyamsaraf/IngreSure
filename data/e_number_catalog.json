@@ -326,12 +326,13 @@
     },
     {
       "e_code": "E123",
-      "canonical_name": "amaranth",
+      "canonical_name": "amaranth dye",
       "aliases": [
         "E123",
-        "Amaranth",
         "FD&C Red 2",
-        "CI 16185"
+        "CI 16185",
+        "amaranth colour",
+        "amaranth color"
       ],
       "merge_into": null,
       "plant_origin": false,

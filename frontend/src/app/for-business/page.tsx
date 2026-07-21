@@ -1,115 +1,130 @@
 import type { Metadata } from 'next'
-import type { ReactNode } from 'react'
 import ContentPageLayout from '@/components/content/ContentPageLayout'
 import { ContentPageHeader } from '@/components/content/ContentPageHeader'
 import { ContentSection } from '@/components/content/ContentSection'
 import RequestAccessForm from '@/components/business/RequestAccessForm'
-import { COVERAGE } from '@/lib/site'
+import { SEO_KEYWORDS_BUSINESS } from '@/lib/site'
+import { buildPageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
-  title: 'For Business | IngreSure',
+export const metadata: Metadata = buildPageMetadata({
+  title: 'For Business — Diet & allergen checks for food platforms',
   description:
-    'Allergen and dietary compliance for platforms — checkout, menu, and recipe flows. Early B2B partner access.',
-}
+    'Reduce allergen and diet mistakes in grocery, delivery, restaurants, and recipes — before they become claims, recalls, or lost customers. Partner with IngreSure.',
+  path: '/for-business',
+  keywords: SEO_KEYWORDS_BUSINESS,
+})
 
-type StatusKind = 'live' | 'in-development' | 'planned'
-
-const STATUS_META: Record<
-  StatusKind,
-  { label: string; dot: string; text: string }
-> = {
-  live: {
-    label: 'Live',
-    dot: 'bg-safe',
-    text: 'text-emerald-800',
-  },
-  'in-development': {
-    label: 'In development',
-    dot: 'bg-depends',
-    text: 'text-amber-800',
-  },
-  planned: {
-    label: 'Planned',
-    dot: 'bg-slate-300',
-    text: 'text-slate-600',
-  },
-}
-
-function StatusRow({
-  status,
-  children,
-}: {
-  status: StatusKind
-  children: ReactNode
-}) {
-  const meta = STATUS_META[status]
-  return (
-    <li className="flex items-start gap-3 text-[15px] leading-[1.65] text-slate-600 md:text-base">
-      <span
-        className={`mt-2 h-2 w-2 shrink-0 rounded-full ${meta.dot}`}
-        aria-hidden
-      />
-      <span>
-        <span className={`font-semibold ${meta.text}`}>{meta.label}</span>
-        <span className="text-slate-400"> — </span>
-        {children}
-      </span>
-    </li>
-  )
-}
-
+/**
+ * Partner sales page (content + sales + risk framing).
+ * Outcomes and use cases only — no status boards or engineering dump.
+ */
 export default function ForBusinessPage() {
   return (
     <ContentPageLayout>
       <ContentPageHeader
-        title="IngreSure for platforms"
+        title="One wrong ingredient can cost more than a refund"
         eyebrow={
           <p className="inline-flex items-center rounded-full border border-accent/25 bg-teal-50 px-3 py-1 text-xs font-semibold text-accent">
-            Onboarding early B2B partners
+            For food businesses &amp; platforms
           </p>
         }
-        description="Allergen and dietary compliance, built into your checkout, menu, or recipe flow — not bolted on after the fact."
+        description="Misclassified food — sold, served, or recommended as safe when it isn’t — drives allergic reactions, lawsuits, recalls, and customers who never return. IngreSure helps you catch the mismatch before it reaches them."
       />
 
       <div className="space-y-12">
-        <ContentSection title="Status">
-          <ul className="space-y-3.5" aria-label="Product and API status">
-            <StatusRow status="live">
-              Ingredient resolution engine, covering {COVERAGE.allergenEngineRuleCount} allergen-related
-              rules and {COVERAGE.dietFrameworks.length} dietary frameworks (
-              {COVERAGE.dietFrameworks.join(', ')})
-            </StatusRow>
-            <StatusRow status="in-development">REST API for partner integration</StatusRow>
-            <StatusRow status="planned">Multi-region data coverage (EU, Canada, India)</StatusRow>
-            <StatusRow status="planned">SLA and rate-limit tiers for production traffic</StatusRow>
+        <ContentSection title="The cost of getting it wrong">
+          <p>
+            Food businesses lose money when labels, menus, or apps get ingredients wrong. In the
+            U.S., labeling errors have been the leading cause of food recalls; industry analysis of
+            2024 FDA data estimated about{' '}
+            <span className="font-medium text-slate-800">$1.9 billion</span> in direct recall costs
+            from label mistakes alone — most tied to undeclared allergens — before lawsuits,
+            regulatory action, and brand damage.
+          </p>
+          <p className="mt-3">
+            Restaurants and retailers also face negligence claims when a guest is told a dish is
+            safe and it is not. Settlements and verdicts can reach six figures for a single
+            incident; fatal undeclared-allergen cases bring far greater human and legal
+            consequences.
+          </p>
+          <p className="mt-3">
+            Diet and allergy customers are no longer a niche. They expect a reliable answer at
+            checkout, on the menu, or in the app — not a guess.
+          </p>
+        </ContentSection>
+
+        <ContentSection title="How IngreSure helps">
+          <ul className="space-y-3">
+            <li>
+              <span className="font-medium text-slate-800">Flag risk before the order is final</span>
+              {' '}— check ingredients against each customer&apos;s diet and allergens in the flow
+              they already use.
+            </li>
+            <li>
+              <span className="font-medium text-slate-800">Stay honest when you are unsure</span>
+              {' '}— clear when it fits, clear when it doesn&apos;t, and clear when they should look
+              closer — instead of a false &quot;you&apos;re fine.&quot;
+            </li>
+            <li>
+              <span className="font-medium text-slate-800">Protect trust without owning the UI</span>
+              {' '}— results appear in your product, under your brand. We stay behind the scenes.
+            </li>
           </ul>
         </ContentSection>
 
-        <ContentSection title="How it fits into your product">
-          <ol className="list-decimal space-y-2.5 pl-5">
-            <li>Your users&apos; ingredient data goes in — a delivery order, a menu item, a recipe.</li>
-            <li>IngreSure resolves it against dietary rules and allergen data, not keyword matching.</li>
+        <ContentSection title="Where teams use it">
+          <ul className="space-y-3">
             <li>
-              You get a structured verdict back — safe, avoid, or needs review — to show your users
-              directly.
+              <span className="font-medium text-slate-800">Grocery &amp; retail apps</span>
+              {' '}— warn shoppers when a product conflicts with their profile before they pay.
             </li>
-          </ol>
+            <li>
+              <span className="font-medium text-slate-800">Delivery &amp; marketplaces</span>
+              {' '}— flag risky basket items across many restaurants and stores in one place.
+            </li>
+            <li>
+              <span className="font-medium text-slate-800">Restaurants &amp; meal kits</span>
+              {' '}— support menu and recipe checks so guests are not left with &quot;it should be
+              fine.&quot;
+            </li>
+            <li>
+              <span className="font-medium text-slate-800">Recipe, meal-plan &amp; wellness apps</span>
+              {' '}— personalize without recommending a dish someone cannot eat.
+            </li>
+            <li>
+              <span className="font-medium text-slate-800">Corporate dining &amp; catering</span>
+              {' '}— reduce incident risk when serving groups with mixed diets and allergies.
+            </li>
+            <li>
+              <span className="font-medium text-slate-800">CPG &amp; private-label teams</span>
+              {' '}— stress-test ingredient lists against diet and allergen profiles before a SKU
+              goes live (partner discussion).
+            </li>
+          </ul>
         </ContentSection>
 
-        <ContentSection title="Pricing">
-          <p>
-            <span className="font-medium text-slate-800">Indicative pricing</span> — final tiers will
-            be set during early access, based on real partner usage.
+        <ContentSection title="What we need from you">
+          <p className="mb-3">To qualify a partnership, we ask for:</p>
+          <ul className="list-disc space-y-2 pl-5">
+            <li>Company name and a work email</li>
+            <li>Your channel (app, checkout, menu, recipes, dining, etc.)</li>
+            <li>Rough monthly volume of ingredient checks</li>
+            <li>The problem you care about most (allergens, diets, both, or a specific risk)</li>
+          </ul>
+          <p className="mt-3">
+            On a follow-up call we align on how ingredient data reaches us, which diets and
+            allergens matter for your users, and how results should appear in your product.
+            Pricing is usage-based and set during onboarding — no public rate card.
           </p>
-          <p>Usage-based pricing, discussed directly with early partners.</p>
         </ContentSection>
 
-        <ContentSection title="Talk to us about early access">
+        <ContentSection title="Talk with us">
           <p>
-            We&apos;re onboarding a small number of partners while the API stabilizes. Tell us about
-            your use case and we&apos;ll follow up directly.
+            We take on a small number of partners at a time. This is safety-critical work — we
+            onboard carefully.
           </p>
-          <div className="pt-3">
+          <p className="mt-3">Share a few details below. If it looks like a fit, we&apos;ll reach out.</p>
+          <div className="pt-4">
             <RequestAccessForm />
           </div>
         </ContentSection>

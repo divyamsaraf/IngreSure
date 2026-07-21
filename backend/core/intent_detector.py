@@ -83,19 +83,30 @@ _DIET_REGEX = "|".join(re.escape(k) for k in _DIET_PATTERN_KEYS)
 
 
 def normalize_query_for_typos(text: str) -> str:
-    """Apply typo normalization so diet detection works on common misspellings."""
+    """Apply typo normalization so diet detection works on common misspellings.
+
+    Short tokens like ``im`` must use word boundaries — a bare substring replace
+    corrupts ingredient names (``shrimp`` → ``shri amp``, ``simple`` → ``si ample``).
+    """
     if not text:
         return text
     t = text.lower().strip()
     for wrong, right in NORMALIZATION.items():
-        t = re.sub(re.escape(wrong), right, t, flags=re.IGNORECASE)
+        if len(wrong) <= 3 or wrong in {"i'm", "im"}:
+            t = re.sub(rf"\b{re.escape(wrong)}\b", right, t, flags=re.IGNORECASE)
+        else:
+            t = re.sub(re.escape(wrong), right, t, flags=re.IGNORECASE)
     return t
 
 
 def detect_diet(message: str) -> Optional[str]:
     """
-    If the message contains any diet keyword, return the canonical diet name.
-    Uses longest-first matching so 'hindu veg' wins over 'hindu'.
+    If the message contains any diet keyword as a substring, return the canonical
+    diet name. Longest-first so 'hindu veg' wins over 'hindu'.
+
+    Used for *display / third-person question* helpers — NOT for mutating
+    ``dietary_preference`` on grocery atoms. Prefer ``_extract_diet`` /
+    ``_PROFILE_PATTERNS`` for profile writes.
     """
     msg = (message or "").lower().strip()
     if not msg:
@@ -113,16 +124,46 @@ _PROFILE_PATTERNS = [
     re.compile(rf"\b(?:my\s+religion\s+is|i\s+practice)\s+({_DIET_REGEX})\b", re.IGNORECASE),
     re.compile(rf"\b(?:i\s+eat)\s+({_DIET_REGEX})\b", re.IGNORECASE),
     re.compile(rf"\bswitch(?:ing)?\s+(?:to|my\s+diet\s+to)\s+({_DIET_REGEX})\b", re.IGNORECASE),
+    re.compile(
+        rf"\b(?:change|set|update)\s+(?:my\s+)?diet\s+to\s+({_DIET_REGEX})\b",
+        re.IGNORECASE,
+    ),
     # Bare diet keyword: "Jain", "hindu veg", "Halal", "vegan" (whole input)
     re.compile(rf"^\s*({_DIET_REGEX})\s*(?:diet|lifestyle)?\s*$", re.IGNORECASE),
 ]
 
-# Allergen-update sentence patterns
+# Common medical allergens for bare "X allergy" (no "I have").
+_BARE_ALLERGY_ATOM = (
+    r"(?:tree\s+nuts?|peanuts?|soy(?:beans?)?|milk|eggs?|fish|shellfish|"
+    r"sesame|wheat|gluten|mustard|celery|lupin|onion|garlic)"
+)
+
+# Allergen-update sentence patterns.
+# IMPORTANT: list captures must NOT stop at ", and" — that truncates
+# "allergic to peanut, soy, and egg" to peanut+soy only.
 _ALLERGEN_PATTERNS = [
-    re.compile(r"\b(?:i'm|i\s+am|i'm)\s+allergic\s+to\s+(.+?)(?:\.|,\s*(?:can|is|and)|$)", re.IGNORECASE),
-    re.compile(r"\b(?:i\s+have)\s+(?:a\s+)?(.+?)\s+allergy\b", re.IGNORECASE),
+    re.compile(r"\b(?:i'm|i\s+am|im)\s+allergic\s+to\s+(.+?)(?:\.|$)", re.IGNORECASE),
+    # "I have allergies to milk and eggs"
+    re.compile(r"\b(?:i\s+have)\s+allergies\s+to\s+(.+?)(?:\.|$)", re.IGNORECASE),
+    # "I have peanut, soy, and egg allergies" / "I have a peanut allergy"
+    re.compile(r"\b(?:i\s+have)\s+(?:a\s+|an\s+)?(.+?)\s+allerg(?:y|ies)\b", re.IGNORECASE),
+    # "allergies: peanut, soy, egg" / "allergens: ..."
+    re.compile(r"\b(?:allerg(?:ies|ens?))\s*[:\-]\s*(.+?)(?:\.|$)", re.IGNORECASE),
     re.compile(r"\b(?:my\s+allerg(?:ies|y|ens?)\s+(?:are|is))\s+(.+?)(?:\.|$)", re.IGNORECASE),
     re.compile(r"\b(?:add|set)\s+(?:my\s+)?allerg(?:ens?|ies?)\s+(?:to\s+)?(.+?)(?:\.|$)", re.IGNORECASE),
+    # Bare / conjunction forms: "Also allergic to soy", "and allergic to fish"
+    re.compile(r"\b(?:(?:and|also)\s+)?allergic\s+to\s+(.+?)(?:\.|$)", re.IGNORECASE),
+    # List before allergy word (must precede bare-single or "egg allergy" wins alone):
+    # "peanut, soy, and egg allergy"
+    re.compile(
+        rf"\b((?:{_BARE_ALLERGY_ATOM}\s*,\s*)+(?:and\s+)?{_BARE_ALLERGY_ATOM})\s+allerg(?:y|ies)\b",
+        re.IGNORECASE,
+    ),
+    # Bare single "peanut allergy" / "tree nut allergy"
+    re.compile(
+        rf"\b(?:(?:a|an|my|severe|mild|known|diagnosed)\s+)?({_BARE_ALLERGY_ATOM})\s+allerg(?:y|ies)\b",
+        re.IGNORECASE,
+    ),
 ]
 
 # Allergen-removal patterns
@@ -206,10 +247,18 @@ _INGREDIENT_QUERY_PATTERNS = [
     re.compile(r"^(.+?)\s+(?:safe|ok|okay|allowed|permitted|suitable|fine|good)[\?\.\!]?\s*$", re.IGNORECASE),
     # "what about eggs?" / "how about cheese?"
     re.compile(r"\b(?:what|how)\s+about\s+(.+?)[\?\.\!]?\s*$", re.IGNORECASE),
-    # "check eggs" / "analyze cheese"
-    re.compile(r"^\s*(?:check|analyze|evaluate|test|verify)\s+(.+?)[\?\.\!]?\s*$", re.IGNORECASE),
-    # "Ingredients: X, Y, Z" (explicit label) — stop at sentence-ending period+question
-    re.compile(r"\b(?:ingredients?)\s*[:;]\s*(.+?)(?:\.\s+(?:is|are|does|do|can)\b.*)?$", re.IGNORECASE),
+    # "check eggs" / "analyze cheese" / "Check: potato, honey"
+    re.compile(
+        r"^\s*(?:check|analyze|evaluate|test|verify)\s*[:\-]?\s+(.+?)[\?\.\!]?\s*$",
+        re.IGNORECASE,
+    ),
+    # "Ingredients: X, Y, Z" (explicit label) — stop at sentence-ending period +
+    # question ("Is this…") OR first-person / allergen profile prose.
+    re.compile(
+        r"\b(?:ingredients?)\s*[:;]\s*(.+?)"
+        r"(?:\.\s+(?:is|are|does|do|can|i\s+have|i'?m|i\s+am|i'?ve|my\b|allergic\b)\b.*)?$",
+        re.IGNORECASE,
+    ),
 ]
 
 # Greeting patterns — matches single-word and multi-part greetings
@@ -287,16 +336,32 @@ def _extract_allergens(query: str) -> Tuple[List[str], str]:
     """Return ([allergen_names], remaining_query)."""
     allergens: List[str] = []
     remaining = query
-    for pat in _ALLERGEN_PATTERNS:
-        m = pat.search(remaining)
-        if m:
+    # Multiple allergy clauses are common ("peanut allergy. Also allergic to soy").
+    progressed = True
+    while progressed:
+        progressed = False
+        for pat in _ALLERGEN_PATTERNS:
+            m = pat.search(remaining)
+            if not m:
+                continue
             raw = m.group(1).strip()
             for a in re.split(r"\s*(?:,|and)\s*", raw):
                 a = a.strip().lower()
-                if a:
+                if not a or a in {"a", "an", "my", "the", "to", "of"}:
+                    continue
+                if a in {"allergy", "allergies", "allergen", "allergens"}:
+                    continue
+                if a and a not in allergens:
                     allergens.append(a)
             remaining = (remaining[: m.start()] + " " + remaining[m.end() :]).strip()
             remaining = re.sub(r"\s+", " ", remaining)
+            progressed = True
+            break
+    # Excision often leaves orphan conjunctions / dotted holes: "peanut. . . Also"
+    remaining = re.sub(r"(?:\s*\.\s*){2,}", ". ", remaining)
+    remaining = re.sub(r"\b(?:also|and)\s*$", "", remaining, flags=re.IGNORECASE)
+    remaining = re.sub(r"\s*\.\s*$", "", remaining)
+    remaining = re.sub(r"\s+", " ", remaining).strip()
     return allergens, remaining
 
 
@@ -361,10 +426,31 @@ def _has_ingredient_list_indicator(text: str) -> bool:
 def _is_non_ingredient_capture(raw: str) -> bool:
     """Reject meta placeholders from analyze/check patterns."""
     r = (raw or "").strip().lower().rstrip(".,;:!?")
-    if r in {"this", "these", "that", "it", "me", "my label", "this for me"}:
+    if r in {
+        "this",
+        "these",
+        "that",
+        "it",
+        "me",
+        "my label",
+        "this for me",
+        "ingredients",
+        "ingredient",
+    }:
         return True
     if re.match(r"^(?:this|these|that)\s+for\s+me$", r):
         return True
+    if re.match(r"^(?:and\s+)?allergic\s+to\b", r):
+        return True
+    if re.search(r"\ballergic\s+to\b", r) and not re.search(
+        r"\b(?:milk|egg|peanut|soy|wheat|fish|shellfish|sesame|tree\s*nut)s?\b.*\ballergic\b",
+        r,
+    ):
+        # Pure allergen-prose chunks ("allergic to fish") are never food atoms.
+        # Keep real foods that merely contain the substring unlikely; allergen
+        # sentences are short and start with allergic/and allergic.
+        if re.match(r"^(?:and\s+)?allergic\b", r) or r.endswith("allergy"):
+            return True
     return False
 
 
@@ -376,6 +462,43 @@ def _is_meta_ingredient_phrase(raw: str) -> bool:
     if re.search(r"^ingredients?\s+for\b", r, re.IGNORECASE):
         return True
     return False
+
+
+def _strip_trailing_request_prose(chunk: str) -> str:
+    """Drop trailing conversational wrappers glued onto an ingredient token."""
+    t = (chunk or "").strip()
+    if not t:
+        return t
+    # "check: potato" / "analyze sugar" left after comma-split fallbacks
+    t = re.sub(
+        r"^(?:check|analyze|evaluate|test|verify)\s*[:\-]?\s+",
+        "",
+        t,
+        flags=re.IGNORECASE,
+    ).strip()
+    t = re.sub(
+        r"\s+(?:for\s+(?:me|my\s+\w+)|please|thanks|thank\s+you)\s*$",
+        "",
+        t,
+        flags=re.IGNORECASE,
+    ).strip()
+    # "salt. allergic to peanuts" / "eggs. allergic to gluten"
+    t = re.sub(
+        r"[.\s]+(?:and\s+)?allergic\s+to\b.*$",
+        "",
+        t,
+        flags=re.IGNORECASE,
+    ).strip()
+    t = re.sub(
+        r"[.\s]+(?:i\s+have|i'?m|i\s+am)\s+(?:a\s+)?\w+\s+allergy\b.*$",
+        "",
+        t,
+        flags=re.IGNORECASE,
+    ).strip()
+    # Residue from multi-allergy excision: "peanut. . . also"
+    t = re.sub(r"(?:\s*\.\s*){2,}.*$", "", t).strip()
+    t = re.sub(r"[.\s]+(?:also|and)\s*$", "", t, flags=re.IGNORECASE).strip()
+    return t
 
 
 def _extract_ingredients_from_text(text: str) -> List[str]:
@@ -392,7 +515,13 @@ def _extract_ingredients_from_text(text: str) -> List[str]:
         m = pat.search(text)
         if m:
             raw = _strip_duplicate_ingredient_label_block(m.group(1).strip())
-            if _is_meta_ingredient_phrase(raw) or _is_non_ingredient_capture(raw):
+            if not raw or _is_meta_ingredient_phrase(raw) or _is_non_ingredient_capture(raw):
+                # Empty "Ingredients:" capture — do not fall through to treating
+                # the header itself as an ingredient atom.
+                if re.search(r"\bingredients?\s*[:;]\s*$", text, re.IGNORECASE):
+                    return []
+                if not raw:
+                    continue
                 return []
             return _split_ingredients(raw)
     # Fallback: only when text clearly has a list (comma or "ingredients:")
@@ -456,19 +585,28 @@ def _split_ingredients(text: str) -> List[str]:
     stays as one ingredient for the bridge to expand). Preserves compound items like
     'burger with chicken' when the left side is a known product/container word.
     """
+    from core.parsing.label_normalize import _protect_and_phrases, _restore_and_phrases
+
     t = re.sub(r"[?\!]+", "", text).strip()
     # Strip trailing question/sentence after a period (e.g. "Water. Is this Halal" → "Water")
     t = re.sub(r"\.\s+(?:is|are|does|do|can|should|what|how|why|will|could|would)\b.*$", "", t, flags=re.IGNORECASE).strip()
-    # Replace "and" / "or" with comma (but NOT "with" — handled per-chunk)
-    t = re.sub(r"\s+(?:and|&)\s+", ", ", t, flags=re.IGNORECASE)
-    t = re.sub(r"\s+or\s+", ", ", t, flags=re.IGNORECASE)
+    # Protect "herbs and spices" / "mono and diglycerides" before treating "and" as a comma.
+    protected, placeholders = _protect_and_phrases(t)
+    protected = re.sub(r"\s+(?:and|&)\s+", ", ", protected, flags=re.IGNORECASE)
+    protected = re.sub(r"\s+or\s+", ", ", protected, flags=re.IGNORECASE)
+    t = _restore_and_phrases(protected, placeholders)
     stopwords = {"the", "a", "an", "some", "any", "this", "that", "it", "for", "me", "my", "in", "on", "to"}
     result: List[str] = []
     seen: set = set()
 
     for chunk in _split_by_comma_outside_parens(t):
-        chunk = chunk.strip().rstrip(".")
+        # Strip leftover period/space noise from allergen excision
+        # (e.g. "Peanut. ." / "Peanut. " after removing "I have a peanut allergy").
+        chunk = re.sub(r"[\s.]+$", "", chunk.strip()).strip()
+        chunk = _strip_trailing_request_prose(chunk)
         if not chunk or len(chunk) < 2:
+            continue
+        if _is_non_ingredient_capture(chunk):
             continue
         words = chunk.lower().split()
         if all(w in stopwords for w in words):
@@ -488,6 +626,7 @@ def _split_ingredients(text: str) -> List[str]:
             else:
                 # Split: treat "with" as conjunction
                 for part in [left, right]:
+                    part = _strip_trailing_request_prose(part)
                     key = part.lower().strip()
                     if key not in seen and len(part) >= 2:
                         pw = part.lower().split()
@@ -712,6 +851,10 @@ def _clean_for_ingredients(text: str) -> str:
     t = re.sub(r"^(?:hi|hello|hey|please|kindly)\b\s*,?\s*", "", t, flags=re.IGNORECASE)
     t = re.sub(r"\b(?:please|kindly|could\s+you|would\s+you|can\s+you)\s+(?:check|tell\s+me|let\s+me\s+know)\s*", "", t, flags=re.IGNORECASE)
     t = re.sub(r"\bfor\s+(?:me|my\s+\w+)\b", "", t, flags=re.IGNORECASE)
+    # Bare / empty Ingredients: header is not an ingredient list.
+    t = re.sub(r"^(?:ingredients?)\s*[:;]\s*", "", t, flags=re.IGNORECASE).strip()
+    if not t or t.lower().rstrip(".:;") in {"ingredient", "ingredients"}:
+        return ""
     t = re.sub(r"\s*\?+\s*$", "", t)
     t = re.sub(r"\s+", " ", t).strip()
     # Reject conversational phrases and request for help
@@ -845,11 +988,9 @@ def detect_intent(query: str) -> ParsedIntent:
     elif trailing_diet:
         profile_updates["dietary_preference"] = trailing_diet
         remaining = base_text  # Use only the ingredient portion
-    else:
-        # Simple rule: if user mentions any diet keyword, update profile to that diet
-        detected = detect_diet(query)
-        if detected:
-            profile_updates["dietary_preference"] = detected
+    # NOTE: Do NOT fall back to substring detect_diet(query). That wrongly treats
+    # grocery atoms like "Kosher salt" / "vegan cheese" / "halal chicken" as
+    # profile updates (design: only explicit cues mutate dietary_preference).
 
     # Check for "allergens none" / "no allergies" / "clear allergens" → set allergens to []
     q_stripped = remaining.strip()

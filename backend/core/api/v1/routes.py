@@ -1,11 +1,10 @@
-from __future__ import annotations
-
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 
 from core.knowledge.canonicalizer import CanonicalResolver
 from core.ontology.ingredient_registry import IngredientRegistry
 from core.evaluation.compliance_engine import ComplianceEngine
 from core.parsing.ingredient_parser import preprocess_ingredients_to_strings
+from core.security.rate_limit import rate_limit, api_v1_rate_limit
 
 from .schemas import (
     ResolveIngredientRequest,
@@ -21,7 +20,8 @@ router = APIRouter(prefix="/api/v1", tags=["api-v1"])
 
 
 @router.post("/resolve-ingredient", response_model=ResolvedIngredientResponse)
-def resolve_ingredient(req: ResolveIngredientRequest) -> ResolvedIngredientResponse:
+@rate_limit(api_v1_rate_limit)
+def resolve_ingredient(request: Request, req: ResolveIngredientRequest) -> ResolvedIngredientResponse:
     """
     Resolve a single ingredient into the canonical Ingredient object.
 
@@ -46,7 +46,8 @@ def resolve_ingredient(req: ResolveIngredientRequest) -> ResolvedIngredientRespo
 
 
 @router.get("/ingredient/{name}", response_model=ResolvedIngredientResponse)
-def get_ingredient(name: str, try_api: bool = False) -> ResolvedIngredientResponse:
+@rate_limit(api_v1_rate_limit)
+def get_ingredient(request: Request, name: str, try_api: bool = False) -> ResolvedIngredientResponse:
     """
     Get an ingredient resolution by name.
 
@@ -67,7 +68,8 @@ def get_ingredient(name: str, try_api: bool = False) -> ResolvedIngredientRespon
 
 
 @router.post("/evaluate-compliance", response_model=EvaluateComplianceResponse)
-def evaluate_compliance(req: EvaluateComplianceRequest) -> EvaluateComplianceResponse:
+@rate_limit(api_v1_rate_limit)
+def evaluate_compliance(request: Request, req: EvaluateComplianceRequest) -> EvaluateComplianceResponse:
     """
     Deterministically evaluate ingredients against restriction_ids.
     """
@@ -83,7 +85,8 @@ def evaluate_compliance(req: EvaluateComplianceRequest) -> EvaluateComplianceRes
 
 
 @router.post("/evaluate-product", response_model=EvaluateProductResponse)
-def evaluate_product(req: EvaluateProductRequest) -> EvaluateProductResponse:
+@rate_limit(api_v1_rate_limit)
+def evaluate_product(request: Request, req: EvaluateProductRequest) -> EvaluateProductResponse:
     """
     Parse an ingredient label text into atomic ingredients, then evaluate compliance.
     """

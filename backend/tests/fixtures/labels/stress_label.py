@@ -140,7 +140,12 @@ def time_ike2_pipeline(
     for atom in atoms:
         resolved = resolver.resolve(atom.name, None)
         inputs.append(
-            to_compliance_input(resolved, trace=atom.trace, may_contain=atom.may_contain)
+            to_compliance_input(
+                resolved,
+                trace=atom.trace,
+                may_contain=atom.may_contain,
+                query_atom=atom.name,
+            )
         )
     resolve_ms = (time.perf_counter() - t_resolve) * 1000
 

@@ -31,8 +31,9 @@ class PreparedChatIngredients:
 
 def _needs_label_decomposer(query: str, ingredients: list[str]) -> bool:
     q = query or ""
-    if _INGREDIENTS_HEADER.search(q):
-        return True
+    # Ingredients: alone is not enough — chat often mixes a simple list with a
+    # profile sentence ("…Peanut. I have a peanut allergy."). Prefer the
+    # intent-extracted atoms unless the paste looks like a real label.
     if _NEWLINE_LIST.search(q) or _BULLET_LIST.search(q):
         return True
     if _TRACE_BOILERPLATE.search(q):
@@ -45,6 +46,9 @@ def _needs_label_decomposer(query: str, ingredients: list[str]) -> bool:
     if re.search(r"\s+and\s+", blob, re.IGNORECASE) and len(ingredients or []) <= 3:
         return True
     if len(ingredients or []) > 12:
+        return True
+    # Complex Ingredients: paste with no usable intent atoms still needs decompose.
+    if _INGREDIENTS_HEADER.search(q) and not ingredients:
         return True
     return False
 

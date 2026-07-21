@@ -1,4 +1,15 @@
+import type { Metadata } from 'next'
 import ChatInterface from '@/components/chat/ChatInterface'
+import { SEO_KEYWORDS_CHAT } from '@/lib/site'
+import { buildPageMetadata } from '@/lib/seo'
+
+export const metadata: Metadata = buildPageMetadata({
+  title: 'Grocery Assistant — Check ingredients for your diet & allergies',
+  description:
+    'Paste a grocery list, menu, or product label. Get Safe / Avoid / Depends for vegan, vegetarian, Halal, Kosher, Jain, and common allergens — free, no signup.',
+  path: '/chat',
+  keywords: SEO_KEYWORDS_CHAT,
+})
 
 export default function ChatPage() {
   return (

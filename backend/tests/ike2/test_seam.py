@@ -63,11 +63,22 @@ def test_uncertain_resolution_is_fail_closed():
         group=None, source="unknown_queue", confidence_band="none",
         trusted=False, resolution_layer="L5_unknown_queue", status="uncertain",
     )
-    ci = to_compliance_input(r)
+    ci = to_compliance_input(r, query_atom="mystery powder")
     assert ci.flags == {}
     assert ci.knowledge_state == "UNCLASSIFIED"
     assert ci.trusted is False
     assert ci.alcohol_role is None
+    assert ci.canonical_name == "mystery powder"
+
+
+def test_uncertain_without_query_atom_stays_empty_identity():
+    r = ResolvedIngredient(
+        group=None, source="unknown_queue", confidence_band="none",
+        trusted=False, resolution_layer="L5_unknown_queue", status="uncertain",
+    )
+    ci = to_compliance_input(r)
+    assert ci.canonical_name == ""
+    assert ci.trusted is False
 
 
 def test_trace_flag_passes_through():

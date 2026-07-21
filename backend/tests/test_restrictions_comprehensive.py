@@ -102,13 +102,13 @@ class TestKosher:
 
 
 # ---------------------------------------------------------------------------
-# HINDU VEGETARIAN: prohibits meat, fish, egg, insect-derived; allows dairy
+# HINDU VEGETARIAN: lacto-veg — no meat/fish/egg; honey and dairy allowed
 # ---------------------------------------------------------------------------
 class TestHinduVegetarian:
     @pytest.mark.parametrize("ingredient", [
         "beef", "chicken", "fish", "tuna", "salmon",
         "egg", "gelatin", "collagen", "castoreum",
-        "isinglass", "anchovy", "shellac", "honey",
+        "isinglass", "anchovy",
     ])
     def test_not_safe(self, engine, ingredient):
         assert _eval(engine, ingredient, "hindu_vegetarian") == VerdictStatus.NOT_SAFE
@@ -118,13 +118,14 @@ class TestHinduVegetarian:
         "water", "sugar", "rice", "wheat",
         "onion", "garlic", "tofu", "mushroom",
         "coconut", "peanut butter", "almond milk",
+        "honey",
     ])
     def test_safe(self, engine, ingredient):
         assert _eval(engine, ingredient, "hindu_vegetarian") == VerdictStatus.SAFE
 
 
 # ---------------------------------------------------------------------------
-# HINDU NON-VEGETARIAN: prohibits beef/cow, insect-derived; allows other meat, fish, dairy, eggs
+# HINDU NON-VEGETARIAN: prohibits beef/cow, pig, insect dyes; allows honey, other meat, fish, dairy, eggs
 # ---------------------------------------------------------------------------
 class TestHinduNonVegetarian:
     @pytest.mark.parametrize("ingredient", [
@@ -136,7 +137,7 @@ class TestHinduNonVegetarian:
     @pytest.mark.parametrize("ingredient", [
         "chicken", "fish", "lamb", "tuna",
         "milk", "egg", "butter", "cheese",
-        "rice", "sugar", "tofu",
+        "rice", "sugar", "tofu", "honey",
     ])
     def test_safe(self, engine, ingredient):
         assert _eval(engine, ingredient, "hindu_non_vegetarian") == VerdictStatus.SAFE

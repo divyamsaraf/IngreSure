@@ -38,3 +38,37 @@ def test_ambiguous_alias_no_region_uncertain(monkeypatch):
     monkeypatch.setattr(db, "disambiguate", lambda *a, **k: "ambiguous")
     r = resolve("unmapped_ambiguous_alias", region=None)
     assert r.status == "uncertain"
+
+
+def test_title_case_atom_uses_normalized_key_for_tier3(monkeypatch):
+    """Chat lists send 'Beets'; DB aliases are stored as 'beets'."""
+    import core.knowledge.ike2.resolution_cache as cache
+    import core.knowledge.ike2.stores.db as db
+    import core.knowledge.ike2.stores.local_ontology as local_ontology
+    import core.knowledge.ike2.truth_anchor as truth_anchor
+
+    cache.clear()
+    monkeypatch.setattr(truth_anchor, "lookup", lambda *_a, **_k: None)
+    monkeypatch.setattr(local_ontology, "lookup", lambda *_a, **_k: None)
+    seen = {}
+
+    def _disambiguate(alias, region):
+        seen["disambiguate"] = alias
+        return "none"
+
+    def _resolve_alias(alias, region):
+        seen["resolve_alias"] = alias
+        return SimpleNamespace(
+            canonical_name="beet",
+            animal_origin=False,
+            ingredient_id="beet",
+            uncertainty_flags=[],
+        )
+
+    monkeypatch.setattr(db, "disambiguate", _disambiguate)
+    monkeypatch.setattr(db, "resolve_alias", _resolve_alias)
+    r = resolve("Beets", region=None)
+    assert seen["disambiguate"] == "beet"
+    assert seen["resolve_alias"] == "beet"
+    assert r.status == "resolved"
+    assert r.resolution_layer == "L3_db_alias"

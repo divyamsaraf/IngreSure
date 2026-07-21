@@ -14,6 +14,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 from core.knowledge.ike2.truth_anchor import TruthAnchorFact
+from core.knowledge.ike2.flag_derive import derive_identity_flags
 
 
 @dataclass
@@ -40,22 +41,45 @@ def _derive_alcohol_role(explicit, alcohol_content) -> Optional[str]:
     return None
 
 
+def _with_derived_flags(canonical_name: str, flags: dict) -> dict:
+    """OR identity-derived allergen bits onto flags (fish from species, peanut from name, ...)."""
+    derived = derive_identity_flags(
+        canonical_name,
+        flags,
+        animal_species=flags.get("animal_species"),
+    )
+    out = dict(flags)
+    for key, value in derived.items():
+        if value is True:
+            out[key] = True
+        elif key == "animal_species" and value and not out.get("animal_species"):
+            out[key] = value
+    return out
+
+
 def to_compliance_input(
-    resolved, *, trace: bool = False, may_contain: bool = False
+    resolved,
+    *,
+    trace: bool = False,
+    may_contain: bool = False,
+    query_atom: Optional[str] = None,
 ) -> ComplianceInput:
     group = resolved.group
     trusted = bool(getattr(resolved, "trusted", False))
 
     # Unresolved (L5 / ambiguous): nothing to assert -> fail-closed UNCERTAIN.
+    # Keep the original atom text as identity so multiple unknowns do not collapse
+    # onto one empty breakdown key (and so the audit never shows a bare "Unknown").
     if group is None:
+        identity = (query_atom or "").strip()
         return ComplianceInput(
-            canonical_name="", flags={}, knowledge_state="UNCLASSIFIED",
+            canonical_name=identity, flags={}, knowledge_state="UNCLASSIFIED",
             trusted=False, alcohol_role=None, verdict_cap=None,
             trace=trace, may_contain=may_contain,
         )
 
     if isinstance(group, TruthAnchorFact):
-        flags = dict(group.flags)
+        flags = _with_derived_flags(group.canonical_name, dict(group.flags))
         return ComplianceInput(
             canonical_name=group.canonical_name,
             flags=flags,
@@ -70,13 +94,15 @@ def to_compliance_input(
     # db GroupRow: every column is a flat attribute, so its __dict__ already is the
     # flags map compliance looks flags.get(trigger_flag) into.
     flags = dict(vars(group))
+    canon = getattr(group, "canonical_name", "") or ""
+    flags = _with_derived_flags(canon, flags)
     return ComplianceInput(
-        canonical_name=getattr(group, "canonical_name", ""),
+        canonical_name=canon,
         flags=flags,
         knowledge_state=getattr(group, "knowledge_state", "UNCLASSIFIED"),
         trusted=trusted,
         alcohol_role=_derive_alcohol_role(getattr(group, "alcohol_role", None), getattr(group, "alcohol_content", None)),
-        verdict_cap=getattr(group, "verdict_cap", None),
+        verdict_cap=getattr(group, "verdict_cap", None) or flags.get("verdict_cap"),
         trace=trace,
         may_contain=may_contain,
     )

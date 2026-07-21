@@ -20,6 +20,7 @@ class Ingredient:
     synthetic: bool = False
     fungal: bool = False
     insect_derived: bool = False
+    bee_product: bool = False
     # Species (when animal_origin True): cow, goat, pig, chicken, fish, shellfish, etc.
     animal_species: Optional[str] = None
     # Allergen / dietary source flags
@@ -43,14 +44,17 @@ class Ingredient:
 
     @property
     def meat_fish_derived(self) -> bool:
-        """True if animal-derived but not dairy/egg/insect (meat, fish, shellfish, gelatin, etc.).
-        Excludes insect-derived items (honey, beeswax, carmine, shellac) which are
-        handled separately by the insect_derived flag."""
+        """True if animal-derived but not dairy/egg/insect/bee (meat, fish, gelatin, …).
+
+        Honey is ``bee_product`` (allowed on Halal/Kosher/Hindu/vegetarian);
+        carmine/shellac stay ``insect_derived``.
+        """
         return (
             self.animal_origin
             and not self.dairy_source
             and not self.egg_source
             and not self.insect_derived
+            and not self.bee_product
         )
 
     def to_dict(self) -> dict:
@@ -66,6 +70,7 @@ class Ingredient:
             "synthetic": self.synthetic,
             "fungal": self.fungal,
             "insect_derived": self.insect_derived,
+            "bee_product": self.bee_product,
             "animal_species": self.animal_species,
             "egg_source": self.egg_source,
             "dairy_source": self.dairy_source,
@@ -96,6 +101,7 @@ class Ingredient:
             synthetic=d.get("synthetic", False),
             fungal=d.get("fungal", False),
             insect_derived=d.get("insect_derived", False),
+            bee_product=d.get("bee_product", False),
             animal_species=d.get("animal_species"),
             egg_source=d.get("egg_source", False),
             dairy_source=d.get("dairy_source", False),

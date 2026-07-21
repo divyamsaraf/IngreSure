@@ -16,10 +16,16 @@ _KS_RANK = {
 # Restrictions that must not firm-SAFE when source-origin is ambiguous.
 _VEGAN_RELIGIOUS = frozenset({
     "vegan", "halal", "kosher", "jain", "hindu_vegetarian", "hindu_non_vegetarian",
-    "vegetarian", "lacto_vegetarian", "ovo_vegetarian", "pescatarian", "no_insect",
+    "vegetarian", "lacto_vegetarian", "ovo_vegetarian", "pescatarian", "no_insect_derived",
 })
 _DAIRY_EGG = frozenset({"vegan", "dairy_free", "lactose_free", "egg_free"})
 _HALAL_KOSHER = frozenset({"halal", "kosher"})
+
+# Uncertainty phrases that are irrelevant to diet/allergen origin (do not cap SAFE).
+_UNCERTAINTY_IRRELEVANT = (
+    "pku",
+    "banned_substance",
+)
 
 
 class ComplianceResult:
@@ -68,62 +74,139 @@ def _flag_matches_any(flag: str, patterns: tuple[str, ...]) -> bool:
 
 
 def _uncertainty_ceiling(restriction: str, flags: dict, animal_origin: bool) -> Optional[Verdict]:
-    """Max verdict when a clean pass would otherwise be SAFE (fail-closed)."""
+    """Max verdict when a clean pass would otherwise be SAFE (fail-closed).
+
+    Deny-by-default: any non-empty origin/source uncertainty on vegan/religious
+    or dairy/egg restrictions caps to WARN. An allowlist of phrases previously
+    failed open (e.g. ``mono_diglycerides`` on glycerin → false Safe for Jain).
+    """
     uflags = _uncertainty_flags(flags)
     if not uflags:
         return None
 
-    if restriction in _VEGAN_RELIGIOUS and any(
-        _flag_matches_any(f, ("animal_or_plant", "stearate_may_be_animal", "animal_or_yeast", "may_be_from_yeast"))
-        for f in uflags
-    ):
-        return Verdict.WARN
+    relevant = [
+        f for f in uflags
+        if not _flag_matches_any(f, _UNCERTAINTY_IRRELEVANT)
+    ]
+    if not relevant:
+        return None
 
-    if restriction in _DAIRY_EGG and any(
-        _flag_matches_any(f, ("soy_or_egg", "may_be_animal_derived_if_from_whey", "may_be_animal_derived"))
-        for f in uflags
-    ):
+    if restriction in _VEGAN_RELIGIOUS or restriction in _DAIRY_EGG:
         return Verdict.WARN
 
     if restriction in _HALAL_KOSHER:
-        if any(_flag_matches_any(f, ("halal_status_unverified",)) for f in uflags):
+        if any(_flag_matches_any(f, ("halal_status_unverified",)) for f in relevant):
             return Verdict.WARN
-        if animal_origin and any(_flag_matches_any(f, ("source_species_unspecified",)) for f in uflags):
+        if animal_origin and any(_flag_matches_any(f, ("source_species_unspecified",)) for f in relevant):
             return Verdict.UNCERTAIN
 
     return None
 
 
+# Allergen / insect / bee bits that Tier-2/DB often under-flags. Overlaying these
+# True values is always safe (false-Avoid >> false-SAFE). Do NOT blindly overlay
+# animal_origin — E910 resolves to canonical l-cysteine with verdict_cap WARN and
+# animal_origin False; a separate blunt "l-cysteine" LOCKED fact has animal_origin
+# True and would turn deliberate Depends into false Avoid.
+_OVERLAY_SAFETY_TRUE = frozenset({
+    "egg_source", "dairy_source", "gluten_source", "soy_source", "sesame_source",
+    "peanut_source", "tree_nut_source", "fish_source", "shellfish_source",
+    "mustard_source", "celery_source", "lupin_source", "sulphite_source",
+    "insect_derived", "bee_product",
+    "onion_source", "garlic_source", "root_vegetable",
+})
+
+
 def _effective_flags(r) -> dict:
-    """C1: re-check the truth anchor; locked hand-curated facts override resolved flags."""
+    """C1: heal under-flagged Tier-2/DB rows from curated Tier-1 facts.
+
+    Ontology/DB rows are often ``AUTO_CLASSIFIED`` and omit allergen bits
+    (``fish_source`` false on tuna, missing ``bee_product`` on honey). Overlay
+    True safety flags from LOCKED/VERIFIED Tier-1 by canonical name. Preserve
+    deliberate origin uncertainty (verdict_cap / uncertainty_flags) so compounds
+    like E910 stay Depends rather than false Avoid.
+    """
     flags = dict(getattr(r, "flags", {}) or {})
-    knowledge_state = getattr(r, "knowledge_state", "UNCLASSIFIED")
-    if knowledge_state != "LOCKED":
-        return flags
     fact = truth_anchor.lookup(getattr(r, "canonical_name", "") or "")
-    if fact is not None and fact.knowledge_state == "LOCKED":
-        flags.update(fact.flags)
+    if fact is None or fact.knowledge_state not in ("LOCKED", "VERIFIED"):
+        return flags
+
+    uncertain = bool(flags.get("verdict_cap") or flags.get("uncertainty_flags"))
+    for key, value in fact.flags.items():
+        if not value:
+            continue
+        if key in _OVERLAY_SAFETY_TRUE:
+            flags[key] = True
+        elif key == "animal_origin" and not uncertain:
+            flags[key] = True
+    # Honey policy: Tier-1 bee_product must clear stale DB insect_derived=true.
+    if fact.flags.get("bee_product"):
+        flags["bee_product"] = True
+        flags["insect_derived"] = False
+        if not uncertain:
+            flags["animal_origin"] = True
     return flags
+
+
+def _ks_rank(state: str) -> int:
+    return _KS_RANK.get(state or "UNCLASSIFIED", 0)
+
+
+def _effective_knowledge_state(r) -> str:
+    """Elevate row KS when a curated Tier-1 fact exists for the same canonical.
+
+    Systemic class: DB/ontology rows stuck at DISCOVERED demote medical FAIL to
+    Depends and clean SAFE to WARN, even when flags are correct. If Tier-1 has
+    LOCKED/VERIFIED the ingredient, trust that curation for gating.
+    """
+    ks = getattr(r, "knowledge_state", None) or "UNCLASSIFIED"
+    fact = truth_anchor.lookup(getattr(r, "canonical_name", "") or "")
+    if fact is None or fact.knowledge_state not in ("LOCKED", "VERIFIED"):
+        return ks
+    if _ks_rank(fact.knowledge_state) > _ks_rank(ks):
+        return fact.knowledge_state
+    return ks
 
 
 def _ks_gate_ok(knowledge_state: str, rule) -> bool:
     """C2: rule may only assert a definite verdict at/above its min state."""
     minimum = getattr(rule, "min_knowledge_state", "UNCLASSIFIED")
-    return _KS_RANK.get(knowledge_state, 0) >= _KS_RANK.get(minimum, 0)
+    return _ks_rank(knowledge_state) >= _ks_rank(minimum)
 
 
 def _meat_fish_derived(flags: dict) -> bool:
-    """Derived composite: meat/fish/shellfish, excluding dairy/egg/insect."""
-    if flags.get("dairy_source") or flags.get("egg_source") or flags.get("insect_derived"):
+    """Derived composite: meat/fish/shellfish, excluding dairy/egg/insect/bee products."""
+    if (
+        flags.get("dairy_source")
+        or flags.get("egg_source")
+        or flags.get("insect_derived")
+        or flags.get("bee_product")
+    ):
         return False
     if flags.get("animal_origin"):
         return True
     return bool(flags.get("fish_source") or flags.get("shellfish_source"))
 
 
+def _meat_land_derived(flags: dict) -> bool:
+    """Land-animal meat for pescatarian: animal origin that is not fish/shellfish/dairy/egg/bee."""
+    if (
+        flags.get("dairy_source")
+        or flags.get("egg_source")
+        or flags.get("insect_derived")
+        or flags.get("bee_product")
+        or flags.get("fish_source")
+        or flags.get("shellfish_source")
+    ):
+        return False
+    return bool(flags.get("animal_origin"))
+
+
 def _field_value(flags: dict, field: str):
     if field == "meat_fish_derived":
         return _meat_fish_derived(flags)
+    if field == "meat_land_derived":
+        return _meat_land_derived(flags)
     return flags.get(field)
 
 
@@ -157,10 +240,16 @@ def _species_trigger(flags: dict, rule) -> tuple[bool, bool]:
         if species == target:
             return True, False
 
-    # Egg/dairy/insect are identified non-meat sources — not "unknown cow/pig".
-    # Applying species-unknown caution here falsely UNCERTAIN/Depends eggs on
-    # hindu_non_vegetarian (and similar species diets) when they should SAFE.
-    if flags.get("egg_source") or flags.get("dairy_source") or flags.get("insect_derived"):
+    # Egg/dairy/insect/bee products are identified non-meat sources — not
+    # "unknown cow/pig". Applying species-unknown caution here falsely
+    # UNCERTAIN/Depends eggs on hindu_non_vegetarian (and similar species diets)
+    # when they should SAFE.
+    if (
+        flags.get("egg_source")
+        or flags.get("dairy_source")
+        or flags.get("insect_derived")
+        or flags.get("bee_product")
+    ):
         return False, False
 
     if species in (None, "") and flags.get("animal_origin"):
@@ -193,8 +282,17 @@ def _rule_triggered(r, flags: dict, rule) -> tuple[bool, bool, Optional[str]]:
     if kind == "meat_fish_derived":
         return _meat_fish_derived(flags), False, None
 
-    # Boolean flag column.
+    if kind == "meat_land_derived":
+        return _meat_land_derived(flags), False, None
+
+    # Boolean flag column. Explicit NULL means "never evaluated" → cautious
+    # (UNCERTAIN), not verified-absent. Absent keys still mean False for sparse
+    # curated facts that only store True bits.
     trigger_flag = getattr(rule, "trigger_flag", None)
+    if not trigger_flag:
+        return False, False, None
+    if trigger_flag in flags and flags.get(trigger_flag) is None:
+        return False, True, None
     return bool(flags.get(trigger_flag)), False, None
 
 
@@ -203,7 +301,6 @@ def _verdict_for(r, rule, severity: Optional[str]):
     flags = _effective_flags(r)
     severity = severity or "medical"  # unknown severity is treated conservatively
     trusted = bool(getattr(r, "trusted", False))
-    knowledge_state = getattr(r, "knowledge_state", "UNCLASSIFIED")
     cap = getattr(r, "verdict_cap", None) or flags.get("verdict_cap")
     trace = bool(getattr(r, "trace", False))
     may_contain = bool(getattr(r, "may_contain", False))
@@ -241,6 +338,9 @@ def _verdict_for(r, rule, severity: Optional[str]):
         ceiling = _uncertainty_ceiling(restriction, flags, bool(flags.get("animal_origin")))
         if ceiling is not None:
             return ceiling, triggered, trace, "inherent_uncertainty"
+
+    # Use Tier-1-elevated KS so stale DISCOVERED DB rows cannot soft-fail safety.
+    knowledge_state = _effective_knowledge_state(r)
 
     # A definite FAIL needs sufficient knowledge state to stand.
     if base == Verdict.FAIL and not _ks_gate_ok(knowledge_state, rule):

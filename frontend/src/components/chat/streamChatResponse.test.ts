@@ -53,6 +53,24 @@ describe('normalizeAuditData', () => {
     expect(result.explanation).toBe('**Gelatin** is _often_ animal-derived.')
   })
 
+  it('passes through a valid confidence_tier', () => {
+    const raw = { groups: [], confidence_tier: 'verified' }
+    const result = normalizeAuditData(raw)
+    expect(result.confidenceTier).toBe('verified')
+  })
+
+  it('drops an unrecognized confidence_tier', () => {
+    const raw = { groups: [], confidence_tier: 'bogus' }
+    const result = normalizeAuditData(raw)
+    expect(result.confidenceTier).toBeUndefined()
+  })
+
+  it('leaves confidenceTier undefined when confidence_tier is absent', () => {
+    const raw = { groups: [] }
+    const result = normalizeAuditData(raw)
+    expect(result.confidenceTier).toBeUndefined()
+  })
+
   it('maps item fields (diets, allergens, alternatives)', () => {
     const raw = {
       groups: [

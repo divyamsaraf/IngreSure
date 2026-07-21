@@ -1,5 +1,11 @@
 import React from 'react'
-import type { IngredientAuditData, IngredientAuditGroup, IngredientStatus, BackendAuditPayload } from './IngredientAuditCards'
+import type {
+  IngredientAuditData,
+  IngredientAuditGroup,
+  IngredientStatus,
+  BackendAuditPayload,
+  ConfidenceTier,
+} from './IngredientAuditCards'
 import { PROFILE_REQUIRED_TAG, PROFILE_UPDATE_TAG, INGREDIENT_AUDIT_TAG } from '@/constants/chatProtocol'
 import { UserProfile, DEFAULT_PROFILE, backendToProfile, type BackendProfile, type ProfileUpdateStreamPayload } from '@/types/userProfile'
 import type { RecentCheckEntry } from '@/lib/profileStorage'
@@ -94,10 +100,16 @@ export function normalizeAuditData(raw: BackendAuditPayload): IngredientAuditDat
       ? raw.summary
       : `${counts.safe} Safe, ${counts.avoid} Avoid, ${counts.depends} Depends`
 
+  const validTiers: ConfidenceTier[] = ['verified', 'standard', 'limited']
+  const confidenceTier = validTiers.includes(raw.confidence_tier as ConfidenceTier)
+    ? (raw.confidence_tier as ConfidenceTier)
+    : undefined
+
   return {
     summary,
     groups: groupsArray,
     explanation: raw.explanation,
+    confidenceTier,
   }
 }
 

@@ -49,7 +49,10 @@ def ike2_external_verdict(
             resolved = resolver.resolve(atom.name, region)
             inputs.append(
                 to_compliance_input(
-                    resolved, trace=atom.trace, may_contain=atom.may_contain
+                    resolved,
+                    trace=atom.trace,
+                    may_contain=atom.may_contain,
+                    query_atom=atom.name,
                 )
             )
     else:
@@ -58,7 +61,10 @@ def ike2_external_verdict(
                 resolved = resolver.resolve(atom.name, region)
                 inputs.append(
                     to_compliance_input(
-                        resolved, trace=atom.trace, may_contain=atom.may_contain
+                        resolved,
+                        trace=atom.trace,
+                        may_contain=atom.may_contain,
+                        query_atom=atom.name,
                     )
                 )
     result = evaluate(inputs, profile, active_rules)

@@ -1,0 +1,50 @@
+{
+  "timestamp": "2026-07-21T01:09:15.594301+00:00",
+  "before_count": 1479,
+  "after_count": 1815,
+  "usda_commodities_extracted": 269,
+  "grocery_seed_count": 654,
+  "nin_count": 82,
+  "ifct_count": 225,
+  "foodex2_count": 225,
+  "regional_seed_count": 133,
+  "variant_aliases_attached": 0,
+  "compound_rows_scrubbed": 76,
+  "usda_merge": {
+    "new": 0,
+    "merged": 269,
+    "skipped_protected": 0,
+    "aliases_added": 0
+  },
+  "seed_merge": {
+    "new": 0,
+    "merged": 654,
+    "skipped_protected": 0,
+    "aliases_added": 0
+  },
+  "nin_merge": {
+    "new": 0,
+    "merged": 82,
+    "skipped_protected": 0,
+    "aliases_added": 0
+  },
+  "ifct_merge": {
+    "new": 157,
+    "merged": 68,
+    "skipped_protected": 0,
+    "aliases_added": 638
+  },
+  "foodex2_merge": {
+    "new": 184,
+    "merged": 41,
+    "skipped_protected": 0,
+    "aliases_added": 0
+  },
+  "regional_merge": {
+    "new": 0,
+    "merged": 133,
+    "skipped_protected": 0,
+    "aliases_added": 0
+  },
+  "dry_run": false
+}

@@ -84,6 +84,19 @@ class TestIngredientQuery:
         assert result.intent == "INGREDIENT_QUERY"
         assert len(result.ingredients) >= 3
 
+    def test_diet_adjective_food_does_not_mutate_profile(self):
+        """Grocery atoms containing diet words must audit only — never flip diet."""
+        for q in ("Kosher salt", "vegan cheese", "halal chicken", "kosher pickle"):
+            result = detect_intent(q)
+            assert result.intent == "INGREDIENT_QUERY", q
+            assert result.profile_updates == {}, q
+            assert result.ingredients, q
+
+    def test_change_my_diet_to_explicit_cue(self):
+        result = detect_intent("change my diet to vegan")
+        assert result.intent == "PROFILE_UPDATE"
+        assert result.profile_updates.get("dietary_preference") == "Vegan"
+
     def test_ingredients_colon_list(self):
         result = detect_intent("Ingredients: water, sugar, wheat flour, eggs, salt")
         assert result.intent == "INGREDIENT_QUERY"

@@ -17,6 +17,7 @@ ALCOHOL_FIELD = "alcohol_role"
 # the rules test asserts every seeded flag rule names a column in this set.
 VALID_FLAG_COLUMNS = frozenset({
     "animal_origin", "plant_origin", "synthetic", "fungal", "insect_derived",
+    "bee_product",
     "egg_source", "dairy_source", "gluten_source", "soy_source", "sesame_source",
     "peanut_source", "tree_nut_source", "fish_source", "shellfish_source",
     "mustard_source", "celery_source", "lupin_source", "sulphite_source",
@@ -64,12 +65,14 @@ RULE_SEED = [
     {"category": "kosher", "field": "insect_derived", "min_knowledge_state": _REL},
     {"category": "hindu_vegetarian", "field": "meat_fish_derived", "min_knowledge_state": _REL},
     {"category": "hindu_vegetarian", "field": "egg_source", "min_knowledge_state": _REL},
+    # Insect dyes/shellac are not vegetarian; honey stays via bee_product (not insect_derived).
     {"category": "hindu_vegetarian", "field": "insect_derived", "min_knowledge_state": _REL},
     {"category": "hindu_non_vegetarian", "field": "animal_species", "operator": "in_list", "value": '["cow","pig"]', "min_knowledge_state": _REL},
     {"category": "hindu_non_vegetarian", "field": "insect_derived", "min_knowledge_state": _REL},
     {"category": "jain", "field": "meat_fish_derived", "min_knowledge_state": _REL},
     {"category": "jain", "field": "egg_source", "min_knowledge_state": _REL},
     {"category": "jain", "field": "insect_derived", "min_knowledge_state": _REL},
+    {"category": "jain", "field": "bee_product", "min_knowledge_state": _REL},
     {"category": "jain", "field": "root_vegetable", "min_knowledge_state": _REL},
     {"category": "jain", "field": "alcohol_content", "operator": "gt", "value": "0", "min_knowledge_state": _REL},
     {"category": "jain", "field": "onion_source", "min_knowledge_state": _REL},
@@ -77,17 +80,15 @@ RULE_SEED = [
     {"category": "jain", "field": "fermented", "action": "WARN", "min_knowledge_state": _REL},
     {"category": "jain", "field": "fungal", "min_knowledge_state": _REL},
     {"category": "vegetarian", "field": "meat_fish_derived", "min_knowledge_state": _PREF},
+    {"category": "vegetarian", "field": "insect_derived", "min_knowledge_state": _PREF},
     {"category": "lacto_vegetarian", "field": "meat_fish_derived", "min_knowledge_state": _PREF},
     {"category": "lacto_vegetarian", "field": "egg_source", "min_knowledge_state": _PREF},
+    {"category": "lacto_vegetarian", "field": "insect_derived", "min_knowledge_state": _PREF},
     {"category": "ovo_vegetarian", "field": "meat_fish_derived", "min_knowledge_state": _PREF},
     {"category": "ovo_vegetarian", "field": "dairy_source", "min_knowledge_state": _PREF},
-    {
-        "category": "pescatarian",
-        "field": "animal_species",
-        "operator": "in_list",
-        "value": '["cow","pig","chicken","lamb","goat"]',
-        "min_knowledge_state": _PREF,
-    },
+    {"category": "ovo_vegetarian", "field": "insect_derived", "min_knowledge_state": _PREF},
+    # Land meat only — fish/shellfish allowed. Enumerating species missed turkey/duck/etc.
+    {"category": "pescatarian", "field": "meat_land_derived", "min_knowledge_state": _PREF},
 ]
 
 # Restrictions IKE-2 claims to enforce. The rules test asserts the seed covers
@@ -121,6 +122,8 @@ def _rule_kind(field: str, operator: str) -> str:
         return "alcohol"
     if field == "meat_fish_derived":
         return "meat_fish_derived"
+    if field == "meat_land_derived":
+        return "meat_land_derived"
     if field == "alcohol_content":
         return "alcohol_content"
     if field == "animal_species":
@@ -162,7 +165,15 @@ def load_rules(client=None):
 
     Falls back to the canonical in-code seed if the DB is unreachable, so a
     missing/empty table can never silently strip every rule (which the coverage
-    guard would then turn into a wall of UNCERTAIN)."""
+    guard would then turn into a wall of UNCERTAIN).
+
+    Invalid ``field`` values (typos) are dropped with a warning so a bad DB row
+    cannot silently never-fire and false-SAFE an entire allergen restriction.
+    """
+    import logging
+
+    log = logging.getLogger(__name__)
+
     if client is None:
         from core.knowledge.ingredient_db import get_supabase_config
 
@@ -179,4 +190,23 @@ def load_rules(client=None):
         return seeded_rules()
     if not rows:
         return seeded_rules()
-    return [_to_rule(r) for r in rows]
+
+    out = []
+    for r in rows:
+        field = r.get("field") if isinstance(r, dict) else getattr(r, "field", None)
+        # Composites + alcohol + species are valid non-column fields.
+        if field not in VALID_FLAG_COLUMNS and field not in (
+            ALCOHOL_FIELD,
+            "meat_fish_derived",
+            "meat_land_derived",
+            "alcohol_content",
+            "animal_species",
+        ):
+            log.warning(
+                "IKE2 dropping restriction rule with unknown field %r (category=%r)",
+                field,
+                r.get("category") if isinstance(r, dict) else getattr(r, "category", None),
+            )
+            continue
+        out.append(_to_rule(r))
+    return out or seeded_rules()

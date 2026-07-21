@@ -4,11 +4,13 @@ import ContentPageLayout from '@/components/content/ContentPageLayout'
 import { ContentPageHeader } from '@/components/content/ContentPageHeader'
 import { ContentSection } from '@/components/content/ContentSection'
 import { CONTACT_EMAIL } from '@/lib/site'
+import { buildPageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
-  title: 'Terms of Service | IngreSure',
-  description: 'Terms governing use of the IngreSure ingredient safety service.',
-}
+export const metadata: Metadata = buildPageMetadata({
+  title: 'Terms of Service',
+  description: `Terms for using IngreSure ingredient and allergen safety checks. Contact: ${CONTACT_EMAIL}.`,
+  path: '/terms-of-service',
+})
 
 export default function TermsOfServicePage() {
   return (

@@ -89,6 +89,67 @@ KNOWN_VARIANTS: dict[str, str] = {
     "cranberries": "cranberry",
     "sardines": "sardine",
     "mackerels": "mackerel",
+    # Produce / grocery plurals (chat lists send Title-Case plurals)
+    "beets": "beet",
+    "leeks": "leek",
+    "shallots": "shallot",
+    "radishes": "radish",
+    "turnips": "turnip",
+    "parsnips": "parsnip",
+    "cucumbers": "cucumber",
+    "peaches": "peach",
+    "pears": "pear",
+    "plums": "plum",
+    "mangoes": "mango",
+    "mangos": "mango",
+    "papayas": "papaya",
+    "apricots": "apricot",
+    "nectarines": "nectarine",
+    "pineapples": "pineapple",
+    "pomegranates": "pomegranate",
+    "tangerines": "tangerine",
+    "kiwis": "kiwi",
+    "kiwifruit": "kiwi",
+    "blackberries": "blackberry",
+    "figs": "fig",
+    "dates": "date",
+    "lentils": "lentil",
+    "chickpeas": "chickpea",
+    "garbanzo beans": "chickpea",
+    "garbanzos": "chickpea",
+    "bell peppers": "bell pepper",
+    "peppers": "pepper",
+    "buffalo / bison": "bison",
+    "buffalo": "bison",
+    "black eyed peas": "black-eyed peas",
+    "blackeye peas": "black-eyed peas",
+    "artichokes": "artichoke",
+    "chives": "chive",
+    "scallions": "scallion",
+    "tomatillos": "tomatillo",
+    "olives": "olive",
+    "currants": "currant",
+    "elderberries": "elderberry",
+    "gooseberries": "gooseberry",
+    "mulberries": "mulberry",
+    "prunes": "prune",
+    "boysenberries": "boysenberry",
+    "huckleberries": "huckleberry",
+    "lingonberries": "lingonberry",
+    "marionberries": "marionberry",
+    "persimmons": "persimmon",
+    "tayberries": "tayberry",
+    "goji berries": "goji berry",
+    "almonds": "almond",
+    "pistachios": "pistachio",
+    "macadamia nuts": "macadamia nut",
+    "brazil nuts": "brazil nut",
+    "pine nuts": "pine nut",
+    "chestnuts": "chestnut",
+    "mustard seeds": "mustard seed",
+    "nigella seeds": "nigella seed",
+    "poppy seeds": "poppy seed",
+    "peppercorns": "peppercorn",
     "clams": "clam",
     "mussels": "mussel",
     "oysters": "oyster",
@@ -172,22 +233,29 @@ def _apply_regional_canonical(t: str) -> str:
     return t
 
 
-def normalize_ingredient_key(text: str) -> str:
+def normalize_ingredient_key(text: str, *, apply_regional: bool = True) -> str:
     """
     Normalize a raw ingredient string for lookup.
     - Unicode NFKC normalization (regional scripts, compatibility).
     - Lowercase, strip, remove excess punctuation and whitespace.
+    - Fold apostrophes (Baker's yeast → bakers yeast) so OCR/chat forms share a key.
     - Apply known variants (e.g. inglass -> isinglass).
+    - Optional static regional remap (bajra → pearl millet). Resolver may retry
+      with apply_regional=False so remap-into-void cannot hide a live regional key.
     - No substring or fuzzy matching.
     """
     if not text or not isinstance(text, str):
         return ""
     t = unicodedata.normalize("NFKC", text).lower().strip()
     t = t.replace("*", "").replace(".", "")
+    # M8 orthography: possessive / curly apostrophes must not block alias hits.
+    t = t.replace("'", "").replace("\u2019", "").replace("\u2018", "")
     t = re.sub(r"[,;:\-\u2013\u2014]+", " ", t)
     t = re.sub(r"\s+", " ", t)
     t = t.strip()
     t = _apply_known_variants(t)
+    if not apply_regional:
+        return t
     regional = _apply_regional_canonical(t)
     return regional if regional != t else t
 

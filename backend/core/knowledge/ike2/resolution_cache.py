@@ -27,6 +27,8 @@ class ResolvedIngredient:
     trusted: bool
     resolution_layer: str
     status: Status
+    # L5 observability only (design §9.3.1); never affects verdict.
+    miss_class: Optional[str] = None
 
 
 _CACHE: dict[str, ResolvedIngredient] = {}

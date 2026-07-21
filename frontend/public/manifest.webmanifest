@@ -1,0 +1,10 @@
+{
+  "name": "IngreSure",
+  "short_name": "IngreSure",
+  "description": "Check grocery lists and labels against your diet and allergens.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#0f766e",
+  "lang": "en"
+}

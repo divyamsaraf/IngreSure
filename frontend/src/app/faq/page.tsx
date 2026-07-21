@@ -4,11 +4,14 @@ import ContentPageLayout from '@/components/content/ContentPageLayout'
 import { ContentPageHeader } from '@/components/content/ContentPageHeader'
 import FaqAccordion from '@/components/content/FaqAccordion'
 import { CONTACT_EMAIL, COVERAGE_DIETS_AND_ALLERGENS_SUMMARY } from '@/lib/site'
+import { buildPageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
-  title: 'FAQ | IngreSure',
-  description: 'Frequently asked questions about IngreSure ingredient safety checks.',
-}
+export const metadata: Metadata = buildPageMetadata({
+  title: 'FAQ — Ingredient safety, diets & allergens',
+  description:
+    'Answers about IngreSure: how Safe / Avoid / Depends works, privacy, diets (vegan, Halal, Kosher, Jain), allergens, and business access.',
+  path: '/faq',
+})
 
 const FAQ_ITEMS = [
   {
@@ -52,9 +55,28 @@ const FAQ_ITEMS = [
   },
 ]
 
+function faqJsonLd() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: FAQ_ITEMS.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer,
+      },
+    })),
+  }
+}
+
 export default function FaqPage() {
   return (
     <ContentPageLayout>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd()) }}
+      />
       <ContentPageHeader
         title="Frequently Asked Questions"
         description="Quick answers about how IngreSure works, what we store, and what our verdicts mean."

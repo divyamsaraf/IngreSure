@@ -108,13 +108,13 @@ PATTERN_CASES = [
         "id": "colors_structural_header",
         "raw": "Ingredients: water, Colors (Red 40, Yellow 5), salt",
         "must_include": ["water", "red 40", "yellow 5", "salt"],
-        "must_not_include": ["colors ("],
+        "must_not_include": ["colors (", "colors", "colours"],
     },
     {
         "id": "preservatives_structural_header",
         "raw": "Ingredients: flour, Preservatives (Calcium Propionate, Sorbic Acid), yeast",
         "must_include": ["flour", "calcium propionate", "sorbic acid", "yeast"],
-        "must_not_include": ["preservatives ("],
+        "must_not_include": ["preservatives (", "preservatives", "preservative"],
     },
     # --- Class G: may contain / allergen ---
     {

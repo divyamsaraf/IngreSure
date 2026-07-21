@@ -1,13 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 const MAX_BODY_BYTES = 16 * 1024
-const USE_CASES = new Set(['Food delivery', 'Grocery app', 'Recipe app', 'Other'])
+const USE_CASES = new Set([
+  'Grocery / retail app',
+  'Food delivery / marketplace',
+  'Restaurant / meal kit',
+  'Recipe or meal-planning app',
+  'Corporate dining / catering',
+  'CPG / private label',
+  'Other',
+])
 
 export interface RequestAccessBody {
   company_name?: string
   use_case?: string
   monthly_volume?: string
   email?: string
+  problem_focus?: string
 }
 
 function isValidEmail(email: string): boolean {
@@ -32,6 +41,8 @@ export async function POST(req: NextRequest) {
     const use_case = typeof body.use_case === 'string' ? body.use_case.trim() : ''
     const monthly_volume = typeof body.monthly_volume === 'string' ? body.monthly_volume.trim() : ''
     const email = typeof body.email === 'string' ? body.email.trim() : ''
+    const problem_focus =
+      typeof body.problem_focus === 'string' ? body.problem_focus.trim().slice(0, 2000) : ''
 
     if (!company_name || !use_case || !monthly_volume || !email) {
       return NextResponse.json({ error: 'All fields are required' }, { status: 400 })
@@ -49,6 +60,7 @@ export async function POST(req: NextRequest) {
       use_case,
       monthly_volume,
       email,
+      problem_focus: problem_focus || undefined,
       at: new Date().toISOString(),
     })
 

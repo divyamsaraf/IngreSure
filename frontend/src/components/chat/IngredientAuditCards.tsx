@@ -32,10 +32,16 @@ export interface IngredientAuditGroup {
   items: IngredientAuditItem[]
 }
 
+/** Evidence tier behind the verdict (display-only — never gates Safe/Avoid/Depends
+ * itself): 'verified' when every driving fact is LOCKED/VERIFIED, 'limited' when
+ * some data is untrusted or low-confidence, else 'standard'. */
+export type ConfidenceTier = 'verified' | 'standard' | 'limited'
+
 export interface IngredientAuditData {
   summary: string
   groups: IngredientAuditGroup[]
   explanation?: string
+  confidenceTier?: ConfidenceTier
 }
 
 /** Backend audit payload: groups may be array or keyed object; item shape is permissive. */
@@ -43,6 +49,7 @@ export interface BackendAuditPayload {
   summary?: string
   explanation?: string
   explanation_source?: string
+  confidence_tier?: string
   llm_used?: boolean
   source?: string
   groups?:
@@ -63,9 +70,14 @@ const PILL_LABEL: Record<IngredientStatus, string> = {
 }
 
 const STATUS_TOOLTIP: Record<IngredientStatus, string> = {
-  safe: 'These ingredients are safe for your dietary profile.',
+  safe: 'No disqualifying ingredients found for your dietary profile.',
   avoid: 'Ingredients to avoid based on your diet and allergens.',
   depends: 'Depends on source or preparation; check details below.',
+}
+
+const CONFIDENCE_NOTE: Record<'verified' | 'limited', string> = {
+  verified: 'Based on verified ingredient data.',
+  limited: 'Based on limited ingredient data — worth double-checking the label.',
 }
 
 const STATUS_ICON: Record<IngredientStatus, React.ReactNode> = {
@@ -169,7 +181,7 @@ function buildTemplateExplanation(
   }
   if (counts.safe > 0) {
     const ing = counts.safe === 1 ? 'ingredient' : 'ingredients'
-    return `Based on your ${dietLabel} diet, all ${counts.safe} ${ing} in this product are suitable for you.`
+    return `No disqualifying ingredients found on this label for your ${dietLabel} diet — all ${counts.safe} ${ing} checked out.`
   }
   return null
 }
@@ -503,7 +515,7 @@ function AllSafeBanner() {
       }}
     >
       <CircleCheck className="h-4 w-4 shrink-0" style={{ color: colors.safe }} aria-hidden />
-      <span>All ingredients are suitable for your profile</span>
+      <span>No disqualifying ingredients found on this label for your profile</span>
     </div>
   )
 }
@@ -666,6 +678,16 @@ function IngredientAuditCardsContent({ data, showPersonaliseNudge, onPersonalise
             Personalise →
           </button>
         </div>
+      ) : null}
+
+      {data.confidenceTier && data.confidenceTier !== 'standard' ? (
+        <p
+          className={`text-chat-meta leading-snug pt-1 ${
+            data.confidenceTier === 'limited' ? 'text-amber-600' : 'text-slate-500'
+          }`}
+        >
+          {CONFIDENCE_NOTE[data.confidenceTier]}
+        </p>
       ) : null}
 
       <p className="text-chat-meta leading-snug text-slate-500 pt-1">{VERDICT_CARD_SAFETY_NOTE}</p>
