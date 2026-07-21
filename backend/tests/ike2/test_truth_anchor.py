@@ -27,15 +27,7 @@ def test_unknown_key_returns_none():
 
 
 def test_all_hand_anchors_are_locked_or_compound():
-    compound = {
-        "natural flavors",
-        "artificial flavors",
-        "flavor",
-        "spices",
-        "enzymes",
-        "preservatives",
-        "colors",
-    }
+    compound = ta._COMPOUND_CANONICALS
     for fact in ta._ANCHORS.values():
         if fact.canonical_name in compound:
             assert fact.knowledge_state == "VERIFIED"

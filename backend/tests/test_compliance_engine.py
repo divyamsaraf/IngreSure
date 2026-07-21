@@ -268,9 +268,11 @@ def test_unknown_ingredient_external_lookup_mocked():
     from core.config import get_ontology_path
     if not get_ontology_path().exists():
         pytest.skip("ontology.json not found")
+    # Must not already be in static ontology (coverage promotes real commodities).
+    unknown_raw = "zyzzx unknown starch q99"
     mock_ing = Ingredient(
-        id="mock_tapioca",
-        canonical_name="tapioca starch",
+        id="mock_zyzzx_starch",
+        canonical_name="zyzzx unknown starch q99",
         aliases=[],
         derived_from=[], contains=[], may_contain=[],
         animal_origin=False, plant_origin=True, synthetic=False, fungal=False, insect_derived=False,
@@ -282,8 +284,9 @@ def test_unknown_ingredient_external_lookup_mocked():
     with patch("core.external_apis.fetcher.enrich_unknown_ingredient") as mock_enrich:
         mock_enrich.return_value = EnrichmentResult(mock_ing, "high", "open_food_facts", "ok")
         reg = IngredientRegistry(load_dynamic=False)
-        ing, source, level = reg.resolve_with_fallback("tapioca starch", try_api=True, log_unknown=True)
+        assert reg.resolve(unknown_raw) is None
+        ing, source, level = reg.resolve_with_fallback(unknown_raw, try_api=True, log_unknown=True)
         assert ing is not None
-        assert ing.canonical_name == "tapioca starch"
+        assert ing.canonical_name == "zyzzx unknown starch q99"
         assert source == "api"
         assert level == "high"

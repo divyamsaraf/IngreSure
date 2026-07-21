@@ -51,6 +51,17 @@ _KEEP_WHOLE_SUFFIXES: Set[str] = {
     "starch", "flour", "powder", "paste", "puree", "purée",
 }
 
+# Prep / process descriptors ("mechanically separated chicken", "dried onion",
+# "beef base"): keep the full label atom for parser fidelity; still extract
+# restricted keywords below so compliance can resolve the base ingredient.
+_KEEP_AND_EXTRACT_WORDS: Set[str] = {
+    "mechanically", "separated", "hydrolyzed", "textured", "rendered",
+    "extracted", "concentrated", "isolated", "deboned", "ground", "minced",
+    "base", "stock", "broth",
+    "dried", "fresh", "frozen", "sliced", "diced", "chopped",
+    "cooked", "roasted", "smoked", "cured", "raw",
+}
+
 
 def _keep_as_whole_ingredient(name: str) -> bool:
     """True when a multi-word name must not be torn into restricted keywords."""
@@ -146,6 +157,14 @@ def expand_compounds(ingredients: List[str]) -> Tuple[List[str], Dict[str, str]]
                 covered.update(s.split())
             all_words = set(ing.lower().split())
             is_compound_product = bool(all_words - covered)
+
+            # Keep process-modified meats / bases as atoms (label tests +
+            # enrichment query fidelity) while still emitting species keywords.
+            if is_compound_product and (all_words & _KEEP_AND_EXTRACT_WORDS):
+                key = ing.lower().strip()
+                if key not in seen:
+                    seen.add(key)
+                    expanded.append(ing)
 
             for sub in subs:
                 key = sub.lower()

@@ -57,6 +57,26 @@ class Ingredient:
             and not self.bee_product
         )
 
+    @property
+    def meat_land_derived(self) -> bool:
+        """Land-animal meat for pescatarian rules (excludes fish/shellfish/dairy/egg/bee)."""
+        if (
+            self.dairy_source
+            or self.egg_source
+            or self.insect_derived
+            or self.bee_product
+        ):
+            return False
+        if not self.animal_origin:
+            return False
+        species = (self.animal_species or "").lower()
+        if any(
+            token in species
+            for token in ("fish", "shellfish", "crustacean", "mollusk", "mollusc")
+        ):
+            return False
+        return True
+
     def to_dict(self) -> dict:
         return {
             "id": self.id,
