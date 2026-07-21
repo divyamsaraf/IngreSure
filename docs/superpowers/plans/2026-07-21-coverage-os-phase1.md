@@ -27,9 +27,10 @@
 | Path | Responsibility |
 |------|----------------|
 | `backend/core/knowledge/ike2/coverage_os/__init__.py` | Package export |
-| `backend/core/knowledge/ike2/coverage_os/evidence_chain.py` | Attested chain dataclass + builders |
+| `backend/core/knowledge/ike2/coverage_os/deny_lists.py` | **Single** allergen-adjacent + animalish constants (sulfite=`sulphite_source`, mollusc via species); shared by evidence_chain + hybrid_gate |
+| `backend/core/knowledge/ike2/coverage_os/evidence_chain.py` | Attested chain dataclass + builders; `verdict` = Safe/Avoid/Depends |
 | `backend/core/knowledge/ike2/coverage_os/promote_ledger.py` | JSONL ledger: promote / demote / non_promotable |
-| `backend/core/knowledge/ike2/coverage_os/hybrid_gate.py` | Non-promotable short-circuit + auto/human/reject |
+| `backend/core/knowledge/ike2/coverage_os/hybrid_gate.py` | Non-promotable short-circuit + auto/human/reject; imports deny lists (no duplicate) |
 | `backend/core/knowledge/ike2/coverage_os/promote_writer.py` | Apply / retract ontology + variant_aliases |
 | `backend/core/knowledge/ike2/coverage_os/profile_matrix.py` | Paste × SUPPORTED_RESTRICTIONS report |
 | `backend/core/knowledge/ike2/coverage_os/auto_lane_guards.py` | Sample audit + volume spike |
@@ -49,32 +50,68 @@ Task 2 promote_ledger ──┼──► Task 3 hybrid_gate ──► Task 4 pro
 
 ---
 
-### Task 1: `evidence_chain`
+### Task 1: `evidence_chain` (+ shared `deny_lists`)
 
 **Files:**
 - Create: `backend/core/knowledge/ike2/coverage_os/__init__.py`
+- Create: `backend/core/knowledge/ike2/coverage_os/deny_lists.py`
 - Create: `backend/core/knowledge/ike2/coverage_os/evidence_chain.py`
 - Test: `backend/tests/ike2/coverage_os/test_evidence_chain.py`
+- Test: `backend/tests/ike2/coverage_os/test_deny_lists.py`
 
 **Interfaces:**
 - Consumes: `ComplianceInput`, `ResolvedIngredient`, `ComplianceResult`, `Verdict`, `to_external`
 - Produces:
-  - `EvidenceChain` dataclass
-  - `build_chain_from_resolve(*, atom, resolved, compliance_result, restriction_id) -> EvidenceChain`
-  - `EvidenceChain.to_dict() -> dict`
+  - `deny_lists.is_allergen_adjacent(flags) -> bool` (single source of truth for Task 1 + Task 3)
+  - `deny_lists.is_animalish(flags) -> bool`
+  - `to_audit_bucket(Verdict) -> Literal["Safe","Avoid","Depends"]` — maps **now** in Task 1 (no “maps later”)
+  - `EvidenceChain` with `verdict` = audit bucket; `internal_verdict` = `to_external(Verdict)` for debug
+  - `build_chain_from_resolve(...) -> EvidenceChain`
 
-- [ ] **Step 1: Write the failing test**
+**Vocabulary lock:** `EvidenceChain.verdict` is **only** `Safe` | `Avoid` | `Depends`. Never store engine `UNCERTAIN`/`NOT_SAFE` in `verdict`.
+
+**Sulfite spelling:** codebase flag is British `sulphite_source` (see `rules.py` / truth_anchor). Deny list uses that exact name.
+
+- [ ] **Step 1: Write the failing tests**
+
+```python
+# backend/tests/ike2/coverage_os/test_deny_lists.py
+from core.knowledge.ike2.coverage_os.deny_lists import is_allergen_adjacent
+
+
+def test_sulphite_flag_is_allergen_adjacent():
+    assert is_allergen_adjacent({"plant_origin": True, "sulphite_source": True}) is True
+
+
+def test_mollusc_species_is_allergen_adjacent():
+    assert is_allergen_adjacent({"animal_origin": True, "animal_species": "mollusk"}) is True
+    assert is_allergen_adjacent({"animal_origin": True, "animal_species": "mollusc"}) is True
+
+
+def test_plain_broccoli_not_allergen_adjacent():
+    assert is_allergen_adjacent({"plant_origin": True, "animal_origin": False}) is False
+```
 
 ```python
 # backend/tests/ike2/coverage_os/test_evidence_chain.py
 from types import SimpleNamespace
-from core.knowledge.ike2.coverage_os.evidence_chain import build_chain_from_resolve
+from core.knowledge.ike2.coverage_os.evidence_chain import (
+    build_chain_from_resolve,
+    to_audit_bucket,
+)
 from core.knowledge.ike2.compliance import ComplianceResult
 from core.knowledge.ike2.verdict import Verdict
 from core.knowledge.ike2.seam import ComplianceInput
 
 
-def test_safe_chain_requires_concrete_source_and_empty_miss():
+def test_to_audit_bucket_maps_engine_to_three_buckets():
+    assert to_audit_bucket(Verdict.SAFE) == "Safe"
+    assert to_audit_bucket(Verdict.FAIL) == "Avoid"
+    assert to_audit_bucket(Verdict.UNCERTAIN) == "Depends"
+    assert to_audit_bucket(Verdict.WARN) == "Depends"
+
+
+def test_safe_chain_stores_audit_bucket_not_engine_enum():
     resolved = SimpleNamespace(
         status="resolved",
         source="truth_anchor",
@@ -105,12 +142,49 @@ def test_safe_chain_requires_concrete_source_and_empty_miss():
         compliance_input=inp,
     )
     d = chain.to_dict()
-    assert d["verdict"] == "SAFE"
+    assert d["verdict"] == "Safe"
+    assert d["internal_verdict"] == "SAFE"
     assert d["source"] == "truth_anchor"
     assert d["canonical"] == "sugar"
     assert d["miss_class"] is None
-    assert d["evidence_class"] in ("closed_form_plant", "insufficient")
+    assert d["evidence_class"] == "closed_form_plant"
     assert "flags" in d and "rule_ids" in d
+
+
+def test_fail_chain_is_avoid_bucket():
+    resolved = SimpleNamespace(
+        status="resolved",
+        source="truth_anchor",
+        resolution_layer="L1_truth_anchor",
+        trusted=True,
+        miss_class=None,
+        group=SimpleNamespace(
+            canonical_name="beef",
+            flags={"animal_origin": True, "animal_species": "cow"},
+            knowledge_state="LOCKED",
+        ),
+    )
+    inp = ComplianceInput(
+        canonical_name="beef",
+        flags={"animal_origin": True, "animal_species": "cow"},
+        knowledge_state="LOCKED",
+        trusted=True,
+        alcohol_role="none",
+        verdict_cap=None,
+        trace=False,
+    )
+    result = ComplianceResult(Verdict.FAIL, [], [], [], {})
+    chain = build_chain_from_resolve(
+        atom="beef",
+        resolved=resolved,
+        compliance_result=result,
+        restriction_id="hindu_vegetarian",
+        compliance_input=inp,
+    )
+    d = chain.to_dict()
+    assert d["verdict"] == "Avoid"
+    assert d["internal_verdict"] == "NOT_SAFE"
+    assert d["evidence_class"] == "animal"
 
 
 def test_uncertain_resolve_marks_insufficient_and_depends():
@@ -131,35 +205,136 @@ def test_uncertain_resolve_marks_insufficient_and_depends():
         compliance_input=None,
     )
     d = chain.to_dict()
-    assert d["verdict"] == "UNCERTAIN"  # external Depends bucket maps later
+    assert d["verdict"] == "Depends"
+    assert d["internal_verdict"] == "UNCERTAIN"
     assert d["evidence_class"] == "insufficient"
     assert d["miss_class"] == "M1_absent"
+
+
+def test_mollusc_evidence_class_is_allergen():
+    resolved = SimpleNamespace(
+        status="resolved",
+        source="truth_anchor",
+        resolution_layer="L1_truth_anchor",
+        trusted=True,
+        miss_class=None,
+        group=None,
+    )
+    inp = ComplianceInput(
+        canonical_name="snail",
+        flags={"animal_origin": True, "animal_species": "mollusk"},
+        knowledge_state="LOCKED",
+        trusted=True,
+        alcohol_role="none",
+        verdict_cap=None,
+        trace=False,
+    )
+    result = ComplianceResult(Verdict.FAIL, [], [], [], {})
+    chain = build_chain_from_resolve(
+        atom="snail",
+        resolved=resolved,
+        compliance_result=result,
+        restriction_id="shellfish_allergy",
+        compliance_input=inp,
+    )
+    # animalish may win first; either animal or allergen is acceptable if mollusc denied for auto
+    assert chain.evidence_class in ("animal", "allergen")
+    assert chain.verdict == "Avoid"
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [ ] **Step 2: Run tests to verify they fail**
 
-Run: `cd backend && source venv/bin/activate && pytest tests/ike2/coverage_os/test_evidence_chain.py -v`  
-Expected: FAIL (module not found)
+Run: `cd backend && source venv/bin/activate && pytest tests/ike2/coverage_os/test_deny_lists.py tests/ike2/coverage_os/test_evidence_chain.py -v`  
+Expected: FAIL (modules not found)
 
-- [ ] **Step 3: Write minimal implementation**
+- [ ] **Step 3: Write full implementation (complete files — no truncation)**
+
+```python
+# backend/core/knowledge/ike2/coverage_os/__init__.py
+"""Coverage OS Phase 1 — evidence graph, hybrid promote, matrix."""
+```
+
+```python
+# backend/core/knowledge/ike2/coverage_os/deny_lists.py
+"""Single source of truth for allergen-adjacent / animalish predicates.
+
+Used by ``evidence_chain`` and ``hybrid_gate`` so the two cannot drift.
+Sulfite uses the existing British flag name ``sulphite_source``.
+Mollusc has no dedicated ``*_source`` flag today — detect via ``animal_species``.
+"""
+from __future__ import annotations
+
+from typing import Any
+
+# Matches VALID_FLAG_COLUMNS / truth_anchor naming (sulphite_source, not sulfite_source).
+ALLERGEN_ADJACENT_FLAGS: frozenset[str] = frozenset({
+    "peanut_source",
+    "tree_nut_source",
+    "sesame_source",
+    "soy_source",
+    "gluten_source",
+    "mustard_source",
+    "celery_source",
+    "lupin_source",
+    "sulphite_source",
+    "fish_source",
+    "shellfish_source",
+})
+
+MOLLUSC_SPECIES: frozenset[str] = frozenset({"mollusk", "mollusc"})
+
+ANIMALISH_FLAGS: frozenset[str] = frozenset({
+    "animal_origin",
+    "egg_source",
+    "fish_source",
+    "shellfish_source",
+    "insect_derived",
+    "bee_product",
+    "dairy_source",
+})
+
+
+def is_allergen_adjacent(flags: dict[str, Any] | None) -> bool:
+    f = flags or {}
+    if any(f.get(k) for k in ALLERGEN_ADJACENT_FLAGS):
+        return True
+    species = str(f.get("animal_species") or "").lower().strip()
+    return species in MOLLUSC_SPECIES
+
+
+def is_animalish(flags: dict[str, Any] | None) -> bool:
+    f = flags or {}
+    if any(f.get(k) for k in ANIMALISH_FLAGS):
+        return True
+    species = str(f.get("animal_species") or "").lower().strip()
+    return bool(species) and species not in ("", "none")
+```
 
 ```python
 # backend/core/knowledge/ike2/coverage_os/evidence_chain.py
+"""Attested evidence chain for Coverage OS / multi-profile matrix.
+
+``verdict`` is the audit three-bucket vocabulary locked in the Phase 1 spec:
+Safe / Avoid / Depends. Engine state is stored separately as ``internal_verdict``
+via ``to_external`` (SAFE / NOT_SAFE / UNCERTAIN) for debugging only.
+"""
 from __future__ import annotations
-from dataclasses import asdict, dataclass, field
+
+from dataclasses import asdict, dataclass
 from typing import Any, Optional
 
+from core.knowledge.ike2.coverage_os.deny_lists import is_allergen_adjacent, is_animalish
 from core.knowledge.ike2.verdict import Verdict, to_external
 
-_ANIMALISH = (
-    "animal_origin", "egg_source", "fish_source", "shellfish_source",
-    "insect_derived", "bee_product", "dairy_source",
-)
-_ALLERGENISH = (
-    "peanut_source", "tree_nut_source", "sesame_source", "soy_source",
-    "gluten_source", "mustard_source", "celery_source", "lupin_source",
-    "sulphite_source", "fish_source", "shellfish_source",
-)
+
+def to_audit_bucket(verdict: Verdict) -> str:
+    """Map engine Verdict → Safe / Avoid / Depends at the chain boundary."""
+    if verdict == Verdict.SAFE:
+        return "Safe"
+    if verdict == Verdict.FAIL:
+        return "Avoid"
+    # WARN and UNCERTAIN both surface as Depends in the audit matrix.
+    return "Depends"
 
 
 @dataclass
@@ -169,7 +344,8 @@ class EvidenceChain:
     source: str
     flags: dict
     rule_ids: list[str]
-    verdict: str  # external: SAFE / NOT_SAFE / UNCERTAIN
+    verdict: str  # Safe | Avoid | Depends only
+    internal_verdict: str  # SAFE | NOT_SAFE | UNCERTAIN from to_external
     evidence_class: str
     miss_class: Optional[str]
     restriction_id: str
@@ -179,13 +355,17 @@ class EvidenceChain:
         return asdict(self)
 
 
-def _evidence_class(flags: dict, miss_class: Optional[str], verdict: Verdict) -> str:
-    if miss_class or verdict in (Verdict.UNCERTAIN,):
+def _evidence_class(
+    flags: dict,
+    miss_class: Optional[str],
+    verdict: Verdict,
+) -> str:
+    if miss_class or verdict in (Verdict.UNCERTAIN, Verdict.WARN):
         if not flags:
             return "insufficient"
-    if any(flags.get(k) for k in _ANIMALISH):
+    if is_animalish(flags):
         return "animal"
-    if any(flags.get(k) for k in _ALLERGENISH):
+    if is_allergen_adjacent(flags):
         return "allergen"
     if flags.get("plant_origin") and not flags.get("animal_origin"):
         return "closed_form_plant"
@@ -202,7 +382,7 @@ def build_chain_from_resolve(
     restriction_id: str,
     compliance_input=None,
 ) -> EvidenceChain:
-    flags = {}
+    flags: dict = {}
     canonical = None
     if compliance_input is not None:
         flags = dict(compliance_input.flags or {})
@@ -211,47 +391,46 @@ def build_chain_from_resolve(
         g = resolved.group
         flags = dict(getattr(g, "flags", None) or {})
         canonical = getattr(g, "canonical_name", None)
-    verdict = compliance_result.verdict
+
+    engine_verdict: Verdict = compliance_result.verdict
     miss = getattr(resolved, "miss_class", None)
+
     rule_ids: list[str] = []
     breakdown = getattr(compliance_result, "breakdown", None) or {}
     for key in breakdown:
-        # keys are often (canonical, restriction) tuples
         if isinstance(key, tuple) and len(key) >= 2:
             rule_ids.append(str(key[1]))
         else:
             rule_ids.append(str(key))
+
     return EvidenceChain(
         atom=atom,
         canonical=canonical,
         source=getattr(resolved, "source", "unknown") or "unknown",
         flags=flags,
         rule_ids=sorted(set(rule_ids)),
-        verdict=to_external(verdict),
-        evidence_class=_evidence_class(flags, miss, verdict),
+        verdict=to_audit_bucket(engine_verdict),
+        internal_verdict=to_external(engine_verdict),
+        evidence_class=_evidence_class(flags, miss, engine_verdict),
         miss_class=miss,
         restriction_id=restriction_id,
         resolution_layer=getattr(resolved, "resolution_layer", None),
     )
 ```
 
-```python
-# backend/core/knowledge/ike2/coverage_os/__init__.py
-"""Coverage OS Phase 1 — evidence graph, hybrid promote, matrix."""
-```
+- [ ] **Step 4: Run tests to verify they pass**
 
-- [ ] **Step 4: Run test to verify it passes**
-
-Run: `pytest tests/ike2/coverage_os/test_evidence_chain.py -v`  
+Run: `pytest tests/ike2/coverage_os/test_deny_lists.py tests/ike2/coverage_os/test_evidence_chain.py -v`  
 Expected: PASS
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add backend/core/knowledge/ike2/coverage_os/ backend/tests/ike2/coverage_os/test_evidence_chain.py
-git commit -m "feat(coverage-os): add attested evidence chain builder"
+git add backend/core/knowledge/ike2/coverage_os/ \
+  backend/tests/ike2/coverage_os/test_deny_lists.py \
+  backend/tests/ike2/coverage_os/test_evidence_chain.py
+git commit -m "feat(coverage-os): evidence chain with Safe/Avoid/Depends and shared deny lists"
 ```
-
 ---
 
 ### Task 2: `promote_ledger`
@@ -378,13 +557,12 @@ git commit -m "feat(coverage-os): add versioned promote ledger with non-promotab
 - Test: `backend/tests/ike2/coverage_os/test_hybrid_gate.py`
 
 **Interfaces:**
-- Consumes: `PromoteLedger.find_non_promotable`, candidate flags dict
+- Consumes: `PromoteLedger.find_non_promotable`, candidate flags dict, **`deny_lists.is_allergen_adjacent` / `is_animalish`** (do **not** copy flag frozensets into this module)
 - Produces:
   - `GateDecision` with `action: Literal["auto_promote","human_approval","rejected"]`, `rule_id`, `reason`
   - `decide_promote(*, candidate_key, flags, ledger: PromoteLedger, name_collision_animal: bool = False, is_umbrella: bool = False) -> GateDecision`
 
-**Allergen-adjacent deny flags (map sulfite → `sulphite_source`; mollusc → `shellfish_source` or `animal_species` in `{mollusk,mollusc}`):**  
-`peanut_source`, `tree_nut_source`, `sesame_source`, `soy_source`, `gluten_source`, `mustard_source`, `celery_source`, `lupin_source`, `sulphite_source`, `fish_source`, `shellfish_source`.
+**Allergen-adjacent:** call `is_allergen_adjacent(flags)` from `deny_lists.py` only. Sulfite = `sulphite_source`; mollusc = `animal_species` in `{mollusk, mollusc}` (encoded inside that helper).
 
 - [ ] **Step 1: Write the failing test**
 
@@ -459,9 +637,11 @@ Expected: FAIL
 
 Order inside `decide_promote`:
 1. If `ledger.find_non_promotable(candidate_key)` → `rejected`
-2. If any animalish / allergen deny / dual collision / umbrella → `human_approval`
+2. If `is_animalish(flags)` or `is_allergen_adjacent(flags)` or dual collision or umbrella → `human_approval`
 3. If plant-only closed-form → `auto_promote` with `rule_id="closed_form_plant_v1"`
 4. Else → `human_approval` (fail-closed to human, never silent auto)
+
+Import allergen/animal checks **only** from `deny_lists` — no local duplicate frozensets.
 
 - [ ] **Step 4: Run test to verify it passes**
 
@@ -573,8 +753,8 @@ git commit -m "feat(coverage-os): promote writer apply and retract for L2 files"
 - Consumes: `parse_atoms`, `resolve`, `to_compliance_input`, `evaluate`, `seeded_rules`, `SUPPORTED_RESTRICTIONS`, `build_chain_from_resolve`
 - Produces:
   - `run_matrix(raw: str, restriction_ids: list[str] | None = None) -> list[dict]`
-  - Each row: `ingredient`, `profile`, `bucket` (`safe`|`avoid`|`depends`), `chain` dict
-  - Bucket map: `SAFE→safe`, `NOT_SAFE→avoid`, `UNCERTAIN→depends` (WARN→depends)
+  - Each row: `ingredient`, `profile`, `bucket` (`Safe`|`Avoid`|`Depends`), `chain` dict
+  - **Bucket = `chain.verdict`** (already Safe/Avoid/Depends from Task 1). Do not re-map `to_external` here.
 
 - [ ] **Step 1: Write the failing test**
 
@@ -592,16 +772,17 @@ def test_matrix_covers_supported_profiles_for_one_atom():
     assert sugar_rows
     # sugar should not Avoid on hindu_vegetarian when that profile is included
     for r in sugar_rows:
-        assert r["bucket"] in ("safe", "avoid", "depends")
+        assert r["bucket"] in ("Safe", "Avoid", "Depends")
         assert r["chain"]["atom"]
+        assert r["bucket"] == r["chain"]["verdict"]
 
 
 def test_avoid_parity_beef_fails_veg_profiles():
     rows = run_matrix("beef", restriction_ids=["hindu_vegetarian", "vegan", "vegetarian"])
     by_p = {r["profile"]: r["bucket"] for r in rows}
-    assert by_p["hindu_vegetarian"] == "avoid"
-    assert by_p["vegan"] == "avoid"
-    assert by_p["vegetarian"] == "avoid"
+    assert by_p["hindu_vegetarian"] == "Avoid"
+    assert by_p["vegan"] == "Avoid"
+    assert by_p["vegetarian"] == "Avoid"
 ```
 
 - [ ] **Step 2: Run test to verify it fails**
@@ -752,8 +933,8 @@ git commit -m "test(coverage-os): Phase 1 integration smoke and exit checklist"
 
 | Spec requirement | Task |
 |------------------|------|
-| Evidence graph fields | Task 1 |
-| Hybrid gate + sulfite/mollusc | Task 3 |
+| Evidence graph fields; verdict = Safe/Avoid/Depends | Task 1 |
+| Shared deny lists (sulfite + mollusc); gate imports same | Task 1 + Task 3 |
 | Non-promotable short-circuit | Task 2 + 3 |
 | Ledger human reviewer fields | Task 2 |
 | Writer apply + retract | Task 4 |
