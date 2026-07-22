@@ -139,6 +139,9 @@ def map_record(raw: dict, canonical_source: str, default_state: str):
         row["knowledge_state"] = default_state
     row["primary_source_url"] = raw.get("primary_source_url") or raw.get("source_url")
     row["classification_method"] = f"bulk:{canonical_source}"
+    # Phase 2a: pass role through (not a BOOL_FLAG; not stuffed into identity flags).
+    if raw.get("role"):
+        row["role"] = str(raw.get("role")).strip()
 
     # Systemic allergen derivation from species + name (closes under-flagged seeds).
     derived = derive_identity_flags(

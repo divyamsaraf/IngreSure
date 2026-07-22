@@ -31,7 +31,15 @@ from core.normalization.normalizer import normalize_ingredient_key
 _SOURCE = canonical_source("ontology")
 _DEFAULT_STATE = default_knowledge_state(_SOURCE)
 
-_NON_FLAG_ROW_KEYS = ("canonical_name", "knowledge_state", "primary_source_url", "classification_method")
+_NON_FLAG_ROW_KEYS = (
+    "canonical_name",
+    "knowledge_state",
+    "primary_source_url",
+    "classification_method",
+    "role",
+    "coverage_os_role_managed",
+    "coverage_os_managed",
+)
 
 _INDEX: Optional[dict[str, TruthAnchorFact]] = None
 

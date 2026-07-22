@@ -99,6 +99,8 @@ def _apply_ontology_row(payload: Mapping[str, Any], *, ontology_path: Path) -> N
     if not name:
         raise ValueError("ontology_row requires canonical_name")
     flags = dict(payload.get("flags") or {})
+    role = payload.get("role")
+    role_str = str(role).strip() if role is not None and str(role).strip() else None
     data = _read_json(ontology_path)
     ingredients = list(data.get("ingredients") or [])
 
@@ -108,12 +110,21 @@ def _apply_ontology_row(payload: Mapping[str, Any], *, ontology_path: Path) -> N
             existing_idx = i
             break
 
+    # Role-only patch on existing non-managed rows (Phase 2a exit C seeding).
     if existing_idx is not None:
         existing = ingredients[existing_idx]
         if not existing.get("coverage_os_managed"):
-            raise ValueError(
-                f"refusing to overwrite non-coverage_os_managed row: {name}"
-            )
+            if role_str is None:
+                raise ValueError(
+                    f"refusing to overwrite non-coverage_os_managed row: {name}"
+                )
+            row = dict(existing)
+            row["role"] = role_str
+            row["coverage_os_role_managed"] = True
+            ingredients[existing_idx] = row
+            data["ingredients"] = ingredients
+            _atomic_write_json(ontology_path, data)
+            return
         row = dict(existing)
     else:
         row = {
@@ -126,6 +137,8 @@ def _apply_ontology_row(payload: Mapping[str, Any], *, ontology_path: Path) -> N
     row["flags"] = flags
     for k, v in flags.items():
         row[k] = v
+    if role_str is not None:
+        row["role"] = role_str
     row["coverage_os_managed"] = True
 
     if existing_idx is not None:
@@ -144,11 +157,25 @@ def _retract_ontology_row(inverse: Mapping[str, Any], *, ontology_path: Path) ->
     ingredients = list(data.get("ingredients") or [])
     kept: list[dict[str, Any]] = []
     removed = False
+    role_patch_only = bool(inverse.get("role_patch_only"))
     for row in ingredients:
         if str(row.get("canonical_name") or "").strip() != name:
             kept.append(row)
             continue
-        # Only reverse what Coverage OS itself added.
+        # Role-only demote: clear role; leave the rest of the curated row.
+        if role_patch_only or (
+            row.get("coverage_os_role_managed") and not row.get("coverage_os_managed")
+        ):
+            patched = dict(row)
+            patched.pop("role", None)
+            patched.pop("coverage_os_role_managed", None)
+            prior = inverse.get("prior_role")
+            if prior:
+                patched["role"] = prior
+            kept.append(patched)
+            removed = True
+            continue
+        # Only reverse what Coverage OS itself added as a full managed row.
         if not row.get("coverage_os_managed"):
             raise ValueError(
                 f"refusing to retract non-coverage_os_managed row: {name}"
