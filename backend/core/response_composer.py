@@ -5,7 +5,7 @@ No robotic templates. No internal jargon unless explicitly requested.
 """
 import logging
 import re
-from typing import List, Optional, Dict, Any, Set
+from typing import List, Optional, Dict, Any, Set, Tuple
 
 from core.knowledge.ike2 import truth_anchor
 from core.knowledge.ike2.stores import local_ontology
@@ -859,20 +859,39 @@ def build_ingredient_audit_payload(
     display_names: Optional[Dict[str, str]] = None,
     explanation_text: str = "",
     explanation_source: str = "template",
+    derived_from: Optional[Dict[str, str]] = None,
 ) -> Dict[str, Any]:
     """
     Build the structured payload for <<<INGREDIENT_AUDIT>>> for the frontend.
     Spec-aligned shape: summary, groups (one card per status: avoid / depends / safe),
     explanation. Multiple ingredients merged into single list per status; colors
     are applied on frontend (✅ green Safe, ❌ red Avoid, ⚠️ amber Depends).
+
+    ``derived_from`` maps derived eval atoms → parent user phrase (Phase 2a).
+    Derived atoms are evaluated independently but fold into the parent card.
     """
     dn = display_names or {}
+    derived = {
+        (k or "").lower().strip(): (v or "").lower().strip()
+        for k, v in (derived_from or {}).items()
+        if (k or "").strip() and (v or "").strip()
+    }
     triggered = verdict.triggered_ingredients or []
     triggered_to_input = verdict.triggered_ingredient_to_input or {}
     restrictions = verdict.triggered_restrictions or []
     by_ingredient = verdict.triggered_restrictions_by_ingredient or {}
     uncertain = verdict.uncertain_ingredients or []
     allergen_rids = _profile_allergen_restriction_ids(profile)
+
+    def _fold_parent(atom: str) -> Optional[str]:
+        for key in (
+            substance_key(atom) or "",
+            (atom or "").lower().strip(),
+            _normalize_for_match(atom),
+        ):
+            if key and key in derived:
+                return derived[key]
+        return None
 
     def _display(ing: str) -> str:
         key = ing.lower().strip()
@@ -884,7 +903,10 @@ def build_ingredient_audit_payload(
         resolved = normalize_ingredient_key(ing) or ing
         return format_audit_item_name(ing, resolved)
 
-    def _avoid_display(canonical: str) -> str:
+    def _avoid_display(canonical: str, *, parent: Optional[str] = None) -> str:
+        if parent:
+            raw = dn.get(parent) or parent
+            return format_audit_item_name(raw, parent)
         raw = triggered_to_input.get(canonical, canonical)
         return format_audit_item_name(raw, canonical)
 
@@ -902,6 +924,12 @@ def build_ingredient_audit_payload(
                 return list(by_ingredient[key] or [])
         return list(restrictions)
 
+    parents_hit: Set[str] = set()
+    for ing in triggered:
+        parent = _fold_parent(ing)
+        if parent:
+            parents_hit.add(parent)
+
     excluded_keys = _build_audit_exclusion_keys(triggered, triggered_to_input, uncertain)
     safe_list = [
         i for i in ingredients
@@ -909,19 +937,38 @@ def build_ingredient_audit_payload(
     ]
     # Drop compound shells (burger in "burger with chicken"), not standalone pasta.
     safe_list = [i for i in safe_list if not _is_compound_container_shell(i, dn)]
+    # Drop derived children and parents whose derived child already Avoid'd.
+    safe_list = [
+        i for i in safe_list
+        if (i or "").lower().strip() not in derived
+        and (substance_key(i) or "") not in derived
+        and (i or "").lower().strip() not in parents_hit
+    ]
 
     groups: List[Dict[str, Any]] = []
 
-    # Avoid — one card row per substance (E120/carmine are the same)
+    # Avoid — one card per substance; derived atoms fold into parent phrase card
     avoid_items: List[Dict[str, Any]] = []
     seen_avoid: Set[str] = set()
+    # Accumulate restrictions when multiple derived children share a parent.
+    folded_restrictions: Dict[str, List[str]] = {}
+    fold_order: List[Tuple[str, Optional[str], str]] = []  # (card_key, parent, sample_ing)
+
     for ing in triggered:
-        sk = substance_key(ing) or ing
-        if sk in seen_avoid:
+        parent = _fold_parent(ing)
+        card_key = parent or (substance_key(ing) or ing)
+        folded_restrictions.setdefault(card_key, [])
+        for rid in _restrictions_for(ing):
+            if rid not in folded_restrictions[card_key]:
+                folded_restrictions[card_key].append(rid)
+        if card_key in seen_avoid:
             continue
-        seen_avoid.add(sk)
-        display_name = _avoid_display(ing)
-        item_restrictions = _restrictions_for(ing)
+        seen_avoid.add(card_key)
+        fold_order.append((card_key, parent, ing))
+
+    for card_key, parent, ing in fold_order:
+        item_restrictions = folded_restrictions.get(card_key) or _restrictions_for(ing)
+        display_name = _avoid_display(ing, parent=parent)
         diet_ids, allergen_ids = _split_restrictions_for_ui(item_restrictions, allergen_rids)
         diets = [_restriction_label(r) for r in diet_ids]
         allergens = [_restriction_label(r) for r in allergen_ids]
@@ -938,8 +985,16 @@ def build_ingredient_audit_payload(
 
     # Depends — do not stamp Avoid FAIL restrictions onto uncertain items
     depends_items: List[Dict[str, Any]] = []
+    seen_depends: Set[str] = set()
     for ing in uncertain:
-        display_name = _display(ing)
+        parent = _fold_parent(ing)
+        card_key = parent or (ing or "").lower().strip()
+        if card_key in seen_depends:
+            continue
+        if (ing or "").lower().strip() in derived and parent is None:
+            continue
+        seen_depends.add(card_key)
+        display_name = _display(parent or ing)
         category = _reason_category_for_uncertain(ing)
         depends_items.append({
             "name": display_name,

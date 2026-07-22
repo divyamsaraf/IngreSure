@@ -611,6 +611,7 @@ async def chat_grocery(request: Request, body: ChatRequest):
             ingredients = parsed.ingredients
             eval_ingredients = prepared.eval_names
             compound_map = prepared.compound_map
+            derived_from_map = prepared.derived_from_map
 
             if profile.is_empty() and not eval_ingredients:
                 yield f"{PROFILE_REQUIRED_TAG}\n\n"
@@ -716,6 +717,7 @@ async def chat_grocery(request: Request, body: ChatRequest):
                 display_names=compound_map if compound_map else None,
                 explanation_text=explanation_text,
                 explanation_source=explanation_source,
+                derived_from=derived_from_map if derived_from_map else None,
             )
             audit_block = f"{INGREDIENT_AUDIT_TAG}{json.dumps(audit_payload)}{INGREDIENT_AUDIT_TAG}"
             logger.info("INGREDIENT_AUDIT_EMITTED groups=%s", [g.get("status") for g in audit_payload.get("groups", [])])
