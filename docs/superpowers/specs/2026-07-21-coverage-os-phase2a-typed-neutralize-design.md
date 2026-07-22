@@ -112,6 +112,7 @@ When `plant_mod` (or process keep-and-extract) emits a derived atom alongside a 
 
 - Ontology rows may carry a single field: `role` (string). Allowed values are **exactly** the closed `PolicyType` strings: `plant_mod`, `dairy_head`, `process_keep`, `culinary_keep`. No parallel role vocabulary; no free-form strings at promote time.
 - **No `roles: []` list in 2a.** One `role` per row.
+- **`role` is the only new ontology field this design introduces.** The `plant_mod` / `dairy_head` partner condition draws on **pre-existing** origin flags (`dairy_source`, `animal_origin`, and the rest of `deny_lists.ANIMALISH_FLAGS` via `deny_lists.is_animalish`) — not a new field and not a new keyword list inside `neutralize.py`.
 - Policy **types** live in code / tiny locked JSON — not invented at promote time.
 - ETL / Tier-2: `adapt.map_record` and `local_ontology._NON_FLAG_ROW_KEYS` must pass `role` through (must not land inside `TruthAnchorFact.flags`).
 - `coverage_os_managed` still gates overwrite/retract for Coverage OS–written rows.
@@ -120,7 +121,7 @@ When `plant_mod` (or process keep-and-extract) emits a derived atom alongside a 
 
 | PolicyType | Role-bearing token | Partner / condition |
 |------------|--------------------|---------------------|
-| `plant_mod` | Token with `role=plant_mod` | Adjacent token is dairy/meat: either has `role=dairy_head` **or** is in the closed dairy/meat keyword set owned by the policy engine (migrated from today’s restricted dairy/meat singles — not a second private list in `compound_expansion`) |
+| `plant_mod` | Token with `role=plant_mod` | Adjacent token is dairy/meat: either has `role=dairy_head`, **or** resolves to an ontology row whose flags satisfy `deny_lists.is_animalish` (existing `dairy_source` / `animal_origin` / animalish flags). **No** new dairy/meat keyword frozenset in `neutralize.py` or `compound_expansion`. |
 | `dairy_head` | Token with `role=dairy_head` | Adjacent species/mod token (both orders) |
 | `process_keep` | Token with `role=process_keep` | Multi-word phrase containing that token |
 | `culinary_keep` | Token with `role=culinary_keep` (typically the head/suffix) | Multi-word phrase ending with / containing that head |
