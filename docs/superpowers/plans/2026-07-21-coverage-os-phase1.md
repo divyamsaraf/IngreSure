@@ -1726,7 +1726,7 @@ git commit -m "feat(coverage-os): promote writer apply and retract for L2 files"
   - Each row: `ingredient`, `profile`, `bucket` (`Safe`|`Avoid`|`Depends`), `chain` dict
   - **Bucket = `chain.verdict`** (already Safe/Avoid/Depends from Task 1). Do not re-map `to_external` here.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 from core.knowledge.ike2.coverage_os.profile_matrix import run_matrix
@@ -1753,28 +1753,252 @@ def test_avoid_parity_beef_fails_veg_profiles():
     assert by_p["hindu_vegetarian"] == "Avoid"
     assert by_p["vegan"] == "Avoid"
     assert by_p["vegetarian"] == "Avoid"
+
+
+def test_run_matrix_clears_resolution_cache(monkeypatch):
+    calls: list[str] = []
+    monkeypatch.setattr(
+        "core.knowledge.ike2.coverage_os.profile_matrix.resolution_cache.clear",
+        lambda: calls.append("resolution"),
+    )
+    monkeypatch.setattr(
+        "core.knowledge.ike2.coverage_os.profile_matrix.local_ontology.reset_cache",
+        lambda: calls.append("ontology"),
+    )
+    monkeypatch.setattr(
+        "core.knowledge.ike2.coverage_os.profile_matrix.reset_variant_alias_cache",
+        lambda: calls.append("aliases"),
+    )
+    run_matrix("sugar", restriction_ids=["vegan"])
+    assert calls == ["resolution", "ontology", "aliases"]
+    calls.clear()
+    run_matrix("sugar", restriction_ids=["vegan"], clear_caches=False)
+    assert calls == []
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `pytest tests/ike2/coverage_os/test_profile_matrix.py -v`  
 Expected: FAIL
 
-- [ ] **Step 3: Write minimal implementation + CLI**
+- [x] **Step 3: Write minimal implementation + CLI**
 
-`run_matrix`:
-1. `parse_atoms(raw)`
-2. For each atom × each restriction_id: resolve → seam → evaluate → build_chain → bucket
-3. Clear resolution cache between full runs if needed (`resolution_cache.clear()`)
+**Literal `profile_matrix.py` + CLI (review before Task 5 done).**
 
-CLI `run_profile_matrix.py`: argparse `--paste` / `--file`, `--csv out.csv`, default all `SUPPORTED_RESTRICTIONS`.
+Threading (per `(atom, restriction_id)` cell):
+`parse_atoms` → for each atom: `resolve` once → `to_compliance_input` once → for each restriction: `evaluate([inp], single-restriction profile)` → `build_chain_from_resolve` → row with `bucket = chain.verdict`.
 
-- [ ] **Step 4: Run test to verify it passes**
+Cache: **every** `run_matrix` call starts with `_reset_l2_caches()` (resolution cache + local ontology + variant aliases) unless `clear_caches=False`. Within one run, resolve still benefits from write-through cache across atoms. Stale L2 after promote_writer applies must not survive across analyst matrix re-runs.
 
+**Path sanity (verified 2026-07-21):** `local_ontology.reset_cache`, `reset_variant_alias_cache`, and `resolution_cache.clear` exist as real callables in the codebase (confirmed via import before implement).
+
+**Phase 1 performance tradeoff (named, not silent):** `run_matrix` calls `evaluate()` once per `(atom × restriction)` rather than once per atom with all restrictions on the profile — O(atoms × |SUPPORTED_RESTRICTIONS|) engine calls. Safer against batch-aggregation risk; offline analyst tool only (not chat hot path). Large production pastes against the full restriction set may be slow; optimize later only if measured.
+
+```python
+# backend/core/knowledge/ike2/coverage_os/profile_matrix.py
+from __future__ import annotations
+
+import csv
+from pathlib import Path
+from types import SimpleNamespace
+from typing import Any, Iterable, Optional
+
+from core.knowledge.ike2 import resolution_cache
+from core.knowledge.ike2.compliance import evaluate
+from core.knowledge.ike2.coverage_os.evidence_chain import build_chain_from_resolve
+from core.knowledge.ike2.input_layer import parse_atoms
+from core.knowledge.ike2.resolver import resolve
+from core.knowledge.ike2.rules import SUPPORTED_RESTRICTIONS, seeded_rules
+from core.knowledge.ike2.seam import to_compliance_input
+from core.knowledge.ike2.stores import local_ontology
+from core.knowledge.ike2.variant_aliases import reset_variant_alias_cache
+
+
+def _reset_l2_caches() -> None:
+    """Drop in-process L2 resolution state so a full matrix run sees current files.
+
+    Called at the start of every ``run_matrix`` (default). Does not clear mid-run;
+    within one paste, resolve write-through cache remains useful across atoms.
+    """
+    resolution_cache.clear()
+    local_ontology.reset_cache()
+    reset_variant_alias_cache()
+
+
+def run_matrix(
+    raw: str,
+    restriction_ids: Optional[Iterable[str]] = None,
+    *,
+    region: Optional[str] = None,
+    clear_caches: bool = True,
+) -> list[dict[str, Any]]:
+    if clear_caches:
+        _reset_l2_caches()
+
+    if restriction_ids is None:
+        profiles = sorted(SUPPORTED_RESTRICTIONS)
+    else:
+        profiles = list(restriction_ids)
+
+    atoms = parse_atoms(raw)
+    rules = seeded_rules()
+    rows: list[dict[str, Any]] = []
+
+    for atom in atoms:
+        resolved = resolve(atom.name, region)
+        compliance_input = to_compliance_input(
+            resolved,
+            trace=atom.trace,
+            may_contain=atom.may_contain,
+            query_atom=atom.name,
+        )
+        for restriction_id in profiles:
+            profile = SimpleNamespace(
+                restrictions={restriction_id: "preference"},
+            )
+            # One restriction per evaluate so this cell's ComplianceResult is not
+            # an aggregate across unrelated profiles (bucket still comes from chain).
+            compliance_result = evaluate([compliance_input], profile, rules)
+            chain = build_chain_from_resolve(
+                atom=atom.name,
+                resolved=resolved,
+                compliance_result=compliance_result,
+                restriction_id=restriction_id,
+                compliance_input=compliance_input,
+            )
+            rows.append({
+                "ingredient": atom.name,
+                "profile": restriction_id,
+                "bucket": chain.verdict,  # Safe | Avoid | Depends — already audit bucket
+                "chain": chain.to_dict(),
+            })
+    return rows
+
+
+def write_matrix_csv(rows: list[dict[str, Any]], path: Path) -> None:
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(
+            f,
+            fieldnames=["ingredient", "profile", "bucket", "evidence_class", "miss_class"],
+        )
+        w.writeheader()
+        for r in rows:
+            chain = r.get("chain") or {}
+            w.writerow({
+                "ingredient": r.get("ingredient"),
+                "profile": r.get("profile"),
+                "bucket": r.get("bucket"),
+                "evidence_class": chain.get("evidence_class"),
+                "miss_class": chain.get("miss_class"),
+            })
+```
+
+```python
+# backend/scripts/run_profile_matrix.py
+"""CLI: paste × profiles → Safe/Avoid/Depends + evidence chains."""
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+from pathlib import Path
+
+# Allow `python backend/scripts/run_profile_matrix.py` from repo root.
+_REPO = Path(__file__).resolve().parents[2]
+_BACKEND = _REPO / "backend"
+if str(_BACKEND) not in sys.path:
+    sys.path.insert(0, str(_BACKEND))
+
+from core.knowledge.ike2.coverage_os.profile_matrix import run_matrix, write_matrix_csv
+from core.knowledge.ike2.rules import SUPPORTED_RESTRICTIONS
+
+
+def main(argv: list[str] | None = None) -> int:
+    p = argparse.ArgumentParser(description="Coverage OS multi-profile matrix")
+    src = p.add_mutually_exclusive_group(required=True)
+    src.add_argument("--paste", help="Raw ingredient paste string")
+    src.add_argument("--file", type=Path, help="Path to paste text file")
+    p.add_argument(
+        "--restrictions",
+        nargs="*",
+        default=None,
+        help="Restriction ids (default: all SUPPORTED_RESTRICTIONS)",
+    )
+    p.add_argument("--csv", type=Path, default=None, help="Optional CSV output path")
+    p.add_argument("--json", type=Path, default=None, help="Optional JSON output path")
+    p.add_argument(
+        "--no-clear-caches",
+        action="store_true",
+        help="Skip L2 cache reset (default is clear at start of each run)",
+    )
+    args = p.parse_args(argv)
+
+    raw = args.paste if args.paste is not None else Path(args.file).read_text(encoding="utf-8")
+    restriction_ids = args.restrictions
+    if restriction_ids is None:
+        restriction_ids = sorted(SUPPORTED_RESTRICTIONS)
+
+    rows = run_matrix(
+        raw,
+        restriction_ids=restriction_ids,
+        clear_caches=not args.no_clear_caches,
+    )
+    if args.csv:
+        write_matrix_csv(rows, args.csv)
+    if args.json:
+        Path(args.json).write_text(json.dumps(rows, indent=2) + "\n", encoding="utf-8")
+    else:
+        # Default: compact stdout lines for analyst scanning.
+        for r in rows:
+            print(f"{r['ingredient']}\t{r['profile']}\t{r['bucket']}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+```
+
+Extra test (cache clear is not optional prose):
+
+```python
+def test_run_matrix_clears_resolution_cache(monkeypatch):
+    calls: list[str] = []
+
+    def _clear():
+        calls.append("resolution")
+
+    monkeypatch.setattr(
+        "core.knowledge.ike2.coverage_os.profile_matrix.resolution_cache.clear",
+        _clear,
+    )
+    monkeypatch.setattr(
+        "core.knowledge.ike2.coverage_os.profile_matrix.local_ontology.reset_cache",
+        lambda: calls.append("ontology"),
+    )
+    monkeypatch.setattr(
+        "core.knowledge.ike2.coverage_os.profile_matrix.reset_variant_alias_cache",
+        lambda: calls.append("aliases"),
+    )
+    run_matrix("sugar", restriction_ids=["vegan"])
+    assert calls == ["resolution", "ontology", "aliases"]
+    calls.clear()
+    run_matrix("sugar", restriction_ids=["vegan"], clear_caches=False)
+    assert calls == []
+```
+
+Golden paste file:
+
+```text
+sugar, beef, egg, salt himalayan, savills
+```
+
+- [x] **Step 4: Run test to verify it passes**
 Run: `pytest tests/ike2/coverage_os/test_profile_matrix.py -v`  
 Expected: PASS
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add backend/core/knowledge/ike2/coverage_os/profile_matrix.py \
