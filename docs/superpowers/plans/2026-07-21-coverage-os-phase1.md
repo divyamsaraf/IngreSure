@@ -1282,6 +1282,7 @@ git commit -m "feat(coverage-os): hybrid gate with alias collision and shared um
   - `apply_promotion(entry, *, ontology_path, aliases_path) -> None`
   - `retract_promotion(entry, *, ontology_path, aliases_path) -> None`
   - `commit_promotion(entry, ledger, *, ontology_path, aliases_path, **ledger_kwargs) -> None` — **write first, then** `ledger.append_promoted(...)`; on write failure raise and leave ledger without a promoted entry
+- `commit_demotion(entry, ledger, *, ontology_path, aliases_path, reason, ...) -> None` — **retract first, then** `ledger.append_demoted(...)`; on retract failure raise and leave promotion active in ledger
   - Optional: `mirror_l3_inject(entry) -> None` stub that logs "derived mirror; not source of truth" (no hard fail if Supabase down)
 
 **Behavior:**
@@ -2084,9 +2085,9 @@ git commit -m "feat(coverage-os): auto-lane sample audit and volume-spike guards
 - Test: `backend/tests/ike2/coverage_os/test_phase1_integration.py`
 - Modify: `docs/superpowers/specs/2026-07-21-coverage-os-phase1-design.md` only if path notes needed (prefer not)
 
-- [ ] **Step 1: Write integration tests** (literal — both L2 write paths)
+- [x] **Step 1: Write integration tests** (literal — both L2 write paths)
 
-Exercises gate → writer → ledger → demote/retract → non_promotable short-circuit for **ontology_row** and **variant_alias** separately (closes the Task 4 asymmetry gap at integration grain). Also matrix chain emission.
+Exercises gate → writer → ledger → ``commit_demotion`` (retract-then-ledger, symmetric to ``commit_promotion``) → non_promotable short-circuit for **ontology_row** and **variant_alias** separately (closes the Task 4 asymmetry gap at integration grain). Also matrix chain emission.
 
 ```python
 # backend/tests/ike2/coverage_os/test_phase1_integration.py
@@ -2099,9 +2100,8 @@ from core.knowledge.ike2.coverage_os.hybrid_gate import decide_promote
 from core.knowledge.ike2.coverage_os.profile_matrix import run_matrix
 from core.knowledge.ike2.coverage_os.promote_ledger import PromoteLedger, candidate_key
 from core.knowledge.ike2.coverage_os.promote_writer import (
-    apply_promotion,
+    commit_demotion,
     commit_promotion,
-    retract_promotion,
 )
 
 
@@ -2163,9 +2163,14 @@ def test_gate_writer_ledger_round_trip_ontology_row(tmp_path):
     )
     assert row.get("coverage_os_managed") is True
 
-    led.append_demoted(candidate_key=key, reason="sample_audit_fail")
+    commit_demotion(
+        entry,
+        led,
+        ontology_path=ont,
+        aliases_path=al,
+        reason="sample_audit_fail",
+    )
     assert led.latest_promoted(key) is None
-    retract_promotion(entry, ontology_path=ont, aliases_path=al)
     assert not any(
         i.get("canonical_name") == "broccoli"
         for i in json.loads(ont.read_text())["ingredients"]
@@ -2228,9 +2233,14 @@ def test_gate_writer_ledger_round_trip_variant_alias(tmp_path):
     assert "salt himalayan" in data["coverage_os_managed_aliases"]
     assert led.latest_promoted(key) is not None
 
-    led.append_demoted(candidate_key=key, reason="sample_audit_fail")
+    commit_demotion(
+        entry,
+        led,
+        ontology_path=ont,
+        aliases_path=al,
+        reason="sample_audit_fail",
+    )
     assert led.latest_promoted(key) is None
-    retract_promotion(entry, ontology_path=ont, aliases_path=al)
     data = json.loads(al.read_text())
     assert "salt himalayan" not in data["aliases"]
     assert "salt himalayan" not in data.get("coverage_os_managed_aliases", [])
@@ -2259,13 +2269,13 @@ def test_matrix_emits_chain_for_each_cell():
     assert all(r["bucket"] == r["chain"]["verdict"] for r in rows)
 ```
 
-- [ ] **Step 2: Run full coverage_os suite**
+- [x] **Step 2: Run full coverage_os suite**
 
 
 Run: `pytest tests/ike2/coverage_os/ -v`  
 Expected: all PASS
 
-- [ ] **Step 3: Manual exit-criteria checklist (record in PR)**
+- [x] **Step 3: Manual exit-criteria checklist (record in PR)**
 
 1. Evidence chain on matrix rows  
 2. Hybrid gate + non_promotable short-circuit  
@@ -2275,7 +2285,7 @@ Expected: all PASS
 6. Auto-lane guard tests green  
 7. Confirm no induction code landed  
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add backend/tests/ike2/coverage_os/test_phase1_integration.py
