@@ -6,6 +6,7 @@ from core.knowledge.ike2.coverage_os.promote_writer import (
     apply_promotion,
     retract_promotion,
     commit_promotion,
+    commit_demotion,
 )
 from core.knowledge.ike2.coverage_os.promote_ledger import PromoteLedger, candidate_key
 
@@ -106,6 +107,53 @@ def test_write_failure_leaves_ledger_pending(tmp_path):
         except OSError:
             pass
     assert led.latest_promoted(key) is None
+
+
+def test_retract_failure_leaves_promotion_active(tmp_path):
+    """Retract fails → ledger still shows active promote (never claim demote without disk)."""
+    ont = _base_ontology(tmp_path)
+    al = _base_aliases(tmp_path)
+    led = PromoteLedger(tmp_path / "l.jsonl")
+    key = candidate_key("broccoli", "broccoli")
+    entry = {
+        "kind": "promoted",
+        "candidate_key": key,
+        "payload": {
+            "write_kind": "ontology_row",
+            "canonical_name": "broccoli",
+            "flags": {"plant_origin": True},
+            "inverse": {"write_kind": "ontology_row", "canonical_name": "broccoli"},
+        },
+    }
+    commit_promotion(
+        entry,
+        led,
+        ontology_path=ont,
+        aliases_path=al,
+        rule_id="closed_form_plant_v1",
+        source="test",
+    )
+    assert led.latest_promoted(key) is not None
+    with patch(
+        "core.knowledge.ike2.coverage_os.promote_writer.retract_promotion",
+        side_effect=OSError("disk full"),
+    ):
+        try:
+            commit_demotion(
+                entry,
+                led,
+                ontology_path=ont,
+                aliases_path=al,
+                reason="sample_audit_fail",
+            )
+            assert False, "expected OSError"
+        except OSError:
+            pass
+    assert led.latest_promoted(key) is not None
+    assert any(
+        i.get("canonical_name") == "broccoli"
+        for i in json.loads(ont.read_text())["ingredients"]
+    )
 
 
 def test_refuse_overwrite_and_retract_unmanaged_alias(tmp_path):

@@ -231,6 +231,28 @@ def commit_promotion(
     )
 
 
+def commit_demotion(
+    entry: Mapping[str, Any],
+    ledger: PromoteLedger,
+    *,
+    ontology_path: Path,
+    aliases_path: Path,
+    reason: str,
+    candidate_key: str | None = None,
+) -> dict[str, Any]:
+    """Retract L2 first; only then append ledger demoted row.
+
+    Mirrors ``commit_promotion`` ordering. If retract_promotion raises, ledger
+    still shows the prior promotion as active (never claim demote that did not
+    hit disk).
+    """
+    retract_promotion(entry, ontology_path=ontology_path, aliases_path=aliases_path)
+    key = candidate_key or entry.get("candidate_key")
+    if not key:
+        raise ValueError("commit_demotion requires candidate_key")
+    return ledger.append_demoted(candidate_key=str(key), reason=reason)
+
+
 def mirror_l3_inject(entry: Mapping[str, Any]) -> None:
     """Phase 1 stub: L3 is a derived mirror, never source of truth."""
     log.info(
