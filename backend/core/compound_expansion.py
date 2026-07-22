@@ -49,6 +49,11 @@ def clear_role_index_cache() -> None:
     _ROLE_INDEX_CACHE = None
 
 
+def get_role_index() -> dict[str, str]:
+    """Public role index for expansion + facet consumers."""
+    return _load_role_index()
+
+
 def _load_role_index() -> dict[str, str]:
     global _ROLE_INDEX_CACHE
     if _ROLE_INDEX_CACHE is not None:

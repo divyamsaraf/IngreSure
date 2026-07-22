@@ -11,7 +11,7 @@ chestnut generically. Never first-token parent (``cabbage bok choy``).
 from __future__ import annotations
 
 import re
-from typing import Iterable
+from typing import Iterable, Mapping
 
 from core.normalization.normalizer import normalize_ingredient_key
 
@@ -130,15 +130,32 @@ def simple_commodity_head(name: str) -> str | None:
     return _accept_head(m.group(1).strip())
 
 
-def facet_reduction_candidates(name: str) -> list[str]:
+def facet_reduction_candidates(
+    name: str,
+    *,
+    role_index: Mapping[str, str] | None = None,
+) -> list[str]:
     """Allowlisted shorter forms; caller must confirm residual resolves.
 
     Order: prep-head, trailing part strip, leading geo strip, then combinations.
     Never returns juice/puree/butter-style reductions.
+
+    Culinary/process/tier1 keep (shared neutralize policies) → no facet strip.
+    Residual ``_FORBIDDEN_STRIP`` entries (butter, oil, …) remain for head
+    geometry that is not yet role-seeded (Phase 2a residual).
     """
+    from core.compound_expansion import get_role_index
+    from core.knowledge.ike2.coverage_os.neutralize import apply_policies
+
     n = normalize_ingredient_key(name or "")
     if not n:
         return []
+
+    roles = dict(role_index) if role_index is not None else get_role_index()
+    fired = apply_policies(n, role_index=roles).policy_fired
+    if any(p in fired for p in ("culinary_keep", "process_keep", "tier1_keep")):
+        return []
+
     out: list[str] = []
     seen: set[str] = {n}
 
