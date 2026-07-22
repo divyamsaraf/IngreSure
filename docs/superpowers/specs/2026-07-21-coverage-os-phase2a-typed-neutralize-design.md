@@ -180,6 +180,7 @@ Ordering constraint (explicit — no gap where compounds go unhandled):
 | Facet strips kept wholes | Shared culinary_keep in commodity_head; regression goldens |
 | Enrichment `_PLANT_OVERRIDE_*` lists still drift | **Named residual; out of 2a** |
 | Tier-1 keep-whole fallback set | **Residual:** shrink over time by migrating L1 wholes to roles |
+| Label-decomposer path skips `derived_from` | **Named residual:** `decompose_label` / label-OCR ingestion returns empty `compound_map` and default empty `derived_from_map`, so dual-emit fold does not run on that path — derived plant atoms can surface as separate top-level audit cards until label prep also populates `derived_from_map` (or routes compounds through `expand_compounds`). Out of 2a core exit; track before claiming full-path dual-emit UX. |
 
 ## Phase 1 residuals unchanged
 

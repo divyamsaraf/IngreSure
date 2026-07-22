@@ -1,0 +1,1712 @@
+{
+  "expand": {
+    "almond yogurt": {
+      "atoms": [
+        "almond yogurt",
+        "almond"
+      ],
+      "derived_from": {
+        "almond": "almond yogurt"
+      },
+      "display_map": {
+        "almond": "almond yogurt"
+      }
+    },
+    "coconut milk": {
+      "atoms": [
+        "coconut milk",
+        "coconut"
+      ],
+      "derived_from": {
+        "coconut": "coconut milk"
+      },
+      "display_map": {
+        "coconut": "coconut milk"
+      }
+    },
+    "garlic pasta": {
+      "atoms": [
+        "garlic"
+      ],
+      "derived_from": {},
+      "display_map": {
+        "garlic": "garlic pasta"
+      }
+    },
+    "goat yogurt": {
+      "atoms": [
+        "goat yogurt"
+      ],
+      "derived_from": {},
+      "display_map": {}
+    },
+    "mechanically separated chicken": {
+      "atoms": [
+        "mechanically separated chicken",
+        "chicken"
+      ],
+      "derived_from": {
+        "chicken": "mechanically separated chicken"
+      },
+      "display_map": {
+        "chicken": "mechanically separated chicken"
+      }
+    },
+    "oat milk": {
+      "atoms": [
+        "oat milk",
+        "oat"
+      ],
+      "derived_from": {
+        "oat": "oat milk"
+      },
+      "display_map": {
+        "oat": "oat milk"
+      }
+    },
+    "plant yogurt": {
+      "atoms": [
+        "plant yogurt",
+        "plant"
+      ],
+      "derived_from": {
+        "plant": "plant yogurt"
+      },
+      "display_map": {
+        "plant": "plant yogurt"
+      }
+    },
+    "soy lecithin": {
+      "atoms": [
+        "soy lecithin"
+      ],
+      "derived_from": {},
+      "display_map": {}
+    },
+    "soy yogurt": {
+      "atoms": [
+        "soy yogurt",
+        "soy"
+      ],
+      "derived_from": {
+        "soy": "soy yogurt"
+      },
+      "display_map": {
+        "soy": "soy yogurt"
+      }
+    },
+    "wine vinegar": {
+      "atoms": [
+        "wine vinegar"
+      ],
+      "derived_from": {},
+      "display_map": {}
+    },
+    "yogurt goat": {
+      "atoms": [
+        "yogurt goat"
+      ],
+      "derived_from": {},
+      "display_map": {}
+    }
+  },
+  "ledger": "data/coverage_os/phase2a_role_seed_ledger.jsonl",
+  "matrix": {
+    "cell_count": 310,
+    "cells": [
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      },
+      {
+        "atom": null,
+        "restriction_id": null,
+        "verdict": null
+      }
+    ],
+    "culinary_safe_cells": [],
+    "paste": "almond yogurt, coconut milk, wine vinegar, soy lecithin, mechanically separated chicken, garlic pasta, sugar",
+    "restriction_ids": [
+      "celery_allergy",
+      "celiac_strict",
+      "dairy_free",
+      "egg_free",
+      "fish_allergy",
+      "garlic_allergy",
+      "gluten_free",
+      "halal",
+      "hindu_non_vegetarian",
+      "hindu_vegetarian",
+      "jain",
+      "kosher",
+      "lacto_vegetarian",
+      "lactose_free",
+      "lupin_allergy",
+      "mustard_allergy",
+      "no_alcohol",
+      "no_garlic",
+      "no_insect_derived",
+      "no_onion",
+      "onion_allergy",
+      "ovo_vegetarian",
+      "peanut_allergy",
+      "pescatarian",
+      "sesame_allergy",
+      "shellfish_allergy",
+      "soy_allergy",
+      "sulfite_sensitive",
+      "tree_nut_allergy",
+      "vegan",
+      "vegetarian"
+    ]
+  },
+  "note": "Captured AFTER 66 human-approved role promotions (auto=False). Do not regenerate against unseeded ontology.",
+  "ontology_seed": "phase2a_role_seed",
+  "seed_counts": {
+    "culinary_keep": 12,
+    "dairy_head": 9,
+    "plant_mod": 20,
+    "process_keep": 25
+  }
+}

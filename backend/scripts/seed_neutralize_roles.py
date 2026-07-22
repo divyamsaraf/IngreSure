@@ -28,7 +28,9 @@ _PLANT_MOD = frozenset({
     "peanut", "walnut", "pistachio", "macadamia", "pecan", "plant",
 })
 _DAIRY_HEADS = frozenset({
-    "yogurt", "yoghurt", "milk", "cheese", "butter", "cream", "ghee",
+    # milk omitted on purpose: plant_mod partners milk via deny_lists.is_animalish
+    # flags, not role=dairy_head. Keep dairy_head for heads that need species-pair keep.
+    "yogurt", "yoghurt", "cheese", "butter", "cream", "ghee",
     "paneer", "whey", "curd",
 })
 _CULINARY_KEEP = frozenset({
