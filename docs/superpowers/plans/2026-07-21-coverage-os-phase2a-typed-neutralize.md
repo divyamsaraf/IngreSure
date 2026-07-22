@@ -19,11 +19,24 @@
 - Plant_mod emission: whole phrase + plant token; never bare dairy/meat from that pair.
 - Relatedness: **`derived_from` only** (no `emission_group_id`); `display_map` = label remap only.
 - Audit: one top-level card per user-typed phrase; derived hits fold into that card.
-- Keep decision order: (a) culinary/process roles → (b) `truth_anchor.lookup(full_phrase)` → (c) tear/extract.
-- Role-only promote → existing `human_fail_closed`; **no** new auto branch on `role`.
-- Frozensets/Sets stay until roles seeded **and** goldens pass through `apply_policies`.
+- Keep decision order inside `apply_policies`: (1) culinary/process roles → (2) plant_mod/dairy_head → (3) `truth_anchor.lookup(full_phrase)` → (4) **passthrough** `atoms=[phrase]` (no generic tear inside neutralize).
+- **No-policy keyword extraction** (e.g. `garlic pasta` → `garlic`) stays in `compound_expansion` via existing `_RESTRICTED_KEYWORDS_*` / `find_sub_ingredients` — **not** reimplemented inside `neutralize.py`.
+- Role-only promote → existing `human_fail_closed`; **no** new auto branch on `role`. `GateDecision.action` values are exactly `auto_promote` | `human_approval` | `rejected` (no `"human"`).
+- Plant/keep Sets stay until roles seeded **and** goldens pass through `apply_policies`. `_RESTRICTED_KEYWORDS_*` are **not** deleted in 2a.
 - No Phase 2b induction in this plan.
-- Path sanity: `backend/core/compound_expansion.py`, `backend/core/knowledge/ike2/commodity_head.py`, `backend/core/knowledge/ike2/coverage_os/deny_lists.py` exist.
+
+**Path sanity (verified 2026-07-21):**
+
+| Path | Confirmed |
+|------|-----------|
+| `backend/core/compound_expansion.py` | `expand_compounds` → `Tuple[List[str], Dict[str, str]]` today; `_PLANT_MODIFIERS` / `_KEEP_WHOLE_SUFFIXES` / `_KEEP_AND_EXTRACT_WORDS` / `_RESTRICTED_KEYWORDS_*` / `find_sub_ingredients` |
+| `backend/core/knowledge/ike2/commodity_head.py` | `_FORBIDDEN_STRIP`, `facet_reduction_candidates`, `simple_commodity_head` |
+| `backend/core/knowledge/ike2/coverage_os/deny_lists.py` | `is_animalish(flags)` |
+| `backend/core/knowledge/ike2/coverage_os/hybrid_gate.py` | `GateDecision.action: Literal["auto_promote","human_approval","rejected"]`; fail-closed → `action="human_approval"`, `rule_id="human_fail_closed"` |
+| `backend/core/knowledge/ike2/etl/adapt.py` | `map_record(raw: dict, canonical_source: str, default_state: str)` — does not copy `role` today |
+| `backend/core/parsing/chat_ingredients.py` | `PreparedChatIngredients(eval_names, compound_map={}, decomposed=None, label_text=None)`; `prepare_chat_ingredients` unpacks 2-tuple from `expand_compounds` |
+| `backend/core/response_composer.py` | `build_ingredient_audit_payload(verdict, profile, ingredients, display_names=None, explanation_text="", explanation_source="template")` — no `derived_from` yet; groups use `status` in `{"avoid","depends","safe"}` |
+| `backend/app.py` | Calls `build_ingredient_audit_payload(verdict=..., profile=..., ingredients=eval_ingredients, display_names=compound_map, ...)` ~L712; must also pass `derived_from` after Task 7 |
 
 ## Literal-code-trace discipline (mandatory)
 
@@ -32,7 +45,7 @@ Phase 1 hid real bugs behind prose until literal code was traced against tests. 
 | Gate | After task | Trace must show |
 |------|------------|-----------------|
 | **LCT-1** | Task 1 | `apply_policies` conflict: plant_mod checked **before** dairy_head (or equivalent early-return); both token orders |
-| **LCT-2** | Task 2 | Keep decision: roles → `truth_anchor.lookup` → tear; no inverted `if` |
+| **LCT-2** | Task 2 | Keep decision: culinary/process → plant_mod/dairy_head → `truth_anchor.lookup` → **passthrough** `[phrase]`; no inverted `if`; no generic tear list in neutralize |
 | **LCT-3** | Task 7 | `derived_from` from `PolicyResult` → expand → `PreparedChatIngredients` → `build_ingredient_audit_payload` card merge |
 
 ## File map
@@ -208,28 +221,16 @@ git commit -m "feat(coverage-os): neutralize plant_mod/dairy_head apply_policies
 - Test: `backend/tests/ike2/coverage_os/test_neutralize_keep_fallback.py`
 
 **Interfaces:**
-- Extends `apply_policies` keep decision **before** generic tear (tear helper may still live in neutralize for process extract keywords — use a **function-local** restricted extract list only for process_keep base extraction, owned by neutralize, not re-exported as plant_mod partner logic).
-- Produces: `should_keep_whole(phrase, role_index) -> tuple[bool, str | None]` optional helper used by commodity_head in Task 6 — or commodity_head calls `apply_policies` and inspects `policy_fired`.
-
-**Keep order (spec — LCT-2):**
-
-```text
-if culinary_keep or process_keep role matches phrase:
-    keep (process_keep also extracts bases)
-elif truth_anchor.lookup(full_phrase) is not None:
-    keep whole
-else:
-    tear / plant_mod / dairy_head / passthrough as Task 1
-```
-
-Note: plant_mod/dairy_head on multi-word phrases still apply; order relative to culinary: if last token is `culinary_keep` (vinegar), culinary wins over tearing wine. Implement: **culinary/process role check first**, then plant_mod/dairy_head, then Tier-1 lookup, then tear.
+- Extends `apply_policies` keep decision. For `process_keep` only: a **function-local** restricted extract list may extract bases (e.g. chicken) — owned by neutralize, not re-exported, **not** used for the no-policy default case.
+- **Design lock (passthrough, not tear):** When no culinary/process/plant_mod/dairy_head fires and Tier-1 miss, `apply_policies` returns Task 1 passthrough: `atoms=[phrase]`, `policy_fired=[]`, `derived_from={}`. Do **not** invent a generic keyword-tear list inside `neutralize.py`. Garlic-style extraction is Task 5 / `compound_expansion` via existing `_RESTRICTED_KEYWORDS_*`.
+- Produces: commodity_head may call `apply_policies` and inspect `policy_fired` (Task 6).
 
 **Locked order for LCT-2 (literal):**
 
-1. culinary_keep / process_keep (roles)
+1. culinary_keep / process_keep (roles) — culinary wins over tearing wine from vinegar
 2. plant_mod / dairy_head (Task 1)
-3. `truth_anchor.lookup(full_phrase)` keep
-4. default tear/passthrough
+3. `truth_anchor.lookup(full_phrase)` keep → fire audit tag `tier1_keep` in `policy_fired`
+4. **passthrough** `[phrase]` (not tear)
 
 - [ ] **Step 1: Failing tests**
 
@@ -261,7 +262,7 @@ def test_process_keep_emits_phrase_and_base():
     assert "process_keep" in r.policy_fired
 
 
-def test_tier1_fallback_keep_when_no_role(monkeypatch):
+def test_tier1_fallback_keep_when_no_role():
     roles = {}
     fake = object()
     with patch(
@@ -270,10 +271,11 @@ def test_tier1_fallback_keep_when_no_role(monkeypatch):
     ):
         r = apply_policies("fish oil", role_index=roles, lookup_flags=lambda t: None)
     assert r.atoms == ["fish oil"]
-    assert "tier1_keep" in r.policy_fired or r.policy_fired == []  # lock: use "tier1_keep"
+    assert "tier1_keep" in r.policy_fired
 
 
-def test_no_role_no_tier1_tears_garlic_pasta():
+def test_no_role_no_tier1_passthrough_garlic_pasta():
+    """No-policy default is passthrough — NOT keyword tear inside neutralize."""
     roles = {}
     with patch(
         "core.knowledge.ike2.coverage_os.neutralize.truth_anchor_lookup",
@@ -282,13 +284,14 @@ def test_no_role_no_tier1_tears_garlic_pasta():
         r = apply_policies(
             "garlic pasta",
             role_index=roles,
-            lookup_flags=lambda t: {"animal_origin": True} if t == "garlic" else {"plant_origin": True},
+            lookup_flags=lambda t: None,
         )
-    # Without culinary roles, tear extracts restricted garlic (implement extract list for tear path)
-    assert "garlic" in r.atoms
+    assert r.atoms == ["garlic pasta"]
+    assert r.policy_fired == []
+    assert r.derived_from == {}
 ```
 
-For `tier1_keep`: add `"tier1_keep"` to `policy_fired` when fallback (a) fires — makes LCT-2 observable. Not a PolicyType enum value; it is an audit tag only. Document in module docstring: `policy_fired` may include `tier1_keep` audit tag outside the closed role enum.
+For `tier1_keep`: add `"tier1_keep"` to `policy_fired` when Tier-1 fallback fires — audit tag only, not a `PolicyType` / `role` value. Document in module docstring.
 
 - [ ] **Step 2: Run — FAIL**
 
@@ -304,7 +307,7 @@ Expose `truth_anchor_lookup = truth_anchor.lookup` as a module-level alias for p
 
 - [ ] **Step 5: LCT-2 gate**
 
-Paste the keep-decision `if/elif` chain. Confirm order matches Global Constraints. Confirm `test_tier1_fallback_keep_when_no_role` proves roles-miss → Tier-1, and culinary test proves roles-hit skips Tier-1.
+Paste the keep-decision `if/elif` chain. Confirm order matches Global Constraints (culinary/process → plant_mod/dairy_head → Tier-1 → passthrough). Confirm `test_tier1_fallback_keep_when_no_role` proves roles-miss → Tier-1, culinary test proves roles-hit skips Tier-1, and `test_no_role_no_tier1_passthrough_garlic_pasta` proves **no** generic tear list in neutralize.
 
 - [ ] **Step 6: Commit**
 
@@ -423,7 +426,7 @@ git commit -m "feat(coverage-os): promote and load ontology role field"
 
 **Files:**
 - Test: `backend/tests/ike2/coverage_os/test_hybrid_gate_role_only.py`
-- Create: `backend/scripts/seed_neutralize_roles.py` (or `backend/tests/ike2/coverage_os/seed_roles_fixture.py` used by integration) — seeds via `commit_promotion` with human reviewer fields after `decide_promote` returns human
+- Create: `backend/scripts/seed_neutralize_roles.py` (or `backend/tests/ike2/coverage_os/seed_roles_fixture.py` used by integration) — seeds via `commit_promotion` with human reviewer fields after `decide_promote` returns `human_approval`
 - Modify: none of hybrid_gate.py unless a bug is found (spec: **no new auto branch**)
 
 - [ ] **Step 1: Gate test (documents existing fall-through)**
@@ -439,19 +442,18 @@ def test_role_only_payload_is_human_fail_closed(tmp_path):
     d = decide_promote(
         candidate_key=candidate_key("almond", "almond"),
         candidate_name="almond",
-        flags={},  # role-only: no plant_origin
+        flags={},  # role-only: no plant_origin — cannot satisfy auto_promote predicate
         ledger=led,
         ontology={"ingredients": []},
     )
-    assert d.action == "human"
+    # GateDecision.action Literal (Phase 1): auto_promote | human_approval | rejected
+    assert d.action == "human_approval"
     assert d.rule_id == "human_fail_closed"
 ```
 
-If `decide_promote` uses different attribute names, match existing `test_hybrid_gate.py` assertions exactly.
-
 - [ ] **Step 2: Run — PASS (no gate code change expected)**
 
-If this fails because empty flags take another path, fix the **test** to match actual `decide_promote` behavior — do **not** add role auto-promote. If empty flags currently error, pass `flags={"plant_origin": False}` still without plant auto.
+If empty `flags={}` somehow takes another path, adjust flags to still lack `plant_origin` truthy (e.g. `{"plant_origin": False}`) so auto_promote cannot fire — do **not** add a role auto-promote branch.
 
 - [ ] **Step 3: Seed script**
 
@@ -488,7 +490,7 @@ git commit -m "feat(coverage-os): role-only human gate proof and role seed path"
 
 **Files:**
 - Modify: `backend/core/compound_expansion.py`
-- Modify callers if return arity changes: `chat_ingredients.py`, `label_decomposer.py`, tests
+- Modify callers if return arity changes: `backend/core/parsing/chat_ingredients.py`, `backend/core/parsing/label_decomposer.py`, tests
 - Test: `backend/tests/test_compound_expansion_neutralize_wire.py`
 
 **Return type lock:**
@@ -500,21 +502,39 @@ def expand_compounds(
     """Returns (expanded, display_map, derived_from_map)."""
 ```
 
-Update all callers. `derived_from_map` merges per-phrase `PolicyResult.derived_from`.
+Update all callers (today: 2-tuple unpack in `chat_ingredients.py:77` and `label_decomposer.py`). `derived_from_map` merges per-phrase `PolicyResult.derived_from`.
+
+**Layering lock (passthrough vs keyword extract):**
+
+| Layer | Owns |
+|-------|------|
+| `apply_policies` | Typed neutralize only; no-policy → `[phrase]` |
+| `compound_expansion` | `"with"` split; when policies **fire**, trust `PolicyResult.atoms`; when **passthrough**, run existing `find_sub_ingredients` / `_RESTRICTED_KEYWORDS_*` (already audited; **not** a new neutralize list) |
+
+Do **not** delete `_RESTRICTED_KEYWORDS_SINGLE` / `_RESTRICTED_KEYWORDS_BIGRAM` in 2a.
 
 **Migration substeps (do not collapse):**
 
-- [ ] **Step 5a:** Call `apply_policies` **alongside** existing Sets; assert parity tests (new engine matches old for seeded phrases). Keep Sets.
+- [ ] **Step 5a:** Call `apply_policies` **alongside** existing plant/keep Sets; assert parity for seeded phrases. Keep Sets.
 
 - [ ] **Step 5b:** Failing parity/golden tests for plant yogurt / almond yogurt emission C using engine path.
 
-- [ ] **Step 5c:** Once Task 4 seeds exist in test ontology / monkeypatched role_index, switch `expand_compounds` to **only** `apply_policies` for multi-word handling.
+- [ ] **Step 5c:** Once Task 4 seeds exist / monkeypatched role_index, prefer `apply_policies` for neutralize; on passthrough, still call `find_sub_ingredients`.
 
-- [ ] **Step 5d:** Delete `_PLANT_MODIFIERS`, `_KEEP_WHOLE_SUFFIXES`, `_KEEP_AND_EXTRACT_WORDS` and any dead helpers. Grep for remnants — must be zero.
+```python
+def test_expand_compounds_passthrough_still_extracts_garlic():
+    """Keyword tear lives in expansion, not neutralize — garlic pasta stays covered."""
+    expanded, _dmap, _derived = expand_compounds(["garlic pasta"])
+    assert "garlic" in expanded
+```
+
+- [ ] **Step 5d:** Delete `_PLANT_MODIFIERS`, `_KEEP_WHOLE_SUFFIXES`, `_KEEP_AND_EXTRACT_WORDS` and dead keep helpers only. Grep — must be zero for those three. `_RESTRICTED_KEYWORDS_*` must **remain**.
 
 ```bash
 rg "_PLANT_MODIFIERS|_KEEP_WHOLE_SUFFIXES|_KEEP_AND_EXTRACT_WORDS" backend/
 # expected: no matches
+rg "_RESTRICTED_KEYWORDS_" backend/core/compound_expansion.py
+# expected: still present
 ```
 
 - [ ] **Step 5e:** Commit after 5d
@@ -535,10 +555,16 @@ def _role_index():
 def expand_compounds(ingredients):
     expanded, display_map, derived_from_map = [], {}, {}
     for ing in ingredients:
-        # keep existing "with" split behavior OR fold into policies later — preserve "with" first
+        # preserve existing "with" split first
         ...
         result = apply_policies(ing, role_index=_role_index())
-        for atom in result.atoms:
+        if result.policy_fired:
+            atoms = result.atoms
+        else:
+            # passthrough: existing keyword extract (not a neutralize invent)
+            subs = find_sub_ingredients(ing)
+            atoms = subs if subs else [ing]
+        for atom in atoms:
             expanded.append(atom)
             display_map[atom.lower()] = ing
         for child, parent in result.derived_from.items():
@@ -569,26 +595,46 @@ git commit -m "feat(ike2): commodity_head defers culinary keep to neutralize"
 ### Task 7: `derived_from` → audit composer (+ LCT-3)
 
 **Files:**
-- Modify: `backend/core/parsing/chat_ingredients.py` — add `derived_from_map: dict[str, str]` to `PreparedChatIngredients`
-- Modify: `backend/app.py` — pass through to composer/audit
-- Modify: `backend/core/response_composer.py` — `build_ingredient_audit_payload(..., derived_from: Optional[Dict[str, str]] = None)`
+- Modify: `backend/core/parsing/chat_ingredients.py` — add `derived_from_map: dict[str, str] = field(default_factory=dict)` to `PreparedChatIngredients`; unpack 3-tuple from `expand_compounds`
+- Modify: `backend/app.py` (~L613 `compound_map = prepared.compound_map`; ~L712 audit call) — also take `prepared.derived_from_map` and pass `derived_from=...`
+- Modify: `backend/core/response_composer.py` — add kw-only optional `derived_from: Optional[Dict[str, str]] = None` to existing signature
 - Test: `backend/tests/test_audit_derived_from_fold.py`
+
+**Verified signature to extend (do not invent a parallel API):**
+
+```python
+def build_ingredient_audit_payload(
+    verdict: ComplianceVerdict,
+    profile: Any,
+    ingredients: List[str],
+    display_names: Optional[Dict[str, str]] = None,
+    explanation_text: str = "",
+    explanation_source: str = "template",
+    derived_from: Optional[Dict[str, str]] = None,  # ADD
+) -> Dict[str, Any]:
+```
+
+**Verified groups shape:** `groups` entries are `{"status": "avoid"|"depends"|"safe", "items": [{"name": ..., ...}, ...]}`.
 
 **Card merge rule (spec):**
 
 - Evaluate atoms independently (compliance unchanged aside from receiving all atoms).
-- When building avoid/depends/safe **cards**, if atom `A` has `derived_from[A] == P`, do not create a top-level card for `A`; merge `A`’s restriction hits into the card for parent `P` (display name = user phrase via `display_map`).
+- When building avoid/depends/safe **cards**, if atom `A` has `derived_from[A] == P`, do not create a top-level card for `A`; merge `A`’s restriction hits into the card for parent `P` (display name = user phrase via `display_names` / `compound_map`).
 - Paste `almond yogurt, sugar` → **two** top-level cards.
 
 - [ ] **Step 1: Failing test**
 
 ```python
+from core.response_composer import build_ingredient_audit_payload
+
+
 def test_almond_yogurt_single_avoid_card_when_almond_triggers():
     # Build a minimal ComplianceVerdict where both "almond yogurt" and "almond"
     # appear in triggered_ingredients with tree-nut restriction on almond.
+    # (Fill verdict fields to match ComplianceVerdict used elsewhere in composer tests.)
     payload = build_ingredient_audit_payload(
-        verdict=...,
-        profile=...,
+        verdict=verdict,
+        profile=profile,
         ingredients=["almond yogurt", "almond", "sugar"],
         display_names={
             "almond yogurt": "almond yogurt",
@@ -597,14 +643,16 @@ def test_almond_yogurt_single_avoid_card_when_almond_triggers():
         },
         derived_from={"almond": "almond yogurt"},
     )
-    avoid_names = [i["name"] for g in payload["groups"] if g["status"] == "avoid" for i in g["items"]]
-    # Exactly one card for the yogurt phrase, not a separate "almond" card
+    avoid_names = [
+        i["name"]
+        for g in payload["groups"]
+        if g["status"] == "avoid"
+        for i in g["items"]
+    ]
     assert sum(1 for n in avoid_names if "almond" in n.lower()) == 1
-    safe_or_other = ...
-    assert "sugar" in ...  # second item still present somewhere
+    all_names = [i["name"] for g in payload["groups"] for i in g["items"]]
+    assert any("sugar" in n.lower() for n in all_names)
 ```
-
-Adapt status keys to match actual `groups` shape in `build_ingredient_audit_payload`.
 
 - [ ] **Step 2: Implement merge in composer**
 
@@ -614,8 +662,8 @@ Adapt status keys to match actual `groups` shape in `build_ingredient_audit_payl
 
 Trace and paste:
 1. `expand_compounds` fills `derived_from_map`
-2. `prepare_chat_ingredients` copies onto `PreparedChatIngredients`
-3. `app.py` passes into `build_ingredient_audit_payload`
+2. `prepare_chat_ingredients` copies onto `PreparedChatIngredients.derived_from_map`
+3. `app.py` passes `derived_from=prepared.derived_from_map` into `build_ingredient_audit_payload`
 4. Composer skips top-level row for keys present as derived children
 
 - [ ] **Step 5: Commit**
@@ -675,12 +723,14 @@ git commit -m "test(coverage-os): Phase 2a exit criteria goldens and matrix smok
 
 - [ ] **Step 6: Exit checklist (all must be true)**
 
-- [ ] No `_PLANT_MODIFIERS` / `_KEEP_WHOLE_*` in `compound_expansion.py`
+- [ ] No `_PLANT_MODIFIERS` / `_KEEP_WHOLE_*` / `_KEEP_AND_EXTRACT_*` in `compound_expansion.py`
+- [ ] `_RESTRICTED_KEYWORDS_*` still present (no-policy keyword extract layer)
 - [ ] LCT-1, LCT-2, LCT-3 signed off with pasted code
-- [ ] Role-only → `human_fail_closed` test green
+- [ ] Role-only → `human_approval` + `human_fail_closed` test green
 - [ ] Role round-trip via writer green
 - [ ] Goldens + matrix smoke green
 - [ ] No induction / 2b code in `coverage_os/`
+- [ ] `apply_policies` no-policy path is passthrough only (no generic tear list in neutralize)
 
 ---
 
@@ -703,8 +753,7 @@ git commit -m "test(coverage-os): Phase 2a exit criteria goldens and matrix smok
 | Migration: Sets until seeds+goldens | 5a–5d |
 | commodity_head shared keep | 6 |
 | Exit C goldens + matrix + round-trip | 8 |
-| No 2b induction | Global + Task 8 checklist |
-
-## Placeholder scan
-
-No TBD/TODO remaining. `tier1_keep` is an explicit audit tag (not a role enum value). Role-patch on non-managed rows is specified in Task 3.
+| No-policy keyword extract stays in expansion | 5 (layering lock) |
+| Passthrough default in neutralize | 1, 2 |
+| `human_approval` (not `"human"`) | 4 |
+| Path-sanity verified signatures | Global Constraints |
