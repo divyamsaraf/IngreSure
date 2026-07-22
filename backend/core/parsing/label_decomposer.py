@@ -31,7 +31,7 @@ def decompose_label(raw: str) -> list[DecomposedItem]:
         for name in flatten_ingredients(item["name"]):
             if not name:
                 continue
-            expanded, _ = expand_compounds([name])
+            expanded, _dmap, _derived = expand_compounds([name])
             for exp_name in expanded or [name]:
                 if not exp_name:
                     continue

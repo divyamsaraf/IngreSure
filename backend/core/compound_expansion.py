@@ -1,15 +1,21 @@
 """
 Compound ingredient expansion for compliance evaluation.
 
-Handles both explicit ('burger with chicken') and implicit ('garlic pasta',
-'egg noodles') compound product names, extracting known restricted-ingredient
-keywords for the compliance engine.
+Typed neutralize (plant_mod / dairy_head / culinary_keep / process_keep) lives in
+``coverage_os.neutralize.apply_policies``. This module:
+  - splits explicit "X with Y"
+  - trusts PolicyResult when a policy fires
+  - on passthrough, extracts via ``_RESTRICTED_KEYWORDS_*`` / find_sub_ingredients
 """
+from __future__ import annotations
+
 import re
-from typing import Dict, List, Set, Tuple
+from typing import Dict, List, Mapping, Optional, Set, Tuple
+
+from core.knowledge.ike2.coverage_os.neutralize import apply_policies, build_role_index
 
 # Known restricted ingredient keywords — when found inside a multi-word
-# product name, these are extracted for compliance evaluation.
+# product name on neutralize passthrough, these are extracted for compliance.
 _RESTRICTED_KEYWORDS_BIGRAM: Set[str] = {
     "sweet potato", "fish oil", "palm oil",
 }
@@ -35,56 +41,31 @@ _RESTRICTED_KEYWORDS_SINGLE: Set[str] = {
     "collagen", "rennet", "shellac", "carmine",
 }
 
-# Plant modifiers that neutralize the following dairy/meat word
-# e.g. "coconut milk" is plant-based, NOT dairy
-_PLANT_MODIFIERS: Set[str] = {
-    "coconut", "almond", "soy", "oat", "oats", "rice", "cashew",
-    "hemp", "pea", "cocoa", "shea", "sesame", "flax", "hazelnut",
-    "peanut", "walnut", "pistachio", "macadamia", "pecan",
-}
-
-# Multi-word forms that are ingredients in their own right. Expanding them to
-# a nested keyword ("wine vinegar" → "wine", "soy lecithin" → "soy") produces
-# wrong Avoid/Safe cards (Halal flags vinegar as wine; soy lecithin loses identity).
-_KEEP_WHOLE_SUFFIXES: Set[str] = {
-    "vinegar", "lecithin", "extract", "sauce", "juice", "syrup",
-    "starch", "flour", "powder", "paste", "puree", "purée",
-}
-
-# Prep / process descriptors ("mechanically separated chicken", "dried onion",
-# "beef base"): keep the full label atom for parser fidelity; still extract
-# restricted keywords below so compliance can resolve the base ingredient.
-_KEEP_AND_EXTRACT_WORDS: Set[str] = {
-    "mechanically", "separated", "hydrolyzed", "textured", "rendered",
-    "extracted", "concentrated", "isolated", "deboned", "ground", "minced",
-    "base", "stock", "broth",
-    "dried", "fresh", "frozen", "sliced", "diced", "chopped",
-    "cooked", "roasted", "smoked", "cured", "raw",
-}
+_ROLE_INDEX_CACHE: Optional[dict[str, str]] = None
 
 
-def _keep_as_whole_ingredient(name: str) -> bool:
-    """True when a multi-word name must not be torn into restricted keywords."""
-    words = (name or "").lower().split()
-    if len(words) <= 1:
-        return False
-    if words[-1] in _KEEP_WHOLE_SUFFIXES:
-        return True
-    # Tier-1 curated facts win over keyword expansion (soy lecithin, fish oil, …).
+def clear_role_index_cache() -> None:
+    global _ROLE_INDEX_CACHE
+    _ROLE_INDEX_CACHE = None
+
+
+def _load_role_index() -> dict[str, str]:
+    global _ROLE_INDEX_CACHE
+    if _ROLE_INDEX_CACHE is not None:
+        return _ROLE_INDEX_CACHE
     try:
-        from core.knowledge.ike2 import truth_anchor
+        from core.knowledge.ike2.etl.load_ontology import load_ontology_records
+        _ROLE_INDEX_CACHE = build_role_index(list(load_ontology_records()))
     except Exception:
-        return False
-    return truth_anchor.lookup(name) is not None
+        _ROLE_INDEX_CACHE = {}
+    return _ROLE_INDEX_CACHE
 
 
 def find_sub_ingredients(name: str) -> List[str]:
-    """Extract known restricted-ingredient keywords from a compound name.
+    """Extract known restricted-ingredient keywords (passthrough path only).
 
-    'garlic pasta'   -> ['garlic']
-    'egg noodles'    -> ['egg']
-    'coconut milk'   -> []   (plant modifier neutralizes 'milk')
-    'butter chicken' -> ['butter', 'chicken']
+    Plant-mod / culinary-keep / process-keep are owned by apply_policies;
+    this helper must not reimplement those neutralize lists.
     """
     words = name.lower().split()
     if len(words) <= 1:
@@ -99,84 +80,66 @@ def find_sub_ingredients(name: str) -> List[str]:
                 i += 2
                 continue
         if words[i] in _RESTRICTED_KEYWORDS_SINGLE:
-            if i > 0 and words[i - 1] in _PLANT_MODIFIERS:
-                i += 1
-                continue
             found.append(words[i])
         i += 1
     return found
 
 
-def expand_compounds(ingredients: List[str]) -> Tuple[List[str], Dict[str, str]]:
+def expand_compounds(
+    ingredients: List[str],
+    *,
+    role_index: Mapping[str, str] | None = None,
+) -> Tuple[List[str], Dict[str, str], Dict[str, str]]:
     """Expand compound items for compliance evaluation.
-
-    Handles both explicit ('burger with chicken') and implicit
-    ('garlic pasta', 'egg noodles') compound product names.
 
     Returns:
         expanded: ingredient names for the compliance engine
         display_map: {eval_name_lower: original_compound_display_name}
+        derived_from_map: {derived_atom_lower: parent_phrase_lower}
     """
     expanded: List[str] = []
     display_map: Dict[str, str] = {}
+    derived_from_map: Dict[str, str] = {}
     seen: Set[str] = set()
+    roles = dict(role_index) if role_index is not None else _load_role_index()
+
+    def _emit(atom: str, display: str) -> None:
+        key = atom.lower().strip()
+        if not key or key in seen:
+            return
+        seen.add(key)
+        expanded.append(atom)
+        if display and display.lower().strip() != key:
+            display_map[key] = display
 
     for ing in ingredients:
         # 1. Explicit "X with Y" pattern
         m = re.match(r"^(.+?)\s+with\s+(.+)$", ing, re.IGNORECASE)
         if m:
             sub = m.group(2).strip()
-            key = sub.lower()
-            if key not in seen:
-                seen.add(key)
-                expanded.append(sub)
-                display_map[key] = ing
+            _emit(sub, ing)
             continue
 
         # 2. Single-word ingredient -> pass through directly
         if " " not in ing.strip():
-            key = ing.lower().strip()
-            if key not in seen:
-                seen.add(key)
-                expanded.append(ing)
+            _emit(ing, "")
             continue
 
-        # 3. Whole multi-word ingredient (vinegar, lecithin, Tier-1 hit, …)
-        if _keep_as_whole_ingredient(ing):
-            key = ing.lower().strip()
-            if key not in seen:
-                seen.add(key)
-                expanded.append(ing)
+        # 3. Typed neutralize (shared policy engine)
+        result = apply_policies(ing, role_index=roles)
+        if result.policy_fired:
+            for atom in result.atoms:
+                _emit(atom, ing)
+            for child, parent in result.derived_from.items():
+                derived_from_map[child.lower()] = parent.lower()
             continue
 
-        # 4. Multi-word product: extract known ingredient keywords
+        # 4. Passthrough: existing restricted-keyword extract (not neutralize)
         subs = find_sub_ingredients(ing)
         if subs:
-            covered: Set[str] = set()
-            for s in subs:
-                covered.update(s.split())
-            all_words = set(ing.lower().split())
-            is_compound_product = bool(all_words - covered)
-
-            # Keep process-modified meats / bases as atoms (label tests +
-            # enrichment query fidelity) while still emitting species keywords.
-            if is_compound_product and (all_words & _KEEP_AND_EXTRACT_WORDS):
-                key = ing.lower().strip()
-                if key not in seen:
-                    seen.add(key)
-                    expanded.append(ing)
-
             for sub in subs:
-                key = sub.lower()
-                if key not in seen:
-                    seen.add(key)
-                    expanded.append(sub)
-                    if is_compound_product:
-                        display_map[key] = ing
+                _emit(sub, ing)
         else:
-            key = ing.lower().strip()
-            if key not in seen:
-                seen.add(key)
-                expanded.append(ing)
+            _emit(ing, "")
 
-    return expanded, display_map
+    return expanded, display_map, derived_from_map

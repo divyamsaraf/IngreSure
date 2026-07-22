@@ -17,34 +17,42 @@ import argparse
 import json
 from pathlib import Path
 
-from core.compound_expansion import (
-    _KEEP_AND_EXTRACT_WORDS,
-    _KEEP_WHOLE_SUFFIXES,
-    _PLANT_MODIFIERS,
-)
 from core.knowledge.ike2.coverage_os.hybrid_gate import decide_promote
 from core.knowledge.ike2.coverage_os.promote_ledger import PromoteLedger, candidate_key
 from core.knowledge.ike2.coverage_os.promote_writer import commit_promotion
 
-# Minimal dairy heads for Phase 2a exit goldens.
+# Closed seed lists (formerly compound_expansion private Sets — owned here for seeding).
+_PLANT_MOD = frozenset({
+    "coconut", "almond", "soy", "oat", "oats", "rice", "cashew",
+    "hemp", "pea", "cocoa", "shea", "sesame", "flax", "hazelnut",
+    "peanut", "walnut", "pistachio", "macadamia", "pecan", "plant",
+})
 _DAIRY_HEADS = frozenset({
     "yogurt", "yoghurt", "milk", "cheese", "butter", "cream", "ghee",
     "paneer", "whey", "curd",
 })
-
-# Extra plant_mod tokens used in goldens (not in _PLANT_MODIFIERS today).
-_EXTRA_PLANT_MOD = frozenset({"plant"})
+_CULINARY_KEEP = frozenset({
+    "vinegar", "lecithin", "extract", "sauce", "juice", "syrup",
+    "starch", "flour", "powder", "paste", "puree", "purée",
+})
+_PROCESS_KEEP = frozenset({
+    "mechanically", "separated", "hydrolyzed", "textured", "rendered",
+    "extracted", "concentrated", "isolated", "deboned", "ground", "minced",
+    "base", "stock", "broth",
+    "dried", "fresh", "frozen", "sliced", "diced", "chopped",
+    "cooked", "roasted", "smoked", "cured", "raw",
+})
 
 
 def seed_role_list() -> list[tuple[str, str]]:
     out: list[tuple[str, str]] = []
-    for name in sorted(_PLANT_MODIFIERS | _EXTRA_PLANT_MOD):
+    for name in sorted(_PLANT_MOD):
         out.append((name, "plant_mod"))
     for name in sorted(_DAIRY_HEADS):
         out.append((name, "dairy_head"))
-    for name in sorted(_KEEP_WHOLE_SUFFIXES):
+    for name in sorted(_CULINARY_KEEP):
         out.append((name, "culinary_keep"))
-    for name in sorted(_KEEP_AND_EXTRACT_WORDS):
+    for name in sorted(_PROCESS_KEEP):
         out.append((name, "process_keep"))
     return out
 
@@ -80,9 +88,6 @@ def seed_roles(
             ledger=ledger,
             ontology=ontology,
         )
-        # Spec: no new auto branch on role. Human path required for role-only /
-        # animalish / allergen seeds. Auto plant rows still get human reviewer
-        # here because we always attach role (operator accountability).
         if decision.action == "rejected":
             continue
         entry = {
@@ -113,7 +118,6 @@ def seed_roles(
             candidate_key=key,
         )
         count += 1
-        # Refresh ontology for subsequent decide_promote collision checks.
         ontology = json.loads(ontology_path.read_text(encoding="utf-8"))
     return count
 

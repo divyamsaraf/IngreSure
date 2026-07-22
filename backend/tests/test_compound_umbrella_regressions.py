@@ -54,7 +54,7 @@ def test_seasoning_alias_not_leaked_into_safe():
 
 
 def test_wine_vinegar_not_collapsed_to_wine():
-    expanded, display = expand_compounds(["wine vinegar", "red wine vinegar", "sugar"])
+    expanded, display, _derived = expand_compounds(["wine vinegar", "red wine vinegar", "sugar"])
     assert "wine vinegar" in [e.lower() for e in expanded] or any(
         "vinegar" in e.lower() for e in expanded
     )
@@ -62,7 +62,7 @@ def test_wine_vinegar_not_collapsed_to_wine():
 
 
 def test_soy_lecithin_not_collapsed_to_soy_only():
-    expanded, _ = expand_compounds(["soy lecithin", "sunflower lecithin"])
+    expanded, _, _ = expand_compounds(["soy lecithin", "sunflower lecithin"])
     lows = [e.lower() for e in expanded]
     assert "soy lecithin" in lows
     assert "sunflower lecithin" in lows

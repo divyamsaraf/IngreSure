@@ -25,6 +25,7 @@ class PreparedChatIngredients:
 
     eval_names: list[str]
     compound_map: dict[str, str] = field(default_factory=dict)
+    derived_from_map: dict[str, str] = field(default_factory=dict)
     decomposed: list[DecomposedItem] | None = None
     label_text: str | None = None
 
@@ -74,10 +75,11 @@ def prepare_chat_ingredients(query: str, parsed: ParsedIntent) -> PreparedChatIn
             label_text=label_text,
         )
 
-    eval_names, compound_map = expand_compounds(ingredients)
+    eval_names, compound_map, derived_from_map = expand_compounds(ingredients)
     return PreparedChatIngredients(
         eval_names=eval_names,
         compound_map=compound_map,
+        derived_from_map=derived_from_map,
         decomposed=None,
         label_text=None,
     )
