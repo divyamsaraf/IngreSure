@@ -340,8 +340,7 @@ Retract/demote: if `coverage_os_role_managed` and not full managed row → clear
 # backend/tests/ike2/coverage_os/test_promote_writer_role.py
 import json
 from pathlib import Path
-from core.knowledge.ike2.coverage_os.promote_writer import apply_promotion, apply_retraction
-from core.knowledge.ike2.coverage_os.promote_ledger import PromoteLedger, candidate_key
+from core.knowledge.ike2.coverage_os.promote_writer import apply_promotion, retract_promotion
 
 
 def test_role_patch_on_existing_non_managed_row(tmp_path):
@@ -377,7 +376,7 @@ def test_role_patch_on_existing_non_managed_row(tmp_path):
     assert row.get("coverage_os_role_managed") is True
     assert row.get("coverage_os_managed") is not True
 
-    apply_retraction(entry["payload"]["inverse"], ontology_path=ont, aliases_path=aliases)
+    retract_promotion(entry, ontology_path=ont, aliases_path=aliases)
     row2 = json.loads(ont.read_text())["ingredients"][0]
     assert "role" not in row2 or row2.get("role") in (None, "")
 ```
