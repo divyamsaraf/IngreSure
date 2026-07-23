@@ -17,11 +17,16 @@ _ROW_FLAG_KEYS = (
 )
 
 
-def _row_flags(row: Mapping[str, Any]) -> dict[str, Any]:
+def row_flags(row: Mapping[str, Any]) -> dict[str, Any]:
+    """Public flag extraction — shared by gate and induction safety_class callers."""
     nested = row.get("flags")
     if isinstance(nested, dict) and nested:
         return dict(nested)
     return {k: row[k] for k in _ROW_FLAG_KEYS if k in row}
+
+
+def _row_flags(row: Mapping[str, Any]) -> dict[str, Any]:
+    return row_flags(row)
 
 
 def _norm_key(s: str) -> str:
