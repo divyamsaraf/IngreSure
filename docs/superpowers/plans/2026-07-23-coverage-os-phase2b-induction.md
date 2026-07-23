@@ -1129,7 +1129,8 @@ EOF
 
 **Files:**
 - Create: `backend/core/knowledge/ike2/coverage_os/induction/precision.py`
-- Modify: `backend/core/knowledge/ike2/coverage_os/promote_ledger.py` — add public `iter_rows()` (thin alias of `_iter_rows`) so precision does not touch a private method
+- Modify: `backend/core/knowledge/ike2/coverage_os/promote_ledger.py` — **(1)** add public `iter_rows()` wrapper around existing `_iter_rows` (**no rename**); **(2)** add optional `payload: dict | None = None` to `append_non_promotable` (omit key when None)
+- Modify: `backend/tests/ike2/coverage_os/test_promote_ledger.py` — optional-payload + bare-row regression
 - Test: `backend/tests/ike2/coverage_os/induction/test_precision.py`
 
 **Interfaces:**
@@ -1278,16 +1279,69 @@ def test_iter_induced_decisions_from_real_ledger(tmp_path):
 Run: `cd backend && python -m pytest tests/ike2/coverage_os/induction/test_precision.py -v`  
 Expected: FAIL (`iter_induced_decisions` missing and/or `append_non_promotable` lacks `payload`)
 
-- [ ] **Step 3: Implement ledger public iter + optional payload + precision module**
+- [ ] **Step 3a: Phase 1 ledger — additive only (no rename, no behavior change for existing callers)**
+
+**Constraint:** Do **not** rename `_iter_rows`. Internal callers (`_next_version`, `find_non_promotable`, `latest_promoted`) keep calling `_iter_rows` unchanged. Version numbering, demote clearing, and non-promotable short-circuit stay byte-identical in logic.
+
+**Change 1 — new public wrapper** (insert after `_iter_rows`):
 
 ```python
-# In promote_ledger.py — add:
-def iter_rows(self) -> Iterator[dict[str, Any]]:
-    """Public scan of append-only JSONL (order preserved)."""
-    yield from self._iter_rows()
+    def iter_rows(self) -> Iterator[dict[str, Any]]:
+        """Public scan of append-only JSONL (order preserved)."""
+        yield from self._iter_rows()
 ```
 
-Extend `append_non_promotable` with `payload: dict[str, Any] | None = None`; when provided, include `"payload": payload` on the row.
+**Change 2 — optional `payload` on `append_non_promotable`** (replace the method body exactly as below). Existing call sites that omit `payload` keep the same row shape (no `payload` key):
+
+```python
+    def append_non_promotable(
+        self,
+        *,
+        candidate_key: str,
+        rule_id: str,
+        source: str,
+        reason: str,
+        payload: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        row: dict[str, Any] = {
+            "kind": "confirmed_non_promotable",
+            "candidate_key": candidate_key,
+            "rule_id": rule_id,
+            "source": source,
+            "reason": reason,
+            "version": self._next_version(candidate_key),
+        }
+        if payload is not None:
+            row["payload"] = payload
+        return self._append(row)
+```
+
+**Regression (must pass unchanged):**
+`cd backend && python -m pytest tests/ike2/coverage_os/test_promote_ledger.py tests/ike2/coverage_os/test_hybrid_gate.py tests/ike2/coverage_os/test_phase1_integration.py -v`
+
+Add one new ledger unit test:
+
+```python
+def test_append_non_promotable_optional_payload(tmp_path):
+    led = PromoteLedger(tmp_path / "l.jsonl")
+    row = led.append_non_promotable(
+        candidate_key="a=>a",
+        rule_id="r",
+        source="phase2b_induction",
+        reason="reviewer_reject",
+        payload={"induction": {"safety_class": "role_only"}},
+    )
+    assert row["payload"]["induction"]["safety_class"] == "role_only"
+    bare = led.append_non_promotable(
+        candidate_key="b=>b",
+        rule_id="r",
+        source="phase1",
+        reason="blocked",
+    )
+    assert "payload" not in bare
+```
+
+- [ ] **Step 3b: Implement precision module**
 
 ```python
 # backend/core/knowledge/ike2/coverage_os/induction/precision.py
