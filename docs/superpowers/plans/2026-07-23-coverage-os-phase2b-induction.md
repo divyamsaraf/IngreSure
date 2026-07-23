@@ -58,6 +58,7 @@ Soft “looks right” sign-off is insufficient for LCT-1 especially — paste t
 | `backend/core/knowledge/ike2/coverage_os/induction/submit.py` | Force-human wrapper around gate + `commit_promotion` |
 | `backend/core/knowledge/ike2/coverage_os/induction/precision.py` | A / A1 / A2 ledger queries |
 | `backend/core/knowledge/ike2/coverage_os/induction/pipeline.py` | `build_candidates` compose |
+| `backend/core/knowledge/ike2/coverage_os/promote_ledger.py` | Public `iter_rows()`; optional `payload` on `append_non_promotable` for reject safety_class |
 | `backend/core/knowledge/ike2/coverage_os/hybrid_gate.py` | Export public `row_flags` (rename/alias `_row_flags`) for shared flag extraction |
 | `backend/scripts/run_induction.py` | Operator CLI: cluster → propose → (review) → submit |
 | `backend/tests/ike2/coverage_os/induction/test_safety_class.py` | Alignment + spy (LCT-1) |
@@ -493,15 +494,17 @@ def test_unique_head_resolves_to_alias_proposal():
 
 
 def test_ambiguous_or_missing_yields_no_proposal():
+    # Two-token raw where each single-token drop hits a different ontology row
+    # → len(targets) == 2 → no proposal (ambiguous branch).
     ontology = _ont(
         {"canonical_name": "apple", "plant_origin": True},
-        {"canonical_name": "apple juice", "plant_origin": True},
+        {"canonical_name": "vinegar", "plant_origin": True},
     )
-    item = ClusterItem("apple xyz", "apple xyz", 3, "M1_absent")
-    # If both apple and something else could match poorly, must not invent —
-    # for a raw with zero ontology hits after folds:
-    item2 = ClusterItem("zzzz unknown", "zzzz unknown", 3, "M1_absent")
-    assert propose_alias(item2, ontology=ontology, alias_table={}) is None
+    ambiguous = ClusterItem("apple vinegar", "apple vinegar", 3, "M1_absent")
+    assert propose_alias(ambiguous, ontology=ontology, alias_table={}) is None
+    # Zero closed-form targets.
+    missing = ClusterItem("zzzz unknown", "zzzz unknown", 3, "M1_absent")
+    assert propose_alias(missing, ontology=ontology, alias_table={}) is None
 
 
 def test_already_aliased_no_proposal():
@@ -885,7 +888,7 @@ EOF
 - Produces:
   - `build_promote_entry(cand: InductionCandidate) -> dict` (payload + inverse)
   - `submit_induced(cand, *, ledger, ontology_path, aliases_path, ontology, reviewer_id, approval_rationale, decision: Literal["accept","reject"]) -> dict | None`
-  - On `reject`: append demote/non-promotable or skip write — v1: record rejection as ledger `confirmed_non_promotable` **or** simply return without commit (prefer: no L2 write; optional `append_non_promotable` only when reviewer marks non-promotable — for v1 tests, reject = no `commit_promotion`)
+  - On `reject`: **no L2 write**; append `ledger.append_non_promotable(..., source="phase2b_induction", reason="reviewer_reject", payload={"induction": ...})` so precision A’s denominator includes rejects with `safety_class` (see Task 6). Do **not** call `commit_promotion`.
   - On `accept`: always `commit_promotion(..., auto=False, reviewer_id=..., approval_rationale=...)` after `decide_promote` (skip if `rejected`)
 
 **Payload shapes:**
@@ -1061,10 +1064,17 @@ def submit_induced(
     approval_rationale: str,
     decision: Literal["accept", "reject"],
 ) -> dict[str, Any] | None:
-    if decision != "accept":
-        return None
-
     entry = build_promote_entry(cand)
+    if decision != "accept":
+        # No L2 write; ledger marker so precision A counts the reject.
+        return ledger.append_non_promotable(
+            candidate_key=entry["candidate_key"],
+            rule_id="induction_reviewer_reject",
+            source="phase2b_induction",
+            reason="reviewer_reject",
+            payload={"induction": entry["payload"]["induction"]},
+        )
+
     name = cand.canonical or cand.raw
     gate = decide_promote(
         candidate_key=entry["candidate_key"],
@@ -1091,6 +1101,8 @@ def submit_induced(
     )
 ```
 
+Also add a submit test: `decision="reject"` → no aliases/ontology change, ledger has `confirmed_non_promotable` with `source="phase2b_induction"`.
+
 - [ ] **Step 4: Run to verify pass**
 
 Run: `cd backend && python -m pytest tests/ike2/coverage_os/induction/test_submit.py -v`  
@@ -1113,46 +1125,49 @@ EOF
 
 ---
 
-### Task 6: `precision` — A / A1 / A2 queries
+### Task 6: `precision` — A / A1 / A2 queries (ledger-connected)
 
 **Files:**
 - Create: `backend/core/knowledge/ike2/coverage_os/induction/precision.py`
+- Modify: `backend/core/knowledge/ike2/coverage_os/promote_ledger.py` — add public `iter_rows()` (thin alias of `_iter_rows`) so precision does not touch a private method
 - Test: `backend/tests/ike2/coverage_os/induction/test_precision.py`
 
 **Interfaces:**
-- Consumes: ledger JSONL rows with `payload.induction.safety_class`, `kind`, `source`, demote `reason`
+- Consumes: real `PromoteLedger` JSONL via `ledger.iter_rows()` — promoted / demoted / confirmed_non_promotable rows with `source`, `payload.induction.safety_class`, demote `reason`
 - Produces:
+  - `@dataclass DecisionRecord`: `candidate_key`, `accepted`, `safety_class`, `demoted_for_safety`
   - `@dataclass PrecisionReport`: `n_decisions`, `accept_rate`, `a1_n`, `a1_accept_rate`, `a2_demote_for_safety_count`, `meets_a`, `meets_a1`, `meets_a2`
-  - `iter_induced_decisions(ledger: PromoteLedger, *, source: str = "phase2b_induction") -> list[dict]`
-  - `measure_precision(rows: list[dict], *, window: int = 50) -> PrecisionReport`
+  - `demote_reason_is_safety(reason: str | None) -> bool` — True iff `"safety"` in reason (case-insensitive)
+  - `iter_induced_decisions(ledger: PromoteLedger, *, source: str = "phase2b_induction") -> list[DecisionRecord]`
+  - `measure_precision(records: list[DecisionRecord], *, window: int = 50) -> PrecisionReport`
 
-**Definitions:**
+**`iter_induced_decisions` algorithm (load-bearing — ops exit depends on this):**
 
-- Decision window = first `window` distinct `candidate_key` induced human outcomes in ledger order (promoted with `auto=False` and `source=phase2b_induction` count as **accepted**; optional rejected markers — for v1 fixture tests, pass explicit decision list or treat only promoted rows as accepts and include synthetic reject rows in test fixtures via a `decision` field in a side journal).  
-- **v1 pragmatic approach:** `precision.py` accepts a list of decision records:
+1. Scan `ledger.iter_rows()` in append order.
+2. Collect induction **accepts**: `kind == "promoted"` and `source == source` and `auto is False`. Read `safety_class` from `payload.induction.safety_class` (required; skip row if missing — do not invent).
+3. Collect induction **rejects**: `kind == "confirmed_non_promotable"` and `source == source` and `reason == "reviewer_reject"`. Read `safety_class` from `payload.induction.safety_class` (Task 5 reject path must pass `payload={"induction": ...}` via additive optional `payload` on `append_non_promotable`).
+4. For each accept `candidate_key`, scan later rows for `kind == "demoted"` with same key; if any such demote has `demote_reason_is_safety(reason)`, set `demoted_for_safety=True` on that DecisionRecord.
+5. Emit DecisionRecords in first-seen decision order (promote or reject appearance). Distinct `candidate_key`: if the same key appears twice, keep the **first** decision only for the window (spec: first N distinct decisions).
+6. Rejects: `accepted=False`, `demoted_for_safety=False`.
 
-```python
-@dataclass
-class DecisionRecord:
-    candidate_key: str
-    accepted: bool
-    safety_class: str
-    demoted_for_safety: bool = False
-```
-
-`measure_precision(records, window=50)` uses first `window` records.
-
-- A: `accept_rate >= 0.70` when `n >= 50` else `meets_a=False` (incomplete window).
-- A1: among records with `safety_class in A1_DANGEROUS`, `accept_rate >= 0.90` and `a1_n >= 10`; else incomplete/fail.
-- A2: `demoted_for_safety` count in window == 0.
+**Ops path:** `measure_precision(iter_induced_decisions(ledger), window=50)` — no hand transcription.
 
 - [ ] **Step 1: Write failing tests**
 
 ```python
+# backend/tests/ike2/coverage_os/induction/test_precision.py
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
 from core.knowledge.ike2.coverage_os.induction.precision import (
     DecisionRecord,
+    demote_reason_is_safety,
+    iter_induced_decisions,
     measure_precision,
 )
+from core.knowledge.ike2.coverage_os.promote_ledger import PromoteLedger
 
 
 def test_precision_a_a1_a2_thresholds():
@@ -1163,7 +1178,6 @@ def test_precision_a_a1_a2_thresholds():
     ] + [
         DecisionRecord("d9", True, "animalish"),
     ]
-    # 50 accepts, 10 animalish all accepted → meets A and A1 and A2
     report = measure_precision(records, window=50)
     assert report.n_decisions == 50
     assert report.meets_a
@@ -1177,22 +1191,113 @@ def test_a2_fails_on_safety_demote():
     records[0] = DecisionRecord("k0", True, "plant_closed", demoted_for_safety=True)
     report = measure_precision(records, window=50)
     assert not report.meets_a2
+
+
+def test_demote_reason_is_safety():
+    assert demote_reason_is_safety("demoted for safety — wrong animal flag")
+    assert demote_reason_is_safety("SAFETY")
+    assert not demote_reason_is_safety("typo fix")
+
+
+def test_iter_induced_decisions_from_real_ledger(tmp_path):
+    """Ledger JSONL → DecisionRecord; demote safety correlates; reject counts as not accepted."""
+    ledger = PromoteLedger(tmp_path / "ledger.jsonl")
+    # Accept plant alias
+    ledger.append_promoted(
+        candidate_key="broccoli florets=>broccoli",
+        rule_id="closed_form_plant_v1",
+        source="phase2b_induction",
+        payload={
+            "write_kind": "variant_alias",
+            "induction": {"safety_class": "plant_closed", "frequency": 5},
+        },
+        auto=False,
+        reviewer_id="r1",
+        approval_rationale="ok",
+    )
+    # Accept animalish then demote for safety
+    ledger.append_promoted(
+        candidate_key="gelatin powder=>gelatin",
+        rule_id="human_animal_derived",
+        source="phase2b_induction",
+        payload={
+            "write_kind": "variant_alias",
+            "induction": {"safety_class": "animalish", "frequency": 3},
+        },
+        auto=False,
+        reviewer_id="r1",
+        approval_rationale="ok",
+    )
+    ledger.append_demoted(
+        candidate_key="gelatin powder=>gelatin",
+        reason="demoted for safety — incorrect animal routing",
+    )
+    # Reviewer reject
+    ledger.append_non_promotable(
+        candidate_key="junk=>junk",
+        rule_id="induction_reviewer_reject",
+        source="phase2b_induction",
+        reason="reviewer_reject",
+        payload={"induction": {"safety_class": "role_only"}},
+    )
+    # Unrelated source ignored
+    ledger.append_promoted(
+        candidate_key="noise=>noise",
+        rule_id="closed_form_plant_v1",
+        source="phase2a_role_seed",
+        payload={"induction": {"safety_class": "plant_closed"}},
+        auto=False,
+        reviewer_id="r1",
+        approval_rationale="seed",
+    )
+
+    records = iter_induced_decisions(ledger)
+    by_key = {r.candidate_key: r for r in records}
+    assert set(by_key) == {
+        "broccoli florets=>broccoli",
+        "gelatin powder=>gelatin",
+        "junk=>junk",
+    }
+    assert by_key["broccoli florets=>broccoli"].accepted is True
+    assert by_key["broccoli florets=>broccoli"].demoted_for_safety is False
+    assert by_key["gelatin powder=>gelatin"].accepted is True
+    assert by_key["gelatin powder=>gelatin"].demoted_for_safety is True
+    assert by_key["gelatin powder=>gelatin"].safety_class == "animalish"
+    assert by_key["junk=>junk"].accepted is False
+    assert by_key["junk=>junk"].safety_class == "role_only"
+
+    # Ops path: ledger → measure_precision (no hand DecisionRecords)
+    report = measure_precision(records, window=50)
+    assert report.n_decisions == 3
+    assert report.a2_demote_for_safety_count == 1
+    assert not report.meets_a2
 ```
 
 - [ ] **Step 2: Run to verify fail**
 
 Run: `cd backend && python -m pytest tests/ike2/coverage_os/induction/test_precision.py -v`  
-Expected: FAIL
+Expected: FAIL (`iter_induced_decisions` missing and/or `append_non_promotable` lacks `payload`)
 
-- [ ] **Step 3: Implement**
+- [ ] **Step 3: Implement ledger public iter + optional payload + precision module**
+
+```python
+# In promote_ledger.py — add:
+def iter_rows(self) -> Iterator[dict[str, Any]]:
+    """Public scan of append-only JSONL (order preserved)."""
+    yield from self._iter_rows()
+```
+
+Extend `append_non_promotable` with `payload: dict[str, Any] | None = None`; when provided, include `"payload": payload` on the row.
 
 ```python
 # backend/core/knowledge/ike2/coverage_os/induction/precision.py
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Any
 
 from core.knowledge.ike2.coverage_os.induction.types import A1_DANGEROUS
+from core.knowledge.ike2.coverage_os.promote_ledger import PromoteLedger
 
 
 @dataclass(frozen=True)
@@ -1213,6 +1318,69 @@ class PrecisionReport:
     meets_a: bool
     meets_a1: bool
     meets_a2: bool
+
+
+def demote_reason_is_safety(reason: str | None) -> bool:
+    """A2: demote reason contains substring 'safety' (case-insensitive)."""
+    return "safety" in str(reason or "").lower()
+
+
+def iter_induced_decisions(
+    ledger: PromoteLedger,
+    *,
+    source: str = "phase2b_induction",
+) -> list[DecisionRecord]:
+    rows = list(ledger.iter_rows())
+    # candidate_key -> first decision draft
+    ordered_keys: list[str] = []
+    accepted: dict[str, bool] = {}
+    safety: dict[str, str] = {}
+    demoted_safety: dict[str, bool] = {}
+
+    for row in rows:
+        if row.get("source") != source and row.get("kind") != "demoted":
+            continue
+        key = str(row.get("candidate_key") or "")
+        if not key:
+            continue
+        kind = row.get("kind")
+        if kind == "promoted" and row.get("source") == source and row.get("auto") is False:
+            if key in accepted:
+                continue  # first distinct decision wins
+            ind = (row.get("payload") or {}).get("induction") or {}
+            sc = ind.get("safety_class")
+            if not sc:
+                continue
+            ordered_keys.append(key)
+            accepted[key] = True
+            safety[key] = str(sc)
+            demoted_safety[key] = False
+        elif (
+            kind == "confirmed_non_promotable"
+            and row.get("source") == source
+            and str(row.get("reason") or "") == "reviewer_reject"
+        ):
+            if key in accepted:
+                continue
+            ind = (row.get("payload") or {}).get("induction") or {}
+            sc = ind.get("safety_class") or "role_only"
+            ordered_keys.append(key)
+            accepted[key] = False
+            safety[key] = str(sc)
+            demoted_safety[key] = False
+        elif kind == "demoted" and key in accepted and accepted[key]:
+            if demote_reason_is_safety(row.get("reason")):
+                demoted_safety[key] = True
+
+    return [
+        DecisionRecord(
+            candidate_key=k,
+            accepted=accepted[k],
+            safety_class=safety[k],
+            demoted_for_safety=demoted_safety[k],
+        )
+        for k in ordered_keys
+    ]
 
 
 def measure_precision(
@@ -1242,27 +1410,36 @@ def measure_precision(
         meets_a1=meets_a1,
         meets_a2=meets_a2,
     )
+```
 
+Update Task 5 reject path to pass induction payload:
 
-def demote_reason_is_safety(reason: str | None) -> bool:
-    """A2: demote reason contains substring 'safety' (case-insensitive)."""
-    return "safety" in str(reason or "").lower()
+```python
+return ledger.append_non_promotable(
+    candidate_key=entry["candidate_key"],
+    rule_id="induction_reviewer_reject",
+    source="phase2b_induction",
+    reason="reviewer_reject",
+    payload={"induction": entry["payload"]["induction"]},
+)
 ```
 
 - [ ] **Step 4: Run to verify pass**
 
 Run: `cd backend && python -m pytest tests/ike2/coverage_os/induction/test_precision.py -v`  
-Expected: PASS
+Expected: PASS (including `test_iter_induced_decisions_from_real_ledger`)
 
 - [ ] **Step 5: Commit**
 
 ```bash
 git add backend/core/knowledge/ike2/coverage_os/induction/precision.py \
-  backend/tests/ike2/coverage_os/induction/test_precision.py
+  backend/core/knowledge/ike2/coverage_os/promote_ledger.py \
+  backend/tests/ike2/coverage_os/induction/test_precision.py \
+  backend/core/knowledge/ike2/coverage_os/induction/submit.py
 git commit -m "$(cat <<'EOF'
-feat(coverage-os): precision A/A1/A2 measurement for induction
+feat(coverage-os): ledger-backed induction precision A/A1/A2
 
-Query helpers for the Phase 2b exit bar once the sample window fills.
+iter_induced_decisions reads promote/reject/demote rows; ops path is measure_precision(iter_induced_decisions(ledger)).
 EOF
 )"
 ```
@@ -1465,4 +1642,14 @@ EOF
 
 ## Ops note (not a code task)
 
-Live exit bar (first 50 human decisions ≥70% accept; A1 ≥90% with ≥10 dangerous; A2 zero safety demotes) is measured with `precision.measure_precision` after operators run `run_induction.py` against real unknown-log volume. CI proves helpers + structural guarantees; ops fills the window.
+Live exit bar (first 50 human decisions ≥70% accept; A1 ≥90% with ≥10 dangerous; A2 zero safety demotes) is measured with:
+
+```python
+from core.knowledge.ike2.coverage_os.induction.precision import (
+    iter_induced_decisions,
+    measure_precision,
+)
+report = measure_precision(iter_induced_decisions(ledger), window=50)
+```
+
+after operators run `run_induction.py` against real unknown-log volume (accepts + rejects land in the same ledger). CI proves ledger→DecisionRecord wiring + threshold math; ops fills the window.
