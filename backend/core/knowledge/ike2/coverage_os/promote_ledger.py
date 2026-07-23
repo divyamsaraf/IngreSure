@@ -31,6 +31,10 @@ class PromoteLedger:
                     continue
                 yield json.loads(line)
 
+    def iter_rows(self) -> Iterator[dict[str, Any]]:
+        """Public scan of append-only JSONL (order preserved)."""
+        yield from self._iter_rows()
+
     def _next_version(self, candidate_key: str) -> int:
         """Strictly monotonic per candidate_key across every kind."""
         max_v = 0
@@ -109,6 +113,7 @@ class PromoteLedger:
         rule_id: str,
         source: str,
         reason: str,
+        payload: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         row: dict[str, Any] = {
             "kind": "confirmed_non_promotable",
@@ -118,6 +123,8 @@ class PromoteLedger:
             "reason": reason,
             "version": self._next_version(candidate_key),
         }
+        if payload is not None:
+            row["payload"] = payload
         return self._append(row)
 
     def find_non_promotable(self, candidate_key: str) -> dict | None:

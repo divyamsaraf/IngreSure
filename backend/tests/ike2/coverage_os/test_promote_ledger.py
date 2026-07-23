@@ -77,3 +77,22 @@ def test_rejected_human_promote_writes_nothing(tmp_path):
         )
     assert led.path.read_text(encoding="utf-8").strip() == ""
     assert led.latest_promoted(key) is None
+
+
+def test_append_non_promotable_optional_payload(tmp_path):
+    led = PromoteLedger(tmp_path / "l.jsonl")
+    row = led.append_non_promotable(
+        candidate_key="a=>a",
+        rule_id="r",
+        source="phase2b_induction",
+        reason="reviewer_reject",
+        payload={"induction": {"safety_class": "role_only"}},
+    )
+    assert row["payload"]["induction"]["safety_class"] == "role_only"
+    bare = led.append_non_promotable(
+        candidate_key="b=>b",
+        rule_id="r",
+        source="phase1",
+        reason="blocked",
+    )
+    assert "payload" not in bare
