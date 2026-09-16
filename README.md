@@ -197,7 +197,7 @@ NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
 
 ## Running with Docker
 
-Full deployment topologies (Vercel + OCI, optional Redis/LLM VMs) are described in **[DEPLOY.md](DEPLOY.md)**. Step order: **[PHASES.md](PHASES.md)**. **Oracle Cloud (OCI) walkthrough:** **[OCI_STEP_BY_STEP.md](OCI_STEP_BY_STEP.md)**.
+Full deployment topologies (Vercel + OCI, optional Redis/LLM VMs) are described in **[DEPLOY.md](DEPLOY.md)**. **Oracle Cloud (OCI) walkthrough:** **[OCI_STEP_BY_STEP.md](OCI_STEP_BY_STEP.md)**. Cutover / IKE-2 stage status lives in the architecture tracker and `docs/item16_legacy_cutover_spec.md` (not a separate PHASES.md).
 
 **Before first run:** From repo root, copy env templates and add secrets (API keys, etc.):
 
