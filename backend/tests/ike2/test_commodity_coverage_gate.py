@@ -62,6 +62,40 @@ def test_almond_is_tree_nut():
     assert derive_identity_flags("almond", {})["tree_nut_source"] is True
 
 
+def test_yeast_name_implies_fungal_even_when_underflagged():
+    """Jain fungal FAIL must fire for yeast-family names (not only baker's yeast)."""
+    assert derive_identity_flags("yeast", {})["fungal"] is True
+    assert derive_identity_flags("yeast extract", {"fungal": False})["fungal"] is True
+    assert derive_identity_flags("autolyzed yeast extract", {})["fungal"] is True
+    assert derive_identity_flags("tempeh", {"soy_source": True})["fungal"] is True
+    assert derive_identity_flags("mycoprotein", {})["fungal"] is True
+    assert derive_identity_flags("koji", {})["fungal"] is True
+    # do not fungal-tag unrelated foods
+    assert derive_identity_flags("sugar", {}).get("fungal") is not True
+    assert derive_identity_flags("water", {}).get("fungal") is not True
+
+
+def test_jain_yeast_family_never_firm_safe(monkeypatch):
+    """Root-cause class: plain yeast / yeast extract / tempeh must not be SAFE for Jain."""
+    from core.bridge import _run_ike2_compliance, map_ike2_to_compliance_verdict
+
+    monkeypatch.setenv("IKE2_MODE", "primary")
+    for label in (
+        "yeast",
+        "yeast extract",
+        "baker's yeast",
+        "nutritional yeast",
+        "active dry yeast",
+        "instant yeast",
+        "tempeh",
+    ):
+        result, inputs, display = _run_ike2_compliance([label], ["jain"])
+        verdict = map_ike2_to_compliance_verdict(
+            result, inputs, input_display_map=display
+        )
+        assert verdict.status.value != "SAFE", label
+
+
 def test_seam_derives_fish_source_for_species_only_row():
     """Under-flagged ontology rows with animal_species=fish must Avoid on fish allergy."""
     from types import SimpleNamespace

@@ -9,6 +9,7 @@ result, and it always runs -- there is no mode gate.
 import logging
 import sys
 from types import SimpleNamespace
+from typing import Any, Mapping, Optional, Sequence
 
 from core.knowledge.ike2 import input_layer, resolver
 from core.knowledge.ike2 import rules as rules_module
@@ -18,6 +19,11 @@ from core.knowledge.ike2.shadow.comparator import compare
 from core.knowledge.ike2.verdict import to_external
 
 logger = logging.getLogger(__name__)
+
+SOURCE_CHAT = "chat"
+SOURCE_API_COMPLIANCE = "api_evaluate_compliance"
+SOURCE_API_PRODUCT = "api_evaluate_product"
+SOURCE_TEST = "test"
 
 
 def _interpreter_finalizing() -> bool:
@@ -32,17 +38,12 @@ def _profile_from_restriction_ids(restriction_ids):
     )
 
 
-def ike2_external_verdict(
+def _resolve_compliance_inputs(
     raw_ingredients,
-    restriction_ids,
     region,
-    rules=None,
     *,
     decomposed_atoms=None,
-) -> str:
-    """Run the IKE-2 pipeline end to end and return the external 3-tier verdict."""
-    profile = _profile_from_restriction_ids(restriction_ids)
-    active_rules = rules if rules is not None else rules_module.load_rules()
+):
     inputs = []
     if decomposed_atoms is not None:
         for atom in decomposed_atoms:
@@ -67,6 +68,36 @@ def ike2_external_verdict(
                         query_atom=atom.name,
                     )
                 )
+    return inputs
+
+
+def flags_from_compliance_inputs(inputs) -> list[dict]:
+    """Flatten ComplianceInput / TruthAnchor-like objects to flag dicts for compare()."""
+    out = []
+    for inp in inputs or []:
+        flags = dict(getattr(inp, "flags", None) or {})
+        # alcohol_role lives on ComplianceInput, not always inside flags
+        role = getattr(inp, "alcohol_role", None)
+        if role is not None and "alcohol_role" not in flags:
+            flags["alcohol_role"] = role
+        out.append(flags)
+    return out
+
+
+def ike2_external_verdict(
+    raw_ingredients,
+    restriction_ids,
+    region,
+    rules=None,
+    *,
+    decomposed_atoms=None,
+) -> str:
+    """Run the IKE-2 pipeline end to end and return the external 3-tier verdict."""
+    profile = _profile_from_restriction_ids(restriction_ids)
+    active_rules = rules if rules is not None else rules_module.load_rules()
+    inputs = _resolve_compliance_inputs(
+        raw_ingredients, region, decomposed_atoms=decomposed_atoms
+    )
     result = evaluate(inputs, profile, active_rules)
     return to_external(result.verdict)
 
@@ -126,16 +157,17 @@ def _log_diff(diff) -> None:
         return
     from supabase import create_client
 
+    payload = {
+        "raw_input": diff.get("raw_input"),
+        "legacy_verdict": diff.get("legacy_verdict"),
+        "ike2_verdict": diff.get("ike2_verdict"),
+        "match": diff.get("match"),
+        "false_safe_regression": diff.get("false_safe_regression"),
+        "source_route": diff.get("source_route"),
+        "restriction_ids": diff.get("restriction_ids") or [],
+    }
     try:
-        create_client(cfg.url, cfg.key).table("ike2_shadow_diffs").insert(
-            {
-                "raw_input": diff["raw_input"],
-                "legacy_verdict": diff["legacy_verdict"],
-                "ike2_verdict": diff["ike2_verdict"],
-                "match": diff["match"],
-                "false_safe_regression": diff["false_safe_regression"],
-            }
-        ).execute()
+        create_client(cfg.url, cfg.key).table("ike2_shadow_diffs").insert(payload).execute()
     except Exception:
         logger.warning("IKE-2 shadow diff insert failed; comparison was logged", exc_info=True)
 
@@ -148,6 +180,8 @@ def run_legacy_diff(
     *,
     decomposed_atoms=None,
     writer=None,
+    source_route: str = SOURCE_CHAT,
+    ingredient_flags: Optional[Sequence[Mapping[str, Any]]] = None,
 ):
     """Run the legacy engine and diff it against the already-computed primary
     (IKE-2) verdict. Always runs -- no mode gate.
@@ -172,14 +206,34 @@ def run_legacy_diff(
             decomposed_atoms=decomposed_atoms,
         )
         raw_input = ", ".join(raw_ingredients or [])
-        diff = compare(legacy_ext, primary_ext, raw_input)
+        flags = list(ingredient_flags) if ingredient_flags is not None else None
+        if flags is None:
+            # Derive flags from the same resolve path IKE-2 uses so false_safe
+            # can be scored without requiring every caller to pass them.
+            try:
+                flags = flags_from_compliance_inputs(
+                    _resolve_compliance_inputs(
+                        raw_ingredients, region, decomposed_atoms=decomposed_atoms
+                    )
+                )
+            except Exception:
+                flags = []
+        diff = compare(
+            legacy_ext,
+            primary_ext,
+            raw_input,
+            restriction_ids=restriction_ids,
+            ingredient_flags=flags,
+        )
+        diff["source_route"] = source_route
         logger.info(
             "IKE2_DIFF legacy=%s primary=%s match=%s false_safe_regression=%s "
-            "restriction_ids=%s ingredients=%s",
+            "source_route=%s restriction_ids=%s ingredients=%s",
             diff["legacy_verdict"],
             diff["ike2_verdict"],
             diff["match"],
             diff["false_safe_regression"],
+            source_route,
             restriction_ids,
             raw_input[:200] if raw_input else "",
         )

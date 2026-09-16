@@ -59,7 +59,8 @@ PROCESSED_FOOD_TO_BASE: dict[str, List[str]] = {
     # Dairy wholes have Tier-1 anchors; do not invent rennet/cultures that
     # false-Avoid lacto-vegetarian diets when the user only said "cheese".
     "tofu": ["soybean", "water"],
-    "tempeh": ["soybean", "water"],
+    # Tempeh is intentionally NOT expanded to soybean+water: the Rhizopus
+    # culture is essential identity (Jain fungal FAIL). Expanding stripped it.
     "seitan": ["wheat gluten", "water"],
     "plant-based meat": ["soy", "wheat", "vegetable oil", "flavoring"],
     "veggie burger": ["vegetable", "legume", "grain", "binding"],

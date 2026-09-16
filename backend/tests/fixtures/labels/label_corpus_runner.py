@@ -38,7 +38,22 @@ def shadow_compare_row(row: dict[str, Any]) -> dict[str, Any]:
     restriction_ids = row.get("restriction_ids") or []
     legacy = legacy_external_verdict(raw, restriction_ids)
     ike2 = ike2_external_verdict([raw], restriction_ids, None)
-    return compare(legacy, ike2, raw)
+    # Resolve flags so false_safe uses rule/flag context (Item 16 instrument fix).
+    from core.knowledge.ike2.shadow.runner import (
+        _resolve_compliance_inputs,
+        flags_from_compliance_inputs,
+    )
+
+    flags = flags_from_compliance_inputs(
+        _resolve_compliance_inputs([raw], None)
+    )
+    return compare(
+        legacy,
+        ike2,
+        raw,
+        restriction_ids=restriction_ids,
+        ingredient_flags=flags,
+    )
 
 
 def parse_label(row: dict[str, Any]) -> list:

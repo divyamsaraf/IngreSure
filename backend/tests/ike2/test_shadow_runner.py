@@ -42,11 +42,37 @@ def test_logs_comparison_on_every_run(monkeypatch, caplog):
 
 
 def test_flags_false_safe_regression(monkeypatch):
-    # Primary (IKE-2) said SAFE, legacy said NOT_SAFE -> the one disagreement that can harm.
+    # Primary SAFE while peanut_allergy + peanut_source flags imply FAIL -> regression.
     monkeypatch.setattr(runner, "legacy_external_verdict", lambda *a, **k: "NOT_SAFE")
     calls = []
-    run_legacy_diff(["peanut"], ["peanut_allergy"], None, "SAFE", writer=calls.append)
+    run_legacy_diff(
+        ["peanut"],
+        ["peanut_allergy"],
+        None,
+        "SAFE",
+        writer=calls.append,
+        ingredient_flags=[{"peanut_source": True}],
+        source_route="test",
+    )
     assert calls[0]["false_safe_regression"] is True
+    assert calls[0]["source_route"] == "test"
+    assert calls[0]["restriction_ids"] == ["peanut_allergy"]
+
+
+def test_vegan_uncertain_vs_safe_not_false_safe_when_only_gluten_flags(monkeypatch):
+    monkeypatch.setattr(runner, "legacy_external_verdict", lambda *a, **k: "UNCERTAIN")
+    calls = []
+    run_legacy_diff(
+        ["wheat gluten"],
+        ["vegan"],
+        None,
+        "SAFE",
+        writer=calls.append,
+        ingredient_flags=[{"gluten_source": True, "animal_origin": False}],
+        source_route="test",
+    )
+    assert calls[0]["match"] is False
+    assert calls[0]["false_safe_regression"] is False
 
 
 def test_accepts_enum_like_primary_verdict(monkeypatch):

@@ -483,6 +483,8 @@ def _run_legacy_diff_job(
     restriction_ids: Optional[List[str]],
     primary_status: str,
     prepared_decomposed: Optional[List[Any]] = None,
+    ingredient_flags: Optional[List[dict]] = None,
+    source_route: str = "chat",
 ) -> None:
     """Diff the legacy engine against the already-computed IKE-2 verdict.
 
@@ -499,6 +501,8 @@ def _run_legacy_diff_job(
         None,
         primary_status,
         decomposed_atoms=prepared_decomposed,
+        source_route=source_route,
+        ingredient_flags=ingredient_flags,
     )
 
 
@@ -523,6 +527,9 @@ def _schedule_legacy_diff(
     restriction_ids: Optional[List[str]],
     primary_status: str,
     prepared_decomposed: Optional[List[Any]] = None,
+    *,
+    ingredient_flags: Optional[List[dict]] = None,
+    source_route: str = "chat",
 ) -> None:
     """Fire-and-forget: submit the legacy diff to a background worker pool
     and return immediately. The request thread never blocks on the legacy
@@ -539,6 +546,8 @@ def _schedule_legacy_diff(
             restriction_ids,
             primary_status,
             prepared_decomposed,
+            ingredient_flags,
+            source_route,
         )
         _LEGACY_DIFF_SUPERVISOR.submit(_supervise_legacy_diff, future)
     except RuntimeError as exc:
@@ -568,12 +577,16 @@ def run_new_engine_chat(
     else:
         rids = profile_to_restriction_ids(user_profile if isinstance(user_profile, dict) else None)
 
+    ingredient_flags: Optional[List[dict]] = None
     try:
         ike2_output = _run_ike2_compliance(ingredients, rids, prepared_decomposed)
         if isinstance(ike2_output, ComplianceVerdict):
             verdict = ike2_output
         else:
             result, inputs, display_map = ike2_output
+            from core.knowledge.ike2.shadow.runner import flags_from_compliance_inputs
+
+            ingredient_flags = flags_from_compliance_inputs(inputs)
             verdict = map_ike2_to_compliance_verdict(
                 result, inputs, input_display_map=display_map
             )
@@ -584,7 +597,14 @@ def run_new_engine_chat(
         )
         verdict = ComplianceVerdict(status=VerdictStatus.UNCERTAIN)
 
-    _schedule_legacy_diff(ingredients, rids, verdict.status.value, prepared_decomposed)
+    _schedule_legacy_diff(
+        ingredients,
+        rids,
+        verdict.status.value,
+        prepared_decomposed,
+        ingredient_flags=ingredient_flags,
+        source_route="chat",
+    )
 
     return verdict
 

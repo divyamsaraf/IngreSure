@@ -177,7 +177,7 @@ _add(["barley"], "barley", _f(gluten_source=True))
 _add(["rye"], "rye", _f(gluten_source=True))
 _add(["soy", "soybean", "edamame"], "soy", _f(soy_source=True))
 _add(["tofu"], "tofu", _f(soy_source=True))
-_add(["tempeh"], "tempeh", _f(soy_source=True))
+_add(["tempeh"], "tempeh", _f(soy_source=True, fungal=True))
 _add(["soy sauce"], "soy sauce", _f(soy_source=True))
 _add(["soy lecithin"], "soy lecithin", _f(soy_source=True))
 _add(["sesame", "sesame seed"], "sesame", _f(sesame_source=True))
@@ -199,7 +199,29 @@ _add(["chicken"], "chicken", _f(animal_origin=True, animal_species="chicken"))
 _add(["potato"], "potato", _f(root_vegetable=True, plant_origin=True))
 _add(["water"], "water", _f())
 _add(["salt", "sea salt"], "salt", _f())
-_add(["yeast"], "yeast", _f())
+# Yeast / yeast-culture: Jain fungal FAIL. Empty flags here previously shadowed
+# richer L2 ontology rows (baker's yeast fungal=True) and left plain "yeast" SAFE.
+_add(
+    [
+        "yeast",
+        "baker's yeast",
+        "bakers yeast",
+        "brewer's yeast",
+        "brewers yeast",
+        "nutritional yeast",
+        "active dry yeast",
+        "instant yeast",
+        "dry yeast",
+        "torula yeast",
+    ],
+    "yeast",
+    _f(fungal=True, plant_origin=True, animal_origin=False),
+)
+_add(
+    ["yeast extract", "autolyzed yeast extract", "yeast extract spread"],
+    "yeast extract",
+    _f(fungal=True, plant_origin=True, animal_origin=False),
+)
 _add_compound(["enzymes", "enzyme"], "enzymes")
 
 # --- alcohol sources ---------------------------------------------------------

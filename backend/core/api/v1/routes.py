@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException, Request
 
+from core.api.v1_evaluate import evaluate_ingredients
 from core.knowledge.canonicalizer import CanonicalResolver
 from core.ontology.ingredient_registry import IngredientRegistry
-from core.evaluation.compliance_engine import ComplianceEngine
 from core.parsing.ingredient_parser import preprocess_ingredients_to_strings
 from core.security.rate_limit import rate_limit, api_v1_rate_limit
 
@@ -72,14 +72,18 @@ def get_ingredient(request: Request, name: str, try_api: bool = False) -> Resolv
 def evaluate_compliance(request: Request, req: EvaluateComplianceRequest) -> EvaluateComplianceResponse:
     """
     Deterministically evaluate ingredients against restriction_ids.
+
+    Engine selection is gated by ``IKE2_MODE`` (legacy | shadow | primary).
+    See ``core.api.v1_evaluate.evaluate_ingredients`` and Item 16 cutover spec.
+    Response shape remains ``ComplianceVerdict.to_dict()``.
     """
-    engine = ComplianceEngine()
-    verdict = engine.evaluate(
-        ingredient_strings=req.ingredients,
-        restriction_ids=req.restriction_ids or None,
+    verdict = evaluate_ingredients(
+        req.ingredients,
+        req.restriction_ids or None,
         region_scope=req.region_scope,
         use_api_fallback=req.use_api_fallback,
         profile_context=req.profile_context,
+        source_route="api_evaluate_compliance",
     )
     return EvaluateComplianceResponse(verdict=verdict.to_dict())
 
@@ -89,14 +93,17 @@ def evaluate_compliance(request: Request, req: EvaluateComplianceRequest) -> Eva
 def evaluate_product(request: Request, req: EvaluateProductRequest) -> EvaluateProductResponse:
     """
     Parse an ingredient label text into atomic ingredients, then evaluate compliance.
+
+    Parsing is unchanged; evaluation uses the same ``IKE2_MODE``-gated path as
+    ``/evaluate-compliance``.
     """
     parsed = preprocess_ingredients_to_strings(req.ingredients_text)
-    engine = ComplianceEngine()
-    verdict = engine.evaluate(
-        ingredient_strings=parsed,
-        restriction_ids=req.restriction_ids or None,
+    verdict = evaluate_ingredients(
+        parsed,
+        req.restriction_ids or None,
         use_api_fallback=req.use_api_fallback,
         profile_context=req.profile_context,
+        source_route="api_evaluate_product",
     )
     return EvaluateProductResponse(parsed_ingredients=parsed, verdict=verdict.to_dict())
 

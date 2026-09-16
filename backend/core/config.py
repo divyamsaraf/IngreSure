@@ -5,6 +5,7 @@ All resolution relative to the backend directory.
 import os
 import logging
 from pathlib import Path
+from typing import Literal
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +23,26 @@ REDIS_URL = os.environ.get("REDIS_URL", "").strip()
 
 # When set (e.g. LOG_REDACT_PII=1), log helpers redact query/user_id and other PII in log lines.
 LOG_REDACT_PII = os.environ.get("LOG_REDACT_PII", "").lower() in ("1", "true", "yes")
+
+# Item 16: IKE-2 cutover for /api/v1/evaluate-* (chat is already IKE-2-primary).
+# legacy  — serve ComplianceEngine only (instant rollback)
+# shadow  — serve legacy; compute IKE-2 and log diffs to ike2_shadow_diffs (unset default)
+# primary — serve IKE-2; background-diff against legacy (current stage as of 2026-09-16)
+Ike2Mode = Literal["legacy", "shadow", "primary"]
+_IKE2_MODES = frozenset({"legacy", "shadow", "primary"})
+
+
+def get_ike2_mode() -> Ike2Mode:
+    """Read IKE2_MODE from the environment. Default ``shadow``. Invalid → ``shadow``."""
+    raw = (os.environ.get("IKE2_MODE") or "shadow").strip().lower()
+    if raw not in _IKE2_MODES:
+        logger.warning("Invalid IKE2_MODE=%r; defaulting to shadow", raw)
+        return "shadow"
+    return raw  # type: ignore[return-value]
+
+
+# Import-time snapshot (tests should call get_ike2_mode() so env can be monkeypatched).
+IKE2_MODE: Ike2Mode = get_ike2_mode()
 
 
 def redact_pii(val):
@@ -105,9 +126,10 @@ def log_config() -> None:
     key = get_usda_fdc_api_key()
     off = get_open_food_facts_enabled()
     logger.info(
-        "CONFIG: production=%s ontology=%s restrictions=%s dynamic=%s "
+        "CONFIG: production=%s ike2_mode=%s ontology=%s restrictions=%s dynamic=%s "
         "usda_key=%s off_enabled=%s llm_enabled=%s ollama_model=%s llm_intent_timeout=%ds llm_response_timeout=%ds",
         PRODUCTION,
+        get_ike2_mode(),
         get_ontology_path().exists(), get_restrictions_path().exists(),
         get_dynamic_ontology_path().exists(),
         bool(key), off, llm_enabled(), get_ollama_model(),

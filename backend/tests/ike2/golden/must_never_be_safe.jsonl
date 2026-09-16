@@ -61,6 +61,9 @@
 {"raw_input": "egg", "profile": {"restrictions": {"jain": "preference"}}, "region": null, "severity_tier": "R", "ambiguity_class": "religious", "rationale": "egg", "must_not_be_safe": true}
 {"raw_input": "wine", "profile": {"restrictions": {"jain": "preference"}}, "region": null, "severity_tier": "R", "ambiguity_class": "religious", "rationale": "alcohol", "must_not_be_safe": true}
 {"raw_input": "carmine", "profile": {"restrictions": {"jain": "preference"}}, "region": null, "severity_tier": "R", "ambiguity_class": "religious", "rationale": "insect", "must_not_be_safe": true}
+{"raw_input": "yeast", "profile": {"restrictions": {"jain": "preference"}}, "region": null, "severity_tier": "R", "ambiguity_class": "religious", "rationale": "fungal yeast culture", "must_not_be_safe": true}
+{"raw_input": "yeast extract", "profile": {"restrictions": {"jain": "preference"}}, "region": null, "severity_tier": "R", "ambiguity_class": "religious", "rationale": "fungal yeast culture", "must_not_be_safe": true}
+{"raw_input": "tempeh", "profile": {"restrictions": {"jain": "preference"}}, "region": null, "severity_tier": "R", "ambiguity_class": "religious", "rationale": "fungal fermented soy", "must_not_be_safe": true}
 {"raw_input": "honey", "profile": {"restrictions": {"vegan": "medical"}}, "region": null, "severity_tier": "P", "ambiguity_class": "lifestyle", "rationale": "honey", "must_not_be_safe": true}
 {"raw_input": "gelatin", "profile": {"restrictions": {"vegan": "medical"}}, "region": null, "severity_tier": "P", "ambiguity_class": "lifestyle", "rationale": "gelatin", "must_not_be_safe": true}
 {"raw_input": "carmine", "profile": {"restrictions": {"vegan": "medical"}}, "region": null, "severity_tier": "P", "ambiguity_class": "lifestyle", "rationale": "carmine", "must_not_be_safe": true}

@@ -11,6 +11,7 @@ Rules (fail-closed for allergens):
   - egg tokens => egg_source, never from \"eggplant\"
   - wheat/atta/maida/semolina/suji => gluten_source (never buckwheat)
   - groundnut => peanut_source (not tree-nut)
+  - yeast / mushroom / tempeh / mycoprotein / koji tokens => fungal
 """
 from __future__ import annotations
 
@@ -52,6 +53,38 @@ _EGG_NAMES = frozenset({
     "egg", "eggs", "egg white", "egg whites", "egg yolk", "egg yolks",
     "chicken egg", "chicken eggs", "duck egg", "duck eggs",
     "quail egg", "quail eggs",
+})
+
+# Fungal / yeast-culture identity — drives Jain fungal FAIL (and similar diet rules).
+# Token "yeast" covers yeast extract, nutritional yeast, baker's yeast, etc.
+# Explicit whole-name set covers fermented fungal foods that lack the yeast token.
+_FUNGAL_NAME_TOKENS = frozenset({
+    "yeast",
+    "mushroom",
+    "shiitake",
+    "portobello",
+    "portabella",
+    "cremini",
+    "chanterelle",
+    "enoki",
+    "maitake",
+    "mycoprotein",
+    "quorn",
+    "koji",
+    "tempeh",
+    "torula",
+    "aspergillus",
+    "penicillium",
+})
+_FUNGAL_WHOLE_NAMES = frozenset({
+    "tempeh",
+    "mycoprotein",
+    "quorn",
+    "koji",
+    "marmite",
+    "vegemite",
+    "yeast extract",
+    "yeast extract spread",
 })
 
 
@@ -134,6 +167,12 @@ def derive_identity_flags(
         out["plant_origin"] = False
         if not out.get("animal_species"):
             out["animal_species"] = "bird"
+
+    # --- fungal / yeast-culture identity (never under-flag Jain fungal FAIL) ---
+    if name in _FUNGAL_WHOLE_NAMES or any(
+        _has_token(name, tok) for tok in _FUNGAL_NAME_TOKENS
+    ):
+        out["fungal"] = True
 
     if not _is_non_tree_nut(name):
         # pine nut: need both pine and nut, or pinenut
