@@ -1,11 +1,14 @@
 __pycache__/
 .claude/
 backend/venv/
-PROJECT_DETAILS.md
 
-# Documentation (phase reports, technical/refactor/arch/tech stack)
-docs/
-backend/docs/
+# One-off analysis dumps under docs/ (specs, indexes, ops guides are tracked)
+docs/*_REPORT.md
+docs/*_SUMMARY.md
+docs/FULL_CODEBASE_*.md
+docs/DEEP_ANALYSIS_AND_DEPLOYMENT.md
+docs/VERIFICATION_AFTER_MODIFICATIONS.md
+docs/BACKEND_AND_FRONTEND_ANALYSIS_REPORT.md
 
 # Local-only scripts (verification, restart; not required in repo)
 backend/scripts/verify_chat_audit.py
@@ -29,10 +32,11 @@ data/raw/
 # Root env for Compose variable substitution (optional)
 /.env
 
-# Local deployment / phase write-ups (keep out of remote)
-DEPLOY.md
-OCI_STEP_BY_STEP.md
+# Retired phase list (do not recreate; stage-of-record is docs/item16_*)
 PHASES.md
+
+# Stale internal overview (describes pre-Prompt-7 legacy/IKE2_MODE state; fold into README if revived)
+PROJECT_DETAILS.md
 
 # Agent skills, rules, hooks, and lockfiles (local tooling; never commit)
 .agents/
@@ -45,8 +49,4 @@ skills-cursor/
 # Local data staging / backups (regenerate locally; do not commit)
 data/*_staging.json
 data/*.bak
-data/*.truncated-*
-
-# Local design notes & data docs (keep out of remote)
-design-system/
-backend/data/README.md
+data/*.timestamp-*
