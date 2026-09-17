@@ -73,9 +73,8 @@ def evaluate_compliance(request: Request, req: EvaluateComplianceRequest) -> Eva
     """
     Deterministically evaluate ingredients against restriction_ids.
 
-    Engine selection is gated by ``IKE2_MODE`` (legacy | shadow | primary).
-    See ``core.api.v1_evaluate.evaluate_ingredients`` and Item 16 cutover spec.
-    Response shape remains ``ComplianceVerdict.to_dict()``.
+    Served engine is IKE-2 (Item 16 Prompt 7). Response shape remains
+    ``ComplianceVerdict.to_dict()``.
     """
     verdict = evaluate_ingredients(
         req.ingredients,
@@ -94,8 +93,8 @@ def evaluate_product(request: Request, req: EvaluateProductRequest) -> EvaluateP
     """
     Parse an ingredient label text into atomic ingredients, then evaluate compliance.
 
-    Parsing is unchanged; evaluation uses the same ``IKE2_MODE``-gated path as
-    ``/evaluate-compliance``.
+    Parsing is unchanged; evaluation uses the same IKE-2 path as
+    ``/evaluate-compliance`` (Item 16 Prompt 7).
     """
     parsed = preprocess_ingredients_to_strings(req.ingredients_text)
     verdict = evaluate_ingredients(

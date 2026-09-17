@@ -1,6 +1,6 @@
 """
-Unit tests for compliance engine: ontology lookup, confidence, profile overrides, API fallback (mocked).
-Run from backend: python -m pytest tests/test_compliance_engine.py -v
+Unit tests retained after ComplianceEngine removal (Item 16 Prompt 7).
+Covers ontology registry, confidence helper, profile→restriction_ids, API mock resolve.
 """
 import pytest
 
@@ -68,41 +68,7 @@ def test_confidence_uncertainty_penalty():
     assert conf < 0.7
 
 
-def test_compliance_engine_safe_vegan():
-    """Engine returns SAFE when ingredients are vegan and restriction is vegan."""
-    from core.config import get_ontology_path
-    from core.evaluation.compliance_engine import ComplianceEngine
-    from core.models.verdict import VerdictStatus
-    if not get_ontology_path().exists():
-        pytest.skip("ontology.json not found")
-    engine = ComplianceEngine()
-    verdict = engine.evaluate(
-        ["water", "sugar", "salt"],
-        restriction_ids=["vegan"],
-        use_api_fallback=False,
-    )
-    assert verdict.status == VerdictStatus.SAFE
-    assert verdict.confidence_score >= 0
-
-
-def test_compliance_engine_not_safe_vegan():
-    """Engine returns NOT_SAFE when dairy/meat and restriction is vegan."""
-    from core.config import get_ontology_path
-    from core.evaluation.compliance_engine import ComplianceEngine
-    from core.models.verdict import VerdictStatus
-    if not get_ontology_path().exists():
-        pytest.skip("ontology.json not found")
-    engine = ComplianceEngine()
-    verdict = engine.evaluate(
-        ["milk", "sugar"],
-        restriction_ids=["vegan"],
-        use_api_fallback=False,
-    )
-    assert verdict.status == VerdictStatus.NOT_SAFE
-    assert "vegan" in verdict.triggered_restrictions
-
-
-def test_compliance_engine_user_profile_restriction_ids():
+def test_user_profile_restriction_ids():
     """Profile-derived restriction_ids are applied (allergen + dietary_preference)."""
     from core.bridge import user_profile_model_to_restriction_ids
     from core.models.user_profile import UserProfile
@@ -118,149 +84,8 @@ def test_compliance_engine_user_profile_restriction_ids():
     assert "vegan" in ids
 
 
-def test_trace_ingredient_informational():
-    """Trace (<2%) unknown ingredients do not force UNCERTAIN when in trace set."""
-    from core.config import get_ontology_path
-    from core.evaluation.compliance_engine import ComplianceEngine
-    from core.models.verdict import VerdictStatus
-    from core.normalization.normalizer import normalize_ingredient_key
-    if not get_ontology_path().exists():
-        pytest.skip("ontology.json not found")
-    engine = ComplianceEngine()
-    # Known ingredients + one unknown that is in trace set
-    trace_key = normalize_ingredient_key("trace flavor xyznonexistent")
-    verdict = engine.evaluate(
-        ["water", "sugar", "trace flavor xyznonexistent"],
-        restriction_ids=["vegan"],
-        trace_ingredient_keys={trace_key},
-        use_api_fallback=False,
-    )
-    # Unknown in trace set is informational; if water/sugar are only others we may get SAFE
-    assert verdict.status in (VerdictStatus.SAFE, VerdictStatus.UNCERTAIN)
-
-
-def test_minor_ingredient_does_not_reduce_confidence():
-    """Minor (<2%) ingredients are informational_only; resolution_level high so confidence not reduced."""
-    from core.config import get_ontology_path
-    from core.evaluation.compliance_engine import ComplianceEngine
-    from core.normalization.normalizer import normalize_ingredient_key
-    if not get_ontology_path().exists():
-        pytest.skip("ontology.json not found")
-    engine = ComplianceEngine()
-    trace_key = normalize_ingredient_key("minor unknown xyz")
-    verdict_with_trace = engine.evaluate(
-        ["water", "sugar", "minor unknown xyz"],
-        restriction_ids=["vegan"],
-        trace_ingredient_keys={trace_key},
-        use_api_fallback=False,
-    )
-    verdict_without_trace = engine.evaluate(
-        ["water", "sugar", "minor unknown xyz"],
-        restriction_ids=["vegan"],
-        trace_ingredient_keys=set(),
-        use_api_fallback=False,
-    )
-    # With trace: unknown is informational (high weight), so confidence >= without (where unknown counts as low)
-    assert verdict_with_trace.informational_ingredients
-    assert verdict_with_trace.confidence_score >= verdict_without_trace.confidence_score
-
-
-def test_api_failed_ingredient_uncertain_low_confidence():
-    """When all external APIs fail: do NOT mark SAFE; mark UNCERTAIN, confidence 0.0-0.4."""
-    from unittest.mock import patch
-    from core.config import get_ontology_path
-    from core.evaluation.compliance_engine import ComplianceEngine
-    from core.models.verdict import VerdictStatus
-    if not get_ontology_path().exists():
-        pytest.skip("ontology.json not found")
-    with patch("core.external_apis.fetcher.enrich_unknown_ingredient") as mock_enrich:
-        from core.external_apis.base import EnrichmentResult
-        mock_enrich.return_value = EnrichmentResult(None, "low", "none", "no_result")
-        engine = ComplianceEngine()
-        verdict = engine.evaluate(
-            ["water", "sugar", "xyznonexistent_api_fail"],
-            restriction_ids=["vegan"],
-            use_api_fallback=True,
-        )
-        assert "xyznonexistent_api_fail" in verdict.uncertain_ingredients
-        assert verdict.status == VerdictStatus.UNCERTAIN
-        assert 0.0 <= verdict.confidence_score <= 0.4
-
-
-def test_minor_ingredient_violation_confidence_band():
-    """When only minor (<2%) ingredients trigger: NOT_SAFE, confidence 0.2-0.5."""
-    from core.config import get_ontology_path
-    from core.evaluation.compliance_engine import ComplianceEngine
-    from core.models.verdict import VerdictStatus
-    from core.normalization.normalizer import normalize_ingredient_key
-    if not get_ontology_path().exists():
-        pytest.skip("ontology.json not found")
-    engine = ComplianceEngine()
-    # Milk is vegan violation; mark it as trace so only minor triggers
-    trace_key = normalize_ingredient_key("milk")
-    verdict = engine.evaluate(
-        ["water", "sugar", "milk"],
-        restriction_ids=["vegan"],
-        trace_ingredient_keys={trace_key},
-        use_api_fallback=False,
-    )
-    assert verdict.status == VerdictStatus.NOT_SAFE
-    assert "vegan" in verdict.triggered_restrictions
-    assert 0.2 <= verdict.confidence_score <= 0.5
-
-
-def test_integration_unknown_ingredient_external_resolution():
-    """Integration: unknown ingredient (e.g. isinglass) resolved via mocked API; verdict respects profile."""
-    from unittest.mock import patch
-    from core.ontology.ingredient_schema import Ingredient
-    from core.external_apis.base import EnrichmentResult
-    from core.config import get_ontology_path
-    from core.evaluation.compliance_engine import ComplianceEngine
-    from core.models.verdict import VerdictStatus
-    if not get_ontology_path().exists():
-        pytest.skip("ontology.json not found")
-    # Isinglass: animal-derived (fish), not vegan
-    mock_ing = Ingredient(
-        id="off_isinglass",
-        canonical_name="isinglass",
-        aliases=["inglass"],
-        derived_from=[], contains=[], may_contain=[],
-        animal_origin=True,
-        plant_origin=False,
-        synthetic=False,
-        fungal=False,
-        insect_derived=False,
-        animal_species="fish",
-        egg_source=False,
-        dairy_source=False,
-        gluten_source=False,
-        nut_source=None,
-        soy_source=False,
-        sesame_source=False,
-        alcohol_content=None,
-        root_vegetable=False,
-        onion_source=False,
-        garlic_source=False,
-        fermented=False,
-        uncertainty_flags=[],
-        regions=[],
-    )
-    with patch("core.external_apis.fetcher.enrich_unknown_ingredient") as mock_enrich:
-        mock_enrich.return_value = EnrichmentResult(mock_ing, "high", "open_food_facts", "ok")
-        engine = ComplianceEngine()
-        verdict = engine.evaluate(
-            ["water", "isinglass"],
-            restriction_ids=["vegan"],
-            use_api_fallback=True,
-        )
-        assert verdict.status == VerdictStatus.NOT_SAFE
-        assert "vegan" in verdict.triggered_restrictions
-        assert "isinglass" in (verdict.triggered_ingredients or [])
-        assert verdict.confidence_score >= 0.5
-
-
 def test_unknown_ingredient_external_lookup_mocked():
-    """When external API returns an ingredient (mocked), engine uses it for evaluation."""
+    """When external API returns an ingredient (mocked), registry uses it."""
     from unittest.mock import patch
     from core.ontology.ingredient_schema import Ingredient
     from core.ontology.ingredient_registry import IngredientRegistry
@@ -268,7 +93,6 @@ def test_unknown_ingredient_external_lookup_mocked():
     from core.config import get_ontology_path
     if not get_ontology_path().exists():
         pytest.skip("ontology.json not found")
-    # Must not already be in static ontology (coverage promotes real commodities).
     unknown_raw = "zyzzx unknown starch q99"
     mock_ing = Ingredient(
         id="mock_zyzzx_starch",

@@ -48,7 +48,7 @@ LLM Response Composer (fallback: templates)
 | LLM Intent | `core/llm_intent.py` | Ollama-powered fallback for ambiguous queries |
 | LLM Response | `core/llm_response.py` | Natural language response generation |
 | Templates | `core/response_composer.py` | Deterministic template responses (fallback) |
-| Compliance | `core/evaluation/compliance_engine.py` | Safety evaluation against restrictions |
+| Compliance | `core/knowledge/ike2/` + `core/api/v1_evaluate.py` | IKE-2 safety evaluation against restrictions |
 | Ontology | `core/ontology/ingredient_registry.py` | Ingredient lookup + external API enrichment |
 | Restrictions | `core/restrictions/restriction_registry.py` | Dietary rule evaluation |
 | Profile | `core/profile_storage.py` | Persistent user profile storage |

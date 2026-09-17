@@ -16,7 +16,6 @@ import argparse
 import json
 import os
 import sys
-import time
 import uuid
 from pathlib import Path
 from typing import Any
@@ -154,25 +153,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--corpus", type=Path, default=CORPUS_PATH)
     parser.add_argument("--limit", type=int, default=0, help="Max corpus rows (0 = all)")
     parser.add_argument(
-        "--mode",
-        choices=("shadow", "primary"),
-        default="primary",
-        help="IKE2_MODE for this batch (default primary)",
-    )
-    parser.add_argument(
         "--skip-fermentation",
         action="store_true",
         help="Skip extra yeast/tempeh/koji/miso/… cases",
     )
-    parser.add_argument(
-        "--flush-seconds",
-        type=float,
-        default=5.0,
-        help="Wait for background legacy-diff threads to flush (default 5)",
-    )
     args = parser.parse_args(argv)
 
-    os.environ["IKE2_MODE"] = args.mode
     os.environ["LLM_ENABLED"] = "false"
 
     from fastapi.testclient import TestClient
@@ -230,9 +216,6 @@ def main(argv: list[str] | None = None) -> int:
         for name, rids in FERMENTATION_CASES:
             _post(_query_for_raw(name), list(rids), label=f"ferm:{name}")
 
-    # Background legacy diffs are fire-and-forget.
-    time.sleep(max(0.0, args.flush_seconds))
-
     print(
         json.dumps(
             {
@@ -240,7 +223,6 @@ def main(argv: list[str] | None = None) -> int:
                 "chat_corpus_ok": ok,
                 "chat_fermentation_ok": fermentation_ok,
                 "errors": errors,
-                "ike2_mode": os.environ.get("IKE2_MODE"),
                 "source_route": "chat",
                 "batch_tag": batch_tag,
             },

@@ -3,16 +3,11 @@
 
 Sends real ASGI HTTP requests to ``/api/v1/evaluate-compliance`` and
 ``/api/v1/evaluate-product`` using the label corpus plus a rotating range of
-``restriction_ids``. Diffs land in ``ike2_shadow_diffs`` with ``source_route``
-set by the evaluate path.
-
-Default ``--mode shadow`` (Section 6). Use ``--mode primary`` for the Prompt-7
-primary soak window.
+``restriction_ids``. IKE-2 is the only served engine (Item 16 Prompt 7).
 
 Examples::
 
     cd backend && python scripts/ike2_api_shadow_traffic_batch.py
-    cd backend && python scripts/ike2_api_shadow_traffic_batch.py --mode primary
     cd backend && python scripts/ike2_api_shadow_traffic_batch.py --limit 80
 """
 from __future__ import annotations
@@ -79,19 +74,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--corpus", type=Path, default=CORPUS_PATH)
     parser.add_argument("--limit", type=int, default=0, help="Max corpus rows (0 = all)")
     parser.add_argument(
-        "--mode",
-        choices=("shadow", "primary"),
-        default="shadow",
-        help="IKE2_MODE for this batch (default shadow; use primary for Prompt-7 soak)",
-    )
-    parser.add_argument(
         "--skip-product",
         action="store_true",
         help="Only hit evaluate-compliance (skip evaluate-product)",
     )
     args = parser.parse_args(argv)
-
-    os.environ["IKE2_MODE"] = args.mode
 
     from fastapi.testclient import TestClient
 
@@ -157,7 +144,6 @@ def main(argv: list[str] | None = None) -> int:
                 "evaluate_compliance_ok": n_compliance,
                 "evaluate_product_ok": n_product,
                 "errors": errors,
-                "ike2_mode": os.environ.get("IKE2_MODE"),
             },
             indent=2,
         )

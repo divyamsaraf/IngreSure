@@ -79,7 +79,6 @@ def test_jain_yeast_family_never_firm_safe(monkeypatch):
     """Root-cause class: plain yeast / yeast extract / tempeh must not be SAFE for Jain."""
     from core.bridge import _run_ike2_compliance, map_ike2_to_compliance_verdict
 
-    monkeypatch.setenv("IKE2_MODE", "primary")
     for label in (
         "yeast",
         "yeast extract",
