@@ -1,0 +1,13 @@
+{
+  "allowed_licenses": [
+    "CC0-1.0",
+    "CC-BY-4.0",
+    "ODbL-1.0",
+    "public-domain"
+  ],
+  "source_licenses": {
+    "produce_catalog": ["CC0-1.0", "public-domain"],
+    "animal_catalog": ["CC0-1.0", "public-domain"],
+    "infoods": ["CC-BY-4.0"]
+  }
+}
