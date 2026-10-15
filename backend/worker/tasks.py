@@ -171,7 +171,7 @@ def process_product_ingredients_batch(
 
 @celery_app.task(name="ike2_scheduled_audits")
 def ike2_scheduled_audits() -> dict[str, Any]:
-    """Item 12: run live IKE-2 audits; write report under docs/."""
+    """Item 12: run live IKE-2 audits; write report under .local_reports/."""
     from scripts.ike2_item12_scheduled_audits import main as run_audits
 
     code = run_audits([])

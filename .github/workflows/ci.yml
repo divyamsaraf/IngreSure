@@ -24,6 +24,17 @@ jobs:
         working-directory: backend
     steps:
       - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Start Supabase (Postgres + PostgREST; apply migrations)
+        working-directory: .
+        run: |
+          supabase start
+          eval "$(supabase status -o env)"
+          echo "SUPABASE_URL=${API_URL}" >> "$GITHUB_ENV"
+          echo "SUPABASE_SERVICE_ROLE_KEY=${SERVICE_ROLE_KEY}" >> "$GITHUB_ENV"
+          echo "SUPABASE_ANON_KEY=${ANON_KEY}" >> "$GITHUB_ENV"
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -31,6 +42,8 @@ jobs:
           cache-dependency-path: backend/requirements.txt
       - name: Install dependencies
         run: pip install -r requirements.txt
+      - name: Seed minimal IKE-2 rows for live-DB tests
+        run: python scripts/ci_seed_ike2_min.py
       - name: Check secrets hygiene (no SERVICE_ROLE / NEXT_PUBLIC_*SECRET* in frontend/)
         run: python scripts/check_secrets_hygiene.py
       - name: Verify E-number catalog
@@ -73,17 +86,22 @@ jobs:
         run: python scripts/ike2_label_corpus_shadow.py --fail-below-threshold
       - name: Must-never-Safe gate
         run: python -m pytest tests/ike2/test_must_never_be_safe.py tests/ike2/test_golden_safety_budget.py tests/ike2/test_db_rule_parity.py -q
-      - name: Item 41/42 replay CI (in-memory ontology + dumps; no Supabase)
-        run: python -m pytest tests/ike2/test_item41_42_replay_ci.py tests/ike2/test_usda_asserted_clears_frozen.py tests/ike2/test_bulk_source_trust_ceiling.py tests/ike2/test_provenance_fail_closed.py tests/ike2/test_ike2_view_schema_parity.py tests/ike2/test_vernacular_flag_derive.py tests/ike2/test_false_friend_probe_golden.py tests/ike2/test_reviewed_negatives_registry.py tests/ike2/test_idli_rava_warn_cap.py tests/ike2/test_asserted_false_pollution_guard.py -q -k "not live_alias"
+      - name: Item 41/42 replay CI (in-memory + live view with seeded DB)
+        run: python -m pytest tests/ike2/test_item41_42_replay_ci.py tests/ike2/test_usda_asserted_clears_frozen.py tests/ike2/test_bulk_source_trust_ceiling.py tests/ike2/test_provenance_fail_closed.py tests/ike2/test_ike2_view_schema_parity.py tests/ike2/test_vernacular_flag_derive.py tests/ike2/test_false_friend_probe_golden.py tests/ike2/test_reviewed_negatives_registry.py tests/ike2/test_idli_rava_warn_cap.py tests/ike2/test_asserted_false_pollution_guard.py -q
       - name: Commodity coverage promote + USDA head gate
         run: |
           # Validate recall only — do not rewrite ontology/seed lists in CI.
-          # FoodEx2 cream rows need L3/Supabase; offline CI allows 98% (4/233).
+          # With seeded Supabase, FoodEx2 cream rows may still miss L2; allow 98%.
           python scripts/ensure_commodity_coverage.py --check-only \
             --min-foodex2-promotable-recall 0.98
           git diff --exit-code -- ../data/ontology.json ../data/commodity_seed_lists/
-      - name: Run tests
+      - name: Run tests (includes live-DB suite)
         run: python -m pytest tests/ -q
+      - name: Item 12 scheduled audits against seeded DB
+        run: |
+          mkdir -p .local_reports
+          python scripts/ike2_item12_scheduled_audits.py \
+            --out .local_reports/item12_scheduled_audit_report.json
 
   frontend:
     runs-on: ubuntu-latest

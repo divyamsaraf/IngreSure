@@ -1,64 +1,87 @@
-__pycache__/
-.claude/
-backend/venv/
+# Markdown / docs (local only — not on GitHub)
+docs/
+*.md
+*.mdx
 
-# Local investigation / closeout artifacts (do not push to GitHub)
-docs/item*
-docs/batch*
-docs/phase*
-docs/suite_*
-docs/trust_*
-docs/usda_*
-docs/*_REPORT.md
-docs/*_SUMMARY.md
-docs/FULL_CODEBASE_*.md
-docs/DEEP_ANALYSIS_AND_DEPLOYMENT.md
-docs/VERIFICATION_AFTER_MODIFICATIONS.md
-docs/BACKEND_AND_FRONTEND_ANALYSIS_REPORT.md
-
-# Local-only scripts (verification, restart; not required in repo)
-backend/scripts/verify_chat_audit.py
-backend/scripts/restart_backend.sh
-
-# Local env (flags, secrets)
+# Local env (keep .env.example)
+.env
+.env.*
+!.env.example
 backend/.env
 backend/.commit_msg
 frontend/.env
 frontend/.env.local
 frontend/.env.*.local
-
-# User-specific / runtime data (do not commit secrets or env-specific learned data)
-data/profiles.json
-data/unknown_ingredients_log.json
-data/learned_regional_mappings.json
-
-# Tier 1 bulk downloads (large; regenerate via scripts/download_*.sh)
-data/raw/
-
-# Root env for Compose variable substitution (optional)
 /.env
 
-# Retired phase list (do not recreate; stage-of-record is docs/item16_*)
-PHASES.md
+# Secrets / credentials
+*.pem
+*.key
+*.p12
+service-account*.json
 
-# Stale internal overview (describes pre-Prompt-7 legacy/IKE2_MODE state; fold into README if revived)
-PROJECT_DETAILS.md
+# Tooling / caches
+__pycache__/
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+.DS_Store
+.vscode/
+.idea/
+node_modules/
+.next/
+dist/
+build/
+*.sqlite
+*.db
+*.log
+*.tsv
+*.bak
+*.tmp
+supabase/.temp/
 
-# Agent skills, rules, hooks, and lockfiles (local tooling; never commit)
+# Agent / local tooling
 .agents/
 .cursor/
 .claude/
+backend/venv/
 skills-lock.json
 skills-cursor/
 .cursor/hooks.json.tddguard-bak
 
-# Local data staging / backups (regenerate locally; do not commit)
+# Local-only scripts
+backend/scripts/verify_chat_audit.py
+backend/scripts/restart_backend.sh
+
+# User-specific / runtime data (not secrets; env-specific learned data)
+data/profiles.json
+data/unknown_ingredients_log.json
+data/learned_regional_mappings.json
+
+# Tier 1 bulk downloads (regenerate via scripts/download_*.sh)
+data/raw/
+
+# Local data staging / backups
 data/*_staging.json
 data/*.bak
 data/*.timestamp-*
 data/*.truncated-*
 
-# Local pip / TDD scratch (never commit)
+# Local pip / TDD scratch
 backend/.pip_tmp/
 backend/.tdd_test_write
 backend/ike2_rejects*.json
+
+# Retired local filenames
+PHASES.md
+PROJECT_DETAILS.md
+
+# Local generated reports (scripts/workflows write here; never commit)
+backend/.local_reports/
+**/suite_*report*
+**/trust_*report*
+**/usda_*report*
+**/item12_*audit_report*
+**/item44_benchmark_report*

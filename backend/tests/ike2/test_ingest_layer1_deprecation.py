@@ -27,9 +27,8 @@ def test_ingest_layer1_main_emits_deprecation_warning(monkeypatch, capsys, tmp_p
     assert "bulk_inject" in err
 
 
-def test_data_readme_declares_bulk_inject_canonical():
-    readme = Path(__file__).resolve().parents[3] / "data" / "README.md"
-    text = readme.read_text(encoding="utf-8")
+def test_ingest_module_points_callers_at_bulk_inject():
+    """Deprecation text lives on the module (docs/README are not in git)."""
+    text = Path(ingest_mod.__file__).read_text(encoding="utf-8")
     assert "bulk_inject" in text
-    assert "deprecated" in text.lower() or "DEPRECATED" in text
-    assert "ingest_layer1_json" in text
+    assert "deprecated" in text.lower() or "DeprecationWarning" in text

@@ -283,7 +283,9 @@ def main(argv=None) -> int:
     )
     ap.add_argument(
         "--out",
-        default=str(_REPO / "docs" / "item12_scheduled_audit_report.json"),
+        default=str(
+            _BACKEND / ".local_reports" / "item12_scheduled_audit_report.json"
+        ),
     )
     ap.add_argument(
         "--discovered-prior",

@@ -35,7 +35,7 @@ celery_app.conf.beat_schedule = {
         "kwargs": {"min_frequency": 1, "limit": 50},
     },
     # Item 12: nightly IKE-2 live audits (asserted-false, DISCOVERED, L2↔L3 drift,
-    # lexicon vs verdict). Report-only; writes docs/item12_scheduled_audit_report.json.
+    # lexicon vs verdict). Report-only; writes .local_reports/item12_*.json.
     "ike2-scheduled-audits-daily": {
         "task": "ike2_scheduled_audits",
         "schedule": 86400.0,

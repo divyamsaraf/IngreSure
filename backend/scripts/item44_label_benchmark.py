@@ -74,8 +74,9 @@ PROFILES = {
 }
 
 _IDS_PATH = _REPO / "data" / "item44_off_product_ids.json"
-_REPORT_JSON = _REPO / "docs" / "item44_benchmark_report.json"
-_REPORT_MD = _REPO / "docs" / "item44_benchmark_report.md"
+_REPORT_DIR = _BACKEND / ".local_reports"
+_REPORT_JSON = _REPORT_DIR / "item44_benchmark_report.json"
+_REPORT_MD = _REPORT_DIR / "item44_benchmark_report.md"
 
 
 def _off_get(url: str, timeout: int = 45, retries: int = 6) -> dict:
@@ -432,6 +433,7 @@ def run_benchmark(sample: dict) -> dict:
             "→ golden + flag_derive fix before pilot."
         ),
     }
+    _REPORT_DIR.mkdir(parents=True, exist_ok=True)
     _REPORT_JSON.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
 
     md = [

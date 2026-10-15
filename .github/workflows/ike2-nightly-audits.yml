@@ -11,16 +11,32 @@ jobs:
     runs-on: ubuntu-latest
     env:
       LLM_ENABLED: "false"
-      # Optional: set repository secrets for a read-only audit DB.
+      # Prefer hosted secrets when set; otherwise CI starts local Supabase below.
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-      # When "1", missing hosted DB secrets fail the job (pre-pilot gate).
       REQUIRE_LIVE_AUDIT: ${{ vars.REQUIRE_LIVE_AUDIT }}
     defaults:
       run:
         working-directory: backend
     steps:
       - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Start local Supabase when hosted secrets absent
+        working-directory: .
+        run: |
+          if [ -n "$SUPABASE_URL" ] && [ -n "$SUPABASE_SERVICE_ROLE_KEY" ]; then
+            echo "### Live audit: RUN (hosted secrets)" >> "$GITHUB_STEP_SUMMARY"
+            echo "using_hosted=1" >> "$GITHUB_ENV"
+          else
+            supabase start
+            eval "$(supabase status -o env)"
+            echo "SUPABASE_URL=${API_URL}" >> "$GITHUB_ENV"
+            echo "SUPABASE_SERVICE_ROLE_KEY=${SERVICE_ROLE_KEY}" >> "$GITHUB_ENV"
+            echo "### Live audit: RUN (local Supabase + migrations)" >> "$GITHUB_STEP_SUMMARY"
+            echo "using_hosted=0" >> "$GITHUB_ENV"
+          fi
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -28,39 +44,21 @@ jobs:
           cache-dependency-path: backend/requirements.txt
       - name: Install dependencies
         run: pip install -r requirements.txt
-      - name: Item 41/42 replay CI (no Supabase)
-        run: python -m pytest tests/ike2/test_item41_42_replay_ci.py tests/ike2/test_usda_asserted_clears_frozen.py tests/ike2/test_reviewed_negatives_registry.py -q
-      - name: Live audit gate
-        id: live_gate
-        run: |
-          if [ -n "$SUPABASE_URL" ] && [ -n "$SUPABASE_SERVICE_ROLE_KEY" ]; then
-            echo "mode=run" >> "$GITHUB_OUTPUT"
-            echo "### Live audit: RUN" >> "$GITHUB_STEP_SUMMARY"
-            echo "Hosted Supabase secrets present; running Item 12 wrapper." >> "$GITHUB_STEP_SUMMARY"
-          else
-            echo "mode=skip" >> "$GITHUB_OUTPUT"
-            echo "### Live audit: SKIPPED — no hosted DB" >> "$GITHUB_STEP_SUMMARY"
-            echo "Actions cannot reach local Supabase. Set \`SUPABASE_URL\` +" >> "$GITHUB_STEP_SUMMARY"
-            echo "\`SUPABASE_SERVICE_ROLE_KEY\` secrets, or leave as explicit skip." >> "$GITHUB_STEP_SUMMARY"
-            echo "Pre-pilot: hosted read-only audit DB + failure routing (Items 14/29)." >> "$GITHUB_STEP_SUMMARY"
-            if [ "$REQUIRE_LIVE_AUDIT" = "1" ]; then
-              echo "::error::REQUIRE_LIVE_AUDIT=1 but hosted DB secrets are missing"
-              exit 1
-            fi
-            # Explicit non-green annotation (neutral conclusion) so skip ≠ silent pass.
-            echo "::notice title=Live audit skipped::no hosted DB secrets — offline CI only"
-          fi
+      - name: Seed minimal IKE-2 rows
+        run: python scripts/ci_seed_ike2_min.py
+      - name: Item 41/42 replay CI
+        run: python -m pytest tests/ike2/test_item41_42_replay_ci.py tests/ike2/test_usda_asserted_clears_frozen.py tests/ike2/test_reviewed_negatives_registry.py tests/ike2/test_ike2_view_schema_parity.py -q
       - name: Run live scheduled audits
-        if: steps.live_gate.outputs.mode == 'run'
         run: |
+          mkdir -p .local_reports
           python scripts/ike2_item12_scheduled_audits.py --fail-on-findings \
-            --out ../docs/item12_scheduled_audit_report.json
+            --out .local_reports/item12_scheduled_audit_report.json
       - name: Upload audit report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: item12-scheduled-audit
           path: |
-            docs/item12_scheduled_audit_report.json
-            docs/item12_last_live_audit.json
+            backend/.local_reports/item12_scheduled_audit_report.json
+            backend/.local_reports/item12_last_live_audit.json
           if-no-files-found: ignore
