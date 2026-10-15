@@ -109,6 +109,19 @@ def _normalize_key(s: str) -> str:
 # Profile -> restriction_ids
 # ---------------------------------------------------------------------------
 
+# First-build contradictory pair only. Do not grow this set here.
+CONTRADICTORY_DIET_PAIRS = (frozenset({"vegan", "pescatarian"}),)
+
+
+def contradictory_diet_pair(restriction_ids: Optional[List[str]]) -> Optional[tuple]:
+    """Return the sorted pair when restriction_ids contains a forbidden combination."""
+    present = set(restriction_ids or [])
+    for pair in CONTRADICTORY_DIET_PAIRS:
+        if pair <= present:
+            return tuple(sorted(pair))
+    return None
+
+
 def profile_to_restriction_ids(user_profile: Optional[Dict[str, Any]]) -> List[str]:
     """Build restriction_ids from userProfile dict (dietary_preference, allergens, lifestyle)."""
     if not user_profile:

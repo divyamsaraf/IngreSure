@@ -44,6 +44,51 @@ def _run_ike2_evaluate_with_flags(
         return ComplianceVerdict(status=VerdictStatus.UNCERTAIN), []
 
 
+def evaluate_http(
+    ingredients: List[str],
+    restriction_ids: Optional[List[str]] = None,
+    *,
+    region_scope: Optional[str] = None,
+    include_matrix: bool = False,
+) -> Tuple[ComplianceVerdict, dict]:
+    """Verdict dict source plus the sibling ike2 object (schema_version, breakdown).
+
+    ``verdict`` at the HTTP top level stays ``ComplianceVerdict.to_dict()``.
+    ``assemble``'s integer ``verdict`` lives only inside the sibling object.
+    """
+    from core.bridge import _profile_from_restriction_ids, _run_ike2_compliance
+    from core.bridge import map_ike2_to_compliance_verdict
+    from core.knowledge.ike2.breakdown import by_restriction, restriction_matrix
+    from core.knowledge.ike2.response import SCHEMA_VERSION, assemble
+
+    try:
+        result, inputs, display_map = _run_ike2_compliance(
+            ingredients,
+            restriction_ids,
+            prepared_decomposed=None,
+            region=region_scope,
+        )
+        verdict = map_ike2_to_compliance_verdict(
+            result, inputs, input_display_map=display_map
+        )
+        profile = _profile_from_restriction_ids(restriction_ids)
+        block = assemble(inputs, result, profile, mode="b2b")
+        block["by_restriction"] = by_restriction(result, restriction_ids or [])
+        if include_matrix:
+            block["restriction_matrix"] = restriction_matrix(result)
+        return verdict, block
+    except Exception:
+        logger.exception(
+            "IKE2_API_EVALUATE_FAILED ingredients=%s restriction_ids=%s",
+            (ingredients or [])[:20],
+            restriction_ids,
+        )
+        return ComplianceVerdict(status=VerdictStatus.UNCERTAIN), {
+            "schema_version": SCHEMA_VERSION,
+            "by_restriction": [],
+        }
+
+
 def evaluate_ingredients(
     ingredients: List[str],
     restriction_ids: Optional[List[str]] = None,

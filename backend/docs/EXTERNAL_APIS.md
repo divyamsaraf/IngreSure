@@ -4,14 +4,13 @@ All endpoints used by the backend for verification and optional enrichment.
 
 ## Unknown ingredient → external API lookup (is it working?)
 
-**Yes.** When an ingredient is not in the static or dynamic ontology:
+**Yes, on the worker.** Chat, evaluate, and `/api/v1/resolve-ingredient` / `GET /api/v1/ingredient/{name}` resolve through IKE-2 (`core/knowledge/ike2/resolver.py`). A miss enqueues `ike2_unknown_queue`. The HTTP request does not call USDA. `try_api` and `use_api_fallback` are accepted and ignored. `CanonicalResolver` was removed in Item 33 Prompt 5.
 
-1. **Compliance engine** (`core/evaluation/compliance_engine.py`) calls `resolve_with_fallback(raw, try_api=True, ...)` for each unknown.
-2. **CanonicalResolver** (`core/knowledge/canonicalizer.py`) tries the knowledge DB (if enabled), then delegates to **IngredientRegistry.resolve_with_fallback**.
-3. **IngredientRegistry** (`core/ontology/ingredient_registry.py`) calls **enrich_unknown_ingredient** from the fetcher when `try_api=True`.
-4. **Fetcher** (`core/external_apis/fetcher.py`) runs **fetch_ingredient_from_apis** in order: **USDA FDC** → **Open Food Facts** → **PubChem** → **ChEBI** → **Wikidata**. The first good result is returned; on high confidence the ingredient is added to the dynamic ontology for future requests. **Cache**: only successful resolutions are cached (in-memory); "no result" is never cached, so unknown ingredients always trigger an external API search and you get the best/correct results.
+The worker (`enrich_unknown_batch` / `scripts/run_enrich_unknown_once.py`) drains that queue and calls the fetcher:
 
-Chat and scan both use `use_api_fallback=True`, so unknowns are looked up in real time. If all APIs fail or timeout, the ingredient is marked **UNCERTAIN** (not SAFE). To verify: use an ingredient that is not in the ontology (e.g. a regional name or chemical) and check logs for `ENRICHMENT usda_fdc`, `ENRICHMENT open_food_facts`, etc., or run `python scripts/check_external_apis.py`.
+1. **Fetcher** (`core/external_apis/fetcher.py`) runs **fetch_ingredient_from_apis** in order: **USDA FDC** → **Open Food Facts** → **PubChem** → **ChEBI** → **Wikidata**. The first good result is adapted into `ike2_*` (source `enrichment_api`). If every API fails, the queue row stays pending and the user-facing verdict stays **UNCERTAIN** (not SAFE).
+
+To verify the APIs themselves, run `python scripts/check_external_apis.py`, or watch worker logs for `ENRICHMENT usda_fdc`, `ENRICHMENT open_food_facts`, and so on.
 
 ## Regional / multi-language ingredient names (auto-expansion)
 
@@ -22,7 +21,7 @@ USDA and Open Food Facts are English-centric. To support **any region or languag
 3. **Online resolve** – If there is no static or learned mapping, the fetcher calls **Wikidata** with multiple languages (en, hi, es, fr, zh, de, ar, pt, ja, ko, …) to find an entity and its **English label**, then tries USDA/OFF with that label. If Wikidata finds nothing, an optional **LLM** (Ollama) prompt asks for the English name; the result is learned and used for USDA/OFF.
 4. **Persistence** – Successful API results (any source) are used to learn: `set_learned_english(regional_key, canonical_name)` so the database grows from user searches and handles all scenarios over time.
 
-So you do **not** need to add every regional name by hand: the first time someone searches e.g. “bajra”, the system resolves it (Wikidata or LLM), queries USDA with “pearl millet”, and saves “bajra” → “pearl millet” for next time. With Supabase knowledge DB enabled, the worker also stores the alias in `ingredient_aliases`, so resolution can happen from the DB without hitting external APIs again.
+So you do **not** need to add every regional name by hand: a curated map already covers names like “bajra” → “pearl millet”, and a worker enrichment that hits Wikidata can learn further aliases on `ike2_*`. Request-path resolve does not call Wikidata itself.
 
 ## Configuration (env)
 

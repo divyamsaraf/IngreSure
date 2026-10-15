@@ -137,6 +137,11 @@ def _apply_ontology_row(payload: Mapping[str, Any], *, ontology_path: Path) -> N
     row["flags"] = flags
     for k, v in flags.items():
         row[k] = v
+    # Keys deliberately present in the promote payload are asserted (true or false).
+    # Role-only path returns earlier and never reaches here.
+    if flags:
+        prior = set(row.get("asserted_flags") or [])
+        row["asserted_flags"] = sorted(prior | set(flags.keys()))
     if role_str is not None:
         row["role"] = role_str
     row["coverage_os_managed"] = True
@@ -281,8 +286,13 @@ def commit_demotion(
 
 
 def mirror_l3_inject(entry: Mapping[str, Any]) -> None:
-    """Phase 1 stub: L3 is a derived mirror, never source of truth."""
+    """Documented no-op (Item 4): L3 has no reader — do not write files or DB.
+
+    Coverage OS promotions apply to L2 (ontology.json / variant_aliases.json)
+    only. Building an L3 write path with no consumer is forbidden. This function
+    must remain side-effect-free aside from an info log.
+    """
     log.info(
-        "coverage_os L3 mirror stub; not source of truth; entry=%s",
+        "coverage_os L3 mirror stub (intentional no-op); not source of truth; entry=%s",
         entry.get("candidate_key") or entry.get("kind"),
     )

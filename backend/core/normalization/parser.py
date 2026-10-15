@@ -121,9 +121,10 @@ def flatten_ingredients(raw_str: str) -> List[str]:
     """
     Flatten a raw ingredient string into a list of normalized base ingredients.
 
-    1. Normalize and check processed-food map (e.g. "potato chips" -> ["potato", "vegetable oil", "salt"]).
-    2. Otherwise split by commas (respecting parentheses) and by parentheses; flatten.
-    3. Normalize each part and return deduplicated list (order preserved).
+    1. Normalize; keep-whole registry blocks recipe expansion (Item 2.1).
+    2. Check processed-food map (e.g. "potato chips" -> ["potato", "vegetable oil", "salt"]).
+    3. Otherwise split by commas (respecting parentheses) and by parentheses; flatten.
+    4. Normalize each part and return deduplicated list (order preserved).
 
     Handles:
     - "Enriched Bleached Wheat Flour (Bleached Wheat Flour, Niacin, Folic Acid)"
@@ -138,6 +139,12 @@ def flatten_ingredients(raw_str: str) -> List[str]:
 
     # Check processed food first (whole string normalized)
     key = normalize_ingredient_key(raw_str)
+    try:
+        from core.knowledge.ike2.keep_whole import is_keep_whole
+    except Exception:  # pragma: no cover
+        is_keep_whole = lambda _n: False  # type: ignore[misc, assignment]
+    if is_keep_whole(key):
+        return [key] if key else []
     if key in PROCESSED_FOOD_TO_BASE:
         return list(PROCESSED_FOOD_TO_BASE[key])
 
@@ -158,7 +165,9 @@ def flatten_ingredients(raw_str: str) -> List[str]:
                 if not p:
                     continue
                 pk = normalize_ingredient_key(p)
-                if pk in PROCESSED_FOOD_TO_BASE:
+                if is_keep_whole(pk):
+                    flat.append(pk)
+                elif pk in PROCESSED_FOOD_TO_BASE:
                     flat.extend(PROCESSED_FOOD_TO_BASE[pk])
                 elif pk:
                     flat.append(pk)

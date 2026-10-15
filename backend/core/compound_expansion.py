@@ -6,13 +6,22 @@ Typed neutralize (plant_mod / dairy_head / culinary_keep / process_keep) lives i
   - splits explicit "X with Y"
   - trusts PolicyResult when a policy fires
   - on passthrough, extracts via ``_RESTRICTED_KEYWORDS_*`` / find_sub_ingredients
+  - retains process-identity tokens (tempeh/miso/…) dropped by keyword extract
+    and OR-propagates process flags via ``propagate_process_flags`` (Item 2.1)
 """
 from __future__ import annotations
 
 import re
-from typing import Dict, List, Mapping, Optional, Set, Tuple
+from typing import Any, Dict, List, Mapping, Optional, Set, Tuple
 
 from core.knowledge.ike2.coverage_os.neutralize import apply_policies, build_role_index
+from core.knowledge.ike2.flag_derive import (
+    derive_identity_flags,
+    is_free_from_claim,
+    keyword_negated_in_phrase,
+)
+from core.knowledge.ike2.keep_whole import is_keep_whole, load_keep_whole_names
+from core.knowledge.ike2.process_flags import PROCESS_FLAG_SET, propagate_process_flags
 
 # Known restricted ingredient keywords — when found inside a multi-word
 # product name on neutralize passthrough, these are extracted for compliance.
@@ -90,6 +99,48 @@ def find_sub_ingredients(name: str) -> List[str]:
     return found
 
 
+def parent_process_flags(phrase: str) -> dict[str, Any]:
+    """Process flags implied by a parent compound phrase (for propagation)."""
+    derived = derive_identity_flags(phrase, {})
+    return {flag: True for flag in PROCESS_FLAG_SET if derived.get(flag)}
+
+
+def member_flags_with_parent_process(
+    parent_phrase: str,
+    member_flags: Mapping[str, Any],
+) -> dict[str, Any]:
+    """OR parent process flags onto a member's flag dict (Item 2.1 helper wire)."""
+    return propagate_process_flags(parent_process_flags(parent_phrase), member_flags)
+
+
+def _process_identity_tokens() -> Set[str]:
+    """Process-identity tokens from the keep-whole registry (Item 2 Prompt 4)."""
+    try:
+        return set(load_keep_whole_names())
+    except Exception:
+        return set()
+
+
+def _process_identity_atoms(phrase: str) -> List[str]:
+    """Tokens in ``phrase`` that carry process identity and must survive extract."""
+    words = phrase.lower().split()
+    identity = _process_identity_tokens()
+    out: List[str] = []
+    seen: Set[str] = set()
+    for w in words:
+        if w in seen:
+            continue
+        if w in identity:
+            seen.add(w)
+            out.append(w)
+            continue
+        flags = derive_identity_flags(w, {})
+        if any(flags.get(f) for f in PROCESS_FLAG_SET):
+            seen.add(w)
+            out.append(w)
+    return out
+
+
 def expand_compounds(
     ingredients: List[str],
     *,
@@ -117,12 +168,24 @@ def expand_compounds(
         if display and display.lower().strip() != key:
             display_map[key] = display
 
+    def _retain_process_identity(phrase: str) -> None:
+        """Keep tempeh/miso/… atoms that keyword extract would drop."""
+        for atom in _process_identity_atoms(phrase):
+            _emit(atom, phrase)
+            derived_from_map[atom.lower()] = phrase.lower()
+
     for ing in ingredients:
+        # 0. Keep-whole registry: never recipe-tear a registered process food.
+        if is_keep_whole(ing):
+            _emit(ing, "")
+            continue
+
         # 1. Explicit "X with Y" pattern
         m = re.match(r"^(.+?)\s+with\s+(.+)$", ing, re.IGNORECASE)
         if m:
             sub = m.group(2).strip()
             _emit(sub, ing)
+            _retain_process_identity(ing)
             continue
 
         # 2. Single-word ingredient -> pass through directly
@@ -137,13 +200,26 @@ def expand_compounds(
                 _emit(atom, ing)
             for child, parent in result.derived_from.items():
                 derived_from_map[child.lower()] = parent.lower()
+            # If neutralize tore to members, still keep process-identity tokens.
+            if result.derived_from:
+                _retain_process_identity(ing)
             continue
 
-        # 4. Passthrough: existing restricted-keyword extract (not neutralize)
-        subs = find_sub_ingredients(ing)
+        # 4. Passthrough: restricted-keyword extract + process-identity retain
+        # derived_from for keyword hits stays empty (Phase 2a baseline); only
+        # retained process-identity atoms record parent linkage.
+        # Free-from / contains-no claims must stay whole — extracting "egg" from
+        # "egg free pasta" turns a marketed-safe claim into a false Avoid.
+        if is_free_from_claim(ing):
+            _emit(ing, "")
+            continue
+        subs = [
+            s for s in find_sub_ingredients(ing) if not keyword_negated_in_phrase(ing, s)
+        ]
         if subs:
             for sub in subs:
                 _emit(sub, ing)
+            _retain_process_identity(ing)
         else:
             _emit(ing, "")
 

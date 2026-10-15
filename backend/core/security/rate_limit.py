@@ -145,13 +145,52 @@ def chat_rate_limit(key: str) -> str:
 
 
 def api_v1_rate_limit(key: str) -> str:
-    """Dynamic /api/v1/* limit: B2B tier resolved from the API key, else the shared default."""
+    """Dynamic /api/v1/* limit: key rpm overrides the tier, else the tier default."""
     if key.startswith(_API_KEY_PREFIX):
         api_key = key[len(_API_KEY_PREFIX):]
-        tier = get_api_key_tier(api_key)
-        if tier:
-            return B2B_TIER_LIMITS[tier]
+        entry = get_api_key_entry(api_key)
+        if entry:
+            rpm = entry.get("rpm")
+            if isinstance(rpm, bool):
+                rpm = None
+            if isinstance(rpm, (int, float)) and rpm > 0:
+                return f"{int(rpm)}/minute"
+            if isinstance(rpm, str) and rpm.strip().isdigit() and int(rpm) > 0:
+                return f"{int(rpm)}/minute"
+            tier = entry.get("tier")
+            if tier in B2B_TIER_LIMITS:
+                return B2B_TIER_LIMITS[tier]
     return RATE_LIMIT_API_V1_DEFAULT
+
+
+def known_b2b_api_key(request: Request) -> Optional[str]:
+    """X-API-Key, or a Bearer token that is itself a B2B_API_KEYS entry."""
+    api_key = (request.headers.get("x-api-key") or "").strip()
+    if api_key and get_api_key_entry(api_key):
+        return api_key
+    auth = request.headers.get("authorization") or ""
+    if auth.startswith("Bearer "):
+        token = auth[7:].strip()
+        if token and get_api_key_entry(token):
+            return token
+    return None
+
+
+def require_b2b_api_key(request: Request) -> None:
+    """401 on /api/v1 when ENVIRONMENT=production and the key is missing or unknown.
+
+    Pytest leaves ENVIRONMENT unset, so the gate stays open there. Chat and
+    profile do not call this.
+    """
+    from fastapi import HTTPException
+
+    import core.config as config
+
+    if not config.PRODUCTION:
+        return
+    if known_b2b_api_key(request):
+        return
+    raise HTTPException(status_code=401, detail="API key required")
 
 
 # Shared limiter instance: created once so app.py and core/api/v1/routes.py both

@@ -14,6 +14,7 @@ _ROW_FLAG_KEYS = (
     "bee_product", "dairy_source", "peanut_source", "tree_nut_source",
     "sesame_source", "soy_source", "gluten_source", "mustard_source",
     "celery_source", "lupin_source", "sulphite_source", "verdict_cap",
+    "enzyme_animal_source", "enzyme_microbial_source",
 )
 
 

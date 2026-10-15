@@ -4,7 +4,8 @@ from core.knowledge.ike2 import truth_anchor
 from core.knowledge.ike2.rules import rule_identity
 from core.knowledge.ike2.verdict import Verdict, aggregate
 
-# Knowledge-state ranking for the C2 min_knowledge_state gate.
+# Knowledge-state ranking for the clean-pass SAFE floor (and Tier-1 elevation).
+# Triggered FAIL does not consult min_knowledge_state (Item 34).
 _KS_RANK = {
     "UNCLASSIFIED": 0,
     "DISCOVERED": 1,
@@ -21,6 +22,17 @@ _VEGAN_RELIGIOUS = frozenset({
 })
 _DAIRY_EGG = frozenset({"vegan", "dairy_free", "lactose_free", "egg_free"})
 _HALAL_KOSHER = frozenset({"halal", "kosher"})
+
+# Allergy + medical: triggered FAIL stands even when trusted=False (Item 42).
+# Untrusted still caps a clean pass (never firm SAFE). Lifestyle/religious stay
+# fail-closed UNCERTAIN under untrusted.
+_ALLERGY_MEDICAL = frozenset({
+    "peanut_allergy", "tree_nut_allergy", "soy_allergy", "sesame_allergy",
+    "fish_allergy", "shellfish_allergy", "mustard_allergy", "lupin_allergy",
+    "celery_allergy", "onion_allergy", "garlic_allergy",
+    "gluten_free", "celiac_strict", "lactose_free", "dairy_free", "egg_free",
+    "sulfite_sensitive",
+})
 
 # Uncertainty phrases that are irrelevant to diet/allergen origin (do not cap SAFE).
 _UNCERTAINTY_IRRELEVANT = (
@@ -108,9 +120,9 @@ def _uncertainty_ceiling(restriction: str, flags: dict, animal_origin: bool) -> 
 
 # Allergen / insect / bee bits that Tier-2/DB often under-flags. Overlaying these
 # True values is always safe (false-Avoid >> false-SAFE). Do NOT blindly overlay
-# animal_origin — E910 resolves to canonical l-cysteine with verdict_cap WARN and
-# animal_origin False; a separate blunt "l-cysteine" LOCKED fact has animal_origin
-# True and would turn deliberate Depends into false Avoid.
+# animal_origin — do not copy animal_origin onto a row that already carries
+# verdict_cap / uncertainty (E910). That would turn a deliberate Depends into
+# a firm Avoid. The l-cysteine hand anchor itself no longer asserts animal_origin.
 _OVERLAY_SAFETY_TRUE = frozenset({
     "egg_source", "dairy_source", "gluten_source", "soy_source", "sesame_source",
     "peanut_source", "tree_nut_source", "fish_source", "shellfish_source",
@@ -126,8 +138,8 @@ def _effective_flags(r) -> dict:
     Ontology/DB rows are often ``AUTO_CLASSIFIED`` and omit allergen bits
     (``fish_source`` false on tuna, missing ``bee_product`` on honey). Overlay
     True safety flags from LOCKED/VERIFIED Tier-1 by canonical name. Preserve
-    deliberate origin uncertainty (verdict_cap / uncertainty_flags) so compounds
-    like E910 stay Depends rather than false Avoid.
+    deliberate origin uncertainty (verdict_cap / uncertainty_flags) so an
+    uncertain additive stays Depends rather than a false Avoid.
     """
     flags = dict(getattr(r, "flags", {}) or {})
     fact = truth_anchor.lookup(getattr(r, "canonical_name", "") or "")
@@ -158,9 +170,10 @@ def _ks_rank(state: str) -> int:
 def _effective_knowledge_state(r) -> str:
     """Elevate row KS when a curated Tier-1 fact exists for the same canonical.
 
-    Systemic class: DB/ontology rows stuck at DISCOVERED demote medical FAIL to
-    Depends and clean SAFE to WARN, even when flags are correct. If Tier-1 has
-    LOCKED/VERIFIED the ingredient, trust that curation for gating.
+    Used only for the clean-pass SAFE floor (UNCLASSIFIED / DISCOVERED). A
+    triggered FAIL stands regardless of knowledge_state (Item 34) — low trust
+    must not silence a positive hazard flag. If Tier-1 has LOCKED/VERIFIED the
+    ingredient, trust that curation when applying the SAFE floor.
     """
     ks = getattr(r, "knowledge_state", None) or "UNCLASSIFIED"
     fact = truth_anchor.lookup(getattr(r, "canonical_name", "") or "")
@@ -169,12 +182,6 @@ def _effective_knowledge_state(r) -> str:
     if _ks_rank(fact.knowledge_state) > _ks_rank(ks):
         return fact.knowledge_state
     return ks
-
-
-def _ks_gate_ok(knowledge_state: str, rule) -> bool:
-    """C2: rule may only assert a definite verdict at/above its min state."""
-    minimum = getattr(rule, "min_knowledge_state", "UNCLASSIFIED")
-    return _ks_rank(knowledge_state) >= _ks_rank(minimum)
 
 
 def _meat_fish_derived(flags: dict) -> bool:
@@ -313,9 +320,12 @@ def _verdict_for(r, rule, severity: Optional[str]):
     triggered, species_unknown, role = _rule_triggered(r, flags, rule)
     caution = None
 
-    # Untrusted resolutions may never drive Avoid or Safe -> always UNCERTAIN.
+    # Untrusted (e.g. DB row with *_inferred): never firm SAFE. Triggered
+    # allergy/medical FAIL still stands (Item 42 — same asymmetry as Item 34
+    # through the trust gate). Lifestyle/religious stay UNCERTAIN.
     if not trusted:
-        return Verdict.UNCERTAIN, triggered, trace, caution
+        if not triggered or restriction not in _ALLERGY_MEDICAL:
+            return Verdict.UNCERTAIN, triggered, trace, caution
 
     if species_unknown:
         return Verdict.UNCERTAIN, triggered, trace, "inherent_uncertainty"
@@ -342,15 +352,12 @@ def _verdict_for(r, rule, severity: Optional[str]):
         if ceiling is not None:
             return ceiling, triggered, trace, "inherent_uncertainty"
 
-    # Use Tier-1-elevated KS so stale DISCOVERED DB rows cannot soft-fail safety.
-    knowledge_state = _effective_knowledge_state(r)
-
-    # A definite FAIL needs sufficient knowledge state to stand.
-    if base == Verdict.FAIL and not _ks_gate_ok(knowledge_state, rule):
-        return Verdict.UNCERTAIN, triggered, trace, "unverified_knowledge"
-
-    # Conservative knowledge-state propagation on a clean pass.
+    # Conservative knowledge-state propagation on a clean pass only.
+    # Triggered FAIL / WARN stand regardless of knowledge_state (Item 34):
+    # a positive hazard flag does not need "freshness" to caution the user.
+    # Low-trust states are barred from firm SAFE, never from Avoid.
     if base == Verdict.SAFE:
+        knowledge_state = _effective_knowledge_state(r)
         if knowledge_state == "UNCLASSIFIED":
             return Verdict.UNCERTAIN, triggered, trace, "unverified_knowledge"
         if knowledge_state == "DISCOVERED":

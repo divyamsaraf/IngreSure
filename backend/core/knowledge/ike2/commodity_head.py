@@ -100,6 +100,10 @@ def simple_commodity_head(name: str) -> str | None:
     raw = (name or "").strip()
     if not raw:
         return None
+    # Sulfured / sulphured fruit must not collapse to the fresh commodity
+    # (loses sulphite_source → false SAFE under sulfite_sensitive).
+    if re.search(r"sulfur|sulphur|sulfited|sulphited", raw, re.I):
+        return None
 
     # Prefer original punctuation: multi-comma forms must refuse before
     # normalize collapses them into spaces.

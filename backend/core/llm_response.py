@@ -1,7 +1,6 @@
 """
-LLM-powered response composer for greetings, profile updates, and general questions.
-Used when the app needs natural-language replies (greeting, profile confirmation, general Q&A).
-Verdict responses use the template-based response_composer for consistency and speed.
+LLM-powered response composer for greetings, general questions, and optional verdict prose.
+Profile-update acknowledgments use templates in ``response_composer`` (no LLM helper).
 """
 import logging
 import re
@@ -83,22 +82,6 @@ def llm_compose_greeting(profile: Any = None) -> Optional[str]:
             "You are an ingredient safety checker — do NOT say grocery store or welcome to a store. "
             "Keep it to 1-2 sentences. Do NOT offer recipes or alternatives."
         )
-    return _call_ollama(_RESPONSE_SYSTEM_PROMPT, prompt)
-
-
-def llm_compose_profile_update(
-    profile: Any,
-    updated_fields: Dict[str, Any],
-    has_ingredients: bool = False,
-) -> Optional[str]:
-    """Use LLM for profile update acknowledgment."""
-    diet = getattr(profile, "dietary_preference", "") or ""
-    changes = [f"{k}: {v}" for k, v in updated_fields.items()]
-    prompt = f"The user updated their profile. Changes: {'; '.join(changes)}. Current diet: {diet}."
-    if has_ingredients:
-        prompt += " They also asked about ingredients (answered separately)."
-    else:
-        prompt += " Confirm the update warmly and invite them to ask about ingredients. Keep it to 1-2 sentences."
     return _call_ollama(_RESPONSE_SYSTEM_PROMPT, prompt)
 
 

@@ -22,7 +22,11 @@ from core.knowledge.ike2.etl.adapt import BOOL_FLAGS, map_record as map_generic_
 from core.knowledge.ike2.etl.adapt_e_number import map_record as map_e_number_record
 from core.knowledge.ike2.etl.reconcile import reconcile
 from core.knowledge.ike2.etl.sources import canonical_source, default_knowledge_state
-from core.knowledge.ike2.etl.validate import validate_rows
+from core.knowledge.ike2.etl.validate import (
+    mark_curated_asserted_negatives,
+    merged_row_for_validate,
+    validate_rows,
+)
 
 
 @dataclass
@@ -72,7 +76,22 @@ def inject(records, source: str, writer) -> InjectStats:
             stats.inserted += 1
         else:
             incoming = {f: row[f] for f in BOOL_FLAGS}
-            result = reconcile(SimpleNamespace(**existing), incoming, canon)
+            result = reconcile(
+                SimpleNamespace(**existing),
+                incoming,
+                canon,
+                incoming_asserted=row.get("asserted_flags") or [],
+                incoming_knowledge_state=row.get("knowledge_state"),
+            )
+            # Same invariant as Item 12: validate MERGED asserted_flags.
+            merged = merged_row_for_validate(existing, result)
+            if row.get("curated_asserted_negatives"):
+                merged = mark_curated_asserted_negatives(merged)
+            ok_m, rejects_m = validate_rows([merged])
+            if rejects_m:
+                writer.quarantine(rejects_m[0], canon)
+                stats.rejected += 1
+                continue
             writer.update_group(existing["id"], result)
             gid = existing["id"]
             stats.updated += 1
@@ -111,7 +130,19 @@ def _inject_e_number_catalog(records, writer) -> InjectStats:
             stats.inserted += 1
         else:
             incoming = {f: row[f] for f in BOOL_FLAGS}
-            result = reconcile(SimpleNamespace(**existing), incoming, canon)
+            result = reconcile(
+                SimpleNamespace(**existing),
+                incoming,
+                canon,
+                incoming_asserted=row.get("asserted_flags") or [],
+                incoming_knowledge_state=row.get("knowledge_state"),
+            )
+            merged = merged_row_for_validate(existing, result)
+            ok_m, rejects_m = validate_rows([merged])
+            if rejects_m:
+                writer.quarantine(rejects_m[0], canon)
+                stats.rejected += 1
+                continue
             writer.update_group(existing["id"], result)
             gid = existing["id"]
             stats.updated += 1
@@ -133,10 +164,13 @@ _GROUP_COLUMNS = set(BOOL_FLAGS) | {
     "alcohol_content",
     "alcohol_role",
     "uncertainty_flags",
+    "asserted_flags",
     "knowledge_state",
     "primary_source_url",
     "classification_method",
     "verdict_cap",
+    "trust_refreshed_at",
+    "source",
 }
 
 
@@ -170,9 +204,37 @@ class SupabaseWriter:
             .data[0]["id"]
         )
 
+    def list_discovered_names(self) -> set[str]:
+        names: set[str] = set()
+        start = 0
+        page = 1000
+        while True:
+            rows = (
+                self.c.table("ike2_ingredient_groups")
+                .select("canonical_name")
+                .eq("knowledge_state", "DISCOVERED")
+                .range(start, start + page - 1)
+                .execute()
+                .data
+                or []
+            )
+            for r in rows:
+                n = (r.get("canonical_name") or "").strip()
+                if n:
+                    names.add(n)
+            if len(rows) < page:
+                break
+            start += page
+        return names
+
     def update_group(self, gid, result):
+        from datetime import datetime, timezone
+
         update = dict(result.merged_flags)
         update["knowledge_state"] = result.knowledge_state
+        update["asserted_flags"] = list(result.merged_asserted_flags)
+        # Item 4.1: explicit trust clock (updated_at is not bumped reliably).
+        update["trust_refreshed_at"] = datetime.now(timezone.utc).isoformat()
         # Reconcile ORs sticky plant_origin from older bad rows onto animal
         # commodities; the DB CHECK dual_origin_requires_uncertainty rejects
         # that unless uncertainty is set. Prefer clearing plant on seafood /
@@ -262,11 +324,19 @@ class _CollectWriter:
         self.groups[row["canonical_name"]] = {**row, "id": gid}
         return gid
 
+    def list_discovered_names(self) -> set[str]:
+        return {
+            n
+            for n, g in self.groups.items()
+            if g.get("knowledge_state") == "DISCOVERED" and n
+        }
+
     def update_group(self, gid, result):
         for g in self.groups.values():
             if g["id"] == gid:
                 g.update(result.merged_flags)
                 g["knowledge_state"] = result.knowledge_state
+                g["asserted_flags"] = list(result.merged_asserted_flags)
                 return
 
     def upsert_ingredient(self, gid, normalized_name, source):
@@ -302,6 +372,21 @@ def main(argv=None):
     parser.add_argument("--limit", type=int, default=None, help="process only the first N records")
     parser.add_argument("--dry-run", action="store_true", help="validate + reconcile in memory, write nothing")
     parser.add_argument("--reject-report", default="ike2_rejects.json", help="where to write quarantined rows")
+    parser.add_argument(
+        "--curated-asserted-negatives",
+        action="store_true",
+        help="stem-triage path: allow deliberate asserted-false blocks (mark_curated_asserted_negatives)",
+    )
+    parser.add_argument(
+        "--allow-discovered-additions",
+        default="",
+        help="comma-separated canonical names allowed to newly enter DISCOVERED (else fail)",
+    )
+    parser.add_argument(
+        "--discovered-diff",
+        default="",
+        help="optional path to write before/after DISCOVERED name diff JSON",
+    )
     args = parser.parse_args(argv)
 
     file_source, records = load_dump(args.file)
@@ -310,12 +395,48 @@ def main(argv=None):
         parser.error("no source: pass --source for a bare-list dump")
     if args.limit is not None:
         records = records[: args.limit]
+    if args.curated_asserted_negatives:
+        from core.knowledge.ike2.etl.validate import mark_curated_asserted_negatives
+
+        records = [mark_curated_asserted_negatives(r) for r in records]
 
     writer = _build_writer(args.dry_run, args.reject_report)
+    before_discovered = set()
+    if hasattr(writer, "list_discovered_names"):
+        before_discovered = writer.list_discovered_names()
     stats = inject(records, source, writer)
     writer.flush()
-
-    print(json.dumps({"source": canonical_source(source), "dry_run": args.dry_run, **stats.as_dict()}, indent=2))
+    after_discovered = set()
+    if hasattr(writer, "list_discovered_names"):
+        after_discovered = writer.list_discovered_names()
+    added = sorted(after_discovered - before_discovered)
+    removed = sorted(before_discovered - after_discovered)
+    allow = {n.strip() for n in (args.allow_discovered_additions or "").split(",") if n.strip()}
+    unexplained = sorted(set(added) - allow)
+    diff = {
+        "before_count": len(before_discovered),
+        "after_count": len(after_discovered),
+        "added": added,
+        "removed": removed,
+        "unexplained_additions": unexplained,
+    }
+    if args.discovered_diff:
+        with open(args.discovered_diff, "w") as fh:
+            json.dump(diff, fh, indent=2)
+            fh.write("\n")
+    out = {
+        "source": canonical_source(source),
+        "dry_run": args.dry_run,
+        **stats.as_dict(),
+        "discovered_diff": diff,
+    }
+    print(json.dumps(out, indent=2))
+    if unexplained and not args.dry_run:
+        print(
+            f"ERROR: unexplained DISCOVERED additions: {unexplained}",
+            file=sys.stderr,
+        )
+        return 1
     return 0
 
 

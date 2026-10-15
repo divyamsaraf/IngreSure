@@ -11,6 +11,7 @@ MOLLUSC_SPECIES: frozenset[str] = frozenset({"mollusk", "mollusc"})
 ANIMALISH_FLAGS: frozenset[str] = frozenset({
     "animal_origin", "egg_source", "fish_source", "shellfish_source",
     "insect_derived", "bee_product", "dairy_source",
+    "enzyme_animal_source",
 })
 
 

@@ -24,10 +24,12 @@ class EvaluateComplianceRequest(BaseModel):
     region_scope: Optional[str] = None
     use_api_fallback: bool = True
     profile_context: Optional[Dict[str, Any]] = None
+    include_restriction_matrix: bool = False
 
 
 class EvaluateComplianceResponse(BaseModel):
     verdict: Dict[str, Any]
+    ike2: Dict[str, Any] = Field(default_factory=dict)
 
 
 class EvaluateProductRequest(BaseModel):
@@ -36,9 +38,11 @@ class EvaluateProductRequest(BaseModel):
     restriction_ids: List[str] = Field(default_factory=list)
     use_api_fallback: bool = True
     profile_context: Optional[Dict[str, Any]] = None
+    include_restriction_matrix: bool = False
 
 
 class EvaluateProductResponse(BaseModel):
     parsed_ingredients: List[str]
     verdict: Dict[str, Any]
+    ike2: Dict[str, Any] = Field(default_factory=dict)
 

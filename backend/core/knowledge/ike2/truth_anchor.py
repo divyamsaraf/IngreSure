@@ -88,10 +88,22 @@ _add(["shellac", "confectioners glaze", "pharmaceutical glaze"], "shellac",
 _add(["beeswax"], "beeswax", _f(animal_origin=True, insect_derived=True))
 _add(["bone phosphate"], "bone phosphate", _f(animal_origin=True))
 _add(["disodium inosinate"], "disodium inosinate", _f(animal_origin=True))
-_add(["l-cysteine", "cysteine"], "l-cysteine", _f(animal_origin=True))
+_add(
+    ["l-cysteine", "cysteine"],
+    "l-cysteine",
+    _f(
+        # Source is contested (feather/hair or microbial fermentation). A firm
+        # animal_origin would Avoid the name while E910 stays Depends.
+        verdict_cap="WARN",
+        uncertainty_flags=[
+            "may_be_synthetic_or_from_plant_fermentation",
+            "traditionally_from_poultry_feathers_or_hog_hair",
+        ],
+    ),
+)
 _add(["lanolin", "wool grease", "wool wax", "wool fat"], "lanolin", _f(animal_origin=True))
-_add(["rennet", "animal rennet"], "rennet", _f(animal_origin=True))
-_add(["pepsin"], "pepsin", _f(animal_origin=True))
+_add(["rennet", "animal rennet"], "rennet", _f(animal_origin=True, enzyme_animal_source=True))
+_add(["pepsin"], "pepsin", _f(animal_origin=True, enzyme_animal_source=True))
 _add(["collagen"], "collagen", _f(animal_origin=True))
 _add(["honey"], "honey", _f(animal_origin=True, bee_product=True))
 _add(["castoreum"], "castoreum", _f(animal_origin=True))
@@ -175,18 +187,90 @@ _add(["wheat"], "wheat", _f(gluten_source=True))
 _add(["gluten"], "gluten", _f(gluten_source=True))
 _add(["barley"], "barley", _f(gluten_source=True))
 _add(["rye"], "rye", _f(gluten_source=True))
+_add(["einkorn"], "einkorn", _f(gluten_source=True))
+_add(["khorasan", "khorasan wheat"], "khorasan", _f(gluten_source=True))
+_add(["spelt"], "spelt", _f(gluten_source=True))
+# Idli rava is *usually* parboiled rice grits, but brands blend wheat — same
+# honesty class as L-cysteine. WARN cap, no firm gluten bit either way.
+_add(
+    ["idli rava", "idli ravai", "rice rava", "rice sooji", "rice suji"],
+    "idli rava",
+    _f(
+        plant_origin=True,
+        verdict_cap="WARN",
+        uncertainty_flags=["usually_parboiled_rice_check_blend"],
+    ),
+)
 _add(["soy", "soybean", "edamame"], "soy", _f(soy_source=True))
 _add(["tofu"], "tofu", _f(soy_source=True))
 _add(["tempeh"], "tempeh", _f(soy_source=True, fungal=True))
 _add(["soy sauce"], "soy sauce", _f(soy_source=True))
 _add(["soy lecithin"], "soy lecithin", _f(soy_source=True))
 _add(["sesame", "sesame seed"], "sesame", _f(sesame_source=True))
-_add(["tahini"], "tahini", _f(sesame_source=True))
-_add(["mustard", "mustard seed"], "mustard", _f(mustard_source=True))
-_add(["celery", "celeriac"], "celery", _f(celery_source=True))
-_add(["lupin", "lupin flour"], "lupin", _f(lupin_source=True))
-_add(["sulphite", "sulfite", "sodium metabisulfite", "potassium metabisulfite"],
-     "sulphite", _f(sulphite_source=True))
+_add(["tahini", "tahini paste"], "tahini", _f(sesame_source=True))
+_add(["mustard", "mustard seed", "mustard seeds", "rai"], "mustard", _f(mustard_source=True))
+_add(["celery", "celeriac", "celery stalk"], "celery", _f(celery_source=True))
+_add(
+    ["lupin", "lupin flour", "lupins", "lupini", "lupini beans", "lupine beans"],
+    "lupin",
+    _f(lupin_source=True),
+)
+_add(
+    ["crustaceans", "crustacean"],
+    "crustaceans",
+    _f(animal_origin=True, shellfish_source=True, animal_species="crustacean"),
+)
+_add(
+    ["mollusks", "mollusk", "molluscs", "mollusc"],
+    "mollusks",
+    _f(animal_origin=True, shellfish_source=True, animal_species="mollusk"),
+)
+# Hand sulphite cluster must cover common EU/US spellings so generated e-number
+# anchors cannot shadow them with sulphite_source=false (Item 7 / 2026-10-07).
+_add(
+    [
+        "sulphite",
+        "sulfite",
+        "sulphites",
+        "sulfites",
+        "sulphur dioxide",
+        "sulfur dioxide",
+        "e220",
+        "sodium sulphite",
+        "sodium sulfite",
+        "e221",
+        "sodium hydrogen sulphite",
+        "sodium hydrogen sulfite",
+        "sodium bisulfite",
+        "sodium bisulphite",
+        "e222",
+        "sodium metabisulfite",
+        "sodium metabisulphite",
+        "sodium pyrosulfite",
+        "e223",
+        "potassium metabisulfite",
+        "potassium metabisulphite",
+        "e224",
+        "potassium sulphite",
+        "potassium sulfite",
+        "e225",
+        "calcium sulphite",
+        "calcium sulfite",
+        "e226",
+        "calcium hydrogen sulphite",
+        "calcium hydrogen sulfite",
+        "calcium bisulfite",
+        "calcium bisulphite",
+        "e227",
+        "potassium hydrogen sulphite",
+        "potassium hydrogen sulfite",
+        "potassium bisulfite",
+        "potassium bisulphite",
+        "e228",
+    ],
+    "sulphite",
+    _f(sulphite_source=True),
+)
 _add(["wheat flour", "enriched wheat flour", "bleached wheat flour"], "wheat",
      _f(gluten_source=True))
 _add(["wheat gluten"], "gluten", _f(gluten_source=True))
