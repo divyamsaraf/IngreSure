@@ -2,7 +2,13 @@ __pycache__/
 .claude/
 backend/venv/
 
-# One-off analysis dumps under docs/ (specs, indexes, ops guides are tracked)
+# Local investigation / closeout artifacts (do not push to GitHub)
+docs/item*
+docs/batch*
+docs/phase*
+docs/suite_*
+docs/trust_*
+docs/usda_*
 docs/*_REPORT.md
 docs/*_SUMMARY.md
 docs/FULL_CODEBASE_*.md

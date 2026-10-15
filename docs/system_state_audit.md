@@ -1,7 +1,5 @@
 # System State Audit
 
-**Point-in-time snapshot (2026-08-06).** Later gap analyses diff against this file; do not rewrite it to match today. Several things it names have since been removed: the Redis resolve cache, `lifecycle.py`, `compliance_engine.py`, and `IKE2_MODE`.
-
 **Date:** 2026-08-06  
 **Scope:** Read-only investigation of repository structure, schema, entities, ingestion, IKE-2/legacy paths, API surface, tests, gaps, and named specs.  
 **Method:** Migration SQL as schema source of truth; live Supabase at `127.0.0.1:54321` was not reachable (connection refused), so row counts are unavailable.

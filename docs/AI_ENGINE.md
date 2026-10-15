@@ -1,29 +1,18 @@
-# AI / LLM touchpoints (current)
+# AI Engine Internals
 
-**Authority for Item 6 work:** `docs/item6_llm_pipeline_spec.md`.  
-This file replaces an obsolete “Safety Analyst / llm_normalizer” description that never matched the living codebase.
+This document explains the inner workings of the `backend/` directory services.
 
-## Invariant
+## 1. The Safety Analyst (`safety_analyst.py`)
 
-**IKE-2 resolve and compliance never call an LLM.** Verdicts come from ontology/DB flags × restriction rules. Ollama is UX and optional enrichment assist only.
+The Safety Analyst is a **Hybrid System** designed to be "Safe by Design". It does not rely solely on LLM hallucinations.
 
-## Where Ollama is used
+### The "Gold Standard" Logic
+1.  **Normalization**: `llm_normalizer.py` converts messy OCR text into canonical ingredient names (e.g., "Mlk" -> "milk").
+2.  **O(1) Lookup**: `ingredient_ontology.py` contains a hardcoded dictionary of 300+ common ingredients with their biological source and allergen flags.
+3.  **Deterministic Evaluation**:
+    - If `Source == Animal` AND `Diet == Vegan` -> **BLOCK**.
+    - If `Source == Milk` AND `Allergy == Dairy` -> **BLOCK**.
+    - This logic runs *before* any LLM inference, ensuring that obvious violations are never missed.
+4.  **LLM Fallback**: Only if an ingredient is `Unclear` (not in ontology) does the system ask **Llama 3.2** to analyze it.
 
-| Role | Module | When |
-|------|--------|------|
-| Intent fallback | `core/llm_intent.py` | Chat: after rule-based intent is weak/general |
-| Greeting / general / verdict prose | `core/llm_response.py` | Chat stream; templates if LLM off or down |
-| Enrichment origin classify | `core/knowledge/llm_classify.py` | Worker only, after API path; adds `llm_classified` |
-| Regional English-name hint | `core/external_apis/fetcher.py` | After Wikidata miss on enrich |
-
-Config: `LLM_ENABLED` (default on; CI forces off), `OLLAMA_API_URL`, `OLLAMA_MODEL`, intent/response timeouts in `core/config.py`.
-
-## What does not exist
-
-- No `llm_normalizer.py`, no scan/OCR → ingredient LLM path, no `/scan` backend route.
-- No embeddings / vector matching / unified “ML pipeline” package.
-- Coverage OS induction (`cluster` / `propose_alias` / `propose_role`) is deterministic heuristics — not LLM.
-
-## Fail-soft
-
-`LLM_ENABLED=false`, timeout, or Ollama down → chat uses templates; enrichment skips classify and continues with API-only / DISCOVERED facts. Compliance behavior is unchanged.
+The platform is **grocery-only**; there is no RAG service or verification service (those were removed with the restaurant/menu schema).

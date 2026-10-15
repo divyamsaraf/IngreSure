@@ -20,7 +20,7 @@ This checks connectivity, lists public tables and their RLS status, and summariz
 | `ingredient_groups` | Canonical ingredient identity (origin, flags) | Yes (legacy path / enrichment) | ON, backend-only |
 | `ingredients` | Names/strings that map to a group | Yes | ON, backend-only |
 | `ingredient_aliases` | Normalized alias → ingredient → group | Yes | ON, backend-only |
-| `unknown_ingredients` | Legacy discovery queue (no longer drained after Items 18+23) | No (safe to truncate; see note below) | ON, backend-only |
+| `unknown_ingredients` | Discovery queue (worker enrichment today) | Yes (until Item 18 consolidation) | ON, backend-only |
 | `enrichment_metrics` | Coverage/resolution metrics per day | No (analytics only) | ON, backend-only |
 | **App** | | | |
 | `users` | Auth-linked profiles (`diet_type`, `allergies`, `preferences`) | Optional (auth / `USE_PROFILE_DB`) | ON, own row |
@@ -32,7 +32,7 @@ This checks connectivity, lists public tables and their RLS status, and summariz
 | `ike2_alias_disambiguation` | Ambiguous alias context → ingredient | Yes | ON, backend-only |
 | `ike2_restriction_rules` | Restriction rules (category/field/action) | Yes | ON, backend-only |
 | `ike2_resolution_cache` | Optional SQL resolution audit cache | No (hot path is in-process) | ON, backend-only |
-| `ike2_unknown_queue` | IKE-2 discovery + enrichment queue (Items 18+23) | Yes | ON, backend-only |
+| `ike2_unknown_queue` | IKE-2 discovery queue (schema ready; writes not yet primary) | Yes (target for Item 18) | ON, backend-only |
 | `ike2_shadow_diffs` | Legacy vs IKE-2 observational diffs | Yes (cutover / Item 16) | ON, backend-only |
 | `ike2_group_merges` | Group merge / rollback snapshots | No (ops) | ON, backend-only |
 | **IKE-2 staging schema** | | | |
@@ -47,13 +47,40 @@ This checks connectivity, lists public tables and their RLS status, and summariz
 
 ## Tables That Can Be Removed or Disabled
 
-- **`unknown_ingredients`** – Legacy queue. The worker does not drain it (Items 18+23), and resolve / `log_unknown` no longer write it (Item 33 Prompt 4). Remaining rows are historical. **Safe to truncate.**
-- **`enrichment_metrics`** – No writer after Item 33 Prompt 5 (`canonicalizer._emit_resolution_metric` was the only one). Nothing reads it. Item 12 owns any future resolution telemetry, which starts from zero. Safe to drop.
+- **`enrichment_metrics`** – Optional. Only used for coverage analytics. Safe to drop if you do not run metrics aggregation.
 - **`ike2_resolution_cache`** – Optional; runtime resolution cache is in-process.
 - **`ike2_group_merges`** – Optional ops table until merge tooling is active.
 
+## RLS (Row Level Security)
+
+Migration `20260306000000_enable_rls.sql` turns on RLS for legacy public tables; `20260616000000_ike2_schema.sql` enables RLS on IKE-2 public tables with no anon policies (service_role only).
+
+- **Backend** uses `SUPABASE_SERVICE_ROLE_KEY`, which **bypasses RLS** – all operations continue to work.
+- **Knowledge / IKE-2 tables** have **no policies** for anon/authenticated, so only the backend (service role) can read/write.
+- **`users`** has policies so authenticated users can access only their own row.
+- **`request_history`** is write-oriented from the API; no client policies.
+
+Apply the migration:
+
+```bash
+supabase db reset   # local, applies all migrations
+# or
+supabase db push    # remote, pushes new migrations
+```
+
 ## Unknown Ingredients → Knowledge Base Flow
 
-**Current (Items 18+23):** IKE-2 L5 miss → `ike2_unknown_queue` → Celery `enrich_unknown_batch` / `run_enrich_unknown_once.py` → external APIs → `ike2_*` via adapt→validate→reconcile as source `enrichment_api` (DISCOVERED).
+1. **User searches** an ingredient (e.g. in chat or scan). The resolver does not find it in the static/dynamic ontology.
+2. **`log_unknown_ingredient()`** is called (from `ingredient_registry.resolve_with_fallback` when `log_unknown=True`). It:
+   - Updates the in-memory/JSON unknown log.
+   - If the knowledge DB is enabled, calls **`IngredientKnowledgeDB.upsert_unknown_ingredient()`**.
+3. **`upsert_unknown_ingredient()`** writes to `unknown_ingredients` with:
+   - `normalized_key`, `raw_inputs` (list of raw strings), `frequency`, `last_seen`, `restriction_ids_sample`, `profile_context_sample`.
+   - If a row exists for `normalized_key`, it increments frequency, appends to `raw_inputs`, and updates `last_seen` and samples.
+4. **Worker** (`enrich_unknown_batch` task or `run_enrich_unknown_once.py`) reads rows where `resolved = false` and `frequency >= min_frequency`, calls external APIs to resolve the ingredient, then:
+   - On success: **`upsert_from_enrichment()`** inserts/updates `ingredient_groups`, `ingredients`, and `ingredient_aliases`; updates `unknown_ingredients` with `resolved = true`, `resolved_group_id`, `resolution_source`, `resolution_attempts`, `last_attempt_at`.
+   - On failure or low confidence: updates `unknown_ingredients` with `resolution_attempts` and `last_attempt_at` only (so the row is ready for retries and traceability).
 
-**Legacy table:** nothing on the product path writes `unknown_ingredients` anymore. Do not expect the worker to clear leftover rows.
+> **Note (Item 18):** IKE-2 also defines `ike2_unknown_queue`, but the active enrichment path today still uses legacy `unknown_ingredients` exclusively. Consolidation plan is tracked separately.
+
+Saved format in `unknown_ingredients` matches the schema and is sufficient to update the knowledge base: the worker uses `normalized_key` and `raw_inputs` for context, and after enrichment the same tables that the resolver uses (`ingredient_aliases` → `ingredients` → `ingredient_groups`) are updated so future searches resolve the ingredient.

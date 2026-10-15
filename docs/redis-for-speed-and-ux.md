@@ -1,7 +1,5 @@
 # Using Redis to Make the System Faster and More User-Friendly (Simple Deployment)
 
-**Status (2026-09-27):** The Redis **resolve** cache described below was removed in Item 33 Prompt 5, with `CanonicalResolver` and `lifecycle.py`. Redis stays the Celery broker. Product resolve (chat, evaluate, `/api/v1/resolve-ingredient`) uses the IKE-2 in-process `ResolutionCache`. The sections below are the old design, not the live path.
-
 **Goal:** Use Redis where it clearly improves speed and UX, without adding new services or complex deployment. Reuse the **existing** Redis instance (already in Docker Compose for Celery).
 
 ---
@@ -29,19 +27,20 @@ End-to-end for a chat request (e.g. “Is milk vegan?”):
 
 8. **Compliance (rule-based, deterministic)**  
    - **Profile → restriction_ids** — Map diet/allergens/lifestyle to restriction IDs (e.g. Jain → `jain`). Rule-based only.  
-   - **Resolve each ingredient** — IKE-2 resolver (in-process cache, then truth anchor / ontology / DB alias). A miss is uncertain and may enqueue `ike2_unknown_queue`. It does not call `CanonicalResolver` or a live external API on the request.
+   - **Resolve each ingredient** — For each string in `eval_ingredients`, **CanonicalResolver** runs (this is **not** rule-based; it’s lookup/enrichment only):
+     - **In-memory cache** (key = normalized ingredient + try_api) → if hit, return cached resolution.
+     - **Miss** → **DB (Supabase)** when `USE_KNOWLEDGE_DB` is true — alias → group lookup; if found, return.
+     - **Still miss** → **static** ontology (`data/ontology.json`) → **dynamic** ontology (`data/dynamic_ontology.json`) → if not found and `try_api`, **external APIs** (USDA → Open Food Facts → PubChem → ChEBI → Wikidata). Result is one **Ingredient** (canonical name + flags like `root_vegetable`, `animal_origin`).
    - **Evaluate restrictions (rules only)** — For each restriction_id (e.g. `jain`), **RestrictionRegistry** evaluates each resolved ingredient against **rules** (e.g. `root_vegetable == true` → FAIL). No LLM.  
    - **Aggregate** → ComplianceVerdict (status SAFE | NOT_SAFE | UNCERTAIN, triggered_restrictions, triggered_ingredients, confidence).
 
 9. **Response (template only)** — `template_verdict(verdict, profile, …)` builds the text (e.g. “Based on your Jain diet, …”). No LLM. Then we emit INGREDIENT_AUDIT JSON and PROFILE_UPDATE blob.
 
-So: **rules** handle intent, profile→restriction mapping, and compliance (ingredient vs restriction). **LLM** is only for greeting text, general Q&A text, and optional intent re-parse when rules say GENERAL_QUESTION with no ingredients. **Resolution** is IKE-2: in-process cache, then truth anchor / ontology / DB alias. A miss stays uncertain.
+So: **rules** handle intent, profile→restriction mapping, and compliance (ingredient vs restriction). **LLM** is only for greeting text, general Q&A text, and optional intent re-parse when rules say GENERAL_QUESTION with no ingredients. **Resolution** (ingredient → canonical + flags) is **not** rule-based; order is: **in-memory cache → DB (Supabase when `USE_KNOWLEDGE_DB`) → static ontology → dynamic ontology → external APIs**.
 
 ---
 
-## Flow with Redis (resolution cache) — retired design
-
-The module this section describes was deleted in Item 33 Prompt 5. It is kept here so the old proposal is still readable.
+## Flow with Redis (resolution cache)
 
 If we add an **optional** Redis resolution cache (when `REDIS_URL` is set), only **step 8 (resolve each ingredient)** changes. The rest (rules, profile, compliance evaluation, template response) is unchanged.
 
@@ -62,16 +61,16 @@ So:
 
 ## Current state
 
-- **Redis today:** Celery broker (and optional result backend) only. The resolve cache in `backend/core/cache/redis_resolution.py` was deleted in Item 33 Prompt 5.
-- **Caches today:** IKE-2 resolution cache is in-process. It is lost on restart and not shared across backend instances.
+- **Redis today:** Used only as Celery broker (and optional result backend). Same Redis is already in `docker-compose.yml` and healthy when you run the full stack.
+- **Caches today:** All in-process (in-memory): profile read cache, resolution cache (CanonicalResolver), fetcher (external API) cache. They are lost on restart and not shared across multiple backend instances.
 
 ---
 
 ## Where Redis helps (speed + UX, low complexity)
 
-### 1. Resolution cache — **removed (Item 33 Prompt 5)**
+### 1. Resolution cache (best UX win) — **recommended** *(implemented)*
 
-**What this section proposed:** Cache the result of “resolve this ingredient” in Redis. That code lived in `backend/core/cache/redis_resolution.py` and `CanonicalResolver.resolve_with_fallback`. Both are deleted. A future shared cache would be a new design on the IKE-2 resolver, not a restore of this module.
+**What:** Cache the result of “resolve this ingredient” (static → dynamic → API) in Redis so the next request (same or different user) can skip resolution work. Implemented in `backend/core/cache/redis_resolution.py` and wired in `CanonicalResolver.resolve_with_fallback`; active when `REDIS_URL` is set.
 
 **Why it’s user-friendly:**
 - “Is milk vegan?” / “Is yam okay for Jain?” etc. get **faster answers** on repeat (same ingredient).
@@ -169,10 +168,10 @@ These changes reduce latency while keeping answers the same.
 
 | Priority | What | Why it helps | Quality impact |
 |----------|------|----------------|----------------|
-| **1** | **Redis resolution cache** | Removed in Item 33 Prompt 5. Repeat hits now use the IKE-2 in-process cache only. | None while it existed — verdicts were still computed per request. |
+| **1** | **Redis resolution cache** (see above) | Repeat ingredients (same or different user) skip DB/static/dynamic/APIs. Biggest win when the same ingredients are asked often. | None — we cache resolution only; verdict is still computed per request from profile. |
 | **2** | **Eager first byte** | Already done: yield "Checking ingredients…" before running compliance so the user sees progress immediately. | None. |
 | **3** | **Parallel resolution** | Already done: multiple ingredients are resolved in parallel (ThreadPoolExecutor) in the compliance engine. | None. |
-| **4** | **In-memory caches** | IKE-2 `ResolutionCache` avoids repeat resolve work within a process. | None. |
+| **4** | **In-memory caches** | Resolution cache (CanonicalResolver, 1000 entries) and fetcher API cache already avoid repeat work within a process. | None. |
 | **5** | **Optional: Redis profile cache** | When running multiple backends or after restarts, profile reads can hit Redis instead of disk. | None — same profile data. |
 | **6** | **Optional: Prewarm resolution cache** | On startup or via a script, resolve 50–100 common ingredients (milk, egg, onion, garlic, etc.) so the first request gets more cache hits. | None — same resolution logic. |
 | **7** | **Ollama warmup** | Already done on backend startup so the first LLM call (greeting/intent/general) is faster. | None. |
@@ -183,4 +182,4 @@ These changes reduce latency while keeping answers the same.
 - **Don't skip API fallback for unknowns** — Turning off external APIs would make many ingredients stay "unknown"; quality would drop.
 - **Don't shorten LLM timeouts too much** — Greeting/general replies could be cut off or fail; keep timeouts as-is unless you tune with tests.
 
-**Main takeaway:** Redis resolve caching was removed with the legacy resolver. What remains is the IKE-2 in-process cache, first byte, and warmup. A shared Redis resolve cache would be new work, not the deleted module.
+**Main takeaway:** The largest gain is **Redis-backed resolution cache** (by ingredient). Everything else is either already in place (first byte, parallel resolution, in-memory caches, warmup) or a smaller optional improvement (profile cache, prewarm).

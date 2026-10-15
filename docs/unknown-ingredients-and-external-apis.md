@@ -118,7 +118,7 @@ Implementing the safe-list fix (using `triggered_to_input` to exclude raw inputs
 | `soy` not resolving to soybean | Added `soy` alias on soybean in `data/ontology.json` — fixes legacy/IKE-2 divergence on `May contain: soy` labels. |
 | External API unit tests flaky | Mock `core.external_apis.http_retry.get_with_retries` instead of `requests.get` (production uses retry wrapper). |
 
-**IKE-2 (post Item 16):** User-facing verdicts are IKE-2-only. Observational legacy diffs and `IKE2_MODE` were removed with Prompt 7. `comparator.compare` + table `ike2_shadow_diffs` remain available for future engine-to-engine cutovers. Optional soak tooling: `python scripts/ike2_shadow_soak_report.py --days 7` (historical rows only unless a new writer is added).
+**IKE-2 shadow:** With `IKE2_MODE=shadow`, resolution and compliance run in parallel; user verdict remains legacy until cutover. Monitor with `python scripts/ike2_shadow_soak_report.py --days 7`.
 
 ---
 
