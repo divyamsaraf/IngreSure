@@ -63,13 +63,45 @@ def _infer_flags(name: str, group: str, tags: str) -> dict[str, Any]:
         plant = True
     if "non-veg" in text or "non veg" in text:
         animal = True
-    return {
-        "plant_origin": plant,
-        "animal_origin": animal,
-        "dairy_source": "milk" in group.lower(),
-        "egg_source": "egg" in group.lower(),
-        "uncertainty_flags": ["ifct2017_inferred"],
-    }
+    g = group.lower()
+    name_l = f"{name} {tags}".lower()
+    # IFCT uses a combined "Fish and shellfish" group for both; split by name tokens.
+    # Also treat *fish compounds (catfish, jobfish, filefish) as fish identity.
+    in_fish_shellfish = bool(re.search(r"\bfish\b", g)) or bool(re.search(r"fish\b", g))
+    fish_name = bool(re.search(r"fish\b", name_l))
+    # "oyster mushroom" is fungal, not shellfish.
+    shellfish_name = bool(
+        re.search(
+            r"\b(prawns?|shrimps?|crabs?|lobsters?|mussels?|oysters?|clams?|"
+            r"squids?|octopuses?|octopus|shellfish|molluscs?|mollusks?|"
+            r"crustaceans?|crayfish|scallops?)\b",
+            name_l,
+        )
+    ) and "oyster mushroom" not in name_l and "oyster mushrooms" not in name_l
+    if (in_fish_shellfish or fish_name) and shellfish_name:
+        fish, shellfish = False, True
+    elif in_fish_shellfish or fish_name:
+        fish, shellfish = True, False
+    else:
+        fish, shellfish = False, bool(
+            re.search(r"shellfish|mollusk|mollusc|crustacean", g)
+        )
+    # True-only emit: sparse false keys are read as deliberate asserts and trip
+    # asserted_flags_false_pollution (>3 falses) at inject time.
+    out: dict[str, Any] = {"uncertainty_flags": ["ifct2017_inferred"]}
+    if plant:
+        out["plant_origin"] = True
+    if animal:
+        out["animal_origin"] = True
+    if "milk" in g:
+        out["dairy_source"] = True
+    if "egg" in g:
+        out["egg_source"] = True
+    if fish:
+        out["fish_source"] = True
+    if shellfish:
+        out["shellfish_source"] = True
+    return out
 
 
 def transform_ifct_bulk(path: Path) -> list[dict[str, Any]]:

@@ -122,6 +122,10 @@ def verify(entries: list[dict]) -> dict[str, Any]:
                     })
 
         row = entry_to_ike2_row(resolved)
+        # Catalog rows are the e-number bulk path; stamp provenance so Item 1's
+        # bulk_locked_verified_requires_e_number_catalog check passes.
+        row["classification_method"] = "bulk:e_number_catalog"
+        row["source"] = "e_number_catalog"
         _, rejects = validate_rows([row])
         if rejects:
             errors.append({
@@ -142,9 +146,24 @@ def verify(entries: list[dict]) -> dict[str, Any]:
                     "check": "tier_b_contradiction",
                     "message": "Tier B has soy_source=true with soy-related uncertainty_flags",
                 })
+            # Non-animal source words. "plant" was the old list; yeast/tapioca
+            # were missed (E631). This does not catch a hand anchor that disagrees
+            # with a catalog row on the same key (bone phosphate / E542).
             if resolved.get("animal_origin") and any(
                 token in uflags
-                for token in ("animal", "plant", "synthetic", "poultry", "hog")
+                for token in (
+                    "animal",
+                    "plant",
+                    "synthetic",
+                    "poultry",
+                    "hog",
+                    "yeast",
+                    "tapioca",
+                    "corn",
+                    "microbial",
+                    "fermentation",
+                    "bacterial",
+                )
             ):
                 errors.append({
                     "e_code": e_code,

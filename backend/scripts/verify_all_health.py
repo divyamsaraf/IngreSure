@@ -106,20 +106,21 @@ def check_regional_resolution() -> bool:
     print("\n5. Regional ingredient resolution (e.g. bajra -> pearl millet)")
     try:
         from core.external_apis.regional_names import get_canonical_queries
-        from core.knowledge.canonicalizer import CanonicalResolver
+        from core.knowledge.ike2.resolver import resolve
         q = get_canonical_queries("bajra")
         if "pearl millet" not in q:
             fail(f"get_canonical_queries('bajra') = {q}")
             return False
         ok(f"Built-in mapping: bajra -> {q[0]}")
-        res = CanonicalResolver().resolve_with_fallback("bajra", try_api=True, log_unknown=False)
-        if res.ingredient is None:
-            fail("resolve_with_fallback('bajra') returned no ingredient")
+        res = resolve("bajra", None)
+        name = getattr(res.group, "canonical_name", "") if res.group else ""
+        if res.status != "resolved" or not name:
+            fail("resolve('bajra') did not resolve")
             return False
-        if "pearl" not in (res.ingredient.canonical_name or "").lower() and "millet" not in (res.ingredient.canonical_name or "").lower():
-            fail(f"Resolved to unexpected name: {res.ingredient.canonical_name}")
+        if "pearl" not in name.lower() and "millet" not in name.lower():
+            fail(f"Resolved to unexpected name: {name}")
             return False
-        ok(f"Resolved bajra -> {res.ingredient.canonical_name} (source={res.source_layer})")
+        ok(f"Resolved bajra -> {name} (layer={res.resolution_layer})")
         return True
     except Exception as e:
         fail(str(e))

@@ -1,5 +1,13 @@
 """
-Layer 1 ingestion from JSON file. Use for USDA, OFF, FAO, IFCT/INDB pipelines.
+DEPRECATED — legacy Layer-1 ingest into ``ingredient_*`` tables.
+
+Canonical IKE-2 bulk path (writes ``ike2_*``)::
+
+    cd backend && python -m core.knowledge.ike2.etl.bulk_inject \\
+        ../data/layer1_<source>.json --source <label> [--dry-run]
+
+This script remains for grandfathered legacy-table ops only. Prefer
+``bulk_inject`` for any new / IKE-2 work (Item 1 Prompt 7).
 
 JSON format (array of objects):
   [
@@ -20,6 +28,7 @@ from __future__ import annotations
 import json
 import os
 import sys
+import warnings
 from pathlib import Path
 
 # Add backend to path
@@ -34,8 +43,16 @@ load_dotenv(_backend.parent / ".env")
 from core.knowledge.ingredient_db import IngredientKnowledgeDB, ALLOWED_INGREDIENT_SOURCES
 from core.knowledge.ingest import ensure_group_with_aliases
 
+_DEPRECATION = (
+    "ingest_layer1_json.py is deprecated: it writes legacy ingredient_* tables, "
+    "not ike2_*. Use: python -m core.knowledge.ike2.etl.bulk_inject "
+    "<dump.json> --source <label> [--dry-run]"
+)
+
 
 def main() -> None:
+    warnings.warn(_DEPRECATION, DeprecationWarning, stacklevel=2)
+    print(f"WARNING: {_DEPRECATION}", file=sys.stderr)
     if len(sys.argv) < 2:
         print("Usage: python scripts/ingest_layer1_json.py <path_to_json>")
         sys.exit(1)

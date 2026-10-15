@@ -24,8 +24,16 @@ _backend = Path(__file__).resolve().parent.parent
 _repo = _backend.parent
 sys.path.insert(0, str(_backend))
 
+from core.external_apis.usda_fdc import (
+    REVIEWED_ASSERTED_CLEARS,
+    _FISH_NAME,
+    _SHELLFISH_FALSE_FRIEND,
+    _SHELLFISH_NAME,
+    _infer_flags_from_text,
+    asserted_clear_allowed,
+    is_shellfish_false_friend,
+)
 from core.normalization.normalizer import normalize_ingredient_key
-from core.external_apis.usda_fdc import _infer_flags_from_category, _infer_flags_from_text
 
 _FOUNDATION = _repo / "data" / "raw" / "foundationDownload.json"
 _SR_LEGACY = _repo / "data" / "raw" / "FoodData_Central_sr_legacy_food_json_2021-10-28.json"
@@ -100,6 +108,41 @@ def _sr_legacy_description_ok(description: str) -> bool:
     return True
 
 
+def _name_kind_hit(description: str) -> bool:
+    t = (description or "").lower()
+    if _SHELLFISH_FALSE_FRIEND.search(t):
+        return False
+    if re.search(r"\bseafood\b", t):
+        return True
+    if _SHELLFISH_NAME.search(t):
+        return True
+    return bool(_FISH_NAME.search(t))
+
+
+def _uncertainty_for_row(
+    description: str, category: str, *, kind_true: bool
+) -> list[str]:
+    """Split fish/shellfish markers; keep a group-level SAFE ceiling.
+
+    ``usda_fdc_category_derived`` records kind evidence. It is not full
+    allergen coverage (breaded/battered/creamed rows), so a row-level
+    ``*inferred*`` token always stays alongside it. Item 42 lets allergy
+    FAIL stand when untrusted; clean passes stay capped.
+    """
+    cat = (category or "").lower()
+    in_fs = "finfish" in cat or "shellfish" in cat
+    if kind_true:
+        out: list[str] = []
+        if in_fs:
+            out.append("usda_fdc_category_derived")
+        if _name_kind_hit(description):
+            out.append("usda_fdc_name_inferred")
+        else:
+            out.append("usda_fdc_bulk_inferred")
+        return out or ["usda_fdc_bulk_inferred"]
+    return ["usda_fdc_bulk_inferred"]
+
+
 def _food_to_layer1_row(food: dict[str, Any], *, strict: bool) -> dict[str, Any] | None:
     description = (food.get("description") or "").strip()
     if not description:
@@ -109,30 +152,87 @@ def _food_to_layer1_row(food: dict[str, Any], *, strict: bool) -> dict[str, Any]
 
     category = _food_category_str(food)
     flags = _infer_flags_from_text(description, category=category)
-    flags["uncertainty_flags"] = ["usda_fdc_bulk_inferred"]
+    kind_true = bool(flags.get("fish_source") or flags.get("shellfish_source"))
+    unc = _uncertainty_for_row(description, category, kind_true=kind_true)
 
     aliases = _aliases_from_food(food, description)
     canon_norm = normalize_ingredient_key(description)
     aliases = [a for a in aliases if normalize_ingredient_key(a) != canon_norm]
 
-    return {
+    # True-only emit by default (sparse falses trip asserted_flags_false_pollution).
+    # Deliberate clears for Item-42 false friends / dairy↔egg disambiguation are
+    # emitted as asserted falses (≤3) so sticky OR can be corrected on re-inject.
+    row: dict[str, Any] = {
         "canonical_name": description,
         "aliases": aliases[:20],
         "source": "usda_fdc",
-        "animal_origin": flags.get("animal_origin", False),
-        "plant_origin": flags.get("plant_origin", False),
-        "dairy_source": flags.get("dairy_source", False),
-        "egg_source": flags.get("egg_source", False),
-        "gluten_source": flags.get("gluten_source", False),
-        "soy_source": flags.get("soy_source", False),
-        "sesame_source": flags.get("sesame_source", False),
-        "nut_source": flags.get("nut_source"),
-        "root_vegetable": flags.get("root_vegetable", False),
-        "onion_source": flags.get("onion_source", False),
-        "garlic_source": flags.get("garlic_source", False),
-        "alcohol_content": flags.get("alcohol_content"),
-        "uncertainty_flags": flags.get("uncertainty_flags") or [],
+        "uncertainty_flags": unc,
     }
+    if category:
+        row["food_category"] = category
+    for key in (
+        "animal_origin",
+        "plant_origin",
+        "dairy_source",
+        "egg_source",
+        "fish_source",
+        "shellfish_source",
+        "gluten_source",
+        "soy_source",
+        "sesame_source",
+        "tree_nut_source",
+        "peanut_source",
+        "root_vegetable",
+        "onion_source",
+        "garlic_source",
+    ):
+        if flags.get(key):
+            row[key] = True
+    if flags.get("nut_source"):
+        row["nut_source"] = flags["nut_source"]
+    # Prefer explicit peanut bit when nut_source says peanut.
+    if flags.get("nut_source") == "peanut":
+        row["peanut_source"] = True
+        row.pop("tree_nut_source", None)
+    if flags.get("alcohol_content") is not None:
+        row["alcohol_content"] = flags["alcohol_content"]
+    if flags.get("fish_source") and not flags.get("shellfish_source"):
+        row["animal_species"] = "fish"
+    elif flags.get("shellfish_source"):
+        row["animal_species"] = "shellfish"
+
+    # Asserted clears are enumerated-only (frozen reviewed list). Inference may
+    # omit false keys (true-only emit); sticky OR needs an explicit allow.
+    deliberate_false: list[str] = []
+    candidates: list[str] = []
+    if is_shellfish_false_friend(description):
+        candidates.append("shellfish_source")
+        if flags.get("plant_origin") and not flags.get("animal_origin"):
+            candidates.append("animal_origin")
+            row["plant_origin"] = True
+    if flags.get("dairy_source") and not flags.get("egg_source"):
+        candidates.append("egg_source")
+    if flags.get("egg_source") and not flags.get("dairy_source"):
+        candidates.append("dairy_source")
+    # Any frozen-list clear for this name whose inferred value is false.
+    norm = normalize_ingredient_key(description)
+    for clear_name, clear_flag in REVIEWED_ASSERTED_CLEARS:
+        if clear_name == norm and not flags.get(clear_flag):
+            candidates.append(clear_flag)
+    for flag in dict.fromkeys(candidates):
+        if asserted_clear_allowed(description, flag):
+            row[flag] = False
+            deliberate_false.append(flag)
+    if deliberate_false:
+        asserted = {k for k in row if k in (
+            "animal_origin", "plant_origin", "dairy_source", "egg_source",
+            "fish_source", "shellfish_source", "gluten_source", "soy_source",
+            "sesame_source", "tree_nut_source", "peanut_source",
+            "root_vegetable", "onion_source", "garlic_source",
+        ) and row.get(k)}
+        asserted.update(deliberate_false)
+        row["asserted_flags"] = sorted(asserted)
+    return row
 
 
 def transform_usda_bulk(
