@@ -1,26 +1,30 @@
 # IngreSure — Build Specification: Item 16
 ## Legacy vs IKE-2 Consolidation & Cutover
 
-**Status:** Live migration — **stage `primary`**. Deliberate chat + API primary soaks both clean (`0` false_safe). Prompt 7 (legacy removal) authorized on verification criteria; execute when ready.
-**Companion files:** `ingresure_architecture_tracker.xlsx` (Master Task List, row ID "16") · `docs/system_state_audit.md` (source of every fact referenced below)
+**Status:** **CLOSED (local)** — Item 16 Resolved. Prompt 7 executed: `ComplianceEngine` deleted, `IKE2_MODE` retired, evaluate + chat serve IKE-2 only. `comparator.compare` + `ike2_shadow_diffs` retained as reusable infrastructure. Remote Tier-3 population is **Item 29** (not part of this close).
+**Companion files:** architecture tracker (row ID "16") · `docs/system_state_audit.md` (historical 2026-08-06 snapshot) · `docs/item29_remote_ike2_seed_plan.md`
+
+> **How to read this file:** Sections 1–9 below are the **original cutover plan** (written against the Aug 2026 audit). They describe pre-Prompt-7 state by design. For **current** behavior, use the Status line above and the Stage log at the end. Do not implement Sections 4–9 again.
 
 ---
 
-## 0. How to use this document
+## 0. How to use this document (historical)
 
-This is the highest-priority item in the entire tracker right now — higher than continuing Items 1–2, 3, or anything else. Every fact in Sections 1 and 4 comes directly from the system state audit dated 2026-08-06 — do not re-derive or assume anything about the current state that isn't sourced from there. Where this document says "identify" or "confirm" rather than stating a fact outright, that's deliberate: the audit didn't capture full function signatures, and guessing at them here would be exactly the kind of hallucination this whole documentation discipline exists to prevent. Investigate first, then implement.
+This was the highest-priority cutover item while live. Facts in early sections came from `docs/system_state_audit.md` (2026-08-06). Investigation-first discipline still applies to future migrations.
 
-Keep this at `docs/item16_legacy_cutover_spec.md` in the repo.
+Keep this at `docs/item16_legacy_cutover_spec.md` in the repo as the closed cutover record.
 
 ---
 
-## 1. Current state (confirmed by audit — do not re-verify, act on this)
+## 1. Starting state (audit 2026-08-06 — superseded by Prompt 7)
 
-- Chat flow (`bridge.run_new_engine_chat` → `_run_ike2_compliance`) already treats IKE-2 as primary, with fail-closed to `UNCERTAIN` on failure and no legacy fallback for the user-facing verdict.
-- `POST /api/v1/evaluate-compliance` and `POST /api/v1/evaluate-product` still call the legacy `ComplianceEngine` (`core/evaluation/compliance_engine.py`) directly and exclusively.
-- `IKE2_MODE=shadow` is set in `.env` but is **never read by any application code** — it is dead configuration, not an active gate.
-- The legacy shadow-diff mechanism already exists and works: `core/knowledge/ike2/shadow/comparator.py` (`compare(legacy, ike2, raw_input) → match, false_safe_regression`) and `runner.py` (`run_legacy_diff`), writing mismatches to `ike2_shadow_diffs`, triggered by `bridge._schedule_legacy_diff` after every chat compliance run.
-- Stage / cutover status is recorded in the architecture tracker and this file — not a separate `PHASES.md` (dropped; recreating it would reintroduce doc-reality drift).
+*The bullets below are the **pre-cutover** baseline the migration started from. They are no longer true.*
+
+- Chat flow (`bridge.run_new_engine_chat` → `_run_ike2_compliance`) already treated IKE-2 as primary, fail-closed to `UNCERTAIN`.
+- `POST /api/v1/evaluate-*` still called legacy `ComplianceEngine` exclusively (**fixed** — now IKE-2).
+- `IKE2_MODE` was dead config, then revived for the migration, then **retired** after Prompt 7.
+- Observational legacy-diff (`run_legacy_diff` / `_schedule_legacy_diff`) existed during soak; **removed** with Prompt 7. Generic `comparator.compare` + table remain.
+- Stage-of-record: architecture tracker + this file (not `PHASES.md`).
 
 ---
 
@@ -148,6 +152,7 @@ Update this file and `ingresure_architecture_tracker.xlsx` (Item 16's Notes colu
 | 2026-09-16 | **primary (fungal root-cause fix + re-soak)** | Fixed class, not one-off: (1) `flag_derive.derive_identity_flags` ORs `fungal` from yeast/mushroom/tempeh/mycoprotein/koji tokens; (2) Tier-1 yeast + yeast-extract anchors with `fungal=True` (empty L1 no longer shadows L2); (3) stopped `tempeh`→soybean+water recipe expansion that stripped fungal identity; (4) ontology yeast extract / tempeh `fungal=true`; aliases for instant/nutritional yeast. Re-soak since `2026-09-16T21:56:05Z`: 914 API OK, **0** false_safe, **0** NOT_SAFE→SAFE; yeast/yeast extract/tempeh/jain → NOT_SAFE. Remaining mismatches are fail-closed or benign UNCERTAIN↔SAFE under unrelated restrictions. |
 | 2026-09-16 | **primary (window open — same bar as shadow)** | API deliberate primary batch (post-fungal) satisfied. Chat: wait ~7 days organic traffic after primary flip, then `--since <flip> --source-route chat --fail-on-regression`. `PHASES.md` checklist line dropped — SoT is tracker + this file; README dead link updated. Prompt 7 still blocked on chat window. |
 | 2026-09-16 | **primary (chat deliberate batch — window satisfied)** | Replaced passive 7d wait with `scripts/ike2_chat_shadow_traffic_batch.py` through `/chat/grocery` (intent + profile + compliance). 457 corpus + 13 fermentation extras, `IKE2_MODE=primary`, **0** errors. Soak since `2026-09-16T22:15:48Z` `source_route=chat`: **0** `false_safe_regression`, **0** `NOT_SAFE`→`SAFE`. Yeast/yeast extract/tempeh/mushroom/nutritional yeast → Avoid under Jain; koji/miso/tamari/natto → Depends (fail-closed, unresolved — not firm SAFE). Prompt 7 unblocked on verification criteria. |
+| 2026-09-17 | **removed (CLOSED local)** | Prompt 7 executed: `ComplianceEngine` deleted; `IKE2_MODE` retired from config/env; `run_legacy_diff` / `_schedule_legacy_diff` removed; evaluate + chat serve IKE-2 only. `comparator.compare` + `ike2_shadow_diffs` retained. Remote schema applied earlier; **data** population is Item 29 (`docs/item29_remote_ike2_seed_plan.md`). Item 16 tracker status: Resolved (local). |
 
 ---
 

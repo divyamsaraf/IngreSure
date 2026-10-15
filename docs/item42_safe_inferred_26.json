@@ -1,0 +1,366 @@
+[
+  {
+    "canonical_name": "butter without salt",
+    "live_flag": "egg_source",
+    "restriction": "egg_free",
+    "layer": "L2_local_ontology",
+    "trusted": true,
+    "flag_on_ci": false,
+    "live_unc": [
+      "usda_fdc_bulk_inferred"
+    ],
+    "ci_unc": [],
+    "group_is_none": false,
+    "ks": "AUTO_CLASSIFIED"
+  },
+  {
+    "canonical_name": "cheese dry white queso seco",
+    "live_flag": "egg_source",
+    "restriction": "egg_free",
+    "layer": "L2_local_ontology",
+    "trusted": true,
+    "flag_on_ci": false,
+    "live_unc": [
+      "usda_fdc_bulk_inferred"
+    ],
+    "ci_unc": [],
+    "group_is_none": false,
+    "ks": "AUTO_CLASSIFIED"
+  },
+  {
+    "canonical_name": "cheese fresh queso fresco",
+    "live_flag": "egg_source",
+    "restriction": "egg_free",
+    "layer": "L2_local_ontology",
+    "trusted": true,
+    "flag_on_ci": false,
+    "live_unc": [
+      "usda_fdc_bulk_inferred"
+    ],
+    "ci_unc": [],
+    "group_is_none": false,
+    "ks": "AUTO_CLASSIFIED"
+  },
+  {
+    "canonical_name": "egg duck whole fresh raw",
+    "live_flag": "dairy_source",
+    "restriction": "dairy_free",
+    "layer": "L2_local_ontology",
+    "trusted": true,
+    "flag_on_ci": false,
+    "live_unc": [
+      "usda_fdc_bulk_inferred"
+    ],
+    "ci_unc": [],
+    "group_is_none": false,
+    "ks": "AUTO_CLASSIFIED"
+  },
+  {
+    "canonical_name": "egg quail whole fresh raw",
+    "live_flag": "dairy_source",
+    "restriction": "dairy_free",
+    "layer": "L2_local_ontology",
+    "trusted": true,
+    "flag_on_ci": false,
+    "live_unc": [
+      "usda_fdc_bulk_inferred"
+    ],
+    "ci_unc": [],
+    "group_is_none": false,
+    "ks": "AUTO_CLASSIFIED"
+  },
+  {
+    "canonical_name": "egg turkey whole fresh raw",
+    "live_flag": "dairy_source",
+    "restriction": "dairy_free",
+    "layer": "L2_local_ontology",
+    "trusted": true,
+    "flag_on_ci": false,
+    "live_unc": [
+      "usda_fdc_bulk_inferred"
+    ],
+    "ci_unc": [],
+    "group_is_none": false,
+    "ks": "AUTO_CLASSIFIED"
+  },
+  {
+    "canonical_name": "egg white dried",
+    "live_flag": "dairy_source",
+    "restriction": "dairy_free",
+    "layer": "L2_local_ontology",
+    "trusted": true,
+    "flag_on_ci": false,
+    "live_unc": [
+      "usda_fdc_bulk_inferred"
+    ],
+    "ci_unc": [],
+    "group_is_none": false,
+    "ks": "AUTO_CLASSIFIED"
+  },
+  {
+    "canonical_name": "egg white raw fresh",
+    "live_flag": "dairy_source",
+    "restriction": "dairy_free",
+    "layer": "L2_local_ontology",
+    "trusted": true,
+    "flag_on_ci": false,
+    "live_unc": [
+      "usda_fdc_bulk_inferred"
+    ],
+    "ci_unc": [],
+    "group_is_none": false,
+    "ks": "AUTO_CLASSIFIED"
+  },
+  {
+    "canonical_name": "egg white raw frozen pasteurized",
+    "live_flag": "dairy_source",
+    "restriction": "dairy_free",
+    "layer": "L2_local_ontology",
+    "trusted": true,
+    "flag_on_ci": false,
+    "live_unc": [
+      "usda_fdc_bulk_inferred"
+    ],
+    "ci_unc": [],
+    "group_is_none": false,
+    "ks": "AUTO_CLASSIFIED"
+  },
+  {
+    "canonical_name": "egg yolk dried",
+    "live_flag": "dairy_source",
+    "restriction": "dairy_free",
+    "layer": "L2_local_ontology",
+    "trusted": true,
+    "flag_on_ci": false,
+    "live_unc": [
+      "usda_fdc_bulk_inferred"
+    ],
+    "ci_unc": [],
+    "group_is_none": false,
+    "ks": "AUTO_CLASSIFIED"
+  },
+  {
+    "canonical_name": "egg yolk raw fresh",
+    "live_flag": "dairy_source",
+    "restriction": "dairy_free",
+    "layer": "L2_local_ontology",
+    "trusted": true,
+    "flag_on_ci": false,
+    "live_unc": [
+      "usda_fdc_bulk_inferred"
+    ],
+    "ci_unc": [],
+    "group_is_none": false,
+    "ks": "AUTO_CLASSIFIED"
+  },
+  {
+    "canonical_name": "egg yolk raw frozen pasteurized",
+    "live_flag": "dairy_source",
+    "restriction": "dairy_free",
+    "layer": "L2_local_ontology",
+    "trusted": true,
+    "flag_on_ci": false,
+    "live_unc": [
+      "usda_fdc_bulk_inferred"
+    ],
+    "ci_unc": [],
+    "group_is_none": false,
+    "ks": "AUTO_CLASSIFIED"
+  },
+  {
+    "canonical_name": "egg yolk raw frozen sugared pasteurized",
+    "live_flag": "dairy_source",
+    "restriction": "dairy_free",
+    "layer": "L2_local_ontology",
+    "trusted": true,
+    "flag_on_ci": false,
+    "live_unc": [
+      "usda_fdc_bulk_inferred"
+    ],
+    "ci_unc": [],
+    "group_is_none": false,
+    "ks": "AUTO_CLASSIFIED"
+  },
+  {
+    "canonical_name": "emu oyster raw",
+    "live_flag": "shellfish_source",
+    "restriction": "shellfish_allergy",
+    "layer": "L2_local_ontology",
+    "trusted": true,
+    "flag_on_ci": false,
+    "live_unc": [
+      "usda_fdc_bulk_inferred"
+    ],
+    "ci_unc": [],
+    "group_is_none": false,
+    "ks": "AUTO_CLASSIFIED"
+  },
+  {
+    "canonical_name": "egg whole raw frozen pasteurized",
+    "live_flag": "dairy_source",
+    "restriction": "dairy_free",
+    "layer": "L2_local_ontology",
+    "trusted": true,
+    "flag_on_ci": false,
+    "live_unc": [
+      "usda_fdc_bulk_inferred"
+    ],
+    "ci_unc": [],
+    "group_is_none": false,
+    "ks": "AUTO_CLASSIFIED"
+  },
+  {
+    "canonical_name": "milk canned condensed sweetened",
+    "live_flag": "egg_source",
+    "restriction": "egg_free",
+    "layer": "L2_local_ontology",
+    "trusted": true,
+    "flag_on_ci": false,
+    "live_unc": [
+      "usda_fdc_bulk_inferred"
+    ],
+    "ci_unc": [],
+    "group_is_none": false,
+    "ks": "AUTO_CLASSIFIED"
+  },
+  {
+    "canonical_name": "milk dry nonfat calcium reduced",
+    "live_flag": "egg_source",
+    "restriction": "egg_free",
+    "layer": "L2_local_ontology",
+    "trusted": true,
+    "flag_on_ci": false,
+    "live_unc": [
+      "usda_fdc_bulk_inferred"
+    ],
+    "ci_unc": [],
+    "group_is_none": false,
+    "ks": "AUTO_CLASSIFIED"
+  },
+  {
+    "canonical_name": "ostrich oyster raw",
+    "live_flag": "shellfish_source",
+    "restriction": "shellfish_allergy",
+    "layer": "L2_local_ontology",
+    "trusted": true,
+    "flag_on_ci": false,
+    "live_unc": [
+      "usda_fdc_bulk_inferred"
+    ],
+    "ci_unc": [],
+    "group_is_none": false,
+    "ks": "AUTO_CLASSIFIED"
+  },
+  {
+    "canonical_name": "salsify (vegetable oyster) raw",
+    "live_flag": "shellfish_source",
+    "restriction": "shellfish_allergy",
+    "layer": "L2_local_ontology",
+    "trusted": true,
+    "flag_on_ci": false,
+    "live_unc": [
+      "usda_fdc_bulk_inferred"
+    ],
+    "ci_unc": [],
+    "group_is_none": false,
+    "ks": "AUTO_CLASSIFIED"
+  },
+  {
+    "canonical_name": "whipped topping frozen low fat",
+    "live_flag": "egg_source",
+    "restriction": "egg_free",
+    "layer": "L2_local_ontology",
+    "trusted": true,
+    "flag_on_ci": false,
+    "live_unc": [
+      "usda_fdc_bulk_inferred"
+    ],
+    "ci_unc": [],
+    "group_is_none": false,
+    "ks": "AUTO_CLASSIFIED"
+  },
+  {
+    "canonical_name": "egg goose whole fresh raw",
+    "live_flag": "dairy_source",
+    "restriction": "dairy_free",
+    "layer": "L2_local_ontology",
+    "trusted": true,
+    "flag_on_ci": false,
+    "live_unc": [
+      "usda_fdc_bulk_inferred"
+    ],
+    "ci_unc": [],
+    "group_is_none": false,
+    "ks": "AUTO_CLASSIFIED"
+  },
+  {
+    "canonical_name": "egg whole raw fresh",
+    "live_flag": "dairy_source",
+    "restriction": "dairy_free",
+    "layer": "L2_local_ontology",
+    "trusted": true,
+    "flag_on_ci": false,
+    "live_unc": [
+      "usda_fdc_bulk_inferred"
+    ],
+    "ci_unc": [],
+    "group_is_none": false,
+    "ks": "AUTO_CLASSIFIED"
+  },
+  {
+    "canonical_name": "egg whole raw frozen salted pasteurized",
+    "live_flag": "dairy_source",
+    "restriction": "dairy_free",
+    "layer": "L2_local_ontology",
+    "trusted": true,
+    "flag_on_ci": false,
+    "live_unc": [
+      "usda_fdc_bulk_inferred"
+    ],
+    "ci_unc": [],
+    "group_is_none": false,
+    "ks": "AUTO_CLASSIFIED"
+  },
+  {
+    "canonical_name": "egg yolk raw frozen salted pasteurized",
+    "live_flag": "dairy_source",
+    "restriction": "dairy_free",
+    "layer": "L2_local_ontology",
+    "trusted": true,
+    "flag_on_ci": false,
+    "live_unc": [
+      "usda_fdc_bulk_inferred"
+    ],
+    "ci_unc": [],
+    "group_is_none": false,
+    "ks": "AUTO_CLASSIFIED"
+  },
+  {
+    "canonical_name": "mushrooms oyster raw",
+    "live_flag": "shellfish_source",
+    "restriction": "shellfish_allergy",
+    "layer": "L2_local_ontology",
+    "trusted": true,
+    "flag_on_ci": false,
+    "live_unc": [
+      "usda_fdc_bulk_inferred"
+    ],
+    "ci_unc": [],
+    "group_is_none": false,
+    "ks": "AUTO_CLASSIFIED"
+  },
+  {
+    "canonical_name": "squash summer scallop raw",
+    "live_flag": "shellfish_source",
+    "restriction": "shellfish_allergy",
+    "layer": "L2_local_ontology",
+    "trusted": true,
+    "flag_on_ci": false,
+    "live_unc": [
+      "usda_fdc_bulk_inferred"
+    ],
+    "ci_unc": [],
+    "group_is_none": false,
+    "ks": "AUTO_CLASSIFIED"
+  }
+]

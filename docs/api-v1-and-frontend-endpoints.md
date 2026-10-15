@@ -25,8 +25,8 @@ These routes are for programmatic access (scripts, external services, CLI tools)
 
 | Method | Path | Purpose |
 |--------|------|--------|
-| `POST` | `/api/v1/resolve-ingredient` | Resolve a single ingredient name to a canonical ingredient (facts only; no compliance). |
-| `GET` | `/api/v1/ingredient/{name}` | Get ingredient resolution by name (optional `try_api` for external lookups). |
+| `POST` | `/api/v1/resolve-ingredient` | Resolve one name to IKE-2 facts (no compliance). `try_api` and `log_unknown` are ignored. |
+| `GET` | `/api/v1/ingredient/{name}` | Same IKE-2 resolve by name. `try_api` is ignored. |
 | `POST` | `/api/v1/evaluate-compliance` | Evaluate a list of ingredients against `restriction_ids`; returns a compliance verdict. |
 | `POST` | `/api/v1/evaluate-product` | Parse ingredient label text into ingredients and evaluate compliance. |
 

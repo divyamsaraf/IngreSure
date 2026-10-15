@@ -1,0 +1,6 @@
+{
+  "candidates_category_derived_or_processed_kind": 0,
+  "firm_safe_with_name_hint_missing_flag": 0,
+  "safe_leaks": [],
+  "trust_fn_note": "is_trusted_for_compliance treats category_derived as untrusted (group SAFE ceiling)."
+}

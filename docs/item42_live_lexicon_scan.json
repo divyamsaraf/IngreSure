@@ -1,0 +1,2787 @@
+{
+  "live_groups": 6913,
+  "safe_with_name_implied_flag_absent": {
+    "dairy_source": 13,
+    "shellfish_source": 10,
+    "gluten_source": 16,
+    "fish_source": 7,
+    "soy_source": 1
+  },
+  "safe_total": 47,
+  "unmatched_hazard_prone": 1260,
+  "unmatched_safe_count": 33,
+  "unmatched_safe_by_family": {
+    "shellfish_source": 10,
+    "dairy_source": 6,
+    "gluten_source": 9,
+    "fish_source": 7,
+    "soy_source": 1
+  },
+  "unmatched_safe_sample": [
+    {
+      "name": "oyster mushroom dried",
+      "flag": "shellfish_source",
+      "restriction": "shellfish_allergy",
+      "layer": "L2_local_ontology",
+      "source": "ifct",
+      "off_unmatched": true
+    },
+    {
+      "name": "hemp milk",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L2_local_ontology",
+      "source": "ontology",
+      "off_unmatched": true
+    },
+    {
+      "name": "bread and acesulfame",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L3_db_alias",
+      "source": "fssai",
+      "off_unmatched": true
+    },
+    {
+      "name": "bread and mineral oil",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L3_db_alias",
+      "source": "fssai",
+      "off_unmatched": true
+    },
+    {
+      "name": "cooked fish acetylated",
+      "flag": "fish_source",
+      "restriction": "fish_allergy",
+      "layer": "L3_db_alias",
+      "source": "fssai",
+      "off_unmatched": true
+    },
+    {
+      "name": "fish and fish calcium",
+      "flag": "fish_source",
+      "restriction": "fish_allergy",
+      "layer": "L3_db_alias",
+      "source": "fssai",
+      "off_unmatched": true
+    },
+    {
+      "name": "for use in salted squid only",
+      "flag": "shellfish_source",
+      "restriction": "shellfish_allergy",
+      "layer": "L3_db_alias",
+      "source": "fssai",
+      "off_unmatched": true
+    },
+    {
+      "name": "for use in shrimps and prawns only",
+      "flag": "shellfish_source",
+      "restriction": "shellfish_allergy",
+      "layer": "L3_db_alias",
+      "source": "fssai",
+      "off_unmatched": true
+    },
+    {
+      "name": "fried fish and hydroxypropy",
+      "flag": "fish_source",
+      "restriction": "fish_allergy",
+      "layer": "L3_db_alias",
+      "source": "fssai",
+      "off_unmatched": true
+    },
+    {
+      "name": "frozen fish calcium",
+      "flag": "fish_source",
+      "restriction": "fish_allergy",
+      "layer": "L3_db_alias",
+      "source": "fssai",
+      "off_unmatched": true
+    },
+    {
+      "name": "on flour mass basis",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L3_db_alias",
+      "source": "fssai",
+      "off_unmatched": true
+    },
+    {
+      "name": "other soybean caramel iii",
+      "flag": "soy_source",
+      "restriction": "soy_allergy",
+      "layer": "L3_db_alias",
+      "source": "fssai",
+      "off_unmatched": true
+    },
+    {
+      "name": "processed fish acesulfame",
+      "flag": "fish_source",
+      "restriction": "fish_allergy",
+      "layer": "L3_db_alias",
+      "source": "fssai",
+      "off_unmatched": true
+    },
+    {
+      "name": "salmon allura red ac",
+      "flag": "fish_source",
+      "restriction": "fish_allergy",
+      "layer": "L3_db_alias",
+      "source": "fssai",
+      "off_unmatched": true
+    },
+    {
+      "name": "bread egg",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L3_db_alias",
+      "source": "usda",
+      "off_unmatched": true
+    },
+    {
+      "name": "bread egg toasted",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L3_db_alias",
+      "source": "usda",
+      "off_unmatched": true
+    },
+    {
+      "name": "emu oyster raw",
+      "flag": "shellfish_source",
+      "restriction": "shellfish_allergy",
+      "layer": "L2_local_ontology",
+      "source": "usda",
+      "off_unmatched": true
+    },
+    {
+      "name": "ostrich oyster raw",
+      "flag": "shellfish_source",
+      "restriction": "shellfish_allergy",
+      "layer": "L2_local_ontology",
+      "source": "usda",
+      "off_unmatched": true
+    },
+    {
+      "name": "salsify (vegetable oyster) raw",
+      "flag": "shellfish_source",
+      "restriction": "shellfish_allergy",
+      "layer": "L2_local_ontology",
+      "source": "usda",
+      "off_unmatched": true
+    },
+    {
+      "name": "almond milk",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L2_local_ontology",
+      "source": "ontology",
+      "off_unmatched": true
+    },
+    {
+      "name": "mushrooms oyster raw",
+      "flag": "shellfish_source",
+      "restriction": "shellfish_allergy",
+      "layer": "L2_local_ontology",
+      "source": "usda",
+      "off_unmatched": true
+    },
+    {
+      "name": "oyster mushrooms",
+      "flag": "shellfish_source",
+      "restriction": "shellfish_allergy",
+      "layer": "L2_local_ontology",
+      "source": "ontology",
+      "off_unmatched": true
+    },
+    {
+      "name": "squash summer scallop raw",
+      "flag": "shellfish_source",
+      "restriction": "shellfish_allergy",
+      "layer": "L2_local_ontology",
+      "source": "usda",
+      "off_unmatched": true
+    },
+    {
+      "name": "tofu yogurt",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L2_local_ontology",
+      "source": "ontology",
+      "off_unmatched": true
+    },
+    {
+      "name": "bread cheese",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L3_db_alias",
+      "source": "usda",
+      "off_unmatched": true
+    },
+    {
+      "name": "bread salvadoran sweet cheese (quesadilla salvadorena)",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L3_db_alias",
+      "source": "usda",
+      "off_unmatched": true
+    },
+    {
+      "name": "maize flour",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L2_local_ontology",
+      "source": "ontology",
+      "off_unmatched": true
+    },
+    {
+      "name": "king oyster mushrooms",
+      "flag": "shellfish_source",
+      "restriction": "shellfish_allergy",
+      "layer": "L2_local_ontology",
+      "source": "ontology",
+      "off_unmatched": true
+    },
+    {
+      "name": "kokum butter",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L2_local_ontology",
+      "source": "ontology",
+      "off_unmatched": true
+    },
+    {
+      "name": "milk fish",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L2_local_ontology",
+      "source": "ontology",
+      "off_unmatched": true
+    },
+    {
+      "name": "coconut milk powder",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L2_local_ontology",
+      "source": "ontology",
+      "off_unmatched": true
+    },
+    {
+      "name": "sardine oil",
+      "flag": "fish_source",
+      "restriction": "fish_allergy",
+      "layer": "L2_local_ontology",
+      "source": "ontology",
+      "off_unmatched": true
+    },
+    {
+      "name": "chapatti flour",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L2_local_ontology",
+      "source": "ontology",
+      "off_unmatched": true
+    }
+  ],
+  "safe_sample": [
+    {
+      "name": "cocoa butter",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L2_local_ontology",
+      "source": "ontology",
+      "off_unmatched": false
+    },
+    {
+      "name": "coconut milk",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L2_local_ontology",
+      "source": "ontology",
+      "off_unmatched": false
+    },
+    {
+      "name": "oyster mushroom dried",
+      "flag": "shellfish_source",
+      "restriction": "shellfish_allergy",
+      "layer": "L2_local_ontology",
+      "source": "ifct",
+      "off_unmatched": true
+    },
+    {
+      "name": "hemp milk",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L2_local_ontology",
+      "source": "ontology",
+      "off_unmatched": true
+    },
+    {
+      "name": "bread and acesulfame",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L3_db_alias",
+      "source": "fssai",
+      "off_unmatched": true
+    },
+    {
+      "name": "bread and mineral oil",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L3_db_alias",
+      "source": "fssai",
+      "off_unmatched": true
+    },
+    {
+      "name": "cooked fish acetylated",
+      "flag": "fish_source",
+      "restriction": "fish_allergy",
+      "layer": "L3_db_alias",
+      "source": "fssai",
+      "off_unmatched": true
+    },
+    {
+      "name": "fish and fish calcium",
+      "flag": "fish_source",
+      "restriction": "fish_allergy",
+      "layer": "L3_db_alias",
+      "source": "fssai",
+      "off_unmatched": true
+    },
+    {
+      "name": "for use in salted squid only",
+      "flag": "shellfish_source",
+      "restriction": "shellfish_allergy",
+      "layer": "L3_db_alias",
+      "source": "fssai",
+      "off_unmatched": true
+    },
+    {
+      "name": "for use in shrimps and prawns only",
+      "flag": "shellfish_source",
+      "restriction": "shellfish_allergy",
+      "layer": "L3_db_alias",
+      "source": "fssai",
+      "off_unmatched": true
+    },
+    {
+      "name": "fried fish and hydroxypropy",
+      "flag": "fish_source",
+      "restriction": "fish_allergy",
+      "layer": "L3_db_alias",
+      "source": "fssai",
+      "off_unmatched": true
+    },
+    {
+      "name": "frozen fish calcium",
+      "flag": "fish_source",
+      "restriction": "fish_allergy",
+      "layer": "L3_db_alias",
+      "source": "fssai",
+      "off_unmatched": true
+    },
+    {
+      "name": "konjac flour",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L3_db_alias",
+      "source": "fssai",
+      "off_unmatched": false
+    },
+    {
+      "name": "on flour mass basis",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L3_db_alias",
+      "source": "fssai",
+      "off_unmatched": true
+    },
+    {
+      "name": "other soybean caramel iii",
+      "flag": "soy_source",
+      "restriction": "soy_allergy",
+      "layer": "L3_db_alias",
+      "source": "fssai",
+      "off_unmatched": true
+    },
+    {
+      "name": "processed fish acesulfame",
+      "flag": "fish_source",
+      "restriction": "fish_allergy",
+      "layer": "L3_db_alias",
+      "source": "fssai",
+      "off_unmatched": true
+    },
+    {
+      "name": "salmon allura red ac",
+      "flag": "fish_source",
+      "restriction": "fish_allergy",
+      "layer": "L3_db_alias",
+      "source": "fssai",
+      "off_unmatched": true
+    },
+    {
+      "name": "bread egg",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L3_db_alias",
+      "source": "usda",
+      "off_unmatched": true
+    },
+    {
+      "name": "bread egg toasted",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L3_db_alias",
+      "source": "usda",
+      "off_unmatched": true
+    },
+    {
+      "name": "emu oyster raw",
+      "flag": "shellfish_source",
+      "restriction": "shellfish_allergy",
+      "layer": "L2_local_ontology",
+      "source": "usda",
+      "off_unmatched": true
+    },
+    {
+      "name": "ostrich oyster raw",
+      "flag": "shellfish_source",
+      "restriction": "shellfish_allergy",
+      "layer": "L2_local_ontology",
+      "source": "usda",
+      "off_unmatched": true
+    },
+    {
+      "name": "salsify (vegetable oyster) raw",
+      "flag": "shellfish_source",
+      "restriction": "shellfish_allergy",
+      "layer": "L2_local_ontology",
+      "source": "usda",
+      "off_unmatched": true
+    },
+    {
+      "name": "peanut butter",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L1_truth_anchor",
+      "source": "ontology",
+      "off_unmatched": false
+    },
+    {
+      "name": "rice flour",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L2_local_ontology",
+      "source": "ontology",
+      "off_unmatched": false
+    },
+    {
+      "name": "oat milk",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L2_local_ontology",
+      "source": "ontology",
+      "off_unmatched": false
+    },
+    {
+      "name": "almond milk",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L2_local_ontology",
+      "source": "ontology",
+      "off_unmatched": true
+    },
+    {
+      "name": "soy milk",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L2_local_ontology",
+      "source": "ontology",
+      "off_unmatched": false
+    },
+    {
+      "name": "mushrooms oyster raw",
+      "flag": "shellfish_source",
+      "restriction": "shellfish_allergy",
+      "layer": "L2_local_ontology",
+      "source": "usda",
+      "off_unmatched": true
+    },
+    {
+      "name": "rice milk",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L2_local_ontology",
+      "source": "ontology",
+      "off_unmatched": false
+    },
+    {
+      "name": "almond flour",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L2_local_ontology",
+      "source": "ontology",
+      "off_unmatched": false
+    },
+    {
+      "name": "cassava flour",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L2_local_ontology",
+      "source": "ontology",
+      "off_unmatched": false
+    },
+    {
+      "name": "oyster mushrooms",
+      "flag": "shellfish_source",
+      "restriction": "shellfish_allergy",
+      "layer": "L2_local_ontology",
+      "source": "ontology",
+      "off_unmatched": true
+    },
+    {
+      "name": "squash summer scallop raw",
+      "flag": "shellfish_source",
+      "restriction": "shellfish_allergy",
+      "layer": "L2_local_ontology",
+      "source": "usda",
+      "off_unmatched": true
+    },
+    {
+      "name": "tofu yogurt",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L2_local_ontology",
+      "source": "ontology",
+      "off_unmatched": true
+    },
+    {
+      "name": "bread cheese",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L3_db_alias",
+      "source": "usda",
+      "off_unmatched": true
+    },
+    {
+      "name": "bread salvadoran sweet cheese (quesadilla salvadorena)",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L3_db_alias",
+      "source": "usda",
+      "off_unmatched": true
+    },
+    {
+      "name": "maize flour",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L2_local_ontology",
+      "source": "ontology",
+      "off_unmatched": true
+    },
+    {
+      "name": "coconut flour",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L2_local_ontology",
+      "source": "ontology",
+      "off_unmatched": false
+    },
+    {
+      "name": "chickpea flour",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L2_local_ontology",
+      "source": "ontology",
+      "off_unmatched": false
+    },
+    {
+      "name": "king oyster mushrooms",
+      "flag": "shellfish_source",
+      "restriction": "shellfish_allergy",
+      "layer": "L2_local_ontology",
+      "source": "ontology",
+      "off_unmatched": true
+    },
+    {
+      "name": "kokum butter",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L2_local_ontology",
+      "source": "ontology",
+      "off_unmatched": true
+    },
+    {
+      "name": "milk fish",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L2_local_ontology",
+      "source": "ontology",
+      "off_unmatched": true
+    },
+    {
+      "name": "amaranth flour",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L2_local_ontology",
+      "source": "ontology",
+      "off_unmatched": false
+    },
+    {
+      "name": "coconut milk powder",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L2_local_ontology",
+      "source": "ontology",
+      "off_unmatched": true
+    },
+    {
+      "name": "sardine oil",
+      "flag": "fish_source",
+      "restriction": "fish_allergy",
+      "layer": "L2_local_ontology",
+      "source": "ontology",
+      "off_unmatched": true
+    },
+    {
+      "name": "shea butter",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L2_local_ontology",
+      "source": "ontology",
+      "off_unmatched": false
+    },
+    {
+      "name": "chapatti flour",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L2_local_ontology",
+      "source": "ontology",
+      "off_unmatched": true
+    }
+  ],
+  "l3_usda_false_avoid_precision_sample": {
+    "fish_source": {
+      "sampled": 50,
+      "lexicon_agrees": 49,
+      "lexicon_disagrees": 1,
+      "sample": [
+        {
+          "name": "fish oil cod liver",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish spot cooked dry heat",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish drum freshwater cooked dry heat",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish salmon pink canned drained solids",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish shark mixed species raw",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "mollusks abalone mixed species raw",
+          "flag": "fish_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "mcdonalds filet o fish",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish blackfish whole (alaska native)",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish snapper mixed species raw",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish mackerel atlantic cooked dry heat",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish whiting mixed species raw",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish carp cooked dry heat",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "burger king premium fish sandwich",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish eel mixed species raw",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish broth",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish herring atlantic cooked dry heat",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish whitefish broad liver (alaska native)",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish herring atlantic kippered",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish ling cooked dry heat",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish mackerel jack canned drained solids",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish devilfish meat (alaska native)",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish mackerel spanish cooked dry heat",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish salmon sockeye cooked dry heat",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish pike northern liver (alaska native)",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish tuna light canned in water drained solids",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish sturgeon mixed species smoked",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "salmon sockeye canned total can contents",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish mackerel salted",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish rockfish pacific mixed species raw",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish oil salmon",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish tuna salad",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish tilapia cooked dry heat",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish monkfish cooked dry heat",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish cod pacific cooked",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish scup cooked dry heat",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish salmon pink cooked dry heat",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish whitefish dried (alaska native)",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish salmon chinook cooked dry heat",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish salmon tipnuk fermented (alaska native)",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish yellowtail mixed species raw",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish pike walleye cooked dry heat",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish fish sticks frozen prepared",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish pollock atlantic cooked dry heat",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish salmon sockeye canned drained solids",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish salmon chinook smoked",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish bluefish cooked dry heat",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "applebees fish hand battered",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish sturgeon mixed species raw",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish halibut greenland cooked dry heat",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish herring pacific cooked dry heat",
+          "flag": "fish_source",
+          "lexicon_agrees": true
+        }
+      ]
+    },
+    "shellfish_source": {
+      "sampled": 38,
+      "lexicon_agrees": 38,
+      "lexicon_disagrees": 0,
+      "sample": [
+        {
+          "name": "crustaceans crayfish mixed species wild raw",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "snacks shrimp cracker",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "crackers saltines (includes oyster soda soup)",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "crustaceans crab blue canned",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "campbells chunky new england clam chowder",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "mollusks cuttlefish mixed species raw",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "mollusks oyster eastern canned",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "soup cream of shrimp canned condensed",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "mollusks conch baked or broiled",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "mollusks scallop mixed species raw",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "crustaceans crab blue swimming lump pasteurized refrigerated",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "beverages clam and tomato juice canned",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "crustaceans crayfish mixed species farmed raw",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "dennys golden fried shrimp",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "tgi fridays fridays shrimp breaded",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "soup clam chowder manhattan canned condensed",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "mollusks clam mixed species canned liquid",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "mollusks oyster pacific cooked moist heat",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "crustaceans shrimp mixed species canned",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "mollusks octopus common cooked moist heat",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "cracker barrel country fried shrimp platter",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "mollusks abalone mixed species raw",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "mollusks squid mixed species cooked fried",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "mollusks abalone mixed species cooked fried",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "mollusks clam mixed species raw",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "crustaceans spiny lobster mixed species raw",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "crustaceans crab dungeness cooked moist heat",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "crustaceans crab queen cooked moist heat",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "mollusks mussel blue cooked moist heat",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "soup oyster stew canned condensed",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "mollusks squid mixed species raw",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "crustaceans lobster northern cooked moist heat",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "crustaceans crab blue cooked moist heat",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "sauce oyster ready to serve",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "octopus (alaska native)",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "crustaceans shrimp cooked",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "mollusks whelk unspecified cooked moist heat",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "applebees double crunch shrimp",
+          "flag": "shellfish_source",
+          "lexicon_agrees": true
+        }
+      ]
+    },
+    "dairy_source": {
+      "sampled": 50,
+      "lexicon_agrees": 46,
+      "lexicon_disagrees": 4,
+      "sample": [
+        {
+          "name": "croissants cheese",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "croissants butter",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "cheese parmesan grated",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "cheese mozzarella whole milk low moisture",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "butter oil anhydrous",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "yogurt plain nonfat",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "ham and cheese loaf or roll",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "yogurt greek 2% fat pineapple chobani",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "cream half and half lowfat",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "cheese parmesan hard",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "yogurt greek nonfat strawberry dannon oikos",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "cheese cream",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "sour cream reduced fat",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "cheese mexican blend",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "cream fluid half and half",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "cheese mexican queso cotija",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "ice creams chocolate",
+          "flag": "dairy_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "frozen yogurts chocolate soft serve",
+          "flag": "dairy_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "yogurt greek nonfat vanilla dannon oikos",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "cheese colby",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "soup cream of asparagus canned condensed",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "waffle buttermilk frozen ready to heat microwaved",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "cheese mozzarella low sodium",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "dessert topping semi solid frozen",
+          "flag": "dairy_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "whey sweet dried",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "cream substitute powdered",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "sauce cheese sauce mix dry",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "taquitos frozen chicken and cheese oven heated",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "butter salted",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "ice creams vanilla rich",
+          "flag": "dairy_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "pancakes buttermilk prepared from recipe",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "butter whipped with salt",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "milk shakes thick vanilla",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "milk lowfat fluid 1% milkfat with added vitamin a and vitamin d",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "frostings cream cheese flavor ready to eat",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "milk shakes thick chocolate",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "soup cream of mushroom canned condensed",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "cheese goat semisoft type",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "biscuits plain or buttermilk frozen baked",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "yogurt greek plain nonfat",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "cream substitute liquid light",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "sweet rolls cheese",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "mcdonalds quarter pounder with cheese",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "seeds sesame butter paste",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "snacks potato chips cheese flavor",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "yogurt greek plain whole milk",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "macaroni and cheese canned entree",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "oil nutmeg butter",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "snacks tortilla chips nacho cheese",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "wendys classic double with cheese",
+          "flag": "dairy_source",
+          "lexicon_agrees": true
+        }
+      ]
+    },
+    "egg_source": {
+      "sampled": 50,
+      "lexicon_agrees": 44,
+      "lexicon_disagrees": 6,
+      "sample": [
+        {
+          "name": "eggnog",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "babyfood cereal with egg yolks strained",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "pasta homemade made without egg cooked",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "egg whole cooked omelet",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "eggs grade a large egg white",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "mcdonalds bacon egg & cheese mcgriddles",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "bagels egg",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "babyfood cereal with egg yolks junior",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "egg whole cooked poached",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "eggs scrambled frozen mixture",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "bread egg toasted",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "egg custards dry mix",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "wonton wrappers (includes egg roll wrappers)",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "sausage egg and cheese breakfast biscuit",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "desserts egg custard baked prepared from recipe",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "pie egg custard commercially prepared",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "egg whole dried stabilized glucose reduced",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "bread egg",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "noodles egg enriched cooked",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "potato salad with egg",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "eggs grade a large egg whole",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "noodles egg spinach enriched cooked",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "eggs grade a large egg yolk",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "kefir lowfat strawberry lifeway",
+          "flag": "egg_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "egg rolls vegetable frozen prepared",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "crackers matzo egg and onion",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "babyfood cereal with eggs strained",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "reddi wip fat free whipped topping",
+          "flag": "egg_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "mcdonalds sausage mcmuffin with egg",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "mcdonalds sausage egg & cheese mcgriddles",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "fish whitefish eggs (alaska native)",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "egg white dried stabilized glucose reduced",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "egg whole cooked fried",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "noodles egg dry enriched",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "egg whole cooked hard boiled",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "egg substitute powder",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "rolls dinner egg",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "dessert topping powdered",
+          "flag": "egg_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "kefir lowfat plain lifeway",
+          "flag": "egg_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "noodles egg dry unenriched",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "egg whole cooked scrambled",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "mcdonalds egg mcmuffin",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "noodles egg spinach enriched dry",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "mcdonalds bacon egg & cheese biscuit",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "pasta homemade made with egg cooked",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "dessert topping semi solid frozen",
+          "flag": "egg_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "dessert topping pressurized",
+          "flag": "egg_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "egg whole dried",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "mcdonalds sausage biscuit with egg",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "crackers matzo egg",
+          "flag": "egg_source",
+          "lexicon_agrees": true
+        }
+      ]
+    },
+    "gluten_source": {
+      "sampled": 50,
+      "lexicon_agrees": 49,
+      "lexicon_disagrees": 1,
+      "sample": [
+        {
+          "name": "oil wheat germ",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "wheat flour white bread enriched",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "rye flour light",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "crackers wheat low salt",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "crackers melba toast wheat",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "bread pita whole wheat",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "wheat sprouted",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "bread whole wheat prepared from recipe",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "crackers melba toast rye (includes pumpernickel)",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "waffles gluten free frozen ready to heat",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "crackers whole wheat low salt",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "barley pearled cooked",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "glutino gluten free wafers lemon flavored",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "bread whole wheat commercially prepared toasted",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "glutino gluten free wafers milk chocolate",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "rolls dinner whole wheat",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "spelt uncooked",
+          "flag": "gluten_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "soup beef barley ready to serve",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "rye flour medium",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "wheat kamut khorasan uncooked",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "flour wheat all purpose enriched bleached",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "flour spelt whole grain",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "rudis gluten free bakery original sandwich bread",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "bread white wheat",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "schar gluten free wheat free classic white bread",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "bread whole wheat commercially prepared",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "wheat kamut khorasan cooked",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "wheat flour white cake enriched",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "rye flour dark",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "wheat bran crude",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "tortillas ready to bake or fry whole wheat",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "cereals ready to eat wheat puffed fortified",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "bread rye",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "crackers standard snack type with whole wheat",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "cereals ready to eat moms best sweetened wheat fuls",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "crackers rye wafers plain",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "cookies gluten free lemon wafer",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "cereals ready to eat wheat germ toasted plain",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "wheat hard red winter",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "cereals cream of wheat instant dry",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "crackers whole wheat",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "bread protein (includes gluten) toasted",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "bread protein (includes gluten)",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "bread wheat sprouted",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "andreas gluten free soft dinner roll",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "soup mushroom barley canned condensed",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "rolls dinner wheat",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "pancakes gluten free frozen ready to heat",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "crackers wheat sandwich with cheese filling",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "barley flour or meal",
+          "flag": "gluten_source",
+          "lexicon_agrees": true
+        }
+      ]
+    },
+    "soy_source": {
+      "sampled": 50,
+      "lexicon_agrees": 43,
+      "lexicon_disagrees": 7,
+      "sample": [
+        {
+          "name": "soybeans mature seeds roasted salted",
+          "flag": "soy_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "vitasoy usa azumaya firm tofu",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "mori nu tofu silken extra firm",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "oil industrial soy fully hydrogenated",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "soymilk original and vanilla unfortified",
+          "flag": "soy_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "soy protein isolate potassium type",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "mori nu tofu silken lite firm",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "oil soybean salad or cooking",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "silk banana strawberry soy yogurt",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "shortening industrial soybean (hydrogenated) and cottonseed",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "house foods premium firm tofu",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "shortening bread soybean (hydrogenated) and cottonseed",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "soy sauce made from soy (tamari)",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "silk blueberry soy yogurt",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "flour soy full fat",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "mori nu tofu silken firm",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "silk peach soy yogurt",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "tofu fried prepared with calcium sulfate",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "oil industrial soy ultra low linolenic",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "tofu fried",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "vitasoy usa azumaya silken tofu",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "vitasoy usa organic nasoya silken tofu",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "soybeans mature cooked boiled without salt",
+          "flag": "soy_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "soybeans mature seeds dry roasted",
+          "flag": "soy_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "silk key lime soy yogurt",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "soybeans mature seeds sprouted cooked stir fried",
+          "flag": "soy_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "soy milk sweetened plain refrigerated",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "mayonnaise made with tofu",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "flour soy defatted",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "margarine regular hard soybean (hydrogenated)",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "beverages protein powder soy based",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "tofu hard prepared with nigari",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "vitasoy usa organic nasoya firm tofu",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "oil soybean",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "vitasoy usa azumaya extra firm tofu",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "oil industrial soy low linolenic",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "vitasoy usa nasoya lite silken tofu",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "mori nu tofu silken soft",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "silk black cherry soy yogurt",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "beverages abbott eas soy protein powder",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "soy flour full fat roasted",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "soy milk unsweetened plain shelf stable",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "vitasoy usa organic nasoya soft tofu",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "vermicelli made from soy",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "soymilk chocolate unfortified",
+          "flag": "soy_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "shortening household soybean (hydrogenated) and palm",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "vitasoy usa nasoya lite firm tofu",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "soymilk (all flavors) enhanced",
+          "flag": "soy_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "tofu salted and fermented (fuyu)",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "house foods premium soft tofu",
+          "flag": "soy_source",
+          "lexicon_agrees": true
+        }
+      ]
+    },
+    "sesame_source": {
+      "sampled": 13,
+      "lexicon_agrees": 13,
+      "lexicon_disagrees": 0,
+      "sample": [
+        {
+          "name": "seeds sesame flour partially defatted",
+          "flag": "sesame_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "seeds sesame flour low fat",
+          "flag": "sesame_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "snacks sesame sticks wheat based unsalted",
+          "flag": "sesame_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "seeds sesame flour high fat",
+          "flag": "sesame_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "seeds sesame seeds whole dried",
+          "flag": "sesame_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "candies sesame crunch",
+          "flag": "sesame_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "salad dressing sesame seed dressing regular",
+          "flag": "sesame_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "oil sesame salad or cooking",
+          "flag": "sesame_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "seeds sesame butter paste",
+          "flag": "sesame_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "seeds sesame meal partially defatted",
+          "flag": "sesame_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "snacks sesame sticks wheat based salted",
+          "flag": "sesame_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "sesame butter creamy",
+          "flag": "sesame_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "seeds sesame seed kernels dried (decorticated)",
+          "flag": "sesame_source",
+          "lexicon_agrees": true
+        }
+      ]
+    },
+    "peanut_source": {
+      "sampled": 41,
+      "lexicon_agrees": 41,
+      "lexicon_disagrees": 0,
+      "sample": [
+        {
+          "name": "peanuts all types oil roasted without salt",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "snacks popcorn caramel coated with peanuts",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "peanut butter chunk style with salt",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "snacks granola bars hard peanut butter",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "cookies peanut butter sandwich special dietary",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "peanut spread reduced sugar",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "peanuts all types dry roasted without salt",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "peanut flour defatted",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "peanut butter smooth style without salt",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "candies peanut bar",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "candies fudge peanut butter prepared from recipe",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "candies nestle goobers chocolate covered peanuts",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "peanuts virginia oil roasted with salt",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "peanuts spanish oil roasted with salt",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "candies reeses peanut butter cups",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "oil peanut salad or cooking",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "peanut butter smooth reduced fat",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "peanuts valencia oil roasted with salt",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "cookie with peanut butter filling chocolate coated",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "peanuts valencia oil roasted without salt",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "peanuts spanish oil roasted without salt",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "candies milk chocolate coated peanuts",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "candies peanut brittle prepared from recipe",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "candies confectioners coating peanut butter",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "peanuts all types oil roasted with salt",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "peanut flour low fat",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "archway home style cookies peanut butter",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "peanut butter reduced sodium",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "cookies peanut butter commercially prepared regular",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "peanuts all types dry roasted with salt",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "oil peanut",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "peanut butter with omega 3 creamy",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "snacks popcorn caramel coated without peanuts",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "candies honey combed with peanut butter",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "peanut butter creamy",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "cookies peanut butter prepared from recipe",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "cookies peanut butter sandwich regular",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "peanut butter chunk style without salt",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "peanuts virginia oil roasted without salt",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "oil corn peanut and olive",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "cookies peanut butter commercially prepared soft type",
+          "flag": "peanut_source",
+          "lexicon_agrees": true
+        }
+      ]
+    },
+    "tree_nut_source": {
+      "sampled": 49,
+      "lexicon_agrees": 20,
+      "lexicon_disagrees": 29,
+      "sample": [
+        {
+          "name": "nuts chestnuts japanese dried",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "nuts chestnuts european dried unpeeled",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "nuts chestnuts chinese dried",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "candies hersheys golden almond solitaires",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "oil walnut",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "chocolate flavored hazelnut spread",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "nuts almonds oil roasted lightly salted",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "beverages almond milk unsweetened shelf stable",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "candies praline prepared from recipe",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "nuts almonds dry roasted with salt added",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "yachtwurst with pistachio nuts cooked",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "candies sugar coated almonds",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "nuts hazelnuts or filberts blanched",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "almond butter creamy",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "pie pecan commercially prepared",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "nuts chestnuts chinese boiled and steamed",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "nuts pine nuts pinyon dried",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "snacks crisped rice bar almond",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "pie pecan prepared from recipe",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "almond milk unsweetened plain shelf stable",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "oil hazelnut",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "almond milk unsweetened plain refrigerated",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "nuts almonds",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "nuts chestnuts japanese boiled and steamed",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "nuts pecans",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "nuts chestnuts european boiled and steamed",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "nuts almond paste",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "cookies shortbread commercially prepared pecan",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "candies milk chocolate with almonds",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "beverages almond milk chocolate ready to drink",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "nuts chestnuts european roasted",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "nuts chestnuts japanese roasted",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "nuts walnuts english",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "oil almond",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "nuts hazelnuts or filberts",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "nuts chestnuts chinese roasted",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "nuts pine nuts dried",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "flour almond",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "nuts chestnuts european dried peeled",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "nuts walnuts glazed",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "hazelnuts beaked (northern plains indians)",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "candies almond joy candy bar",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "flour chestnut",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "candies hersheys almond joy bites",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "nuts almonds honey roasted unblanched",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "nuts walnuts black dried",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "nuts almonds blanched",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "snacks granola bars hard almond",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": true
+        },
+        {
+          "name": "candies nougat with almonds",
+          "flag": "tree_nut_source",
+          "lexicon_agrees": false
+        }
+      ]
+    },
+    "mustard_source": {
+      "sampled": 6,
+      "lexicon_agrees": 0,
+      "lexicon_disagrees": 6,
+      "sample": [
+        {
+          "name": "salad dressing honey mustard regular",
+          "flag": "mustard_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "spices mustard seed ground",
+          "flag": "mustard_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "oil mustard",
+          "flag": "mustard_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "cabbage mustard salted",
+          "flag": "mustard_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "dressing honey mustard fat free",
+          "flag": "mustard_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "mustard prepared yellow",
+          "flag": "mustard_source",
+          "lexicon_agrees": false
+        }
+      ]
+    },
+    "celery_source": {
+      "sampled": 3,
+      "lexicon_agrees": 0,
+      "lexicon_disagrees": 3,
+      "sample": [
+        {
+          "name": "celery cooked boiled drained with salt",
+          "flag": "celery_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "celeriac cooked boiled drained with salt",
+          "flag": "celery_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "soup cream of celery canned condensed",
+          "flag": "celery_source",
+          "lexicon_agrees": false
+        }
+      ]
+    },
+    "lupin_source": {
+      "sampled": 0,
+      "lexicon_agrees": 0,
+      "lexicon_disagrees": 0,
+      "sample": []
+    },
+    "sulphite_source": {
+      "sampled": 6,
+      "lexicon_agrees": 0,
+      "lexicon_disagrees": 6,
+      "sample": [
+        {
+          "name": "peaches dehydrated (low moisture) sulfured stewed",
+          "flag": "sulphite_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "apples dehydrated (low moisture) sulfured stewed",
+          "flag": "sulphite_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "apples dehydrated (low moisture) sulfured uncooked",
+          "flag": "sulphite_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "apricots dehydrated (low moisture) sulfured stewed",
+          "flag": "sulphite_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "peaches dehydrated (low moisture) sulfured uncooked",
+          "flag": "sulphite_source",
+          "lexicon_agrees": false
+        },
+        {
+          "name": "apricots dehydrated (low moisture) sulfured uncooked",
+          "flag": "sulphite_source",
+          "lexicon_agrees": false
+        }
+      ]
+    }
+  },
+  "note": "SAFE = production resolve under implied restriction with flag false on CI. Unmatched = not in OFF en: taxonomy."
+}

@@ -1,0 +1,32 @@
+{
+  "live_groups": 6913,
+  "audits": [
+    {
+      "audit": "asserted_false_signature",
+      "polluted_rows": 0,
+      "sample": [],
+      "blocking": false
+    },
+    {
+      "audit": "discovered_name_diff",
+      "count": 0,
+      "added": [],
+      "removed": [],
+      "sample": [],
+      "blocking": false
+    },
+    {
+      "audit": "l2_l3_drift_by_name",
+      "names_with_drift": 0,
+      "sample": [],
+      "blocking": false
+    },
+    {
+      "audit": "lexicon_vs_verdict_live",
+      "safe_with_name_implied_flag_absent": 0,
+      "by_flag": {},
+      "sample": [],
+      "blocking": false
+    }
+  ]
+}

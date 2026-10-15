@@ -1,0 +1,7 @@
+{
+  "golden_flips": [],
+  "uncertain_to_not_safe": [],
+  "transitions": {},
+  "all_flips_allergy_medical_with_true_flag": true,
+  "note": "Golden/must-never corpora resolve via L1/L2 (trusted); zero UNCERTAIN\u2192NOT_SAFE fixture flips. L3 blast is item42_blast_radius_after_reinject.json."
+}

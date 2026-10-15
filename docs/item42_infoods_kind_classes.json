@@ -1,0 +1,240 @@
+{
+  "fish_or_shellfish_groups": 389,
+  "class_counts": {
+    "bivalve": 32,
+    "cephalopod": 4,
+    "gastropod": 1
+  },
+  "classes": {
+    "bivalve": [
+      {
+        "name": "abalone",
+        "fish": false,
+        "shellfish": true,
+        "kind": "shellfish_only"
+      },
+      {
+        "name": "american sea scallop",
+        "fish": false,
+        "shellfish": true,
+        "kind": "shellfish_only"
+      },
+      {
+        "name": "orient hard clam",
+        "fish": false,
+        "shellfish": true,
+        "kind": "shellfish_only"
+      },
+      {
+        "name": "pacific lions paw scallop",
+        "fish": false,
+        "shellfish": true,
+        "kind": "shellfish_only"
+      },
+      {
+        "name": "pacific oyster",
+        "fish": false,
+        "shellfish": true,
+        "kind": "shellfish_only"
+      },
+      {
+        "name": "pacific cupped oyster",
+        "fish": false,
+        "shellfish": true,
+        "kind": "shellfish_only"
+      },
+      {
+        "name": "bay scallop",
+        "fish": false,
+        "shellfish": true,
+        "kind": "shellfish_only"
+      },
+      {
+        "name": "black mussel",
+        "fish": false,
+        "shellfish": true,
+        "kind": "shellfish_only"
+      },
+      {
+        "name": "blacklip abalone",
+        "fish": false,
+        "shellfish": true,
+        "kind": "shellfish_only"
+      },
+      {
+        "name": "blue mussel",
+        "fish": false,
+        "shellfish": true,
+        "kind": "shellfish_only"
+      },
+      {
+        "name": "butter clam",
+        "fish": false,
+        "shellfish": true,
+        "kind": "shellfish_only"
+      },
+      {
+        "name": "cockle clam",
+        "fish": false,
+        "shellfish": true,
+        "kind": "shellfish_only"
+      },
+      {
+        "name": "eastern oysters",
+        "fish": false,
+        "shellfish": true,
+        "kind": "shellfish_only"
+      },
+      {
+        "name": "geoduck",
+        "fish": false,
+        "shellfish": true,
+        "kind": "shellfish_only"
+      },
+      {
+        "name": "great atlantic scallop",
+        "fish": false,
+        "shellfish": true,
+        "kind": "shellfish_only"
+      },
+      {
+        "name": "great scallop",
+        "fish": false,
+        "shellfish": true,
+        "kind": "shellfish_only"
+      },
+      {
+        "name": "green lipped mussel",
+        "fish": false,
+        "shellfish": true,
+        "kind": "shellfish_only"
+      },
+      {
+        "name": "greenlip abalone",
+        "fish": false,
+        "shellfish": true,
+        "kind": "shellfish_only"
+      },
+      {
+        "name": "grooved carpet shell clam",
+        "fish": false,
+        "shellfish": true,
+        "kind": "shellfish_only"
+      },
+      {
+        "name": "hard clam",
+        "fish": false,
+        "shellfish": true,
+        "kind": "shellfish_only"
+      },
+      {
+        "name": "jack knife clam",
+        "fish": false,
+        "shellfish": true,
+        "kind": "shellfish_only"
+      },
+      {
+        "name": "japanese oyster",
+        "fish": false,
+        "shellfish": true,
+        "kind": "shellfish_only"
+      },
+      {
+        "name": "little neck clam",
+        "fish": false,
+        "shellfish": true,
+        "kind": "shellfish_only"
+      },
+      {
+        "name": "manila clam",
+        "fish": false,
+        "shellfish": true,
+        "kind": "shellfish_only"
+      },
+      {
+        "name": "native oyster",
+        "fish": false,
+        "shellfish": true,
+        "kind": "shellfish_only"
+      },
+      {
+        "name": "sea scallop",
+        "fish": false,
+        "shellfish": true,
+        "kind": "shellfish_only"
+      },
+      {
+        "name": "short necked clam",
+        "fish": false,
+        "shellfish": true,
+        "kind": "shellfish_only"
+      },
+      {
+        "name": "surf clam",
+        "fish": false,
+        "shellfish": true,
+        "kind": "shellfish_only"
+      },
+      {
+        "name": "thick shell mussel",
+        "fish": false,
+        "shellfish": true,
+        "kind": "shellfish_only"
+      },
+      {
+        "name": "turkish clam",
+        "fish": false,
+        "shellfish": true,
+        "kind": "shellfish_only"
+      },
+      {
+        "name": "venerid clam",
+        "fish": false,
+        "shellfish": true,
+        "kind": "shellfish_only"
+      },
+      {
+        "name": "wedge clam",
+        "fish": false,
+        "shellfish": true,
+        "kind": "shellfish_only"
+      }
+    ],
+    "cephalopod": [
+      {
+        "name": "california squid",
+        "fish": false,
+        "shellfish": true,
+        "kind": "shellfish_only"
+      },
+      {
+        "name": "european squid",
+        "fish": false,
+        "shellfish": true,
+        "kind": "shellfish_only"
+      },
+      {
+        "name": "jumbo squid",
+        "fish": false,
+        "shellfish": true,
+        "kind": "shellfish_only"
+      },
+      {
+        "name": "neon flying squid",
+        "fish": false,
+        "shellfish": true,
+        "kind": "shellfish_only"
+      }
+    ],
+    "gastropod": [
+      {
+        "name": "whelk",
+        "fish": false,
+        "shellfish": true,
+        "kind": "shellfish_only"
+      }
+    ]
+  },
+  "fish_only_among_classes": [],
+  "american_sea_scallop_fix": "subgroup miss on sheet-09; name lexicon now sets shellfish"
+}

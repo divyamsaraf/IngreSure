@@ -71,7 +71,7 @@ Every option in the updated Edit Profile modal is correctly handled by the backe
 | **Profile storage** | `core/profile_storage.py`: reads/writes `dietary_preference`, `allergens`, `lifestyle` to `data/profiles.json` (or Supabase if configured). No schema change; same three fields. |
 | **Profile API**     | `POST /profile` and `GET /profile/{user_id}` use the same fields. Request/response shape unchanged. |
 | **Chat**           | `POST /chat/grocery` merges `request.userProfile` (dietary_preference, allergens, lifestyle) into the in-memory profile, then runs intent → compliance with `user_profile_model_to_restriction_ids(profile)`. |
-| **Compliance**      | `ComplianceEngine` loads `data/restrictions.json`; every restriction_id produced by the bridge for the options above exists in that file. |
+| **Compliance**      | IKE-2 (`core/knowledge/ike2/` + `bridge` / `v1_evaluate`) evaluates `restriction_ids` from the bridge. Rule seed + DB `ike2_restriction_rules` cover the profile options above; legacy `data/restrictions.json` is no longer the serve path (Item 16). |
 
 ---
 

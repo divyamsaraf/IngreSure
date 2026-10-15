@@ -1,0 +1,126 @@
+{
+  "3_usda_dump": {
+    "rows": 3613,
+    "fish_source_true": 182,
+    "shellfish_source_true": 60,
+    "adapt_validate_ok": 3613,
+    "adapt_validate_bad": 0,
+    "keeps_food_category_on_layer1": false,
+    "derives_from_raw_foodCategory": true
+  },
+  "3_usda_dry_runs": {
+    "ontology": {
+      "label": "usda-ontology-seeded",
+      "stats": {
+        "total": 3613,
+        "inserted": 3575,
+        "updated": 38,
+        "ingredients": 3613,
+        "aliases": 7875,
+        "rejected": 0,
+        "needs_review": 0
+      },
+      "needs_review": 0,
+      "new_discovered": []
+    },
+    "live": {
+      "label": "usda-live-seeded",
+      "stats": {
+        "total": 3613,
+        "inserted": 1,
+        "updated": 3612,
+        "ingredients": 3613,
+        "aliases": 7875,
+        "rejected": 0,
+        "needs_review": 0
+      },
+      "needs_review": 0,
+      "new_discovered": []
+    }
+  },
+  "3_usda_inject_rc": 0,
+  "recount_nokind": {
+    "animal_no_kind": 625,
+    "by_source": {
+      "ifct": 82,
+      "ontology": 78,
+      "usda": 463,
+      "infoods": 2
+    },
+    "usda_fish_shellfish_shaped_remaining": 0,
+    "usda_remaining_sample": []
+  },
+  "post_flip_ontology8_verdicts": [
+    {
+      "canonical_name": "canned herring",
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE"
+    },
+    {
+      "canonical_name": "canned mackerel",
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE"
+    },
+    {
+      "canonical_name": "canned sardines",
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE"
+    },
+    {
+      "canonical_name": "canned seafood",
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "NOT_SAFE"
+    },
+    {
+      "canonical_name": "canned sprats",
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE"
+    },
+    {
+      "canonical_name": "dried seafood",
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "NOT_SAFE"
+    },
+    {
+      "canonical_name": "salted seafood",
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "NOT_SAFE"
+    },
+    {
+      "canonical_name": "smoked seafood",
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "NOT_SAFE"
+    }
+  ],
+  "1_verdict_exposure": {
+    "union_size": 219,
+    "by_bucket": {
+      "usda_lexicon": 148,
+      "ontology_fish_seafood": 8,
+      "infoods_matched": 63
+    },
+    "fish_allergy": {
+      "n_union": 219,
+      "n_after_land_meat_filter": 216,
+      "verdicts": {
+        "UNCERTAIN": 128,
+        "NOT_SAFE": 88
+      },
+      "FINDING_SAFE_count": 0,
+      "FINDING_SAFE_names": []
+    },
+    "shellfish_allergy": {
+      "n_union": 219,
+      "n_after_land_meat_filter": 216,
+      "verdicts": {
+        "UNCERTAIN": 128,
+        "SAFE": 72,
+        "NOT_SAFE": 16
+      },
+      "FINDING_SAFE_count": 0,
+      "FINDING_SAFE_names": []
+    },
+    "finding_rule_note": "FINDING applies only after excluding land-meat/poultry tags. SAFE + animal_origin + no kind under fish_allergy is a FINDING only for non-land-meat rows (snapper/seafood shape)."
+  },
+  "note_ontology_l2": "The 8 ontology fish/seafood rows also required data/ontology.json updates; L2 local_ontology shadows live DB for those names."
+}

@@ -1,0 +1,1008 @@
+{
+  "n_probes": 100,
+  "n_false_avoids": 0,
+  "false_avoids": [],
+  "all": [
+    {
+      "name": "peanut butter",
+      "base": "peanut butter",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L1_truth_anchor",
+      "flag_on_ci": false,
+      "verdict": "SAFE",
+      "false_avoid": false
+    },
+    {
+      "name": "organic peanut butter smooth",
+      "base": "peanut butter",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "natural peanut butter",
+      "base": "peanut butter",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "peanut butter unsalted",
+      "base": "peanut butter",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "cocoa butter",
+      "base": "cocoa butter",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L2_local_ontology",
+      "flag_on_ci": false,
+      "verdict": "SAFE",
+      "false_avoid": false
+    },
+    {
+      "name": "organic cocoa butter smooth",
+      "base": "cocoa butter",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "natural cocoa butter",
+      "base": "cocoa butter",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "cocoa butter unsalted",
+      "base": "cocoa butter",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "shea butter",
+      "base": "shea butter",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L2_local_ontology",
+      "flag_on_ci": false,
+      "verdict": "SAFE",
+      "false_avoid": false
+    },
+    {
+      "name": "organic shea butter smooth",
+      "base": "shea butter",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "natural shea butter",
+      "base": "shea butter",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "shea butter unsalted",
+      "base": "shea butter",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "coconut cream",
+      "base": "coconut cream",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L2_local_ontology",
+      "flag_on_ci": false,
+      "verdict": "SAFE",
+      "false_avoid": false
+    },
+    {
+      "name": "organic coconut cream smooth",
+      "base": "coconut cream",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "natural coconut cream",
+      "base": "coconut cream",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "coconut cream unsalted",
+      "base": "coconut cream",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "cream of tartar",
+      "base": "cream of tartar",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L1_truth_anchor",
+      "flag_on_ci": false,
+      "verdict": "SAFE",
+      "false_avoid": false
+    },
+    {
+      "name": "organic cream of tartar smooth",
+      "base": "cream of tartar",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "natural cream of tartar",
+      "base": "cream of tartar",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "cream of tartar unsalted",
+      "base": "cream of tartar",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "butter beans",
+      "base": "butter beans",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "organic butter beans smooth",
+      "base": "butter beans",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "natural butter beans",
+      "base": "butter beans",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "butter beans unsalted",
+      "base": "butter beans",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "eggplant",
+      "base": "eggplant",
+      "flag": "egg_source",
+      "restriction": "egg_free",
+      "layer": "L2_local_ontology",
+      "flag_on_ci": false,
+      "verdict": "SAFE",
+      "false_avoid": false
+    },
+    {
+      "name": "organic eggplant smooth",
+      "base": "eggplant",
+      "flag": "egg_source",
+      "restriction": "egg_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "natural eggplant",
+      "base": "eggplant",
+      "flag": "egg_source",
+      "restriction": "egg_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "eggplant unsalted",
+      "base": "eggplant",
+      "flag": "egg_source",
+      "restriction": "egg_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "egg plant",
+      "base": "egg plant",
+      "flag": "egg_source",
+      "restriction": "egg_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "organic egg plant smooth",
+      "base": "egg plant",
+      "flag": "egg_source",
+      "restriction": "egg_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "natural egg plant",
+      "base": "egg plant",
+      "flag": "egg_source",
+      "restriction": "egg_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "egg plant unsalted",
+      "base": "egg plant",
+      "flag": "egg_source",
+      "restriction": "egg_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "crabapple",
+      "base": "crabapple",
+      "flag": "shellfish_source",
+      "restriction": "shellfish_allergy",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "organic crabapple smooth",
+      "base": "crabapple",
+      "flag": "shellfish_source",
+      "restriction": "shellfish_allergy",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "natural crabapple",
+      "base": "crabapple",
+      "flag": "shellfish_source",
+      "restriction": "shellfish_allergy",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "crabapple unsalted",
+      "base": "crabapple",
+      "flag": "shellfish_source",
+      "restriction": "shellfish_allergy",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "lobster mushroom",
+      "base": "lobster mushroom",
+      "flag": "shellfish_source",
+      "restriction": "shellfish_allergy",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "organic lobster mushroom smooth",
+      "base": "lobster mushroom",
+      "flag": "shellfish_source",
+      "restriction": "shellfish_allergy",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "natural lobster mushroom",
+      "base": "lobster mushroom",
+      "flag": "shellfish_source",
+      "restriction": "shellfish_allergy",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "lobster mushroom unsalted",
+      "base": "lobster mushroom",
+      "flag": "shellfish_source",
+      "restriction": "shellfish_allergy",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "buckwheat",
+      "base": "buckwheat",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L2_local_ontology",
+      "flag_on_ci": false,
+      "verdict": "SAFE",
+      "false_avoid": false
+    },
+    {
+      "name": "organic buckwheat smooth",
+      "base": "buckwheat",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "natural buckwheat",
+      "base": "buckwheat",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "buckwheat unsalted",
+      "base": "buckwheat",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "rice milk",
+      "base": "rice milk",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L2_local_ontology",
+      "flag_on_ci": false,
+      "verdict": "SAFE",
+      "false_avoid": false
+    },
+    {
+      "name": "organic rice milk smooth",
+      "base": "rice milk",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "natural rice milk",
+      "base": "rice milk",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "rice milk unsalted",
+      "base": "rice milk",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "oat milk",
+      "base": "oat milk",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L2_local_ontology",
+      "flag_on_ci": false,
+      "verdict": "SAFE",
+      "false_avoid": false
+    },
+    {
+      "name": "organic oat milk smooth",
+      "base": "oat milk",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "natural oat milk",
+      "base": "oat milk",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "oat milk unsalted",
+      "base": "oat milk",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "almond milk",
+      "base": "almond milk",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L2_local_ontology",
+      "flag_on_ci": false,
+      "verdict": "SAFE",
+      "false_avoid": false
+    },
+    {
+      "name": "organic almond milk smooth",
+      "base": "almond milk",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "natural almond milk",
+      "base": "almond milk",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "almond milk unsalted",
+      "base": "almond milk",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "soy milk",
+      "base": "soy milk",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L2_local_ontology",
+      "flag_on_ci": false,
+      "verdict": "SAFE",
+      "false_avoid": false
+    },
+    {
+      "name": "organic soy milk smooth",
+      "base": "soy milk",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "natural soy milk",
+      "base": "soy milk",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "soy milk unsalted",
+      "base": "soy milk",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "nutmeg",
+      "base": "nutmeg",
+      "flag": "tree_nut_source",
+      "restriction": "tree_nut_allergy",
+      "layer": "L2_local_ontology",
+      "flag_on_ci": false,
+      "verdict": "SAFE",
+      "false_avoid": false
+    },
+    {
+      "name": "organic nutmeg smooth",
+      "base": "nutmeg",
+      "flag": "tree_nut_source",
+      "restriction": "tree_nut_allergy",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "natural nutmeg",
+      "base": "nutmeg",
+      "flag": "tree_nut_source",
+      "restriction": "tree_nut_allergy",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "nutmeg unsalted",
+      "base": "nutmeg",
+      "flag": "tree_nut_source",
+      "restriction": "tree_nut_allergy",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "water chestnut",
+      "base": "water chestnut",
+      "flag": "tree_nut_source",
+      "restriction": "tree_nut_allergy",
+      "layer": "L2_local_ontology",
+      "flag_on_ci": false,
+      "verdict": "SAFE",
+      "false_avoid": false
+    },
+    {
+      "name": "organic water chestnut smooth",
+      "base": "water chestnut",
+      "flag": "tree_nut_source",
+      "restriction": "tree_nut_allergy",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "natural water chestnut",
+      "base": "water chestnut",
+      "flag": "tree_nut_source",
+      "restriction": "tree_nut_allergy",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "water chestnut unsalted",
+      "base": "water chestnut",
+      "flag": "tree_nut_source",
+      "restriction": "tree_nut_allergy",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "coconut oil",
+      "base": "coconut oil",
+      "flag": "tree_nut_source",
+      "restriction": "tree_nut_allergy",
+      "layer": "L2_local_ontology",
+      "flag_on_ci": false,
+      "verdict": "SAFE",
+      "false_avoid": false
+    },
+    {
+      "name": "organic coconut oil smooth",
+      "base": "coconut oil",
+      "flag": "tree_nut_source",
+      "restriction": "tree_nut_allergy",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "natural coconut oil",
+      "base": "coconut oil",
+      "flag": "tree_nut_source",
+      "restriction": "tree_nut_allergy",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "coconut oil unsalted",
+      "base": "coconut oil",
+      "flag": "tree_nut_source",
+      "restriction": "tree_nut_allergy",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "groundnut oil",
+      "base": "groundnut oil",
+      "flag": "tree_nut_source",
+      "restriction": "tree_nut_allergy",
+      "layer": "L2_local_ontology",
+      "flag_on_ci": false,
+      "verdict": "SAFE",
+      "false_avoid": false
+    },
+    {
+      "name": "organic groundnut oil smooth",
+      "base": "groundnut oil",
+      "flag": "tree_nut_source",
+      "restriction": "tree_nut_allergy",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "natural groundnut oil",
+      "base": "groundnut oil",
+      "flag": "tree_nut_source",
+      "restriction": "tree_nut_allergy",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "groundnut oil unsalted",
+      "base": "groundnut oil",
+      "flag": "tree_nut_source",
+      "restriction": "tree_nut_allergy",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "mustard greens",
+      "base": "mustard greens",
+      "flag": "mustard_source",
+      "restriction": "mustard_allergy",
+      "layer": "L2_local_ontology",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "organic mustard greens smooth",
+      "base": "mustard greens",
+      "flag": "mustard_source",
+      "restriction": "mustard_allergy",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "natural mustard greens",
+      "base": "mustard greens",
+      "flag": "mustard_source",
+      "restriction": "mustard_allergy",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "mustard greens unsalted",
+      "base": "mustard greens",
+      "flag": "mustard_source",
+      "restriction": "mustard_allergy",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "mustard oil",
+      "base": "mustard oil",
+      "flag": "mustard_source",
+      "restriction": "mustard_allergy",
+      "layer": "L2_local_ontology",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "organic mustard oil smooth",
+      "base": "mustard oil",
+      "flag": "mustard_source",
+      "restriction": "mustard_allergy",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "natural mustard oil",
+      "base": "mustard oil",
+      "flag": "mustard_source",
+      "restriction": "mustard_allergy",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "mustard oil unsalted",
+      "base": "mustard oil",
+      "flag": "mustard_source",
+      "restriction": "mustard_allergy",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "idli rava",
+      "base": "idli rava",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L1_truth_anchor",
+      "flag_on_ci": false,
+      "verdict": "SAFE",
+      "false_avoid": false
+    },
+    {
+      "name": "organic idli rava smooth",
+      "base": "idli rava",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "natural idli rava",
+      "base": "idli rava",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "idli rava unsalted",
+      "base": "idli rava",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "custard apple",
+      "base": "custard apple",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L2_local_ontology",
+      "flag_on_ci": false,
+      "verdict": "SAFE",
+      "false_avoid": false
+    },
+    {
+      "name": "organic custard apple smooth",
+      "base": "custard apple",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "natural custard apple",
+      "base": "custard apple",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "custard apple unsalted",
+      "base": "custard apple",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "apple butter",
+      "base": "apple butter",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "organic apple butter smooth",
+      "base": "apple butter",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "natural apple butter",
+      "base": "apple butter",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "apple butter unsalted",
+      "base": "apple butter",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "cream soda",
+      "base": "cream soda",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "organic cream soda smooth",
+      "base": "cream soda",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "natural cream soda",
+      "base": "cream soda",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    },
+    {
+      "name": "cream soda unsalted",
+      "base": "cream soda",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "flag_on_ci": false,
+      "verdict": "UNCERTAIN",
+      "false_avoid": false
+    }
+  ],
+  "note": "Any NOT_SAFE = false Avoid on a pantry staple \u2014 fix derive + golden."
+}

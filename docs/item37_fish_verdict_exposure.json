@@ -1,0 +1,2600 @@
+{
+  "union_size": 219,
+  "by_bucket": {
+    "usda_lexicon": 148,
+    "ontology_fish_seafood": 8,
+    "infoods_matched": 63
+  },
+  "fish_allergy": {
+    "n_union": 219,
+    "n_after_land_meat_filter": 216,
+    "verdicts": {
+      "UNCERTAIN": 128,
+      "NOT_SAFE": 88
+    },
+    "FINDING_SAFE_count": 0,
+    "FINDING_SAFE_names": []
+  },
+  "shellfish_allergy": {
+    "n_union": 219,
+    "n_after_land_meat_filter": 216,
+    "verdicts": {
+      "UNCERTAIN": 128,
+      "SAFE": 72,
+      "NOT_SAFE": 16
+    },
+    "FINDING_SAFE_count": 0,
+    "FINDING_SAFE_names": []
+  },
+  "rows": [
+    {
+      "canonical_name": "applebees fish hand battered",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "burger king premium fish sandwich",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "canned herring",
+      "bucket": "ontology_fish_seafood",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "canned mackerel",
+      "bucket": "ontology_fish_seafood",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "canned sardines",
+      "bucket": "ontology_fish_seafood",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "canned seafood",
+      "bucket": "ontology_fish_seafood",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "NOT_SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "canned sprats",
+      "bucket": "ontology_fish_seafood",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "crustaceans crab alaska king raw",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "crustaceans crab alaska king raw",
+        "source": "usda",
+        "matched_part": "king crab",
+        "infoods": "king crab",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "NOT_SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "crustaceans crab blue canned",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "crustaceans crab blue cooked moist heat",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "crustaceans crab blue raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "NOT_SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "crustaceans crab blue swimming lump pasteurized refrigerated",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "crustaceans crab dungeness cooked moist heat",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "crustaceans crab dungeness cooked moist heat",
+        "source": "usda",
+        "matched_part": "dungeness crab",
+        "infoods": "dungeness crab",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "crustaceans crab dungeness raw",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "crustaceans crab dungeness raw",
+        "source": "usda",
+        "matched_part": "dungeness crab",
+        "infoods": "dungeness crab",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "NOT_SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "crustaceans crab queen cooked moist heat",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "crustaceans crab queen raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "NOT_SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "crustaceans crayfish mixed species farmed raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "crustaceans crayfish mixed species wild raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "crustaceans lobster northern cooked moist heat",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "crustaceans lobster northern raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "NOT_SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "crustaceans shrimp cooked",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "crustaceans shrimp farm raised raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "NOT_SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "crustaceans shrimp mixed species canned",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "crustaceans shrimp raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "NOT_SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "crustaceans spiny lobster mixed species raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "dried seafood",
+      "bucket": "ontology_fish_seafood",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "NOT_SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "emu oyster raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": true,
+      "fish_allergy": "SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish anchovy european raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish bass striped cooked dry heat",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish bass striped cooked dry heat",
+        "source": "usda",
+        "matched_part": "striped bass",
+        "infoods": "striped bass",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish bass striped raw",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish bass striped raw",
+        "source": "usda",
+        "matched_part": "striped bass",
+        "infoods": "striped bass",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish blackfish whole (alaska native)",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish bluefish cooked dry heat",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish bluefish raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish broth",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish burbot cooked dry heat",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish burbot raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish butterfish cooked dry heat",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish butterfish raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish carp cooked dry heat",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish carp raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish catfish channel farmed raw",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish catfish channel farmed raw",
+        "source": "usda",
+        "matched_part": "channel catfish",
+        "infoods": "channel catfish",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish catfish channel wild raw",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish catfish channel wild raw",
+        "source": "usda",
+        "matched_part": "channel catfish",
+        "infoods": "channel catfish",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish catfish farm raised raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish caviar black and red granular",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish cisco raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish cisco smoked",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish cod atlantic cooked dry heat",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish cod atlantic cooked dry heat",
+        "source": "usda",
+        "matched_part": "atlantic cod",
+        "infoods": "atlantic cod",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish cod atlantic dried and salted",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish cod atlantic dried and salted",
+        "source": "usda",
+        "matched_part": "atlantic cod",
+        "infoods": "atlantic cod",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish cod atlantic raw",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish cod atlantic raw",
+        "source": "usda",
+        "matched_part": "atlantic cod",
+        "infoods": "atlantic cod",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish cod atlantic wild caught raw",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish cod atlantic wild caught raw",
+        "source": "usda",
+        "matched_part": "atlantic cod",
+        "infoods": "atlantic cod",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish cod pacific cooked",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish cod pacific cooked",
+        "source": "usda",
+        "matched_part": "pacific cod",
+        "infoods": "pacific cod",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish croaker atlantic raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish cusk cooked dry heat",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish cusk raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish devilfish meat (alaska native)",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish drum freshwater cooked dry heat",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish drum freshwater raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish eel mixed species raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish fish sticks frozen prepared",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish gefiltefish commercial sweet recipe",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish grouper mixed species raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish haddock cooked dry heat",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish haddock raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish haddock smoked",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish halibut atlantic and pacific raw",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish halibut atlantic and pacific raw",
+        "source": "usda",
+        "matched_part": "atlantic halibut",
+        "infoods": "atlantic halibut",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish halibut greenland cooked dry heat",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish halibut greenland raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish herring atlantic cooked dry heat",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish herring atlantic cooked dry heat",
+        "source": "usda",
+        "matched_part": "atlantic herring",
+        "infoods": "atlantic herring",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish herring atlantic kippered",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish herring atlantic kippered",
+        "source": "usda",
+        "matched_part": "atlantic herring",
+        "infoods": "atlantic herring",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish herring atlantic pickled",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish herring atlantic pickled",
+        "source": "usda",
+        "matched_part": "atlantic herring",
+        "infoods": "atlantic herring",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish herring atlantic raw",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish herring atlantic raw",
+        "source": "usda",
+        "matched_part": "atlantic herring",
+        "infoods": "atlantic herring",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish herring pacific cooked dry heat",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish herring pacific cooked dry heat",
+        "source": "usda",
+        "matched_part": "pacific herring",
+        "infoods": "pacific herring",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish herring pacific raw",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish herring pacific raw",
+        "source": "usda",
+        "matched_part": "pacific herring",
+        "infoods": "pacific herring",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish ling cooked dry heat",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish ling raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish lingcod cooked dry heat",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish lingcod liver (alaska native)",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish lingcod meat raw (alaska native)",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish lingcod raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish mackerel atlantic cooked dry heat",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish mackerel atlantic cooked dry heat",
+        "source": "usda",
+        "matched_part": "atlantic mackerel",
+        "infoods": "atlantic mackerel",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish mackerel atlantic raw",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish mackerel atlantic raw",
+        "source": "usda",
+        "matched_part": "atlantic mackerel",
+        "infoods": "atlantic mackerel",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish mackerel jack canned drained solids",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish mackerel king cooked dry heat",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish mackerel king cooked dry heat",
+        "source": "usda",
+        "matched_part": "king mackerel",
+        "infoods": "king mackerel",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish mackerel king raw",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish mackerel king raw",
+        "source": "usda",
+        "matched_part": "king mackerel",
+        "infoods": "king mackerel",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish mackerel salted",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish mackerel spanish cooked dry heat",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish mackerel spanish cooked dry heat",
+        "source": "usda",
+        "matched_part": "spanish mackerel",
+        "infoods": "spanish mackerel",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish mackerel spanish raw",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish mackerel spanish raw",
+        "source": "usda",
+        "matched_part": "spanish mackerel",
+        "infoods": "spanish mackerel",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish mahimahi cooked dry heat",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish mahimahi raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish milkfish cooked dry heat",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish milkfish raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish monkfish cooked dry heat",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish monkfish raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish mullet striped cooked dry heat",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish mullet striped cooked dry heat",
+        "source": "usda",
+        "matched_part": "striped mullet",
+        "infoods": "striped mullet",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish mullet striped raw",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish mullet striped raw",
+        "source": "usda",
+        "matched_part": "striped mullet",
+        "infoods": "striped mullet",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish ocean perch atlantic raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish oil cod liver",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish oil cod liver",
+        "source": "usda",
+        "matched_part": "cod liver",
+        "infoods": "cod liver",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish oil herring",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish oil menhaden",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish oil menhaden fully hydrogenated",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish oil salmon",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish oil sardine",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish oil sardine",
+        "source": "usda",
+        "matched_part": "oil sardine",
+        "infoods": "oil sardine",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish perch mixed species raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish pike northern cooked dry heat",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish pike northern cooked dry heat",
+        "source": "usda",
+        "matched_part": "northern pike",
+        "infoods": "northern pike",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish pike northern liver (alaska native)",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish pike northern liver (alaska native)",
+        "source": "usda",
+        "matched_part": "northern pike",
+        "infoods": "northern pike",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish pike northern raw",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish pike northern raw",
+        "source": "usda",
+        "matched_part": "northern pike",
+        "infoods": "northern pike",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish pike walleye cooked dry heat",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish pike walleye raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish pollock alaska cooked",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish pollock alaska raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish pollock atlantic cooked dry heat",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish pollock atlantic raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish pollock raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish pompano florida cooked dry heat",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish pompano florida raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish pout ocean cooked dry heat",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish pout ocean raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish rockfish pacific mixed species raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish roe mixed species raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish roughy orange cooked dry heat",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish roughy orange raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish sablefish cooked dry heat",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish sablefish raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish sablefish smoked",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish salmon atlantic farm raised raw",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish salmon atlantic farm raised raw",
+        "source": "usda",
+        "matched_part": "atlantic salmon",
+        "infoods": "atlantic salmon",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish salmon atlantic farmed raw",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish salmon atlantic farmed raw",
+        "source": "usda",
+        "matched_part": "atlantic salmon",
+        "infoods": "atlantic salmon",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish salmon atlantic wild raw",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish salmon atlantic wild raw",
+        "source": "usda",
+        "matched_part": "atlantic salmon",
+        "infoods": "atlantic salmon",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish salmon chinook cooked dry heat",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish salmon chinook cooked dry heat",
+        "source": "usda",
+        "matched_part": "chinook salmon",
+        "infoods": "chinook salmon",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish salmon chinook raw",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish salmon chinook raw",
+        "source": "usda",
+        "matched_part": "chinook salmon",
+        "infoods": "chinook salmon",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish salmon chinook smoked",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish salmon chinook smoked",
+        "source": "usda",
+        "matched_part": "chinook salmon",
+        "infoods": "chinook salmon",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish salmon chinook smoked (lox) regular",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish salmon chinook smoked (lox) regular",
+        "source": "usda",
+        "matched_part": "chinook salmon",
+        "infoods": "chinook salmon",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish salmon chum cooked dry heat",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish salmon chum cooked dry heat",
+        "source": "usda",
+        "matched_part": "chum salmon",
+        "infoods": "chum salmon",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish salmon chum dried (alaska native)",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish salmon chum dried (alaska native)",
+        "source": "usda",
+        "matched_part": "chum salmon",
+        "infoods": "chum salmon",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish salmon chum raw",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish salmon chum raw",
+        "source": "usda",
+        "matched_part": "chum salmon",
+        "infoods": "chum salmon",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish salmon chum raw (alaska native)",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish salmon chum raw (alaska native)",
+        "source": "usda",
+        "matched_part": "chum salmon",
+        "infoods": "chum salmon",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish salmon coho farmed raw",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish salmon coho farmed raw",
+        "source": "usda",
+        "matched_part": "coho salmon",
+        "infoods": "coho salmon",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish salmon coho wild raw",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish salmon coho wild raw",
+        "source": "usda",
+        "matched_part": "coho salmon",
+        "infoods": "coho salmon",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish salmon pink canned drained solids",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish salmon pink canned drained solids",
+        "source": "usda",
+        "matched_part": "pink salmon",
+        "infoods": "pink salmon",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish salmon pink cooked dry heat",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish salmon pink cooked dry heat",
+        "source": "usda",
+        "matched_part": "pink salmon",
+        "infoods": "pink salmon",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish salmon pink raw",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish salmon pink raw",
+        "source": "usda",
+        "matched_part": "pink salmon",
+        "infoods": "pink salmon",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish salmon sockeye canned drained solids",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish salmon sockeye canned drained solids",
+        "source": "usda",
+        "matched_part": "sockeye salmon",
+        "infoods": "sockeye salmon",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish salmon sockeye cooked dry heat",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish salmon sockeye cooked dry heat",
+        "source": "usda",
+        "matched_part": "sockeye salmon",
+        "infoods": "sockeye salmon",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish salmon sockeye raw",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish salmon sockeye raw",
+        "source": "usda",
+        "matched_part": "sockeye salmon",
+        "infoods": "sockeye salmon",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish salmon sockeye wild caught raw",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish salmon sockeye wild caught raw",
+        "source": "usda",
+        "matched_part": "sockeye salmon",
+        "infoods": "sockeye salmon",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish salmon tipnuk fermented (alaska native)",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish scup cooked dry heat",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish scup raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish sea bass mixed species raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish seatrout mixed species raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish shad american cooked dry heat",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish shad american cooked dry heat",
+        "source": "usda",
+        "matched_part": "american shad",
+        "infoods": "american shad",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish shad american raw",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish shad american raw",
+        "source": "usda",
+        "matched_part": "american shad",
+        "infoods": "american shad",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish shark mixed species raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish sheefish raw (alaska native)",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish sheepshead cooked dry heat",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish sheepshead raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish smelt rainbow cooked dry heat",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish smelt rainbow raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish snapper mixed species raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish spot cooked dry heat",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish spot raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish sturgeon mixed species raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish sturgeon mixed species smoked",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish sucker white cooked dry heat",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish sucker white raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish sunfish pumpkin seed raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish surimi",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish swordfish cooked dry heat",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish swordfish raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish tilapia cooked dry heat",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish tilapia farm raised raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish tilapia raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish tilefish cooked dry heat",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish tilefish raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish trout mixed species raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish trout rainbow farmed raw",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish trout rainbow farmed raw",
+        "source": "usda",
+        "matched_part": "rainbow trout",
+        "infoods": "rainbow trout",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish trout rainbow wild raw",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish trout rainbow wild raw",
+        "source": "usda",
+        "matched_part": "rainbow trout",
+        "infoods": "rainbow trout",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish tuna fresh bluefin raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish tuna fresh skipjack raw",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "fish tuna fresh skipjack raw",
+        "source": "usda",
+        "matched_part": "skipjack tuna",
+        "infoods": "skipjack tuna",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish tuna fresh yellowfin raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish tuna light canned in water drained solids",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish tuna salad",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish turbot european cooked dry heat",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish turbot european raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish whitefish broad liver (alaska native)",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish whitefish dried (alaska native)",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish whitefish mixed species raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish whitefish mixed species smoked",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish whiting mixed species raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish wolffish atlantic cooked dry heat",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish wolffish atlantic raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "fish yellowtail mixed species raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "mcdonalds filet o fish",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "mcdonalds filet o fish (without tartar sauce)",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "mollusks abalone mixed species raw",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "mollusks abalone mixed species raw",
+        "source": "usda",
+        "matched_part": "abalone raw",
+        "infoods": "abalone",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "mollusks clam mixed species canned liquid",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "mollusks clam mixed species raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "mollusks cuttlefish mixed species raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "mollusks mussel blue cooked moist heat",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "mollusks mussel blue cooked moist heat",
+        "source": "usda",
+        "matched_part": "blue mussel",
+        "infoods": "blue mussel",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "mollusks mussel blue raw",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "mollusks mussel blue raw",
+        "source": "usda",
+        "matched_part": "blue mussel",
+        "infoods": "blue mussel",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "NOT_SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "mollusks octopus common cooked moist heat",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "mollusks octopus common raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "NOT_SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "mollusks oyster eastern canned",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "mollusks oyster eastern farmed raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "NOT_SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "mollusks oyster eastern wild raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "NOT_SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "mollusks oyster pacific cooked moist heat",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "mollusks oyster pacific cooked moist heat",
+        "source": "usda",
+        "matched_part": "pacific oyster",
+        "infoods": "pacific oyster",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "mollusks oyster pacific raw",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "mollusks oyster pacific raw",
+        "source": "usda",
+        "matched_part": "pacific oyster",
+        "infoods": "pacific oyster",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "NOT_SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "mollusks scallop mixed species raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "mollusks squid mixed species cooked fried",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "mollusks squid mixed species raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "ostrich oyster cooked",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": true,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "ostrich oyster raw",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": true,
+      "fish_allergy": "SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "salmon nuggets breaded frozen heated",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "salmon nuggets cooked as purchased unheated",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "salmon sockeye canned total can contents",
+      "bucket": "infoods_matched",
+      "evidence": {
+        "live": "salmon sockeye canned total can contents",
+        "source": "usda",
+        "matched_part": "sockeye salmon",
+        "infoods": "sockeye salmon",
+        "how": "token_subset"
+      },
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "salted seafood",
+      "bucket": "ontology_fish_seafood",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "NOT_SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "sauce fish ready to serve",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "smoked seafood",
+      "bucket": "ontology_fish_seafood",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "NOT_SAFE",
+      "shellfish_allergy": "NOT_SAFE",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "soup fish homemade (alaska native)",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    },
+    {
+      "canonical_name": "soup stock fish home prepared",
+      "bucket": "usda_lexicon",
+      "evidence": null,
+      "land_meat_or_poultry": false,
+      "fish_allergy": "UNCERTAIN",
+      "shellfish_allergy": "UNCERTAIN",
+      "FINDING_fish_allergy": false,
+      "FINDING_shellfish_allergy": false
+    }
+  ],
+  "finding_rule_note": "FINDING applies only after excluding land-meat/poultry tags. SAFE + animal_origin + no kind under fish_allergy is a FINDING only for non-land-meat rows (snapper/seafood shape)."
+}

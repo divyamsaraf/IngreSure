@@ -47,6 +47,12 @@ Tier-1 (truth_anchor) and Tier-2 (`data/ontology.json`) ship with the app. Empty
    - Confirm `20260613*` `ingredients.source` CHECK includes `fda_gras` / `fssai` / `nin` before writing those sources on remote  
    - Item 18 dual-queue consolidation still waits on remote enrichment targeting `ike2_unknown_queue`
 
+6. **Pre-pilot audit dependency (with Item 14)**  
+   - Provision a **hosted read-only** replica (or least-privilege service role) of remote `ike2_*` for Item 12 nightly Actions  
+   - Store `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` as Actions secrets; set `REQUIRE_LIVE_AUDIT=1` when ready so a skipped live audit is red, not green  
+   - Route `--fail-on-findings` failures to Slack/email/pager (ops channel TBD)  
+   - Without this, the live audit guard remains local-Beat-only (see `docs/item12_audit_hosting.md`)
+
 ## Explicit non-goals
 
 - Not required to close Item 16 local  

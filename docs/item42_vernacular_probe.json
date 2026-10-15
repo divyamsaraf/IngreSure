@@ -1,0 +1,288 @@
+{
+  "n_probes": 28,
+  "n_gaps_safe_flag_absent": 0,
+  "gaps": [],
+  "all": [
+    {
+      "name": "atta",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L1_truth_anchor",
+      "trusted": true,
+      "flag_on_ci": true,
+      "verdict": "NOT_SAFE",
+      "gap": false
+    },
+    {
+      "name": "maida",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L1_truth_anchor",
+      "trusted": true,
+      "flag_on_ci": true,
+      "verdict": "NOT_SAFE",
+      "gap": false
+    },
+    {
+      "name": "sooji",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L2_local_ontology",
+      "trusted": true,
+      "flag_on_ci": true,
+      "verdict": "NOT_SAFE",
+      "gap": false
+    },
+    {
+      "name": "suji",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L2_local_ontology",
+      "trusted": true,
+      "flag_on_ci": true,
+      "verdict": "NOT_SAFE",
+      "gap": false
+    },
+    {
+      "name": "rava",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L2_local_ontology",
+      "trusted": true,
+      "flag_on_ci": true,
+      "verdict": "NOT_SAFE",
+      "gap": false
+    },
+    {
+      "name": "dalia",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L3_db_alias",
+      "trusted": false,
+      "flag_on_ci": true,
+      "verdict": "NOT_SAFE",
+      "gap": false
+    },
+    {
+      "name": "roti",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L5_unknown_queue",
+      "trusted": true,
+      "flag_on_ci": true,
+      "verdict": "NOT_SAFE",
+      "gap": false
+    },
+    {
+      "name": "chapati",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L5_unknown_queue",
+      "trusted": true,
+      "flag_on_ci": true,
+      "verdict": "NOT_SAFE",
+      "gap": false
+    },
+    {
+      "name": "chapatti",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L5_unknown_queue",
+      "trusted": true,
+      "flag_on_ci": true,
+      "verdict": "NOT_SAFE",
+      "gap": false
+    },
+    {
+      "name": "paratha",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L5_unknown_queue",
+      "trusted": true,
+      "flag_on_ci": true,
+      "verdict": "NOT_SAFE",
+      "gap": false
+    },
+    {
+      "name": "naan",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L5_unknown_queue",
+      "trusted": true,
+      "flag_on_ci": true,
+      "verdict": "NOT_SAFE",
+      "gap": false
+    },
+    {
+      "name": "puri",
+      "flag": "gluten_source",
+      "restriction": "gluten_free",
+      "layer": "L5_unknown_queue",
+      "trusted": true,
+      "flag_on_ci": true,
+      "verdict": "NOT_SAFE",
+      "gap": false
+    },
+    {
+      "name": "paneer",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L2_local_ontology",
+      "trusted": true,
+      "flag_on_ci": true,
+      "verdict": "NOT_SAFE",
+      "gap": false
+    },
+    {
+      "name": "dahi",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "trusted": true,
+      "flag_on_ci": true,
+      "verdict": "NOT_SAFE",
+      "gap": false
+    },
+    {
+      "name": "curd",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L1_truth_anchor",
+      "trusted": true,
+      "flag_on_ci": true,
+      "verdict": "NOT_SAFE",
+      "gap": false
+    },
+    {
+      "name": "khoa",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L2_local_ontology",
+      "trusted": true,
+      "flag_on_ci": true,
+      "verdict": "NOT_SAFE",
+      "gap": false
+    },
+    {
+      "name": "mawa",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L2_local_ontology",
+      "trusted": true,
+      "flag_on_ci": true,
+      "verdict": "NOT_SAFE",
+      "gap": false
+    },
+    {
+      "name": "lassi",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "trusted": true,
+      "flag_on_ci": true,
+      "verdict": "NOT_SAFE",
+      "gap": false
+    },
+    {
+      "name": "chaas",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "trusted": true,
+      "flag_on_ci": true,
+      "verdict": "NOT_SAFE",
+      "gap": false
+    },
+    {
+      "name": "malai",
+      "flag": "dairy_source",
+      "restriction": "dairy_free",
+      "layer": "L5_unknown_queue",
+      "trusted": true,
+      "flag_on_ci": true,
+      "verdict": "NOT_SAFE",
+      "gap": false
+    },
+    {
+      "name": "anda",
+      "flag": "egg_source",
+      "restriction": "egg_free",
+      "layer": "L5_unknown_queue",
+      "trusted": true,
+      "flag_on_ci": true,
+      "verdict": "NOT_SAFE",
+      "gap": false
+    },
+    {
+      "name": "kaju",
+      "flag": "tree_nut_source",
+      "restriction": "tree_nut_allergy",
+      "layer": "L2_local_ontology",
+      "trusted": true,
+      "flag_on_ci": true,
+      "verdict": "NOT_SAFE",
+      "gap": false
+    },
+    {
+      "name": "badam",
+      "flag": "tree_nut_source",
+      "restriction": "tree_nut_allergy",
+      "layer": "L2_local_ontology",
+      "trusted": true,
+      "flag_on_ci": true,
+      "verdict": "NOT_SAFE",
+      "gap": false
+    },
+    {
+      "name": "pista",
+      "flag": "tree_nut_source",
+      "restriction": "tree_nut_allergy",
+      "layer": "L2_local_ontology",
+      "trusted": true,
+      "flag_on_ci": true,
+      "verdict": "NOT_SAFE",
+      "gap": false
+    },
+    {
+      "name": "akhrot",
+      "flag": "tree_nut_source",
+      "restriction": "tree_nut_allergy",
+      "layer": "L2_local_ontology",
+      "trusted": true,
+      "flag_on_ci": true,
+      "verdict": "NOT_SAFE",
+      "gap": false
+    },
+    {
+      "name": "til",
+      "flag": "sesame_source",
+      "restriction": "sesame_allergy",
+      "layer": "L3_db_alias",
+      "trusted": false,
+      "flag_on_ci": true,
+      "verdict": "NOT_SAFE",
+      "gap": false
+    },
+    {
+      "name": "rai",
+      "flag": "mustard_source",
+      "restriction": "mustard_allergy",
+      "layer": "L1_truth_anchor",
+      "trusted": true,
+      "flag_on_ci": true,
+      "verdict": "NOT_SAFE",
+      "gap": false
+    },
+    {
+      "name": "sarson",
+      "flag": "mustard_source",
+      "restriction": "mustard_allergy",
+      "layer": "L2_local_ontology",
+      "trusted": true,
+      "flag_on_ci": true,
+      "verdict": "NOT_SAFE",
+      "gap": false
+    }
+  ],
+  "note": "SAFE + flag absent = vernacular blind spot. Fold gap tokens into Item 12 FAMILY_LEX / ontology / regional remap."
+}

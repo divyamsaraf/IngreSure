@@ -1,0 +1,1382 @@
+{
+  "n_live_groups_scanned": 6913,
+  "n_allergen_true_plus_inferred_pairs": 1453,
+  "n_unique_name_flag": 1453,
+  "by_source": {
+    "infoods": 390,
+    "ifct": 51,
+    "usda": 1012
+  },
+  "by_source_flag": {
+    "infoods|fish_source": 311,
+    "usda|dairy_source": 225,
+    "usda|egg_source": 214,
+    "usda|fish_source": 183,
+    "usda|gluten_source": 121,
+    "infoods|shellfish_source": 78,
+    "usda|soy_source": 69,
+    "usda|shellfish_source": 60,
+    "usda|tree_nut_source": 60,
+    "usda|peanut_source": 45,
+    "ifct|egg_source": 16,
+    "ifct|shellfish_source": 13,
+    "usda|sesame_source": 11,
+    "ifct|fish_source": 10,
+    "usda|sulphite_source": 10,
+    "ifct|gluten_source": 7,
+    "usda|celery_source": 7,
+    "usda|mustard_source": 6,
+    "ifct|dairy_source": 3,
+    "ifct|soy_source": 2,
+    "infoods|peanut_source": 1,
+    "usda|lupin_source": 1
+  },
+  "by_inferred_token": {
+    "infoods_anfood_inferred": 390,
+    "ifct2017_inferred": 51,
+    "usda_fdc_bulk_inferred": 1012
+  },
+  "verdict_counts_by_source_flag": {
+    "infoods|fish_source|UNCERTAIN": 303,
+    "usda|dairy_source|UNCERTAIN": 203,
+    "usda|egg_source|UNCERTAIN": 193,
+    "usda|fish_source|UNCERTAIN": 112,
+    "usda|gluten_source|UNCERTAIN": 109,
+    "infoods|shellfish_source|UNCERTAIN": 76,
+    "usda|fish_source|NOT_SAFE": 71,
+    "usda|soy_source|UNCERTAIN": 62,
+    "usda|tree_nut_source|UNCERTAIN": 48,
+    "usda|shellfish_source|UNCERTAIN": 41,
+    "usda|peanut_source|UNCERTAIN": 40,
+    "ifct|egg_source|UNCERTAIN": 16,
+    "usda|dairy_source|SAFE": 15,
+    "usda|egg_source|NOT_SAFE": 15,
+    "usda|shellfish_source|NOT_SAFE": 14,
+    "ifct|shellfish_source|UNCERTAIN": 13,
+    "usda|gluten_source|NOT_SAFE": 12,
+    "usda|tree_nut_source|NOT_SAFE": 12,
+    "usda|sesame_source|UNCERTAIN": 11,
+    "ifct|fish_source|UNCERTAIN": 9,
+    "infoods|fish_source|NOT_SAFE": 8,
+    "usda|dairy_source|NOT_SAFE": 7,
+    "usda|soy_source|NOT_SAFE": 7,
+    "ifct|gluten_source|UNCERTAIN": 6,
+    "usda|sulphite_source|UNCERTAIN": 6,
+    "usda|egg_source|SAFE": 6,
+    "usda|mustard_source|UNCERTAIN": 6,
+    "usda|celery_source|NOT_SAFE": 5,
+    "usda|shellfish_source|SAFE": 5,
+    "usda|peanut_source|NOT_SAFE": 5,
+    "usda|sulphite_source|NOT_SAFE": 4,
+    "infoods|shellfish_source|NOT_SAFE": 2,
+    "ifct|dairy_source|UNCERTAIN": 2,
+    "ifct|soy_source|UNCERTAIN": 2,
+    "usda|celery_source|UNCERTAIN": 2,
+    "ifct|fish_source|NOT_SAFE": 1,
+    "ifct|dairy_source|NOT_SAFE": 1,
+    "infoods|peanut_source|UNCERTAIN": 1,
+    "ifct|gluten_source|NOT_SAFE": 1,
+    "usda|lupin_source|NOT_SAFE": 1
+  },
+  "softened_fail_count": 1259,
+  "softened_fail_by_source": {
+    "infoods": 379,
+    "ifct": 48,
+    "usda": 832
+  },
+  "usda_fish_shellfish_evidence_split": {
+    "name_sniffed": 240,
+    "category_or_other_no_name_match": 3
+  },
+  "hand_check_50_per_source": {
+    "infoods": {
+      "n_sampled": 50,
+      "precision_guess_counts": {
+        "needs_human": 31,
+        "likely_true": 19
+      },
+      "evidence_class_counts": {}
+    },
+    "ifct": {
+      "n_sampled": 50,
+      "precision_guess_counts": {
+        "likely_true": 42,
+        "needs_human": 8
+      },
+      "evidence_class_counts": {}
+    },
+    "usda": {
+      "n_sampled": 50,
+      "precision_guess_counts": {
+        "likely_true": 26,
+        "needs_human": 24
+      },
+      "evidence_class_counts": {
+        "name_sniffed": 7
+      }
+    }
+  },
+  "hand_check_samples": {
+    "infoods": {
+      "n_sampled": 50,
+      "precision_guess_counts": {
+        "needs_human": 31,
+        "likely_true": 19
+      },
+      "evidence_class_counts": {},
+      "rows": [
+        {
+          "canonical_name": "striped mullet",
+          "flag": "fish_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "sharpsnout sea bream",
+          "flag": "fish_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "thread fins",
+          "flag": "fish_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "octoupus",
+          "flag": "shellfish_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "bocaccio rockfish",
+          "flag": "fish_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "cod roe",
+          "flag": "fish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "whitefish",
+          "flag": "fish_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "steelhead trout",
+          "flag": "fish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "catshark",
+          "flag": "fish_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "pinkperch",
+          "flag": "fish_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "brown meagre",
+          "flag": "fish_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "gafftopsail sea catfish",
+          "flag": "fish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "indian scad",
+          "flag": "fish_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "pangasius",
+          "flag": "fish_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "blue spotted job fish",
+          "flag": "fish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "banded grouper",
+          "flag": "fish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "mottled starfish",
+          "flag": "shellfish_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "spade fish",
+          "flag": "fish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "rohu (adult)",
+          "flag": "fish_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "norway lobster",
+          "flag": "shellfish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "black pomfret",
+          "flag": "fish_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "dorado",
+          "flag": "fish_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "matrinxã",
+          "flag": "fish_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "shortspine thornyhead rockfish",
+          "flag": "fish_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "black seabream",
+          "flag": "fish_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "ear shell",
+          "flag": "shellfish_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "dussumiers thryssa",
+          "flag": "fish_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "chum salmon",
+          "flag": "fish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "needle scaled queen fish",
+          "flag": "fish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "sablefish",
+          "flag": "fish_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "northern red snapper",
+          "flag": "fish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "mrigal carp",
+          "flag": "fish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "pout",
+          "flag": "fish_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "waker",
+          "flag": "fish_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "saithe(=pollack)",
+          "flag": "fish_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "offshore silver hake",
+          "flag": "fish_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "bighead carp",
+          "flag": "fish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "pacific lions paw scallop",
+          "flag": "shellfish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "rosy monacle bream",
+          "flag": "fish_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "saithe",
+          "flag": "fish_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "spanish mackerel",
+          "flag": "fish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "striped bass",
+          "flag": "fish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "chinook salmon",
+          "flag": "fish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "sunflower starfish",
+          "flag": "shellfish_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "silver pomfret",
+          "flag": "fish_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "geoduck",
+          "flag": "shellfish_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "jack knife clam",
+          "flag": "shellfish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "skipjack tuna",
+          "flag": "fish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "NOT_SAFE",
+          "layer": "L2_local_ontology"
+        },
+        {
+          "canonical_name": "cleft belly trevally",
+          "flag": "fish_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "giant river prawn",
+          "flag": "shellfish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        }
+      ]
+    },
+    "ifct": {
+      "n_sampled": 50,
+      "precision_guess_counts": {
+        "likely_true": 42,
+        "needs_human": 8
+      },
+      "evidence_class_counts": {},
+      "rows": [
+        {
+          "canonical_name": "eggs cat fish",
+          "flag": "egg_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "egg duck whole boiled",
+          "flag": "egg_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "egg poultry yolk boiled",
+          "flag": "egg_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "egg duck whole omlet",
+          "flag": "egg_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "pomfret black",
+          "flag": "fish_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "egg poultry whole boiled",
+          "flag": "egg_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "egg poultry white raw",
+          "flag": "egg_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "squid white small",
+          "flag": "shellfish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "milk whole buffalo",
+          "flag": "dairy_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "egg duck whole raw",
+          "flag": "egg_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "egg quial whole boiled",
+          "flag": "egg_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "pomfret white",
+          "flag": "fish_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "squid red",
+          "flag": "shellfish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "pomfret snub nose",
+          "flag": "fish_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "ray fish bow head spotted",
+          "flag": "fish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "lobster king size",
+          "flag": "shellfish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "wheat vermicelli roasted",
+          "flag": "gluten_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "egg poultry whole raw",
+          "flag": "egg_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "clam white shell ribbed",
+          "flag": "shellfish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "lobster brown",
+          "flag": "shellfish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "egg country hen whole boiled",
+          "flag": "egg_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "shark hammer head",
+          "flag": "fish_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "squid black",
+          "flag": "shellfish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "red snapper small",
+          "flag": "fish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "soya bean brown",
+          "flag": "soy_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "wheat flour refined",
+          "flag": "gluten_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "kalava",
+          "flag": "fish_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "NOT_SAFE",
+          "layer": "L2_local_ontology"
+        },
+        {
+          "canonical_name": "shark spotted",
+          "flag": "fish_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "egg poultry yolk raw",
+          "flag": "egg_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "khoa",
+          "flag": "dairy_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "NOT_SAFE",
+          "layer": "L2_local_ontology"
+        },
+        {
+          "canonical_name": "wheat whole",
+          "flag": "gluten_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "NOT_SAFE",
+          "layer": "L2_local_ontology"
+        },
+        {
+          "canonical_name": "tiger prawns orange",
+          "flag": "shellfish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "egg poultry omlet",
+          "flag": "egg_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "wheat bulgur",
+          "flag": "gluten_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "clam green shell",
+          "flag": "shellfish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "crab sea",
+          "flag": "shellfish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "eggs cat fish",
+          "flag": "fish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "milk whole cow",
+          "flag": "dairy_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "egg country hen whole raw",
+          "flag": "egg_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "egg country hen omlet",
+          "flag": "egg_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "wheat semolina",
+          "flag": "gluten_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "prawns big",
+          "flag": "shellfish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "prawns small",
+          "flag": "shellfish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "egg quial whole raw",
+          "flag": "egg_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "squid hard shell",
+          "flag": "shellfish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "tiger prawns brown",
+          "flag": "shellfish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "wheat vermicelli",
+          "flag": "gluten_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "wheat flour atta",
+          "flag": "gluten_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "tuna striped",
+          "flag": "fish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "egg poultry white boiled",
+          "flag": "egg_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        }
+      ]
+    },
+    "usda": {
+      "n_sampled": 50,
+      "precision_guess_counts": {
+        "likely_true": 26,
+        "needs_human": 24
+      },
+      "evidence_class_counts": {
+        "name_sniffed": 7
+      },
+      "rows": [
+        {
+          "canonical_name": "wheat soft red winter",
+          "flag": "gluten_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "cheese pasteurized process american vitamin d fortified",
+          "flag": "egg_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "fish pollock atlantic raw",
+          "flag": "fish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": "name_sniffed",
+          "verdict_today": "NOT_SAFE",
+          "layer": "L2_local_ontology"
+        },
+        {
+          "canonical_name": "cream heavy",
+          "flag": "egg_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "candies nougat with almonds",
+          "flag": "tree_nut_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "sour cream fat free",
+          "flag": "egg_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "milk chocolate beverage hot cocoa homemade",
+          "flag": "dairy_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "campbells chunky hearty beef barley soup",
+          "flag": "gluten_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "cheese mozzarella nonfat",
+          "flag": "dairy_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "cheesefurter cheese smokie pork beef",
+          "flag": "dairy_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "egg whole cooked poached",
+          "flag": "egg_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "nuts chestnuts chinese dried",
+          "flag": "tree_nut_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "milk lowfat fluid 1% milkfat with added vitamin a and vitamin d",
+          "flag": "dairy_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "soy meal defatted raw",
+          "flag": "soy_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "NOT_SAFE",
+          "layer": "L2_local_ontology"
+        },
+        {
+          "canonical_name": "kraft velveeta pasteurized process cheese spread",
+          "flag": "dairy_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "flour soy defatted",
+          "flag": "soy_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "oil walnut",
+          "flag": "tree_nut_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "butter stick unsalted",
+          "flag": "dairy_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "hazelnuts beaked (northern plains indians)",
+          "flag": "tree_nut_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "yogurt greek nonfat strawberry dannon oikos",
+          "flag": "dairy_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "fish mackerel atlantic cooked dry heat",
+          "flag": "fish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": "name_sniffed",
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "milk low sodium fluid",
+          "flag": "egg_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "octopus (alaska native)",
+          "flag": "shellfish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": "name_sniffed",
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "fish bass striped cooked dry heat",
+          "flag": "fish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": "name_sniffed",
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "muffins english wheat",
+          "flag": "gluten_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "egg whole cooked scrambled",
+          "flag": "dairy_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "cheese fontina",
+          "flag": "egg_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "nuts pine nuts pinyon dried",
+          "flag": "tree_nut_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "fish cod pacific cooked",
+          "flag": "fish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": "name_sniffed",
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "yogurt greek whole plain chobani",
+          "flag": "dairy_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "ice cream sundae cone",
+          "flag": "egg_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "cheese cream low fat",
+          "flag": "egg_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "cheese mexican blend",
+          "flag": "dairy_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "candies honey combed with peanut butter",
+          "flag": "peanut_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "celeriac raw",
+          "flag": "celery_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "NOT_SAFE",
+          "layer": "L2_local_ontology"
+        },
+        {
+          "canonical_name": "cheese feta whole milk crumbled",
+          "flag": "dairy_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "shortening household soybean (hydrogenated) and palm",
+          "flag": "soy_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "celery raw",
+          "flag": "celery_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "NOT_SAFE",
+          "layer": "L2_local_ontology"
+        },
+        {
+          "canonical_name": "fish bluefish raw",
+          "flag": "fish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": "name_sniffed",
+          "verdict_today": "NOT_SAFE",
+          "layer": "L2_local_ontology"
+        },
+        {
+          "canonical_name": "butter clarified butter (ghee)",
+          "flag": "dairy_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "crackers rye wafers plain",
+          "flag": "gluten_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "fish trout rainbow wild raw",
+          "flag": "fish_source",
+          "precision_guess": "likely_true",
+          "evidence_class": "name_sniffed",
+          "verdict_today": "NOT_SAFE",
+          "layer": "L2_local_ontology"
+        },
+        {
+          "canonical_name": "cabbage mustard salted",
+          "flag": "mustard_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "yogurt greek nonfat vanilla chobani",
+          "flag": "dairy_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "egg white raw fresh",
+          "flag": "dairy_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "SAFE",
+          "layer": "L2_local_ontology"
+        },
+        {
+          "canonical_name": "bread pita whole wheat",
+          "flag": "gluten_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "yogurt greek vanilla nonfat",
+          "flag": "egg_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "house foods premium soft tofu",
+          "flag": "soy_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "cereals ready to eat moms best sweetened wheat fuls",
+          "flag": "gluten_source",
+          "precision_guess": "likely_true",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        },
+        {
+          "canonical_name": "tofu salted and fermented (fuyu)",
+          "flag": "soy_source",
+          "precision_guess": "needs_human",
+          "evidence_class": null,
+          "verdict_today": "UNCERTAIN",
+          "layer": "L3_db_alias"
+        }
+      ]
+    }
+  },
+  "mechanism": {
+    "item34": "Item 34: triggered FAIL stands despite low knowledge_state. That path is never reached when trusted=False.",
+    "trusted_gate": "resolution_trust.is_trusted_for_compliance: any uncertainty flag containing 'inferred' ⇒ trusted=False for non-static sources. _verdict_for returns UNCERTAIN before the FAIL/Item-34 branch.",
+    "static_exception": "L1/L2 (source=static) are always trusted, so the same inferred token on an ontology/truth-anchor row would not soften FAIL — the trap is L3 DB rows.",
+    "demo": {
+      "name": "fish cod atlantic cooked dry heat",
+      "probe": {
+        "restriction": "fish_allergy",
+        "verdict": "UNCERTAIN",
+        "layer": "L3_db_alias",
+        "trusted": false,
+        "flag_on_ci": true
+      }
+    }
+  },
+  "policy": {
+    "recommended": "inferred_caps_safe_only_for_allergy_medical",
+    "detail": [
+      "For allergy + medical restrictions: a triggered positive allergen flag must stand as FAIL even when uncertainty_flags contain *_inferred (Item 34 symmetry). The untrusted gate should not demote triggered FAIL.",
+      "Keep *_inferred as a SAFE ceiling (clean pass → UNCERTAIN/WARN) so bad negatives cannot mint firm SAFE.",
+      "Split markers: category-derived fish/shellfish (FDC foodCategory 'Finfish and Shellfish Products') is stronger evidence than a name sniff — prefer a distinct token (e.g. usda_fdc_category_derived) that does not trip the blanket inferred untrusted gate, OR treat category-derived as asserted without inferred.",
+      "Name-sniffed allergen flags may keep a weaker marker but still must not silence FAIL for allergy/medical once the flag is true.",
+      "Counterweight: measure precision before shipping. Prior USDA dairy_implies_animal contradictions (136) show name/category inference can false-Avoid; the hand sample below is the first cut."
+    ],
+    "rejected": {
+      "leave_as_is": "128/216 fish-shaped names stay UNCERTAIN with true fish flags — same harm class as the oat Item-34 bug.",
+      "drop_inferred_entirely": "Loses the SAFE ceiling that blocks firm SAFE on weak rows."
+    }
+  }
+}

@@ -1,0 +1,597 @@
+[
+  {
+    "canonical_name": "acetic acid",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "acetylated distarch adipate",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "acetylated distarch phosphate",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "acetylated oxidized starch",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "agar",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "alginic acid",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "alpha tocopherol",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "ammonium alginate",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "annatto",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "beeswax",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "NOT_SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "calcium alginate",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "calcium lactate",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "UNCERTAIN",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "calcium tartrate",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "candelilla wax",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "canthaxanthin",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "UNCERTAIN",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "carnauba wax",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "carotenes",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "carotenoids",
+    "layer": "L2_local_ontology",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "carrageenan",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "cassia gum",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "chlorophylls",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "cultured buttermilk",
+    "layer": "L2_local_ontology",
+    "vegan_verdict": "NOT_SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "curcumin",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "dextrins",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "disodium 5 ribonucleotides",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "UNCERTAIN",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "dulce de leche",
+    "layer": "L2_local_ontology",
+    "vegan_verdict": "NOT_SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "erythritol",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "ethyl cellulose",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "flavoured milks",
+    "layer": "L2_local_ontology",
+    "vegan_verdict": "NOT_SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "gellan gum",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "ghee",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "NOT_SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "glucono delta lactone",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "glycerol",
+    "layer": "L2_local_ontology",
+    "vegan_verdict": "UNCERTAIN",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "guar gum",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "gum arabic",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "honey",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "NOT_SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "hydroxypropyl cellulose",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "hydroxypropyl distarch phosphate",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "hydroxypropyl methyl cellulose",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "hydroxypropyl starch",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "isomalt",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "karaya gum",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "l-cysteine",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "UNCERTAIN",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "lactic acid",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "UNCERTAIN",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "lactitol",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "NOT_SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "lysozyme",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "NOT_SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "malic acid",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "maltitol",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "metatartaric acid",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "methyl cellulose",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "methyl ethyl cellulose",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "monostarch phosphate",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "natamycin",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "nisin",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "UNCERTAIN",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "oxidized starch",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "paprika",
+    "layer": "L2_local_ontology",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "paprika extract",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "phosphated distarch phosphate",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "polyglycerol esters of fatty acids",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "UNCERTAIN",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "polyglycerol polyricinoleate",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "potassium alginate",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "potassium lactate",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "UNCERTAIN",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "potato flour",
+    "layer": "L2_local_ontology",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "potato pancakes",
+    "layer": "L2_local_ontology",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "propylene glycol alginate",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "pullulan",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "shellac",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "NOT_SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "sodium alginate",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "sodium lactate",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "UNCERTAIN",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "sorbitan monolaurate",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "sorbitan monooleate",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "UNCERTAIN",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "sorbitan monopalmitate",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "UNCERTAIN",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "sorbitan monostearate",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "UNCERTAIN",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "sorbitol",
+    "layer": "L2_local_ontology",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "starch sodium octenyl succinate",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "sucroglycerides",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "UNCERTAIN",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "sucrose esters of fatty acids",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "UNCERTAIN",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "tara gum",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "tartaric acid",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "thaumatin",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "traditional buttermilk (churning)",
+    "layer": "L2_local_ontology",
+    "vegan_verdict": "NOT_SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "tragacanth",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "turmeric",
+    "layer": "L2_local_ontology",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "xanthan gum",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  },
+  {
+    "canonical_name": "xylitol",
+    "layer": "L1_truth_anchor",
+    "vegan_verdict": "SAFE",
+    "synthetic_in_hazards": false,
+    "note": "L1/L2 means Phase-1 DISCOVERED demotion on the live row never reached this production verdict"
+  }
+]

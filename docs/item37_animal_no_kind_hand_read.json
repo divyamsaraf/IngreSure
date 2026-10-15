@@ -1,0 +1,1715 @@
+{
+  "ontology": [
+    {
+      "canonical_name": "alligator",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "animal fat",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "animal meat dried",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "bacon",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "beef",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "bison",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "blood sausage",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "bockwurst",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "bone char",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "bone phosphate",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "calf",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "canada goose",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "canadian bacon",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "canned herring",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "canned mackerel",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "canned meat",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "canned sardines",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "canned seafood",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "canned sprats",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "canned tinned meat",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "castoreum",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "chicken",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "chicken patty",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "chicken spread",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "coconut milk powder",
+      "tag": "dairy_suspect"
+    },
+    {
+      "canonical_name": "collagen",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "cooked turkey meat",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "disodium inosinate",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "dove",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "dried seafood",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "duck",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "edible casings",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "elk",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "emu",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "filmj\u00f6lk",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "game meat",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "goat",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "goat milk fat",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "goose",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "guanylic acid",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "guinea hen",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "halloumi",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "ham",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "ham salad spread",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "inosinic acid",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "kangaroo",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "l-cysteine",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "lamb",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "lanolin",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "lard",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "liverwurst spread",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "marinated meat",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "meat",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "meat extract",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "meatballs",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "mutton",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "ostrich",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "pepsin",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "pheasant",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "porchetta",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "pork",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "pork loin",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "poultry",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "quail",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "rabbit",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "raw cured meat",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "rennet",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "roast beef spread",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "ruffed grouse",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "salami",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "salted seafood",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "sausage",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "smoked seafood",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "spermaceti wax",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "squab",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "steak",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "stockfish",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "suet",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "tallow",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "turkey",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "turkey from whole",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "turkey roast",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "veal",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "venison",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "viili",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "wild boar",
+      "tag": "other_animal"
+    }
+  ],
+  "ifct": [
+    {
+      "canonical_name": "beef brain",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "beef chops",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "beef heart",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "beef kidneys",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "beef liver",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "beef lungs",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "beef round (leg)",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "beef shoulder",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "beef spleen",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "beef tongue",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "beef tripe",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "calf brain",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "calf chops",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "calf heart",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "calf kidneys",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "calf liver",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "calf round (leg)",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "calf shoulder",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "calf spleen",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "calf tongue",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "chicken poultry breast skinless",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "chicken poultry leg skinless",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "chicken poultry thigh skinless",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "chicken poultry wing skinless",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "country hen breast with skin",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "country hen leg with skin",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "country hen thigh with skin",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "country hen wing with skin",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "duck meat with skin",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "emu meat skinless",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "goat brain",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "goat chops",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "goat heart",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "goat kidneys",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "goat legs",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "goat liver",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "goat lungs",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "goat shoulder meat",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "goat spleen",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "goat testis",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "goat tongue",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "goat tripe",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "goat tube (small intestine)",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "guinea fowl meat with skin",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "hare chops",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "hare leg",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "hare shoulder",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "mithun chops",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "mithun round (leg)",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "mithun shoulder",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "pigeon meat with skin",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "pork chops",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "pork ham",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "pork heart",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "pork kidneys",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "pork liver",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "pork lungs",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "pork shoulder",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "pork spleen",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "pork stomach",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "pork tube (small intestine)",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "poultry chicken gizzard",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "poultry chicken liver",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "quail meat skinless",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "rabbit chops",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "rabbit leg",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "rabbit shoulder",
+      "tag": "other_animal"
+    },
+    {
+      "canonical_name": "sheep brain",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "sheep chops",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "sheep heart",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "sheep kidneys",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "sheep leg",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "sheep liver",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "sheep lungs",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "sheep shoulder",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "sheep spleen",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "sheep tongue",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "sheep tripe",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "turkey breast with skin",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "turkey leg with skin",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "turkey thigh with skin",
+      "tag": "land_meat"
+    },
+    {
+      "canonical_name": "turkey wing with skin",
+      "tag": "land_meat"
+    }
+  ],
+  "usda_fish_shellfish_lexicon": [
+    {
+      "canonical_name": "applebees fish hand battered",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "burger king premium fish sandwich",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "crustaceans crab blue swimming lump pasteurized refrigerated",
+      "tag": "shellfish_suspect"
+    },
+    {
+      "canonical_name": "crustaceans crab blue canned",
+      "tag": "shellfish_suspect"
+    },
+    {
+      "canonical_name": "crustaceans crab blue cooked moist heat",
+      "tag": "shellfish_suspect"
+    },
+    {
+      "canonical_name": "crustaceans crab blue raw",
+      "tag": "shellfish_suspect"
+    },
+    {
+      "canonical_name": "crustaceans crab queen cooked moist heat",
+      "tag": "shellfish_suspect"
+    },
+    {
+      "canonical_name": "crustaceans crab queen raw",
+      "tag": "shellfish_suspect"
+    },
+    {
+      "canonical_name": "crustaceans crayfish mixed species farmed raw",
+      "tag": "shellfish_suspect"
+    },
+    {
+      "canonical_name": "crustaceans crayfish mixed species wild raw",
+      "tag": "shellfish_suspect"
+    },
+    {
+      "canonical_name": "crustaceans lobster northern cooked moist heat",
+      "tag": "shellfish_suspect"
+    },
+    {
+      "canonical_name": "crustaceans lobster northern raw",
+      "tag": "shellfish_suspect"
+    },
+    {
+      "canonical_name": "crustaceans shrimp cooked",
+      "tag": "shellfish_suspect"
+    },
+    {
+      "canonical_name": "crustaceans shrimp farm raised raw",
+      "tag": "shellfish_suspect"
+    },
+    {
+      "canonical_name": "crustaceans shrimp mixed species canned",
+      "tag": "shellfish_suspect"
+    },
+    {
+      "canonical_name": "crustaceans shrimp raw",
+      "tag": "shellfish_suspect"
+    },
+    {
+      "canonical_name": "crustaceans spiny lobster mixed species raw",
+      "tag": "shellfish_suspect"
+    },
+    {
+      "canonical_name": "emu oyster raw",
+      "tag": "shellfish_suspect"
+    },
+    {
+      "canonical_name": "fish broth",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish oil herring",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish oil menhaden",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish oil menhaden fully hydrogenated",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish oil salmon",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish anchovy european raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish blackfish whole (alaska native)",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish bluefish cooked dry heat",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish bluefish raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish burbot cooked dry heat",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish burbot raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish butterfish cooked dry heat",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish butterfish raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish carp cooked dry heat",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish carp raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish catfish farm raised raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish caviar black and red granular",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish cisco raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish cisco smoked",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish croaker atlantic raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish cusk cooked dry heat",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish cusk raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish devilfish meat (alaska native)",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish drum freshwater cooked dry heat",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish drum freshwater raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish eel mixed species raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish fish sticks frozen prepared",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish gefiltefish commercial sweet recipe",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish grouper mixed species raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish haddock cooked dry heat",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish haddock raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish haddock smoked",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish halibut greenland cooked dry heat",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish halibut greenland raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish ling cooked dry heat",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish ling raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish lingcod cooked dry heat",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish lingcod liver (alaska native)",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish lingcod meat raw (alaska native)",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish lingcod raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish mackerel jack canned drained solids",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish mackerel salted",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish mahimahi cooked dry heat",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish mahimahi raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish milkfish cooked dry heat",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish milkfish raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish monkfish cooked dry heat",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish monkfish raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish ocean perch atlantic raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish perch mixed species raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish pike walleye cooked dry heat",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish pike walleye raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish pollock alaska cooked",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish pollock alaska raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish pollock atlantic cooked dry heat",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish pollock atlantic raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish pollock raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish pompano florida cooked dry heat",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish pompano florida raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish pout ocean cooked dry heat",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish pout ocean raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish rockfish pacific mixed species raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish roe mixed species raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish roughy orange cooked dry heat",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish roughy orange raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish sablefish cooked dry heat",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish sablefish raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish sablefish smoked",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish salmon tipnuk fermented (alaska native)",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish scup cooked dry heat",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish scup raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish sea bass mixed species raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish seatrout mixed species raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish shark mixed species raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish sheefish raw (alaska native)",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish sheepshead cooked dry heat",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish sheepshead raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish smelt rainbow cooked dry heat",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish smelt rainbow raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish snapper mixed species raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish spot cooked dry heat",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish spot raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish sturgeon mixed species raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish sturgeon mixed species smoked",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish sucker white cooked dry heat",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish sucker white raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish sunfish pumpkin seed raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish surimi",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish swordfish cooked dry heat",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish swordfish raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish tilapia cooked dry heat",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish tilapia farm raised raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish tilapia raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish tilefish cooked dry heat",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish tilefish raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish trout mixed species raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish tuna salad",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish tuna fresh bluefin raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish tuna fresh yellowfin raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish tuna light canned in water drained solids",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish turbot european cooked dry heat",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish turbot european raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish whitefish broad liver (alaska native)",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish whitefish dried (alaska native)",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish whitefish mixed species raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish whitefish mixed species smoked",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish whiting mixed species raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish wolffish atlantic cooked dry heat",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish wolffish atlantic raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "fish yellowtail mixed species raw",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "mcdonalds filet o fish",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "mcdonalds filet o fish (without tartar sauce)",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "mollusks clam mixed species canned liquid",
+      "tag": "shellfish_suspect"
+    },
+    {
+      "canonical_name": "mollusks clam mixed species raw",
+      "tag": "shellfish_suspect"
+    },
+    {
+      "canonical_name": "mollusks cuttlefish mixed species raw",
+      "tag": "shellfish_suspect"
+    },
+    {
+      "canonical_name": "mollusks octopus common cooked moist heat",
+      "tag": "shellfish_suspect"
+    },
+    {
+      "canonical_name": "mollusks octopus common raw",
+      "tag": "shellfish_suspect"
+    },
+    {
+      "canonical_name": "mollusks oyster eastern canned",
+      "tag": "shellfish_suspect"
+    },
+    {
+      "canonical_name": "mollusks oyster eastern farmed raw",
+      "tag": "shellfish_suspect"
+    },
+    {
+      "canonical_name": "mollusks oyster eastern wild raw",
+      "tag": "shellfish_suspect"
+    },
+    {
+      "canonical_name": "mollusks scallop mixed species raw",
+      "tag": "shellfish_suspect"
+    },
+    {
+      "canonical_name": "mollusks squid mixed species cooked fried",
+      "tag": "shellfish_suspect"
+    },
+    {
+      "canonical_name": "mollusks squid mixed species raw",
+      "tag": "shellfish_suspect"
+    },
+    {
+      "canonical_name": "ostrich oyster cooked",
+      "tag": "shellfish_suspect"
+    },
+    {
+      "canonical_name": "ostrich oyster raw",
+      "tag": "shellfish_suspect"
+    },
+    {
+      "canonical_name": "salmon nuggets breaded frozen heated",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "salmon nuggets cooked as purchased unheated",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "sauce fish ready to serve",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "soup fish homemade (alaska native)",
+      "tag": "fish_suspect"
+    },
+    {
+      "canonical_name": "soup stock fish home prepared",
+      "tag": "fish_suspect"
+    }
+  ],
+  "infoods_split_matches": [
+    {
+      "live": "crustaceans crab alaska king raw",
+      "source": "usda",
+      "matched_part": "king crab",
+      "infoods": "king crab",
+      "how": "token_subset"
+    },
+    {
+      "live": "crustaceans crab dungeness cooked moist heat",
+      "source": "usda",
+      "matched_part": "dungeness crab",
+      "infoods": "dungeness crab",
+      "how": "token_subset"
+    },
+    {
+      "live": "crustaceans crab dungeness raw",
+      "source": "usda",
+      "matched_part": "dungeness crab",
+      "infoods": "dungeness crab",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish oil cod liver",
+      "source": "usda",
+      "matched_part": "cod liver",
+      "infoods": "cod liver",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish oil sardine",
+      "source": "usda",
+      "matched_part": "oil sardine",
+      "infoods": "oil sardine",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish bass striped cooked dry heat",
+      "source": "usda",
+      "matched_part": "striped bass",
+      "infoods": "striped bass",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish bass striped raw",
+      "source": "usda",
+      "matched_part": "striped bass",
+      "infoods": "striped bass",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish catfish channel farmed raw",
+      "source": "usda",
+      "matched_part": "channel catfish",
+      "infoods": "channel catfish",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish catfish channel wild raw",
+      "source": "usda",
+      "matched_part": "channel catfish",
+      "infoods": "channel catfish",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish cod atlantic cooked dry heat",
+      "source": "usda",
+      "matched_part": "atlantic cod",
+      "infoods": "atlantic cod",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish cod atlantic dried and salted",
+      "source": "usda",
+      "matched_part": "atlantic cod",
+      "infoods": "atlantic cod",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish cod atlantic raw",
+      "source": "usda",
+      "matched_part": "atlantic cod",
+      "infoods": "atlantic cod",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish cod atlantic wild caught raw",
+      "source": "usda",
+      "matched_part": "atlantic cod",
+      "infoods": "atlantic cod",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish cod pacific cooked",
+      "source": "usda",
+      "matched_part": "pacific cod",
+      "infoods": "pacific cod",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish halibut atlantic and pacific raw",
+      "source": "usda",
+      "matched_part": "atlantic halibut",
+      "infoods": "atlantic halibut",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish herring atlantic cooked dry heat",
+      "source": "usda",
+      "matched_part": "atlantic herring",
+      "infoods": "atlantic herring",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish herring atlantic kippered",
+      "source": "usda",
+      "matched_part": "atlantic herring",
+      "infoods": "atlantic herring",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish herring atlantic pickled",
+      "source": "usda",
+      "matched_part": "atlantic herring",
+      "infoods": "atlantic herring",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish herring atlantic raw",
+      "source": "usda",
+      "matched_part": "atlantic herring",
+      "infoods": "atlantic herring",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish herring pacific cooked dry heat",
+      "source": "usda",
+      "matched_part": "pacific herring",
+      "infoods": "pacific herring",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish herring pacific raw",
+      "source": "usda",
+      "matched_part": "pacific herring",
+      "infoods": "pacific herring",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish mackerel atlantic cooked dry heat",
+      "source": "usda",
+      "matched_part": "atlantic mackerel",
+      "infoods": "atlantic mackerel",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish mackerel atlantic raw",
+      "source": "usda",
+      "matched_part": "atlantic mackerel",
+      "infoods": "atlantic mackerel",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish mackerel king cooked dry heat",
+      "source": "usda",
+      "matched_part": "king mackerel",
+      "infoods": "king mackerel",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish mackerel king raw",
+      "source": "usda",
+      "matched_part": "king mackerel",
+      "infoods": "king mackerel",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish mackerel spanish cooked dry heat",
+      "source": "usda",
+      "matched_part": "spanish mackerel",
+      "infoods": "spanish mackerel",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish mackerel spanish raw",
+      "source": "usda",
+      "matched_part": "spanish mackerel",
+      "infoods": "spanish mackerel",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish mullet striped cooked dry heat",
+      "source": "usda",
+      "matched_part": "striped mullet",
+      "infoods": "striped mullet",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish mullet striped raw",
+      "source": "usda",
+      "matched_part": "striped mullet",
+      "infoods": "striped mullet",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish pike northern cooked dry heat",
+      "source": "usda",
+      "matched_part": "northern pike",
+      "infoods": "northern pike",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish pike northern liver (alaska native)",
+      "source": "usda",
+      "matched_part": "northern pike",
+      "infoods": "northern pike",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish pike northern raw",
+      "source": "usda",
+      "matched_part": "northern pike",
+      "infoods": "northern pike",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish salmon atlantic farm raised raw",
+      "source": "usda",
+      "matched_part": "atlantic salmon",
+      "infoods": "atlantic salmon",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish salmon atlantic farmed raw",
+      "source": "usda",
+      "matched_part": "atlantic salmon",
+      "infoods": "atlantic salmon",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish salmon atlantic wild raw",
+      "source": "usda",
+      "matched_part": "atlantic salmon",
+      "infoods": "atlantic salmon",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish salmon chinook cooked dry heat",
+      "source": "usda",
+      "matched_part": "chinook salmon",
+      "infoods": "chinook salmon",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish salmon chinook raw",
+      "source": "usda",
+      "matched_part": "chinook salmon",
+      "infoods": "chinook salmon",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish salmon chinook smoked",
+      "source": "usda",
+      "matched_part": "chinook salmon",
+      "infoods": "chinook salmon",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish salmon chinook smoked (lox) regular",
+      "source": "usda",
+      "matched_part": "chinook salmon",
+      "infoods": "chinook salmon",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish salmon chum cooked dry heat",
+      "source": "usda",
+      "matched_part": "chum salmon",
+      "infoods": "chum salmon",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish salmon chum dried (alaska native)",
+      "source": "usda",
+      "matched_part": "chum salmon",
+      "infoods": "chum salmon",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish salmon chum raw",
+      "source": "usda",
+      "matched_part": "chum salmon",
+      "infoods": "chum salmon",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish salmon chum raw (alaska native)",
+      "source": "usda",
+      "matched_part": "chum salmon",
+      "infoods": "chum salmon",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish salmon coho farmed raw",
+      "source": "usda",
+      "matched_part": "coho salmon",
+      "infoods": "coho salmon",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish salmon coho wild raw",
+      "source": "usda",
+      "matched_part": "coho salmon",
+      "infoods": "coho salmon",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish salmon pink canned drained solids",
+      "source": "usda",
+      "matched_part": "pink salmon",
+      "infoods": "pink salmon",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish salmon pink cooked dry heat",
+      "source": "usda",
+      "matched_part": "pink salmon",
+      "infoods": "pink salmon",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish salmon pink raw",
+      "source": "usda",
+      "matched_part": "pink salmon",
+      "infoods": "pink salmon",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish salmon sockeye canned drained solids",
+      "source": "usda",
+      "matched_part": "sockeye salmon",
+      "infoods": "sockeye salmon",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish salmon sockeye cooked dry heat",
+      "source": "usda",
+      "matched_part": "sockeye salmon",
+      "infoods": "sockeye salmon",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish salmon sockeye raw",
+      "source": "usda",
+      "matched_part": "sockeye salmon",
+      "infoods": "sockeye salmon",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish salmon sockeye wild caught raw",
+      "source": "usda",
+      "matched_part": "sockeye salmon",
+      "infoods": "sockeye salmon",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish shad american cooked dry heat",
+      "source": "usda",
+      "matched_part": "american shad",
+      "infoods": "american shad",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish shad american raw",
+      "source": "usda",
+      "matched_part": "american shad",
+      "infoods": "american shad",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish trout rainbow farmed raw",
+      "source": "usda",
+      "matched_part": "rainbow trout",
+      "infoods": "rainbow trout",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish trout rainbow wild raw",
+      "source": "usda",
+      "matched_part": "rainbow trout",
+      "infoods": "rainbow trout",
+      "how": "token_subset"
+    },
+    {
+      "live": "fish tuna fresh skipjack raw",
+      "source": "usda",
+      "matched_part": "skipjack tuna",
+      "infoods": "skipjack tuna",
+      "how": "token_subset"
+    },
+    {
+      "live": "mollusks abalone mixed species raw",
+      "source": "usda",
+      "matched_part": "abalone raw",
+      "infoods": "abalone",
+      "how": "token_subset"
+    },
+    {
+      "live": "mollusks mussel blue cooked moist heat",
+      "source": "usda",
+      "matched_part": "blue mussel",
+      "infoods": "blue mussel",
+      "how": "token_subset"
+    },
+    {
+      "live": "mollusks mussel blue raw",
+      "source": "usda",
+      "matched_part": "blue mussel",
+      "infoods": "blue mussel",
+      "how": "token_subset"
+    },
+    {
+      "live": "mollusks oyster pacific cooked moist heat",
+      "source": "usda",
+      "matched_part": "pacific oyster",
+      "infoods": "pacific oyster",
+      "how": "token_subset"
+    },
+    {
+      "live": "mollusks oyster pacific raw",
+      "source": "usda",
+      "matched_part": "pacific oyster",
+      "infoods": "pacific oyster",
+      "how": "token_subset"
+    },
+    {
+      "live": "salmon sockeye canned total can contents",
+      "source": "usda",
+      "matched_part": "sockeye salmon",
+      "infoods": "sockeye salmon",
+      "how": "token_subset"
+    }
+  ]
+}
