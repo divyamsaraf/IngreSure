@@ -50,3 +50,9 @@ skills-cursor/
 data/*_staging.json
 data/*.bak
 data/*.timestamp-*
+data/*.truncated-*
+
+# Local pip / TDD scratch (never commit)
+backend/.pip_tmp/
+backend/.tdd_test_write
+backend/ike2_rejects*.json
