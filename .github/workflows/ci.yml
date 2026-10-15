@@ -13,6 +13,12 @@ jobs:
     # only produced connection-refused log noise and slow timeouts).
     env:
       LLM_ENABLED: "false"
+      # Full suite issues many /chat calls from one CI IP; don't flake on 429.
+      RATE_LIMIT_CHAT_ANON: "10000/minute"
+      RATE_LIMIT_CHAT_AUTH: "10000/minute"
+      RATE_LIMIT_PROFILE_READ: "10000/minute"
+      RATE_LIMIT_PROFILE_WRITE: "10000/minute"
+      RATE_LIMIT_API_V1_DEFAULT: "10000/minute"
     defaults:
       run:
         working-directory: backend
