@@ -175,10 +175,11 @@ def test_compound_term_caps_to_warn(rule_jain):
     )
 
 
-def test_untrusted_trace_is_uncertain_not_avoid(rule_peanut):
-    r = _resolved(peanut_source=True, trusted=False, trace=True)  # low-confidence trace
+def test_untrusted_trace_lifestyle_rule_stays_uncertain(rule_vegan):
+    """Untrusted + triggered lifestyle still UNCERTAIN (Item 42 is allergy/medical)."""
+    r = _resolved(animal_origin=True, trusted=False, trace=True)
     assert (
-        evaluate([r], _profile("peanut", "medical"), [rule_peanut]).verdict
+        evaluate([r], _profile("vegan", "preference"), [rule_vegan]).verdict
         == Verdict.UNCERTAIN
     )
 

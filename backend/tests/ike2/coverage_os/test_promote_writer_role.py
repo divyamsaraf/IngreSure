@@ -36,6 +36,7 @@ def test_role_patch_on_existing_non_managed_row(tmp_path):
     assert row["dairy_source"] is True  # untouched
     assert row.get("coverage_os_role_managed") is True
     assert row.get("coverage_os_managed") is not True
+    assert "asserted_flags" not in row  # role-only must not invent flag assertions
 
     retract_promotion(entry, ontology_path=ont, aliases_path=aliases)
     row2 = json.loads(ont.read_text())["ingredients"][0]

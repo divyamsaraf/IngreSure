@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -5,10 +6,129 @@ from core.knowledge.ike2 import rules
 from core.knowledge.ike2.compliance import evaluate
 from core.knowledge.ike2.verdict import Verdict
 
-_SEED_SQL = (
-    Path(__file__).resolve().parents[3]
-    / "supabase/migrations/20260617000000_ike2_seed_restriction_rules.sql"
+_MIGRATIONS = Path(__file__).resolve().parents[3] / "supabase/migrations"
+_ROW_COLUMNS = (
+    "category",
+    "field",
+    "operator",
+    "value",
+    "action",
+    "min_knowledge_state",
+    "region",
 )
+
+
+def _canonical_seed_rows():
+    """RULE_SEED the way seeded_rules() and the SQL table store a row.
+
+    A missing operator is eq, a missing value is true, a missing action is
+    FAIL, and region is null. Those are the defaults _to_rule applies.
+    """
+    rows = {}
+    for row in rules.RULE_SEED:
+        if "value" in row and row["value"] is not None:
+            value = str(row["value"])
+        else:
+            value = "true"
+        key = (row["category"], row["field"], None)
+        rows[key] = {
+            "category": row["category"],
+            "field": row["field"],
+            "operator": row.get("operator", "eq"),
+            "value": value,
+            "action": row.get("action", "FAIL"),
+            "min_knowledge_state": row["min_knowledge_state"],
+            "region": None,
+        }
+    return rows
+
+
+def _split_sql_args(text):
+    parts, buf, quoted = [], [], False
+    for ch in text:
+        if ch == "'":
+            quoted = not quoted
+            buf.append(ch)
+        elif ch == "," and not quoted:
+            parts.append("".join(buf).strip())
+            buf = []
+        else:
+            buf.append(ch)
+    if buf:
+        parts.append("".join(buf).strip())
+    return parts
+
+
+def _sql_token(token):
+    token = token.strip()
+    if token.lower() == "null":
+        return None
+    if len(token) >= 2 and token[0] == "'" and token[-1] == "'":
+        return token[1:-1]
+    return token
+
+
+def _migration_rule_rows():
+    """Replay insert/delete statements against ike2_restriction_rules in order."""
+    rows = {}
+    insert_re = re.compile(
+        r"insert into public\.ike2_restriction_rules\s*\(([^)]+)\)\s*values\s*(.*?)\s*on conflict",
+        re.I | re.S,
+    )
+    delete_re = re.compile(
+        r"delete from public\.ike2_restriction_rules\s+where\s+(.+?);",
+        re.I | re.S,
+    )
+    tuple_re = re.compile(r"\((?:[^)']|'[^']*')*\)")
+    for path in sorted(_MIGRATIONS.glob("*.sql")):
+        text = path.read_text(encoding="utf-8")
+        if "ike2_restriction_rules" not in text:
+            continue
+        events = [("del", m.start(), m.group(1)) for m in delete_re.finditer(text)]
+        events += [
+            ("ins", m.start(), m.group(1), m.group(2)) for m in insert_re.finditer(text)
+        ]
+        for event in sorted(events, key=lambda item: item[1]):
+            if event[0] == "del":
+                cats = re.findall(r"category\s*=\s*'([^']+)'", event[2])
+                fields = re.findall(r"field\s*=\s*'([^']+)'", event[2])
+                for key in list(rows):
+                    if cats and key[0] not in cats:
+                        continue
+                    if fields and key[1] not in fields:
+                        continue
+                    if cats or fields:
+                        del rows[key]
+                continue
+            cols = [c.strip() for c in event[2].split(",")]
+            body = re.sub(r"--.*?$", "", event[3], flags=re.M)
+            for match in tuple_re.finditer(body):
+                parts = [_sql_token(p) for p in _split_sql_args(match.group(0)[1:-1])]
+                if len(parts) != len(cols):
+                    continue
+                rec = dict(zip(cols, parts))
+                key = (rec["category"], rec["field"], rec.get("region"))
+                rows[key] = {col: rec.get(col) for col in _ROW_COLUMNS}
+    return rows
+
+
+def test_seed_sql_covers_rule_seed():
+    """Python seed and the migration-replayed table must match on every column.
+
+    String presence of category/field is not enough: operator, value, action,
+    min_knowledge_state, and region have to match too.
+    """
+    python_rows = _canonical_seed_rows()
+    sql_rows = _migration_rule_rows()
+    assert python_rows == sql_rows
+    for row, rule in zip(rules.RULE_SEED, rules.seeded_rules(), strict=True):
+        assert rule.restriction == row["category"]
+        assert rule.action == row.get("action", "FAIL")
+        assert rule.min_knowledge_state == row["min_knowledge_state"]
+
+
+def _profile(**restrictions):
+    return SimpleNamespace(restrictions=restrictions)
 
 
 def _resolved(**flags):
@@ -21,10 +141,6 @@ def _resolved(**flags):
         "trace": False,
     }
     return SimpleNamespace(flags=flags, **base)
-
-
-def _profile(**restrictions):
-    return SimpleNamespace(restrictions=restrictions)
 
 
 def test_seed_covers_exactly_the_supported_restrictions():
@@ -57,14 +173,6 @@ def test_alcohol_rule_is_kind_alcohol():
     assert len(alcohol) == 1
     assert alcohol[0].kind == "alcohol"
     assert alcohol[0].trigger_flag is None
-
-
-def test_seed_sql_covers_rule_seed():
-    # Drift guard: the live-DB seed must contain every in-code rule.
-    sql = _SEED_SQL.read_text()
-    for row in rules.RULE_SEED:
-        assert f"'{row['category']}'" in sql
-        assert f"'{row['field']}'" in sql
 
 
 def test_seeded_rules_flag_a_peanut_ingredient():

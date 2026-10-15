@@ -163,6 +163,17 @@ def test_api_v1_rate_limit_uses_b2b_tier_from_api_key():
         os.environ.pop("B2B_API_KEYS", None)
 
 
+def test_api_v1_rate_limit_rpm_overrides_tier_default():
+    os.environ["B2B_API_KEYS"] = json.dumps({
+        "starter-low": {"org_id": "org", "tier": "starter", "rpm": 10},
+    })
+    try:
+        assert B2B_TIER_LIMITS["starter"] == "60/minute"
+        assert api_v1_rate_limit("apikey:starter-low") == "10/minute"
+    finally:
+        os.environ.pop("B2B_API_KEYS", None)
+
+
 def test_api_v1_rate_limit_falls_back_to_default_for_unknown_key():
     os.environ.pop("B2B_API_KEYS", None)
     assert api_v1_rate_limit("apikey:unknown-key") == RATE_LIMIT_API_V1_DEFAULT

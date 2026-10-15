@@ -69,6 +69,7 @@ def test_apply_and_retract_ontology_row(tmp_path):
     row = next(i for i in ingredients if i.get("canonical_name") == "broccoli")
     assert row["flags"]["plant_origin"] is True
     assert row.get("coverage_os_managed") is True
+    assert row.get("asserted_flags") == ["animal_origin", "plant_origin"]
     retract_promotion(entry, ontology_path=ont, aliases_path=al)
     ingredients = json.loads(ont.read_text())["ingredients"]
     assert not any(i.get("canonical_name") == "broccoli" for i in ingredients)
