@@ -17,10 +17,16 @@ Item 44 UNCERTAIN tops (`sel`, `eau`, `sucre`, `huile de colza`, `arôme naturel
 are therefore L5 even when the English head (`salt`, `water`, `sugar`,
 `rapeseed oil`) is a trusted ontology row.
 
+**Upstream source available (not yet wired):** ODbL JSON export
+`https://static.openfoodfacts.org/data/taxonomies/ingredients.json`
+(and the text taxonomy under `openfoodfacts-server/taxonomies/`). Names include
+`fr`/`de`/`es`/`it`/`nl` synonyms for canonical `en:*` tags (e.g. `en:sugar` →
+`sucre`).
+
 ## Plan: language-keyed aliases → trusted heads
 
-1. **Source:** OFF taxonomy / ingredients taxonomy synonyms (ODbL). Prefer the
-   public taxonomy export over scraping product `ingredients_text`.
+1. **Source:** OFF ingredients taxonomy JSON above (ODbL). Prefer that export
+   over scraping product `ingredients_text`.
 2. **Shape:** alias rows `{alias, lang, group_id}` pointing at existing
    **trusted** heads only (ontology / human / e-number). Never invent groups
    from OFF-only synonyms.

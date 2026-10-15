@@ -65,6 +65,45 @@ def test_flatten_ingredients_enriched_wheat_flour_full():
     assert len(out) >= 5
 
 
+def test_flatten_strips_percentage_only_atoms():
+    """Quantity percents are not ingredients (Item 44 splitter)."""
+    from core.normalization.parser import flatten_ingredients
+
+    out = flatten_ingredients("farine de blé, sucre, 4%, huile de colza, sugar 8%")
+    assert "4%" not in out
+    assert "8%" not in out
+    assert "sugar 8%" not in out
+    assert "sucre" in out
+    assert "sugar" in out
+    assert "huile de colza" in out
+
+
+def test_flatten_strips_contains_and_may_contain_markers():
+    """Allergen declarations are not a single opaque atom."""
+    from core.normalization.parser import flatten_ingredients
+
+    out = flatten_ingredients("Ingredients: wheat flour. Contains wheat.")
+    assert "contains wheat" not in out
+    assert "wheat" in out
+    assert "wheat flour" in out
+
+    out2 = flatten_ingredients("milk, salt. May contain peanuts.")
+    assert "may contain peanuts" not in out2
+    assert "peanut" in out2 or "peanuts" in out2
+    assert "milk" in out2
+
+
+def test_flatten_keeps_category_expand_with_cleaned_atoms():
+    """Percent / contains cleanup must not break vegetable oil (A, B) expand."""
+    from core.normalization.parser import flatten_ingredients
+
+    out = flatten_ingredients("vegetable oil (sunflower, canola), salt, 2%")
+    assert "sunflower oil" in out
+    assert "canola oil" in out
+    assert "salt" in out
+    assert "2%" not in out
+
+
 def test_user_profile_is_empty():
     """Empty profile (No rules, no allergens/lifestyle) is_empty()."""
     from core.models.user_profile import UserProfile

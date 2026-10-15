@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import json
 import random
+import re
 import sys
 import time
 import ssl
@@ -218,14 +219,52 @@ def _layer_bucket(resolved) -> str:
     return layer or "other"
 
 
-def _atoms(text: str) -> list[str]:
+def _raw_segments(text: str) -> list[str]:
+    """Naive comma split for garbled / strip diagnostics (not the evaluator path)."""
+    return [p.strip() for p in re.split(r"[,;]", text or "") if p.strip()]
+
+
+def _atoms(text: str) -> tuple[list[str], dict]:
+    """Return (atoms, diag). diag counts quantity noise and empty-after-strip."""
+    from core.normalization.parser import _BARE_NUMBER, _PERCENT_ONLY, _TRAILING_PERCENT
+
+    raw_segs = _raw_segments(text)
+    stripped_qty = 0
+    for seg in raw_segs:
+        s = seg.strip()
+        if _PERCENT_ONLY.match(s) or _BARE_NUMBER.match(s):
+            stripped_qty += 1
+        elif _TRAILING_PERCENT.search(s):
+            stripped_qty += 1
     flat = flatten_ingredients(text) if text else []
-    out = []
-    for a in flat or []:
-        s = str(a).strip()
-        if s:
-            out.append(s)
-    return out
+    out = [str(a).strip() for a in (flat or []) if str(a).strip()]
+    diag = {
+        "n_raw_segments": len(raw_segs),
+        "n_atoms": len(out),
+        "n_quantity_tokens_stripped": stripped_qty,
+    }
+    return out, diag
+
+
+def _coverage_curve(instance_counts: Counter) -> dict:
+    """Distinct ingredients to promote for 25/50/80% of instances."""
+    total = sum(instance_counts.values()) or 1
+    ranked = instance_counts.most_common()
+    cum = 0
+    thresholds = {0.25: None, 0.50: None, 0.80: None}
+    for i, (_name, n) in enumerate(ranked, start=1):
+        cum += n
+        frac = cum / total
+        for t in thresholds:
+            if thresholds[t] is None and frac >= t:
+                thresholds[t] = i
+    return {
+        "n_distinct": len(ranked),
+        "n_instances": total,
+        "distinct_for_25pct_instances": thresholds[0.25],
+        "distinct_for_50pct_instances": thresholds[0.50],
+        "distinct_for_80pct_instances": thresholds[0.80],
+    }
 
 
 def _eval_list(atoms: list[str], restrictions: dict) -> tuple[str, list[dict], str | None]:
@@ -277,14 +316,17 @@ def _eval_list(atoms: list[str], restrictions: dict) -> tuple[str, list[dict], s
 def run_benchmark(sample: dict) -> dict:
     unparseable = 0
     garbled = 0
+    garbled_reasons: Counter = Counter()
+    quantity_stripped_total = 0
     products_ok = []
     layer_overall: Counter = Counter()
     layer_by_market: dict[str, Counter] = {m: Counter() for m in MARKETS}
+    instance_freq: Counter = Counter()
     list_verdicts: dict[str, Counter] = {p: Counter() for p in PROFILES}
     uncertain_ings: Counter = Counter()
     derive_only: Counter = Counter()
     derive_only_detail: list[dict] = []
-    weakest_examples: list[dict] = []
+    weakest_links: list[dict] = []
 
     products = sample.get("products") or []
     for i, meta in enumerate(products):
@@ -298,19 +340,31 @@ def run_benchmark(sample: dict) -> dict:
         text = (prod.get("ingredients_text") or "").strip()
         if not text or len(text) < 8:
             garbled += 1
+            garbled_reasons["empty_or_short_text"] += 1
             continue
-        atoms = _atoms(text)
+        atoms, diag = _atoms(text)
+        quantity_stripped_total += diag["n_quantity_tokens_stripped"]
+        # Majority of raw segments were quantity noise and nothing usable remains.
         if not atoms:
             garbled += 1
+            garbled_reasons["no_atoms_after_split"] += 1
+            continue
+        if (
+            diag["n_raw_segments"] > 0
+            and diag["n_quantity_tokens_stripped"] / diag["n_raw_segments"] >= 0.5
+            and diag["n_atoms"] <= 1
+        ):
+            garbled += 1
+            garbled_reasons["majority_quantity_noise"] += 1
             continue
         products_ok.append(code)
-        # resolution distribution (once per product, independent of profile)
         for atom in atoms:
             cache.clear()
             r = resolve(atom, None)
             b = _layer_bucket(r)
             layer_overall[b] += 1
             layer_by_market[market][b] += 1
+            instance_freq[atom.lower()] += 1
 
         for pname, restrictions in PROFILES.items():
             list_v, rows, weakest = _eval_list(atoms, restrictions)
@@ -332,15 +386,15 @@ def run_benchmark(sample: dict) -> dict:
                             "atom": row["atom"],
                         }
                     )
-            if weakest and len(weakest_examples) < 40:
-                weakest_examples.append(
-                    {
-                        "code": code,
-                        "profile": pname,
-                        "list_verdict": list_v,
-                        "weakest_link": weakest,
-                    }
-                )
+            weakest_links.append(
+                {
+                    "code": code,
+                    "market": market,
+                    "profile": pname,
+                    "list_verdict": list_v,
+                    "weakest_link": weakest,
+                }
+            )
         if (i + 1) % 20 == 0:
             print(f"evaluated {i+1}/{len(products)}", flush=True)
 
@@ -348,18 +402,22 @@ def run_benchmark(sample: dict) -> dict:
         total = sum(counter.values()) or 1
         return {k: {"n": counter[k], "rate": round(counter[k] / total, 4)} for k in ("SAFE", "UNCERTAIN", "NOT_SAFE")}
 
+    curve = _coverage_curve(instance_freq)
     report = {
         "seed": sample.get("seed"),
         "n_product_ids": len(products),
         "n_evaluated_lists": len(products_ok),
         "n_unparseable": unparseable,
         "n_garbled_excluded": garbled,
+        "garbled_reasons": dict(garbled_reasons),
+        "n_quantity_tokens_stripped": quantity_stripped_total,
         "odbl_attribution": sample.get("odbl_attribution"),
         "per_list_verdicts": {p: _rate(list_verdicts[p]) for p in PROFILES},
         "per_ingredient_resolution": {
             "overall": dict(layer_overall),
             "by_market": {m: dict(layer_by_market[m]) for m in MARKETS},
         },
+        "coverage_curve": curve,
         "top_50_uncertain_ingredients": [
             {"ingredient": k, "n": n} for k, n in uncertain_ings.most_common(50)
         ],
@@ -367,7 +425,7 @@ def run_benchmark(sample: dict) -> dict:
             {"ingredient": k, "n": n} for k, n in derive_only.most_common(50)
         ],
         "derive_only_not_safe_with_phrase": derive_only_detail[:200],
-        "weakest_link_examples": weakest_examples,
+        "weakest_link_per_list": weakest_links,
         "cells": sample.get("cells"),
         "gate_note": (
             "Any derive-only NOT_SAFE that is a false Avoid on a pantry staple "
@@ -381,6 +439,15 @@ def run_benchmark(sample: dict) -> dict:
         "",
         f"Evaluated lists: **{report['n_evaluated_lists']}** "
         f"(unparseable {unparseable}, garbled excluded {garbled}).",
+        f"Quantity tokens stripped (not counted as ingredients): **{quantity_stripped_total}**.",
+        f"Garbled reasons: `{json.dumps(dict(garbled_reasons))}`.",
+        "",
+        "## Coverage curve (distinct ingredients → instance share)",
+        "",
+        f"- distinct={curve['n_distinct']} instances={curve['n_instances']}",
+        f"- for 25% of instances: **{curve['distinct_for_25pct_instances']}** distinct",
+        f"- for 50% of instances: **{curve['distinct_for_50pct_instances']}** distinct",
+        f"- for 80% of instances: **{curve['distinct_for_80pct_instances']}** distinct",
         "",
         "## Per-list verdict rates",
         "",
@@ -394,10 +461,10 @@ def run_benchmark(sample: dict) -> dict:
         )
         md.append("")
     md += [
-        "## Per-ingredient resolution (overall)",
+        "## Per-ingredient resolution (overall + by market)",
         "",
         "```",
-        json.dumps(report["per_ingredient_resolution"]["overall"], indent=2),
+        json.dumps(report["per_ingredient_resolution"], indent=2),
         "```",
         "",
         "## Top 20 UNCERTAIN ingredients",

@@ -33,22 +33,26 @@ jobs:
           # Any other error still fails this step. Cross-source hand-vs-catalog
           # disagreement is not this check.
           python scripts/verify_e_number_catalog.py || true
-          python -c "
-import json
-from pathlib import Path
-report = json.loads(Path('../data/e_number_verification_report.json').read_text())
-allowed = {'e626', 'e630', 'e631'}
-bad = []
-found = set()
-for item in report['errors']:
-    code = str(item.get('e_code', '')).lower().replace(' ', '')
-    msg = item.get('message', '')
-    if item.get('check') == 'tier_b_contradiction' and 'source ambiguity' in msg and code in allowed:
-        found.add(code)
-        continue
-    bad.append(item)
-assert found == allowed and not bad, (found, bad)
-"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report = json.loads(Path("../data/e_number_verification_report.json").read_text())
+          allowed = {"e626", "e630", "e631"}
+          bad = []
+          found = set()
+          for item in report["errors"]:
+              code = str(item.get("e_code", "")).lower().replace(" ", "")
+              msg = item.get("message", "")
+              if (
+                  item.get("check") == "tier_b_contradiction"
+                  and "source ambiguity" in msg
+                  and code in allowed
+              ):
+                  found.add(code)
+                  continue
+              bad.append(item)
+          assert found == allowed and not bad, (found, bad)
+          PY
 
       - name: Check E-number artifact drift
         run: |

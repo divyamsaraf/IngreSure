@@ -2,18 +2,41 @@
 Flatten ingredient strings for evaluation: split parentheses, commas, map processed foods to base ingredients.
 """
 import logging
+import re
 from typing import List
 
 from core.normalization.normalizer import normalize_ingredient_key
 from core.parsing.ingredient_parser import (
+    _is_allergen_contains_section,
+    _is_may_contain_section,
     _label_clauses,
     _segment_canonical,
+    _strip_allergen_contains_markers,
+    _strip_may_contain_markers,
     _TOP_LEVEL_SEP,
     strip_label_boilerplate,
 )
 from core.parsing.nesting_split import split_by_nesting
 
 logger = logging.getLogger(__name__)
+
+# Bare quantity tokens and trailing composition percents (not ingredients).
+_PERCENT_ONLY = re.compile(r"^\d+(?:[.,]\d+)?\s*%$")
+_TRAILING_PERCENT = re.compile(r"\s+\d+(?:[.,]\d+)?\s*%$")
+_BARE_NUMBER = re.compile(r"^\d+(?:[.,]\d+)?$")
+
+
+def _strip_quantity_noise(atom: str) -> str | None:
+    """Drop percent-only / bare-number atoms; strip trailing ``N%`` from names."""
+    a = (atom or "").strip()
+    if not a:
+        return None
+    if _PERCENT_ONLY.match(a) or _BARE_NUMBER.match(a):
+        return None
+    a = _TRAILING_PERCENT.sub("", a).strip()
+    if not a or _PERCENT_ONLY.match(a) or _BARE_NUMBER.match(a):
+        return None
+    return a
 
 # Processed food -> base ingredients (deterministic; no hallucination)
 # Keys normalized (lower, no extra spaces). Values are base ingredients for ontology lookup.
@@ -150,7 +173,11 @@ def flatten_ingredients(raw_str: str) -> List[str]:
 
     flat: List[str] = []
     for clause in _label_clauses(raw_str):
-        for seg in _TOP_LEVEL_SEP.split(clause):
+        clause_body = clause
+        if _is_may_contain_section(clause) or _is_allergen_contains_section(clause):
+            clause_body = _strip_may_contain_markers(clause_body)
+            clause_body = _strip_allergen_contains_markers(clause_body)
+        for seg in _TOP_LEVEL_SEP.split(clause_body):
             seg = seg.strip()
             if not seg:
                 continue
@@ -164,12 +191,18 @@ def flatten_ingredients(raw_str: str) -> List[str]:
                 p = p.strip()
                 if not p:
                     continue
-                pk = normalize_ingredient_key(p)
+                cleaned = _strip_quantity_noise(p)
+                if cleaned is None:
+                    continue
+                pk = normalize_ingredient_key(cleaned)
+                pk = _strip_quantity_noise(pk) or ""
+                if not pk:
+                    continue
                 if is_keep_whole(pk):
                     flat.append(pk)
                 elif pk in PROCESSED_FOOD_TO_BASE:
                     flat.extend(PROCESSED_FOOD_TO_BASE[pk])
-                elif pk:
+                else:
                     flat.append(pk)
 
     # Deduplicate while preserving order
