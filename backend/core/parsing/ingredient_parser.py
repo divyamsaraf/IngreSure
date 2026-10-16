@@ -11,7 +11,7 @@ from typing import List, Dict, Any, Optional, Callable
 from core.normalization.normalizer import normalize_ingredient_key
 from core.parsing.label_normalize import normalize_label_separators
 from core.parsing.label_text import fix_ocr_label_noise, select_ingredient_label_text
-from core.parsing.nesting_split import split_by_nesting
+from core.parsing.nesting_split import split_by_nesting, split_top_level
 
 logger = logging.getLogger(__name__)
 
@@ -302,6 +302,15 @@ def _segment_canonical(part: str) -> str:
     if any(inner_lower.startswith(q) for q in _QUALIFIERS):
         return base
     if base and inner:
+        # Synonym collapse (e.g. Vitamin C (ascorbic acid)) must not erase a
+        # hazard surface form on the outer token (Wheat Flour (Maida),
+        # Peanut Butter (Unsweetened)).
+        try:
+            from core.parsing.hazard_lexicon import hazard_hits_in_text
+        except Exception:  # pragma: no cover
+            hazard_hits_in_text = lambda _t: set()  # type: ignore
+        if hazard_hits_in_text(base) - hazard_hits_in_text(inner):
+            return part
         return inner
     return part
 
@@ -312,7 +321,7 @@ def _segments_for_clause(clause: str) -> List[tuple[str, bool]]:
         chunk = chunk.strip()
         if not chunk:
             continue
-        for seg in _TOP_LEVEL_SEP.split(chunk):
+        for seg in split_top_level(chunk):
             seg = seg.strip()
             if not seg:
                 continue

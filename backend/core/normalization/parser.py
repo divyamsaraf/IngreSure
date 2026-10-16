@@ -16,7 +16,7 @@ from core.parsing.ingredient_parser import (
     _TOP_LEVEL_SEP,
     strip_label_boilerplate,
 )
-from core.parsing.nesting_split import split_by_nesting
+from core.parsing.nesting_split import split_by_nesting, split_top_level
 
 logger = logging.getLogger(__name__)
 
@@ -187,7 +187,7 @@ def flatten_ingredients(raw_str: str) -> List[str]:
         if _is_may_contain_section(clause) or _is_allergen_contains_section(clause):
             clause_body = _strip_may_contain_markers(clause_body)
             clause_body = _strip_allergen_contains_markers(clause_body)
-        for seg in _TOP_LEVEL_SEP.split(clause_body):
+        for seg in split_top_level(clause_body):
             seg = seg.strip()
             if not seg:
                 continue
