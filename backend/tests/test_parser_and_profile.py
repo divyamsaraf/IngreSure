@@ -78,6 +78,67 @@ def test_flatten_strips_percentage_only_atoms():
     assert "huile de colza" in out
 
 
+def test_flatten_keeps_name_when_paren_is_composition_percent():
+    """Composition % must not replace the ingredient (false-SAFE root cause)."""
+    from core.normalization.parser import flatten_ingredients
+
+    out = flatten_ingredients(
+        "PEANUTS (49.5%), honey, dark chocolate (12%) (cocoa mass, cane sugar, cocoa butter), "
+        "SOYA crispies (10.5%), desiccated coconut (7.5%), rice syrup, salt."
+    )
+    assert "peanut" in out or "peanuts" in out
+    assert "honey" in out
+    assert "salt" in out
+    assert "49.5%" not in out
+    assert "12%" not in out
+    # dark chocolate expands or keeps cocoa constituents
+    assert any(x in out for x in ("cocoa", "cocoa mass", "dark chocolate", "cane sugar"))
+
+
+@pytest.mark.parametrize(
+    "raw,must_keep",
+    [
+        ("peanuts (49.5%)", "peanut"),
+        ("peanuts (49,5 %)", "peanut"),
+        ("wheat flour (min. 62%)", "wheat flour"),
+        ("milk 3.5%", "milk"),
+        ("peanuts 49.5%", "peanut"),
+    ],
+)
+def test_flatten_composition_percent_goldens(raw, must_keep):
+    """Hazard/identity tokens must survive composition-percent noise."""
+    from core.normalization.parser import flatten_ingredients
+
+    out = flatten_ingredients(raw)
+    assert must_keep in out, (raw, out)
+    assert not any("%" in a for a in out)
+    assert "min" not in out
+
+
+def test_truth_anchor_class_staple_oils_and_water_variants():
+    """Item 44 class-level staple aliases resolve at L1."""
+    from core.knowledge.ike2 import resolution_cache as cache
+    from core.knowledge.ike2.resolver import resolve
+
+    for atom, canonical in (
+        ("rapeseed oil", "vegetable oil"),
+        ("sunflower oil", "vegetable oil"),
+        ("edible vegetable oil", "vegetable oil"),
+        ("filtered water", "water"),
+        ("iodised salt", "salt"),
+        ("lodised salt", "salt"),
+        ("wheatberries", "wheat"),
+        ("vitamin b6", "vitamin b6"),
+        ("vitamin d3", "vitamin d"),
+    ):
+        cache.clear()
+        r = resolve(atom, None)
+        assert r.resolution_layer.startswith("L1"), (atom, r.resolution_layer)
+        assert r.trusted is True
+        assert r.group is not None
+        assert r.group.canonical_name == canonical
+
+
 def test_flatten_strips_contains_and_may_contain_markers():
     """Allergen declarations are not a single opaque atom."""
     from core.normalization.parser import flatten_ingredients

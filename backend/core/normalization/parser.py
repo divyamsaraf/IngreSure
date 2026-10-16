@@ -24,6 +24,16 @@ logger = logging.getLogger(__name__)
 _PERCENT_ONLY = re.compile(r"^\d+(?:[.,]\d+)?\s*%$")
 _TRAILING_PERCENT = re.compile(r"\s+\d+(?:[.,]\d+)?\s*%$")
 _BARE_NUMBER = re.compile(r"^\d+(?:[.,]\d+)?$")
+# Nesting split can emit the inner of ``wheat flour (min. 62%)`` as its own atom.
+_COMPOSITION_PHRASE = re.compile(
+    r"^(?:(?:min|max|minimum|maximum|approx|approximately|about|ca|avg|average)\.?\s+)?"
+    r"~?\s*\d+(?:[.,]\d+)?\s*%$",
+    re.IGNORECASE,
+)
+_QUANTITY_WORD_ONLY = re.compile(
+    r"^(?:min|max|minimum|maximum|approx|approximately|about|ca|avg|average)\.?$",
+    re.IGNORECASE,
+)
 
 
 def _strip_quantity_noise(atom: str) -> str | None:
@@ -31,10 +41,10 @@ def _strip_quantity_noise(atom: str) -> str | None:
     a = (atom or "").strip()
     if not a:
         return None
-    if _PERCENT_ONLY.match(a) or _BARE_NUMBER.match(a):
+    if _PERCENT_ONLY.match(a) or _BARE_NUMBER.match(a) or _COMPOSITION_PHRASE.match(a):
         return None
     a = _TRAILING_PERCENT.sub("", a).strip()
-    if not a or _PERCENT_ONLY.match(a) or _BARE_NUMBER.match(a):
+    if not a or _PERCENT_ONLY.match(a) or _BARE_NUMBER.match(a) or _QUANTITY_WORD_ONLY.match(a):
         return None
     return a
 
