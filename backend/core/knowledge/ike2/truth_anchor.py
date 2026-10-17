@@ -281,8 +281,103 @@ _add(["cane sugar"], "cane sugar", _f(animal_origin=False, plant_origin=True))
 _add(["beet sugar"], "beet sugar", _f(animal_origin=False, plant_origin=True))
 _add(["chicken"], "chicken", _f(animal_origin=True, animal_species="chicken"))
 _add(["potato"], "potato", _f(root_vegetable=True, plant_origin=True))
-_add(["water"], "water", _f())
-_add(["salt", "sea salt"], "salt", _f())
+_add(["water", "filtered water", "purified water", "drinking water"], "water", _f())
+_add(
+    [
+        "salt",
+        "sea salt",
+        "iodised salt",
+        "iodized salt",
+        "lodised salt",  # OCR / typography variant of iodised
+        "lodized salt",
+        "edible common salt",
+        "table salt",
+        "rock salt",
+    ],
+    "salt",
+    _f(),
+)
+# Culinary oils — class-level plant staples (Item 44 pilot).
+_add(
+    [
+        "vegetable oil",
+        "edible vegetable oil",
+        "sunflower oil",
+        "rapeseed oil",
+        "canola oil",
+        "olive oil",
+        "soybean oil",
+        "soya oil",
+        "corn oil",
+        "coconut oil",
+        "palm oil",
+        "refined palm oil",
+        "safflower oil",
+    ],
+    "vegetable oil",
+    _f(animal_origin=False, plant_origin=True),
+)
+_add(
+    ["brown rice", "wholegrain brown rice", "cooked wholegrain brown rice"],
+    "brown rice",
+    _f(animal_origin=False, plant_origin=True),
+)
+_add(
+    ["wheatberries", "wheat berries", "cooked wheatberries"],
+    "wheat",
+    _f(gluten_source=True),
+)
+_add(["glucose syrup", "corn syrup"], "glucose syrup", _f(plant_origin=True))
+# Fortification vitamins — class-level staple clearance (not a hazard signal).
+_add(
+    ["vitamin b12", "cyanocobalamin", "cobalamin"],
+    "vitamin b12",
+    _f(synthetic=True, animal_origin=False, plant_origin=False),
+)
+_add(
+    ["vitamin b2", "riboflavin"],
+    "vitamin b2",
+    _f(
+        synthetic=True,
+        animal_origin=False,
+        plant_origin=False,
+        # Align with E101 catalog: whey-derived riboflavin is possible.
+        verdict_cap="WARN",
+        uncertainty_flags=["may_be_animal_derived_if_from_whey"],
+    ),
+)
+_add(
+    [
+        "thiamine",
+        "thiamine mononitrate",
+        "thiamin mononitrate",
+        "vitamin b1",
+        "thiamin",
+    ],
+    "thiamine",
+    _f(synthetic=True, animal_origin=False, plant_origin=False),
+)
+_add(
+    ["vitamin d2", "ergocalciferol"],
+    "vitamin d2",
+    _f(synthetic=True, animal_origin=False, plant_origin=False),
+)
+_add(
+    ["vitamin a palmitate", "retinyl palmitate"],
+    "vitamin a palmitate",
+    _f(synthetic=True, animal_origin=False, plant_origin=False),
+)
+_add(
+    ["vitamin b6", "pyridoxine", "pyridoxine hydrochloride"],
+    "vitamin b6",
+    _f(synthetic=True, animal_origin=False, plant_origin=False),
+)
+_add(
+    ["vitamin d", "vitamin d3", "cholecalciferol"],
+    "vitamin d",
+    _f(synthetic=True, animal_origin=False, plant_origin=False),
+)
+_add(["invert sugar syrup", "invert sugar"], "invert sugar", _f(plant_origin=True))
 # Yeast / yeast-culture: Jain fungal FAIL. Empty flags here previously shadowed
 # richer L2 ontology rows (baker's yeast fungal=True) and left plain "yeast" SAFE.
 _add(
