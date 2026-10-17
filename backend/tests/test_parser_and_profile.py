@@ -117,12 +117,18 @@ def test_flatten_composition_percent_goldens(raw, must_keep):
 
 def test_truth_anchor_class_staple_oils_and_water_variants():
     """Item 44 class-level staple aliases resolve at L1."""
+    from types import SimpleNamespace
+
     from core.knowledge.ike2 import resolution_cache as cache
+    from core.knowledge.ike2 import rules as rules_module
+    from core.knowledge.ike2.compliance import evaluate
     from core.knowledge.ike2.resolver import resolve
+    from core.knowledge.ike2.seam import to_compliance_input
+    from core.knowledge.ike2.verdict import Verdict, to_external
 
     for atom, canonical in (
-        ("rapeseed oil", "vegetable oil"),
-        ("sunflower oil", "vegetable oil"),
+        ("rapeseed oil", "rapeseed oil"),
+        ("sunflower oil", "sunflower oil"),
         ("edible vegetable oil", "vegetable oil"),
         ("filtered water", "water"),
         ("iodised salt", "salt"),
@@ -137,6 +143,26 @@ def test_truth_anchor_class_staple_oils_and_water_variants():
         assert r.trusted is True
         assert r.group is not None
         assert r.group.canonical_name == canonical
+
+    rules = rules_module.seeded_rules()
+
+    def _v(atom: str, rid: str, severity: str = "medical"):
+        cache.clear()
+        ci = to_compliance_input(resolve(atom, None), query_atom=atom)
+        return evaluate(
+            [ci], SimpleNamespace(restrictions={rid: severity}), rules
+        ).verdict
+
+    # Unspecified vegetable oil must not firm-SAFE allergen profiles.
+    assert _v("vegetable oil", "peanut_allergy") != Verdict.SAFE
+    assert _v("edible vegetable oil", "sesame_allergy") != Verdict.SAFE
+    # Named soy oil must Avoid soy allergy.
+    assert _v("soybean oil", "soy_allergy") == Verdict.FAIL
+    # Wheatberries carry gluten.
+    assert _v("wheatberries", "gluten_free") == Verdict.FAIL
+    # D3 / A palmitate origin-ambiguous for vegan/religious.
+    assert to_external(_v("vitamin d3", "vegan", "preference")) != "SAFE"
+    assert to_external(_v("vitamin a palmitate", "jain", "religious")) != "SAFE"
 
 
 def test_flatten_strips_contains_and_may_contain_markers():

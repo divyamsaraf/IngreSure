@@ -297,26 +297,39 @@ _add(
     "salt",
     _f(),
 )
-# Culinary oils — class-level plant staples (Item 44 pilot).
+# Culinary oils — named plant oils are L1 staples. Unspecified "vegetable oil"
+# blends may include peanut/sesame/soy/tree-nut oils → never firm-SAFE on those
+# allergy profiles (verdict_cap WARN). Soybean/soya oil is a soy allergen.
 _add(
-    [
-        "vegetable oil",
-        "edible vegetable oil",
-        "sunflower oil",
-        "rapeseed oil",
-        "canola oil",
-        "olive oil",
-        "soybean oil",
-        "soya oil",
-        "corn oil",
-        "coconut oil",
-        "palm oil",
-        "refined palm oil",
-        "safflower oil",
-    ],
+    ["vegetable oil", "edible vegetable oil"],
     "vegetable oil",
-    _f(animal_origin=False, plant_origin=True),
+    _f(
+        animal_origin=False,
+        plant_origin=True,
+        verdict_cap="WARN",
+        uncertainty_flags=["may_include_allergen_oils"],
+    ),
 )
+for _oil in (
+    "sunflower oil",
+    "rapeseed oil",
+    "canola oil",
+    "olive oil",
+    "corn oil",
+    "coconut oil",
+    "palm oil",
+    "refined palm oil",
+    "safflower oil",
+):
+    _add([_oil], _oil, _f(animal_origin=False, plant_origin=True))
+_add(
+    ["soybean oil", "soya oil", "soy oil"],
+    "soybean oil",
+    _f(animal_origin=False, plant_origin=True, soy_source=True),
+)
+_add(["almond oil"], "almond oil", _f(plant_origin=True, tree_nut_source=True))
+_add(["walnut oil"], "walnut oil", _f(plant_origin=True, tree_nut_source=True))
+_add(["sesame oil"], "sesame oil", _f(plant_origin=True, sesame_source=True))
 _add(
     ["brown rice", "wholegrain brown rice", "cooked wholegrain brown rice"],
     "brown rice",
@@ -365,7 +378,14 @@ _add(
 _add(
     ["vitamin a palmitate", "retinyl palmitate"],
     "vitamin a palmitate",
-    _f(synthetic=True, animal_origin=False, plant_origin=False),
+    _f(
+        synthetic=True,
+        animal_origin=False,
+        plant_origin=False,
+        # May be fish-oil derived — same WARN pattern as E101 / B2.
+        verdict_cap="WARN",
+        uncertainty_flags=["may_be_animal_derived_if_from_fish_oil"],
+    ),
 )
 _add(
     ["vitamin b6", "pyridoxine", "pyridoxine hydrochloride"],
@@ -375,7 +395,14 @@ _add(
 _add(
     ["vitamin d", "vitamin d3", "cholecalciferol"],
     "vitamin d",
-    _f(synthetic=True, animal_origin=False, plant_origin=False),
+    _f(
+        synthetic=True,
+        animal_origin=False,
+        plant_origin=False,
+        # Commercial D3 is usually lanolin-derived.
+        verdict_cap="WARN",
+        uncertainty_flags=["may_be_animal_derived_if_from_lanolin"],
+    ),
 )
 _add(["invert sugar syrup", "invert sugar"], "invert sugar", _f(plant_origin=True))
 # Yeast / yeast-culture: Jain fungal FAIL. Empty flags here previously shadowed
