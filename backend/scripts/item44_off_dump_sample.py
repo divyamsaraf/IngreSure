@@ -214,6 +214,27 @@ def main(argv=None) -> int:
         }
         args.eval_out.write_text(json.dumps(eval_meta, indent=2) + "\n", encoding="utf-8")
         print(f"wrote {args.eval_out} n={len(products)}", flush=True)
+
+        # Keep frequency sample disjoint from the held-out eval set.
+        held_codes = {p["code"] for p in products}
+        freq = result["freq"]
+        before = len(freq["products"])
+        freq["products"] = [p for p in freq["products"] if p["code"] not in held_codes]
+        removed = before - len(freq["products"])
+        from collections import Counter
+
+        mc = Counter(p["market"] for p in freq["products"])
+        freq["n_products"] = len(freq["products"])
+        freq["held_out_excluded"] = removed
+        freq["disjoint_from_held_out"] = True
+        for m in freq.get("markets") or {}:
+            freq["markets"][m]["n"] = mc.get(m, 0)
+        args.freq_out.write_text(json.dumps(freq, indent=2) + "\n", encoding="utf-8")
+        print(
+            f"rewrote {args.freq_out} n={freq['n_products']} "
+            f"(excluded {removed} held-out overlaps)",
+            flush=True,
+        )
     return 0
 
 

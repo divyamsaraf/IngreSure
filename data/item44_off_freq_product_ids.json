@@ -5,15 +5,15 @@
   "dump_date": "Fri, 16 Oct 2026 06:53:07 GMT",
   "odbl_attribution": "Product metadata from Open Food Facts (ODbL). Only product codes are stored \u2014 not ingredient texts.",
   "per_market_target": 3000,
-  "n_products": 9000,
+  "n_products": 8965,
   "markets": {
     "india": {
-      "n": 3000,
+      "n": 2967,
       "shortfall": 0,
       "eligible_seen": 6430
     },
     "us": {
-      "n": 3000,
+      "n": 2998,
       "shortfall": 0,
       "eligible_seen": 453535
     },
@@ -102,10 +102,6 @@
     },
     {
       "code": "3948063028227",
-      "market": "india"
-    },
-    {
-      "code": "8906021121408",
       "market": "india"
     },
     {
@@ -537,10 +533,6 @@
       "market": "india"
     },
     {
-      "code": "0841541001206",
-      "market": "india"
-    },
-    {
       "code": "8904083303015",
       "market": "india"
     },
@@ -853,10 +845,6 @@
       "market": "india"
     },
     {
-      "code": "8906143890480",
-      "market": "india"
-    },
-    {
       "code": "8901063158351",
       "market": "india"
     },
@@ -922,10 +910,6 @@
     },
     {
       "code": "8908009918055",
-      "market": "india"
-    },
-    {
-      "code": "7622201685638",
       "market": "india"
     },
     {
@@ -1709,10 +1693,6 @@
       "market": "india"
     },
     {
-      "code": "8901030518232",
-      "market": "india"
-    },
-    {
       "code": "8908005127420",
       "market": "india"
     },
@@ -2333,10 +2313,6 @@
       "market": "india"
     },
     {
-      "code": "8909106048553",
-      "market": "india"
-    },
-    {
       "code": "8901725193119",
       "market": "india"
     },
@@ -2370,10 +2346,6 @@
     },
     {
       "code": "8901491502054",
-      "market": "india"
-    },
-    {
-      "code": "8908003761091",
       "market": "india"
     },
     {
@@ -3009,10 +2981,6 @@
       "market": "india"
     },
     {
-      "code": "8850389100769",
-      "market": "india"
-    },
-    {
       "code": "8906097402593",
       "market": "india"
     },
@@ -3485,10 +3453,6 @@
       "market": "india"
     },
     {
-      "code": "8904221694814",
-      "market": "india"
-    },
-    {
       "code": "8901063035164",
       "market": "india"
     },
@@ -3506,10 +3470,6 @@
     },
     {
       "code": "8906010500627",
-      "market": "india"
-    },
-    {
-      "code": "8904335605218",
       "market": "india"
     },
     {
@@ -4077,10 +4037,6 @@
       "market": "india"
     },
     {
-      "code": "0631656260175",
-      "market": "india"
-    },
-    {
       "code": "8901063371057",
       "market": "india"
     },
@@ -4197,10 +4153,6 @@
       "market": "india"
     },
     {
-      "code": "8904022920648",
-      "market": "india"
-    },
-    {
       "code": "8901058016055",
       "market": "india"
     },
@@ -4274,10 +4226,6 @@
     },
     {
       "code": "8903363010988",
-      "market": "india"
-    },
-    {
-      "code": "8906001052807",
       "market": "india"
     },
     {
@@ -4701,10 +4649,6 @@
       "market": "india"
     },
     {
-      "code": "8904406170492",
-      "market": "india"
-    },
-    {
       "code": "8906130900116",
       "market": "india"
     },
@@ -4990,10 +4934,6 @@
     },
     {
       "code": "8908000385351",
-      "market": "india"
-    },
-    {
-      "code": "8901725125370",
       "market": "india"
     },
     {
@@ -5433,10 +5373,6 @@
       "market": "india"
     },
     {
-      "code": "8904474001827",
-      "market": "india"
-    },
-    {
       "code": "8901648921325",
       "market": "india"
     },
@@ -5477,10 +5413,6 @@
       "market": "india"
     },
     {
-      "code": "0610825925084",
-      "market": "india"
-    },
-    {
       "code": "90448249",
       "market": "india"
     },
@@ -5490,10 +5422,6 @@
     },
     {
       "code": "8901036162514",
-      "market": "india"
-    },
-    {
-      "code": "8906005500083",
       "market": "india"
     },
     {
@@ -5777,10 +5705,6 @@
       "market": "india"
     },
     {
-      "code": "8906001026600",
-      "market": "india"
-    },
-    {
       "code": "17066594",
       "market": "india"
     },
@@ -5885,10 +5809,6 @@
       "market": "india"
     },
     {
-      "code": "8901058029130",
-      "market": "india"
-    },
-    {
       "code": "8908002103113",
       "market": "india"
     },
@@ -5986,10 +5906,6 @@
     },
     {
       "code": "8901042970455",
-      "market": "india"
-    },
-    {
-      "code": "8904004400731",
       "market": "india"
     },
     {
@@ -8381,10 +8297,6 @@
       "market": "india"
     },
     {
-      "code": "8904043551548",
-      "market": "india"
-    },
-    {
       "code": "8906036674265",
       "market": "india"
     },
@@ -8909,10 +8821,6 @@
       "market": "india"
     },
     {
-      "code": "8906057206254",
-      "market": "india"
-    },
-    {
       "code": "8908000233034",
       "market": "india"
     },
@@ -9110,10 +9018,6 @@
     },
     {
       "code": "8902579003470",
-      "market": "india"
-    },
-    {
-      "code": "8904335601937",
       "market": "india"
     },
     {
@@ -10041,10 +9945,6 @@
       "market": "india"
     },
     {
-      "code": "0048107251123",
-      "market": "india"
-    },
-    {
       "code": "8901014004935",
       "market": "india"
     },
@@ -10082,10 +9982,6 @@
     },
     {
       "code": "8901262300766",
-      "market": "india"
-    },
-    {
-      "code": "8904071704527",
       "market": "india"
     },
     {
@@ -10613,10 +10509,6 @@
       "market": "india"
     },
     {
-      "code": "8901071732512",
-      "market": "india"
-    },
-    {
       "code": "8902027000686",
       "market": "india"
     },
@@ -10638,10 +10530,6 @@
     },
     {
       "code": "8901725004675",
-      "market": "india"
-    },
-    {
-      "code": "8901058002997",
       "market": "india"
     },
     {
@@ -11057,10 +10945,6 @@
       "market": "india"
     },
     {
-      "code": "8901576003063",
-      "market": "india"
-    },
-    {
       "code": "8908014124038",
       "market": "india"
     },
@@ -11341,19 +11225,11 @@
       "market": "india"
     },
     {
-      "code": "8906069400015",
-      "market": "india"
-    },
-    {
       "code": "8906156488469",
       "market": "india"
     },
     {
       "code": "8906025201786",
-      "market": "india"
-    },
-    {
-      "code": "0841541000025",
       "market": "india"
     },
     {
@@ -11402,10 +11278,6 @@
     },
     {
       "code": "8902433003707",
-      "market": "india"
-    },
-    {
-      "code": "8908021982072",
       "market": "india"
     },
     {
@@ -11582,10 +11454,6 @@
     },
     {
       "code": "8939999780988",
-      "market": "india"
-    },
-    {
-      "code": "8903023005903",
       "market": "india"
     },
     {
@@ -18745,10 +18613,6 @@
       "market": "us"
     },
     {
-      "code": "0713733340922",
-      "market": "us"
-    },
-    {
       "code": "0899055001410",
       "market": "us"
     },
@@ -21774,10 +21638,6 @@
     },
     {
       "code": "0041380262039",
-      "market": "us"
-    },
-    {
-      "code": "0041196914016",
       "market": "us"
     },
     {
@@ -36025,5 +35885,7 @@
       "market": "uk_eu"
     }
   ],
-  "parser_note": "Lists must be re-fetched/flattened with current flatten_ingredients."
+  "parser_note": "Lists must be re-fetched/flattened with current flatten_ingredients.",
+  "held_out_excluded": 35,
+  "disjoint_from_held_out": true
 }
