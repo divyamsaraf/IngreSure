@@ -275,7 +275,11 @@ _add(["wheat flour", "enriched wheat flour", "bleached wheat flour"], "wheat",
      _f(gluten_source=True))
 _add(["wheat gluten"], "gluten", _f(gluten_source=True))
 _add(["malted barley flour"], "barley", _f(gluten_source=True))
-_add(["flour", "all purpose flour"], "flour", _f(gluten_source=True))
+_add(["flour", "flours", "all purpose flour"], "flour", _f(gluten_source=True))
+# Bone-char refining is a process ambiguity on some cane sugars, not a labeled
+# ingredient. We treat bare sugar as plant SAFE (not WARN): FAIL would over-block
+# nearly every list; WARN would erase firm SAFE on the most common staple. Named
+# cane/beet sugar stay plant SAFE the same way.
 _add(["sugar"], "sugar", _f(animal_origin=False, plant_origin=True))
 _add(["cane sugar"], "cane sugar", _f(animal_origin=False, plant_origin=True))
 _add(["beet sugar"], "beet sugar", _f(animal_origin=False, plant_origin=True))
@@ -298,16 +302,24 @@ _add(
     _f(),
 )
 # Culinary oils — named plant oils are L1 staples. Unspecified "vegetable oil"
-# blends may include peanut/sesame/soy/tree-nut oils → never firm-SAFE on those
-# allergy profiles (verdict_cap WARN). Soybean/soya oil is a soy allergen.
+# blends may include peanut/sesame/soy/tree-nut oils → WARN-cap only those
+# allergy profiles (not vegan/gluten/dairy where oil is irrelevant).
+_VEGETABLE_OIL_CAP_RESTRICTIONS = (
+    "peanut_allergy",
+    "sesame_allergy",
+    "soy_allergy",
+    "tree_nut_allergy",
+)
 _add(
     ["vegetable oil", "edible vegetable oil"],
     "vegetable oil",
     _f(
         animal_origin=False,
         plant_origin=True,
+        # Scoped cap only — do not set uncertainty_flags (those also ceiling
+        # vegan/dairy via _uncertainty_ceiling and would undo the scope).
         verdict_cap="WARN",
-        uncertainty_flags=["may_include_allergen_oils"],
+        verdict_cap_restrictions=list(_VEGETABLE_OIL_CAP_RESTRICTIONS),
     ),
 )
 for _oil in (
@@ -347,6 +359,16 @@ _add(
     "vitamin b12",
     _f(synthetic=True, animal_origin=False, plant_origin=False),
 )
+_ORIGIN_AMBIGUOUS_DIET_CAPS = (
+    "vegan",
+    "jain",
+    "halal",
+    "hindu_vegetarian",
+    "vegetarian",
+    "kosher",
+    "lacto_vegetarian",
+    "ovo_vegetarian",
+)
 _add(
     ["vitamin b2", "riboflavin"],
     "vitamin b2",
@@ -356,6 +378,7 @@ _add(
         plant_origin=False,
         # Align with E101 catalog: whey-derived riboflavin is possible.
         verdict_cap="WARN",
+        verdict_cap_restrictions=list(_ORIGIN_AMBIGUOUS_DIET_CAPS),
         uncertainty_flags=["may_be_animal_derived_if_from_whey"],
     ),
 )
@@ -384,6 +407,7 @@ _add(
         plant_origin=False,
         # May be fish-oil derived — same WARN pattern as E101 / B2.
         verdict_cap="WARN",
+        verdict_cap_restrictions=list(_ORIGIN_AMBIGUOUS_DIET_CAPS),
         uncertainty_flags=["may_be_animal_derived_if_from_fish_oil"],
     ),
 )
@@ -401,6 +425,7 @@ _add(
         plant_origin=False,
         # Commercial D3 is usually lanolin-derived.
         verdict_cap="WARN",
+        verdict_cap_restrictions=list(_ORIGIN_AMBIGUOUS_DIET_CAPS),
         uncertainty_flags=["may_be_animal_derived_if_from_lanolin"],
     ),
 )

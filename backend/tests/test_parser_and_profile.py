@@ -156,6 +156,10 @@ def test_truth_anchor_class_staple_oils_and_water_variants():
     # Unspecified vegetable oil must not firm-SAFE allergen profiles.
     assert _v("vegetable oil", "peanut_allergy") != Verdict.SAFE
     assert _v("edible vegetable oil", "sesame_allergy") != Verdict.SAFE
+    # Cap is scoped: oil is irrelevant to vegan / gluten / dairy.
+    assert to_external(_v("vegetable oil", "vegan", "preference")) == "SAFE"
+    assert to_external(_v("vegetable oil", "gluten_free")) == "SAFE"
+    assert to_external(_v("vegetable oil", "dairy_free")) == "SAFE"
     # Named soy oil must Avoid soy allergy.
     assert _v("soybean oil", "soy_allergy") == Verdict.FAIL
     # Wheatberries carry gluten.

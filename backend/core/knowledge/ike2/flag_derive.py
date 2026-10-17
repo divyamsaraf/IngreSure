@@ -25,6 +25,7 @@ import re
 from typing import Any, Mapping
 
 from core.normalization.normalizer import normalize_ingredient_key
+from core.parsing.hazard_lexicon import apply_lexicon_flags, family_negated
 
 _TREE_NUT_TOKENS = frozenset({
     "almond", "hazelnut", "filbert", "cashew", "walnut", "pecan", "pistachio",
@@ -85,6 +86,13 @@ _NON_DAIRY_PHRASES = (
     "kokum butter",
     "tofu yogurt", "tofu yoghurt", "soy yogurt", "soy yoghurt",
     "coconut yogurt", "oat yogurt", "almond yogurt",
+    # FR/DE/ES/IT/NL — keep in sync with hazard_lexicon._FALSE_FRIEND_MASK
+    "beurre de cacao", "kakaobutter", "manteca de cacao", "burro di cacao",
+    "cacaoboter",
+    "lait de coco", "lait de amande", "lait d amande", "lait d'amande",
+    "leche de coco", "leche de almendra", "kokosmilch", "mandelmilch",
+    "hafermilch", "sojamilch", "latte di cocco", "latte di mandorla",
+    "kokosmelk", "amandelmelk",
 )
 
 _MUSTARD_NON_ALLERGEN_PHRASES = (
@@ -206,18 +214,9 @@ def _family_negated(name: str, tokens: tuple[str, ...] | frozenset[str] | list[s
 
     Suppresses identity derive for that family only (dairy-free cheese must not
     pick up dairy from \"dairy\"; egg-free pasta must not pick up egg).
+    Delegates to the shared hazard_lexicon negation guard (EN/FR/DE/ES/IT/NL).
     """
-    for tok in tokens:
-        t = re.escape(tok)
-        if re.search(rf"\b{t}s?[\s-]*free\b", name):
-            return True
-        if re.search(rf"\bfree[\s-]+(?:from[\s-]+)?{t}s?\b", name):
-            return True
-        if re.search(rf"\b(?:no|without)[\s-]+(?:added[\s-]+)?{t}s?\b", name):
-            return True
-        if re.search(rf"\bcontains\s+no\s+{t}s?\b", name):
-            return True
-    return False
+    return family_negated(name, tokens)
 
 
 # Token → family tokens used for free-from negation (compound expand + derive).
@@ -444,5 +443,9 @@ def derive_identity_flags(
         or any(_has_token(name, t) for t in _SULPHITE_TOKENS)
     ):
         out["sulphite_source"] = True
+
+    # Shared surface lexicon (FR/DE/ES/IT/NL tokens + false-friend/negation masks).
+    # OR onto EN token rules so sweep and atom derive agree on lait/beurre/blé.
+    out = apply_lexicon_flags(canonical_name or name, out)
 
     return out

@@ -1,8 +1,8 @@
-"""Surface-form hazard lexicon for parser conservation checks.
+"""Surface-form hazard lexicon for parser conservation and atom flag derive.
 
-Invariant: if a hazard token appears in the raw ingredient list, at least one
-parsed atom must still carry that hazard class. Used by conservation audits and
-(design) a product-level raw-string backstop that can only add hazards.
+Single source for raw-string sweep and ``flag_derive``: tokens, false-friend
+exclusions, and free-from / negation guards. Positives only — absence of a hit
+is never negative evidence.
 """
 from __future__ import annotations
 
@@ -72,8 +72,16 @@ HAZARD_LEXICON: dict[str, tuple[str, ...]] = {
         "beurre",
         "fromage",
         "milch",
-        "butter",
         "käse",
+        "leche",
+        "mantequilla",
+        "queso",
+        "latte",
+        "burro",
+        "formaggio",
+        "melk",
+        "boter",
+        "kaas",
     ),
     "egg": (
         "egg whites",
@@ -95,6 +103,8 @@ HAZARD_LEXICON: dict[str, tuple[str, ...]] = {
         "oeuf",
         "œuf",
         "eier",
+        "huevo",
+        "uovo",
     ),
     "soy": (
         "soy lecithin",
@@ -185,36 +195,115 @@ for _cls, forms in HAZARD_LEXICON.items():
         )
 
 
-# Negated contexts: surface forms that look like hazards but are not.
-_NEGATED = (
-    # "gluten-free" / "gluten free" is a claim, not gluten
-    (re.compile(r"gluten[\s\-]*free", re.I), {"gluten"}),
-    # Plant milks / butters: "milk"/"butter" substring is not dairy
-    (
-        re.compile(
-            r"\b(?:coconut|almond|soy|soya|oat|rice|cashew|hemp|pea|pistachio)"
-            r"[\s\-]*(?:milk|butter)\b",
-            re.I,
-        ),
-        {"dairy"},
-    ),
-    (re.compile(r"\bpeanut\s+butter\b", re.I), {"dairy"}),
-    (re.compile(r"\bcocoa\s+butter\b", re.I), {"dairy"}),
-    (re.compile(r"\bshea\s+butter\b", re.I), {"dairy"}),
+# Plant milks / cocoa butters / milk thistle — mask before matching so FR/DE/ES
+# forms do not fire dairy (sweep previously missed these; flag_derive had EN only).
+_FALSE_FRIEND_MASK = re.compile(
+    r"""(?ix)
+    (?:
+        # cocoa / cacao butter (EN + FR/DE/ES/IT/NL)
+        (?:cocoa|cacao)\s+butter
+        | beurre\s+de\s+cacao
+        | kakaobutter
+        | manteca\s+de\s+cacao
+        | burro\s+di\s+cacao
+        | cacaoboter
+        # plant milks
+        | (?:coconut|almond|soy|soya|oat|rice|cashew|hemp|pea|pistachio)
+          [\s\-]*(?:milk|cream|butter|yogurt|yoghurt)
+        | lait\s+de\s+(?:coco|amande|avoine|soja|riz|cajou)
+        | lait\s+d['\u2019]?\s*amande
+        | leche\s+de\s+(?:coco|almendra|avena|soja|arroz)
+        | kokosmilch
+        | mandelmilch
+        | hafermilch
+        | sojamilch
+        | latte\s+di\s+(?:cocco|mandorla|avena|soia|riso)
+        | kokosmelk
+        | amandelmelk
+        | shea\s+butter
+        | kokum\s+butter
+        | peanut\s+butter
+        | almond\s+butter
+        | cashew\s+butter
+        | seed\s+butter
+        | apple\s+butter
+        | butter\s*bean
+        | butternut
+        | cream\s+of\s+tartar
+        | cream\s+soda
+        | milk\s+thistle
+        | milkweed
+        | milkfish
+        | milk\s+fish
+    )
+    """
 )
+
+# Free-from / negation claims — mask so "soya free" / "NO SOY" / "sans gluten"
+# do not count as hazard presence.
+_NEGATION_MASK = re.compile(
+    r"""(?ix)
+    (?:
+        (?:gluten|dairy|milk|lactose|soy|soya|soybean|nut|peanut|egg|eggs|
+           sesame|wheat|fish|shellfish|tree[\s\-]*nut)
+        [\s\-]*free
+      | free[\s\-]+(?:from[\s\-]+)?
+        (?:gluten|dairy|milk|lactose|soy|soya|soybean|nut|peanut|egg|eggs|
+           sesame|wheat|fish|shellfish|tree[\s\-]*nut)s?
+      | (?:no|without|sans|ohne|sin|senza|zonder)[\s\-]+
+        (?:added[\s\-]+)?
+        (?:gluten|dairy|milk|lactose|soy|soya|soybean|nut|peanut|egg|eggs|
+           sesame|wheat|fish|shellfish|tree[\s\-]*nut|milch|lait|soja|blé)s?
+      | contains\s+no\s+
+        (?:gluten|dairy|milk|lactose|soy|soya|soybean|nut|peanut|egg|eggs|
+           sesame|wheat)s?
+    )
+    """
+)
+
+
+def _mask_non_hazards(text: str) -> str:
+    """Blank out false-friend and free-from spans before lexicon match."""
+    if not text:
+        return text
+    masked = _FALSE_FRIEND_MASK.sub(lambda m: " " * len(m.group(0)), text)
+    masked = _NEGATION_MASK.sub(lambda m: " " * len(m.group(0)), masked)
+    return masked
+
+
+def family_negated(name: str, tokens: Iterable[str]) -> bool:
+    """True when ``name`` is a free-from / contains-no claim for any of ``tokens``.
+
+    Shared by flag_derive and the sweep so "soya free" / "sans lait" agree.
+    """
+    if not name:
+        return False
+    low = name.lower()
+    for tok in tokens:
+        t = re.escape(tok)
+        if re.search(rf"\b{t}s?[\s-]*free\b", low):
+            return True
+        if re.search(rf"\bfree[\s-]+(?:from[\s-]+)?{t}s?\b", low):
+            return True
+        if re.search(
+            rf"\b(?:no|without|sans|ohne|sin|senza|zonder)[\s-]+(?:added[\s-]+)?{t}s?\b",
+            low,
+        ):
+            return True
+        if re.search(rf"\bcontains\s+no\s+{t}s?\b", low):
+            return True
+    return False
 
 
 def hazard_hits_in_text(text: str) -> set[str]:
     """Return hazard class names found as surface forms in ``text``."""
     if not text:
         return set()
+    masked = _mask_non_hazards(text)
     hits: set[str] = set()
     for cls, pat in _PATTERNS.items():
-        if pat.search(text):
+        if pat.search(masked):
             hits.add(cls)
-    for pat, drop in _NEGATED:
-        if pat.search(text):
-            hits -= drop
     return hits
 
 
@@ -243,6 +332,41 @@ HAZARD_CLASS_TO_FLAG: dict[str, str] = {
     "shellfish": "shellfish_source",
     "tree_nut": "tree_nut_source",
 }
+
+_ANIMAL_CLASSES = frozenset({"dairy", "egg", "fish", "shellfish"})
+
+
+# Tokens used to suppress a class when the whole phrase is a free-from claim
+# (e.g. "dairy free cheese" must not pick up dairy from residual "cheese").
+_CLASS_NEGATION_TOKENS: dict[str, tuple[str, ...]] = {
+    "peanut": ("peanut", "groundnut"),
+    "gluten": ("gluten", "wheat", "barley", "rye"),
+    "dairy": ("dairy", "milk", "lactose", "whey", "casein", "lait", "milch", "leche"),
+    "egg": ("egg", "eggs"),
+    "soy": ("soy", "soya", "soybean", "soja"),
+    "sesame": ("sesame", "tahini"),
+    "fish": ("fish", "poisson", "fisch"),
+    "shellfish": ("shellfish", "crustacean", "mollusk", "mollusc"),
+    "tree_nut": ("nut", "tree nut", "treenut", "almond", "amande"),
+}
+
+
+def apply_lexicon_flags(name: str, flags: dict | None = None) -> dict:
+    """OR lexicon hazard hits onto a flags dict (atom-level derive path)."""
+    out = dict(flags or {})
+    raw = name or ""
+    for cls in hazard_hits_in_text(raw):
+        toks = _CLASS_NEGATION_TOKENS.get(cls)
+        if toks and family_negated(raw, toks):
+            continue
+        flag = HAZARD_CLASS_TO_FLAG.get(cls)
+        if not flag:
+            continue
+        out[flag] = True
+        if cls in _ANIMAL_CLASSES:
+            out["animal_origin"] = True
+            out["plant_origin"] = False
+    return out
 
 
 _MAY_CONTAIN_SPLIT = re.compile(

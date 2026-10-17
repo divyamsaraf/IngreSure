@@ -343,8 +343,12 @@ def _verdict_for(r, rule, severity: Optional[str]):
         base = Verdict.FAIL
 
     # Compound/ambiguous terms can never be definitive SAFE -> WARN.
+    # Optional verdict_cap_restrictions scopes the cap (e.g. vegetable oil only
+    # on peanut/sesame/soy/tree_nut — not vegan/gluten/dairy).
     if cap == "WARN" and base == Verdict.SAFE:
-        return Verdict.WARN, triggered, trace, "inherent_uncertainty"
+        cap_rids = flags.get("verdict_cap_restrictions")
+        if cap_rids is None or restriction in set(cap_rids):
+            return Verdict.WARN, triggered, trace, "inherent_uncertainty"
 
     # Uncertainty flags cap diet-relevant clean passes.
     if base == Verdict.SAFE:
