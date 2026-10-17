@@ -229,3 +229,69 @@ def hazard_hits_in_atoms(atoms: Iterable[str]) -> set[str]:
 def conservation_misses(raw: str, atoms: Iterable[str]) -> set[str]:
     """Hazard classes present in raw text but absent from parsed atoms."""
     return hazard_hits_in_text(raw) - hazard_hits_in_atoms(atoms)
+
+
+# Lexicon class -> compliance flag column (allergy/medical).
+HAZARD_CLASS_TO_FLAG: dict[str, str] = {
+    "peanut": "peanut_source",
+    "gluten": "gluten_source",
+    "dairy": "dairy_source",
+    "egg": "egg_source",
+    "soy": "soy_source",
+    "sesame": "sesame_source",
+    "fish": "fish_source",
+    "shellfish": "shellfish_source",
+    "tree_nut": "tree_nut_source",
+}
+
+
+_MAY_CONTAIN_SPLIT = re.compile(
+    r"(?i)(?:^|[.\n])\s*(?:may\s+contain|traces?\s+of)\s*[:\-]?\s*"
+)
+
+
+def label_text_hazard_inputs(raw: str):
+    """Product-level ComplianceInputs from raw label surface forms.
+
+    Positives only — absence of a hit is never negative evidence. Attribution
+    is the canonical name ``label text`` so audits show the source.
+
+    Hazards found only under a ``may contain`` / ``traces of`` clause are
+    marked ``may_contain=True`` (lifestyle → WARN/UNCERTAIN; medical → FAIL).
+    """
+    from core.knowledge.ike2.seam import ComplianceInput
+
+    text = raw or ""
+    if not text.strip():
+        return []
+
+    # Split definite body vs trailing may-contain clause (last match wins).
+    may_parts = _MAY_CONTAIN_SPLIT.split(text)
+    if len(may_parts) >= 2:
+        definite = may_parts[0]
+        may_body = may_parts[-1]
+    else:
+        definite = text
+        may_body = ""
+
+    outs = []
+    for body, may_contain in ((definite, False), (may_body, True)):
+        if not (body or "").strip():
+            continue
+        hits = hazard_hits_in_text(body)
+        flags = {HAZARD_CLASS_TO_FLAG[c]: True for c in hits if c in HAZARD_CLASS_TO_FLAG}
+        if not flags:
+            continue
+        outs.append(
+            ComplianceInput(
+                canonical_name="label text",
+                flags=flags,
+                knowledge_state="AUTO_CLASSIFIED",
+                trusted=True,
+                alcohol_role=None,
+                verdict_cap=None,
+                trace=False,
+                may_contain=may_contain,
+            )
+        )
+    return outs

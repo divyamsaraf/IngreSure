@@ -686,6 +686,7 @@ async def chat_grocery(request: Request, body: ChatRequest):
                 profile_context=profile_context,
                 use_api_fallback=True,
                 prepared_decomposed=prepared.decomposed,
+                raw_label=prepared.label_text,
             )
             logger.info(
                 "VERDICT=%s confidence=%.2f triggered=%s ingredients=%s",

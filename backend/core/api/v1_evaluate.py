@@ -20,6 +20,7 @@ def _run_ike2_evaluate_with_flags(
     restriction_ids: Optional[List[str]],
     *,
     region_scope: Optional[str] = None,
+    raw_label: Optional[str] = None,
 ) -> Tuple[ComplianceVerdict, List[dict]]:
     from core.bridge import _run_ike2_compliance, map_ike2_to_compliance_verdict
     from core.knowledge.ike2.shadow.runner import flags_from_compliance_inputs
@@ -30,6 +31,7 @@ def _run_ike2_evaluate_with_flags(
             restriction_ids,
             prepared_decomposed=None,
             region=region_scope,
+            raw_label=raw_label,
         )
         verdict = map_ike2_to_compliance_verdict(
             result, inputs, input_display_map=display_map
@@ -50,6 +52,7 @@ def evaluate_http(
     *,
     region_scope: Optional[str] = None,
     include_matrix: bool = False,
+    raw_label: Optional[str] = None,
 ) -> Tuple[ComplianceVerdict, dict]:
     """Verdict dict source plus the sibling ike2 object (schema_version, breakdown).
 
@@ -67,6 +70,7 @@ def evaluate_http(
             restriction_ids,
             prepared_decomposed=None,
             region=region_scope,
+            raw_label=raw_label,
         )
         verdict = map_ike2_to_compliance_verdict(
             result, inputs, input_display_map=display_map
@@ -105,9 +109,15 @@ def evaluate_ingredients(
     """
     _ = (use_api_fallback, profile_context, source_route)
 
+    raw = None
+    if ingredients and len(ingredients) == 1:
+        raw = ingredients[0]
+    elif ingredients:
+        raw = ", ".join(str(x) for x in ingredients if x)
     ike2, _flags = _run_ike2_evaluate_with_flags(
         ingredients,
         restriction_ids,
         region_scope=region_scope,
+        raw_label=raw,
     )
     return ike2

@@ -78,11 +78,14 @@ def evaluate_compliance(request: Request, req: EvaluateComplianceRequest) -> Eva
             status_code=400,
             detail=f"{pair[0]} and {pair[1]} cannot be combined",
         )
+    # Join for product-level raw_label sweep when the client sends atoms/list.
+    raw_join = ", ".join(str(x) for x in (req.ingredients or []) if x)
     verdict, block = evaluate_http(
         req.ingredients,
         ids,
         region_scope=req.region_scope,
         include_matrix=req.include_restriction_matrix,
+        raw_label=raw_join or None,
     )
     _ = (req.use_api_fallback, req.profile_context)
     return EvaluateComplianceResponse(verdict=verdict.to_dict(), ike2=block)
@@ -109,6 +112,7 @@ def evaluate_product(request: Request, req: EvaluateProductRequest) -> EvaluateP
         parsed,
         ids,
         include_matrix=req.include_restriction_matrix,
+        raw_label=req.ingredients_text,
     )
     _ = (req.use_api_fallback, req.profile_context)
     return EvaluateProductResponse(

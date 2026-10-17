@@ -429,6 +429,8 @@ def _run_ike2_compliance(
     restriction_ids: Optional[List[str]],
     prepared_decomposed: Optional[List[Any]] = None,
     region: Optional[str] = None,
+    *,
+    raw_label: Optional[str] = None,
 ) -> Tuple[Any, List[Any], Dict[str, str]]:
     """Run the IKE-2 pipeline (input -> resolve -> seam -> rules -> evaluate)
     and return the raw ``ComplianceResult``, its ``ComplianceInput`` list, and
@@ -437,11 +439,15 @@ def _run_ike2_compliance(
     Same pipeline as ``core.knowledge.ike2.shadow.runner.ike2_external_verdict``,
     kept separate because that module returns only the external status string
     while the chat path needs the full result to build a ``ComplianceVerdict``.
+
+    ``raw_label`` (when set) enables the product-level raw-string hazard sweep
+    and parse-quality SAFE ceiling inside ``evaluate``.
     """
     profile = _profile_from_restriction_ids(restriction_ids)
     active_rules = ike2_rules.load_rules()
     inputs = []
     display_map: Dict[str, str] = {}
+    atom_names: List[str] = []
     if prepared_decomposed is not None:
         for idx, atom in enumerate(prepared_decomposed):
             resolved = ike2_resolver.resolve(atom.name, region)
@@ -452,6 +458,7 @@ def _run_ike2_compliance(
                 query_atom=atom.name,
             )
             inputs.append(ci)
+            atom_names.append(atom.name)
             # DecomposedItem carries no original display text (it's already
             # post-decompose), so atom.name is the best available display.
             _record_display(display_map, idx, ci.canonical_name, atom.name)
@@ -467,9 +474,23 @@ def _run_ike2_compliance(
                     query_atom=atom.name,
                 )
                 inputs.append(ci)
+                atom_names.append(atom.name)
                 _record_display(display_map, idx, ci.canonical_name, raw)
                 idx += 1
-    result = ike2_compliance.evaluate(inputs, profile, active_rules)
+    # Prefer explicit raw_label; else join ingredient strings so a multi-atom
+    # paste still gets the product-level hazard sweep / parse-quality ceiling.
+    effective_raw = raw_label
+    if effective_raw is None and ingredients:
+        effective_raw = ingredients[0] if len(ingredients) == 1 else ", ".join(
+            str(x) for x in ingredients if x
+        )
+    result = ike2_compliance.evaluate(
+        inputs,
+        profile,
+        active_rules,
+        raw_label=effective_raw,
+        parsed_atoms=atom_names,
+    )
     return result, inputs, display_map
 
 
@@ -480,6 +501,8 @@ def run_new_engine_chat(
     profile_context: Optional[Dict[str, Any]] = None,
     use_api_fallback: bool = True,
     prepared_decomposed: Optional[List[Any]] = None,
+    *,
+    raw_label: Optional[str] = None,
 ) -> ComplianceVerdict:
     """Run compliance for chat. IKE-2 is the only source of the returned
     verdict; on any IKE-2 failure this fails closed to UNCERTAIN."""
@@ -493,7 +516,9 @@ def run_new_engine_chat(
         rids = profile_to_restriction_ids(user_profile if isinstance(user_profile, dict) else None)
 
     try:
-        ike2_output = _run_ike2_compliance(ingredients, rids, prepared_decomposed)
+        ike2_output = _run_ike2_compliance(
+            ingredients, rids, prepared_decomposed, raw_label=raw_label
+        )
         if isinstance(ike2_output, ComplianceVerdict):
             return ike2_output
         result, inputs, display_map = ike2_output

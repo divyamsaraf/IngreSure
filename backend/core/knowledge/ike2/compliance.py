@@ -366,8 +366,28 @@ def _verdict_for(r, rule, severity: Optional[str]):
     return base, triggered, trace, caution
 
 
-def evaluate(resolved, profile, rules) -> ComplianceResult:
-    """C4: aggregate the most-severe verdict across all ingredients × rules."""
+def evaluate(
+    resolved,
+    profile,
+    rules,
+    *,
+    raw_label: Optional[str] = None,
+    parsed_atoms=None,
+) -> ComplianceResult:
+    """C4: aggregate the most-severe verdict across all ingredients × rules.
+
+    Optional ``raw_label`` enables product-level backstops:
+    - raw-string hazard sweep (positives OR onto atom-derived Avoids)
+    - parse-quality ceiling (truncation / unbalanced / OCR / unparsed Contains
+      footnote) capping firm SAFE at UNCERTAIN without downgrading Avoid
+    """
+    from core.parsing.hazard_lexicon import label_text_hazard_inputs
+    from core.parsing.parse_quality import assess_parse_quality
+
+    ingredients = list(resolved or [])
+    if raw_label:
+        ingredients.extend(label_text_hazard_inputs(raw_label))
+
     restrictions = getattr(profile, "restrictions", {}) or {}
     verdicts = []
     matched_contains = []
@@ -377,7 +397,7 @@ def evaluate(resolved, profile, rules) -> ComplianceResult:
     matched_rules = []
 
     covered = set()
-    for r in resolved:
+    for r in ingredients:
         for rule in rules:
             if rule.restriction not in restrictions:
                 continue
@@ -415,8 +435,19 @@ def evaluate(resolved, profile, rules) -> ComplianceResult:
             verdicts.append(Verdict.UNCERTAIN)
             caution_reasons.append(f"uncovered_restriction:{restriction}")
 
+    agg = aggregate(verdicts)
+    if raw_label and agg == Verdict.SAFE:
+        atoms = parsed_atoms
+        if atoms is None:
+            atoms = [getattr(r, "canonical_name", "") for r in (resolved or [])]
+        quality = assess_parse_quality(raw_label, atoms)
+        if not quality.ok:
+            agg = Verdict.UNCERTAIN
+            for reason in quality.reasons:
+                caution_reasons.append(f"parse_quality:{reason}")
+
     return ComplianceResult(
-        aggregate(verdicts),
+        agg,
         matched_contains,
         matched_may_contain,
         caution_reasons,
