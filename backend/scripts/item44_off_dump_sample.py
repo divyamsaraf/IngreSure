@@ -26,6 +26,8 @@ _REPO = _BACKEND.parent
 _DUMP_URL = "https://static.openfoodfacts.org/data/openfoodfacts-products.jsonl.gz"
 _FREQ_PATH = _REPO / "data" / "item44_off_freq_product_ids.json"
 _EVAL_PATH = _REPO / "data" / "item44_off_product_ids.json"
+# Local-only ingredient texts for the sampled codes (ODbL; gitignored).
+_TEXTS_PATH = _BACKEND / ".local_reports" / "item44_dump_ingredients.jsonl"
 
 MARKETS = {
     "india": ("en:india",),
@@ -123,7 +125,11 @@ def stream_sample(
                 market = _market_of(countries)
                 if not market:
                     continue
-                item = {"code": code, "market": market}
+                item = {
+                    "code": code,
+                    "market": market,
+                    "ingredients_text": text,
+                }
                 freq_seen[market] += 1
                 _reservoir_add(
                     freq_buckets[market], item, per_market_freq, rng, freq_seen[market]
@@ -134,7 +140,12 @@ def stream_sample(
                     eval_seen[key] += 1
                     _reservoir_add(
                         eval_buckets[key],
-                        {"code": code, "market": market, "category": cat},
+                        {
+                            "code": code,
+                            "market": market,
+                            "category": cat,
+                            "ingredients_text": text,
+                        },
                         per_cell_eval,
                         rng,
                         eval_seen[key],
@@ -142,6 +153,7 @@ def stream_sample(
 
     freq_products = []
     markets_out = {}
+    texts: dict[str, dict] = {}
     for m, bucket in freq_buckets.items():
         rng.shuffle(bucket)
         picked = bucket[:per_market_freq]
@@ -150,7 +162,15 @@ def stream_sample(
             "shortfall": max(0, per_market_freq - len(picked)),
             "eligible_seen": freq_seen[m],
         }
-        freq_products.extend(picked)
+        for item in picked:
+            text = item.pop("ingredients_text", None)
+            freq_products.append(item)
+            if text:
+                texts[item["code"]] = {
+                    "code": item["code"],
+                    "market": item["market"],
+                    "ingredients_text": text,
+                }
 
     meta = {
         "seed": seed,
@@ -167,7 +187,13 @@ def stream_sample(
         "products": freq_products,
         "parser_note": "Lists must be re-fetched/flattened with current flatten_ingredients.",
     }
-    return {"freq": meta, "eval_buckets": dict(eval_buckets), "eval_seen": dict(eval_seen), "dump_date": dump_date}
+    return {
+        "freq": meta,
+        "eval_buckets": dict(eval_buckets),
+        "eval_seen": dict(eval_seen),
+        "dump_date": dump_date,
+        "texts": texts,
+    }
 
 
 def main(argv=None) -> int:
@@ -179,6 +205,12 @@ def main(argv=None) -> int:
     ap.add_argument("--eval", action="store_true", help="also rewrite stratified eval IDs")
     ap.add_argument("--freq-out", type=Path, default=_FREQ_PATH)
     ap.add_argument("--eval-out", type=Path, default=_EVAL_PATH)
+    ap.add_argument(
+        "--texts-out",
+        type=Path,
+        default=_TEXTS_PATH,
+        help="gitignored JSONL of code+ingredients_text for sampled IDs",
+    )
     args = ap.parse_args(argv)
 
     result = stream_sample(
@@ -191,6 +223,8 @@ def main(argv=None) -> int:
     args.freq_out.write_text(json.dumps(result["freq"], indent=2) + "\n", encoding="utf-8")
     print(f"wrote {args.freq_out} n={result['freq']['n_products']}", flush=True)
 
+    texts = dict(result.get("texts") or {})
+
     if args.eval:
         products = []
         cells = {}
@@ -199,7 +233,16 @@ def main(argv=None) -> int:
                 "n": len(bucket),
                 "eligible_seen": result["eval_seen"][(market, cat)],
             }
-            products.extend(bucket)
+            for item in bucket:
+                text = item.pop("ingredients_text", None)
+                products.append(item)
+                if text:
+                    texts[item["code"]] = {
+                        "code": item["code"],
+                        "market": item["market"],
+                        "category": item.get("category"),
+                        "ingredients_text": text,
+                    }
         eval_meta = {
             "seed": args.seed,
             "sampling": "reservoir_stratified_from_off_jsonl_dump",
@@ -229,12 +272,20 @@ def main(argv=None) -> int:
         freq["disjoint_from_held_out"] = True
         for m in freq.get("markets") or {}:
             freq["markets"][m]["n"] = mc.get(m, 0)
+        # Drop held-out texts that are no longer in freq (keep held texts).
         args.freq_out.write_text(json.dumps(freq, indent=2) + "\n", encoding="utf-8")
         print(
             f"rewrote {args.freq_out} n={freq['n_products']} "
             f"(excluded {removed} held-out overlaps)",
             flush=True,
         )
+
+    if texts:
+        args.texts_out.parent.mkdir(parents=True, exist_ok=True)
+        with args.texts_out.open("w", encoding="utf-8") as fh:
+            for row in texts.values():
+                fh.write(json.dumps(row, ensure_ascii=False) + "\n")
+        print(f"wrote {args.texts_out} n={len(texts)} (gitignored ODbL texts)", flush=True)
     return 0
 
 
