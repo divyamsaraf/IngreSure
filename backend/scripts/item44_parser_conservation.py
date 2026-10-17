@@ -139,17 +139,18 @@ def main() -> int:
         "held_out_misses": held_r["misses"],
         "freq_misses_sample": freq_r["misses"][:200],
         "n_freq_misses": freq_r["n_miss_lists"],
-        "raw_string_hazard_sweep_design": {
-            "status": "design_only",
+        "raw_string_hazard_sweep": {
+            "status": "implemented",
             "rule": (
                 "After flatten+resolve+evaluate, scan the raw ingredient string with "
                 "HAZARD_LEXICON. Each hit stands as a product-level Avoid for matching "
-                "medical restrictions (OR with atom-derived Avoids). Parser failure can "
-                "only add hazards, never remove them. Absence of a lexicon hit is never "
-                "negative evidence. Ambiguous classes (natural flavors, spices) stay "
-                "UNCERTAIN unless a specific allergen surface form is present."
+                "medical restrictions (OR with atom-derived Avoids), attributed to "
+                "'label text'. Parser failure can only add hazards, never remove them. "
+                "Negation / false-friend filters apply. Parse-quality ceiling "
+                "(truncation, unbalanced parentheses, OCR noise, unparsed Contains "
+                "footnote) caps firm SAFE at UNCERTAIN."
             ),
-            "seam": "evaluate() or seam.to_external post-pass on Evaluate*Request",
+            "seam": "compliance.evaluate(..., raw_label=)",
         },
     }
     _OUT.parent.mkdir(parents=True, exist_ok=True)
