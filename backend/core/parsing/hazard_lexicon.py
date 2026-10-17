@@ -235,6 +235,9 @@ _FALSE_FRIEND_MASK = re.compile(
         | milkweed
         | milkfish
         | milk\s+fish
+        # fungi named after shellfish — not crustaceans
+        | lobster\s+mushroom
+        | crab\s+mushroom
     )
     """
 )
