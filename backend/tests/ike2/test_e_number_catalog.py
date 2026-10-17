@@ -38,8 +38,9 @@ def test_catalog_has_330_entries(catalog_entries):
 def test_tier_counts(catalog_entries):
     a = sum(1 for e in catalog_entries if classify_tier(e) == "A")
     b = sum(1 for e in catalog_entries if classify_tier(e) == "B")
-    assert a == 280
-    assert b == 50
+    # 2026-10-08: E234/E270/E325–E327 moved to B (source-ambiguity WARN cap).
+    assert a == 276
+    assert b == 54
 
 
 @pytest.mark.parametrize("e_code", ["e100", "e120", "e441", "e471", "e322", "e999"])
@@ -104,16 +105,25 @@ def test_resolver_e441_resolves():
     assert r.resolution_layer == "L1_truth_anchor"
 
 
-def test_verify_script_zero_errors():
+def test_verify_script_flags_animal_origin_with_non_animal_source():
+    """Narrow origin tokens: E626/E630/E631 contradict; E441 species note does not."""
     proc = subprocess.run(
         [sys.executable, str(_REPO / "backend" / "scripts" / "verify_e_number_catalog.py"), "--fail-on-error"],
         capture_output=True,
         text=True,
         cwd=str(_REPO / "backend"),
     )
-    assert proc.returncode == 0, proc.stdout + proc.stderr
+    assert proc.returncode != 0
     report = json.loads((_REPO / "data" / "e_number_verification_report.json").read_text())
-    assert report["stats"]["error_count"] == 0
+    contradictions = {
+        item["e_code"].lower().replace(" ", "")
+        for item in report["errors"]
+        if item.get("check") == "tier_b_contradiction"
+        and "source ambiguity" in item.get("message", "")
+    }
+    assert contradictions == {"e626", "e630", "e631"}
+    other = [item for item in report["errors"] if item.get("check") != "tier_b_contradiction"]
+    assert other == []
 
 
 def test_all_catalog_e_codes_resolve_l1(catalog_entries):

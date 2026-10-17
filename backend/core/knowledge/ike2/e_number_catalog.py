@@ -125,8 +125,19 @@ def entry_to_ike2_row(entry: dict, *, tier: Optional[str] = None) -> dict:
     """Map a catalog entry to ike2_ingredient_groups-shaped row."""
     tier = tier or classify_tier(entry)
     raw = dict(entry)
-    row = {flag: bool(raw.get(flag, False)) for flag in BOOL_FLAGS}
-    _map_nut_source(raw, row)
+    # Catalog rows always materialize every bool key (generation default False).
+    # Assert only trues — key presence here is not a deliberate false (Item 11
+    # true-only contract; 2026-10-07 sulfite backfill re-pollution).
+    asserted: set[str] = set()
+    row: dict = {}
+    for flag in BOOL_FLAGS:
+        if flag in raw:
+            row[flag] = bool(raw[flag])
+            if row[flag]:
+                asserted.add(flag)
+        else:
+            row[flag] = False
+    asserted |= _map_nut_source(raw, row)
 
     for extra in (
         "peanut_source", "tree_nut_source", "fish_source", "shellfish_source",
@@ -134,6 +145,7 @@ def entry_to_ike2_row(entry: dict, *, tier: Optional[str] = None) -> dict:
     ):
         if raw.get(extra):
             row[extra] = True
+            asserted.add(extra)
 
     canonical = normalize_ingredient_key(raw.get("canonical_name") or "")
     row["canonical_name"] = canonical
@@ -141,6 +153,7 @@ def entry_to_ike2_row(entry: dict, *, tier: Optional[str] = None) -> dict:
     row["alcohol_content"] = raw.get("alcohol_content")
     row["alcohol_role"] = raw.get("alcohol_role") or _alcohol_role(raw)
     row["uncertainty_flags"] = list(raw.get("uncertainty_flags") or [])
+    row["asserted_flags"] = sorted(asserted)
     row["ike2_tier"] = tier
     row["verdict_cap"] = "WARN" if tier == "B" else raw.get("verdict_cap")
     row["knowledge_state"] = "AUTO_CLASSIFIED" if tier == "B" else "LOCKED"

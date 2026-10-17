@@ -2,18 +2,51 @@
 Flatten ingredient strings for evaluation: split parentheses, commas, map processed foods to base ingredients.
 """
 import logging
+import re
 from typing import List
 
 from core.normalization.normalizer import normalize_ingredient_key
 from core.parsing.ingredient_parser import (
+    _is_allergen_contains_section,
+    _is_may_contain_section,
     _label_clauses,
     _segment_canonical,
+    _strip_allergen_contains_markers,
+    _strip_may_contain_markers,
     _TOP_LEVEL_SEP,
     strip_label_boilerplate,
 )
-from core.parsing.nesting_split import split_by_nesting
+from core.parsing.nesting_split import split_by_nesting, split_top_level
 
 logger = logging.getLogger(__name__)
+
+# Bare quantity tokens and trailing composition percents (not ingredients).
+_PERCENT_ONLY = re.compile(r"^\d+(?:[.,]\d+)?\s*%$")
+_TRAILING_PERCENT = re.compile(r"\s+\d+(?:[.,]\d+)?\s*%$")
+_BARE_NUMBER = re.compile(r"^\d+(?:[.,]\d+)?$")
+# Nesting split can emit the inner of ``wheat flour (min. 62%)`` as its own atom.
+_COMPOSITION_PHRASE = re.compile(
+    r"^(?:(?:min|max|minimum|maximum|approx|approximately|about|ca|avg|average)\.?\s+)?"
+    r"~?\s*\d+(?:[.,]\d+)?\s*%$",
+    re.IGNORECASE,
+)
+_QUANTITY_WORD_ONLY = re.compile(
+    r"^(?:min|max|minimum|maximum|approx|approximately|about|ca|avg|average)\.?$",
+    re.IGNORECASE,
+)
+
+
+def _strip_quantity_noise(atom: str) -> str | None:
+    """Drop percent-only / bare-number atoms; strip trailing ``N%`` from names."""
+    a = (atom or "").strip()
+    if not a:
+        return None
+    if _PERCENT_ONLY.match(a) or _BARE_NUMBER.match(a) or _COMPOSITION_PHRASE.match(a):
+        return None
+    a = _TRAILING_PERCENT.sub("", a).strip()
+    if not a or _PERCENT_ONLY.match(a) or _BARE_NUMBER.match(a) or _QUANTITY_WORD_ONLY.match(a):
+        return None
+    return a
 
 # Processed food -> base ingredients (deterministic; no hallucination)
 # Keys normalized (lower, no extra spaces). Values are base ingredients for ontology lookup.
@@ -59,7 +92,8 @@ PROCESSED_FOOD_TO_BASE: dict[str, List[str]] = {
     # Dairy wholes have Tier-1 anchors; do not invent rennet/cultures that
     # false-Avoid lacto-vegetarian diets when the user only said "cheese".
     "tofu": ["soybean", "water"],
-    "tempeh": ["soybean", "water"],
+    # Tempeh is intentionally NOT expanded to soybean+water: the Rhizopus
+    # culture is essential identity (Jain fungal FAIL). Expanding stripped it.
     "seitan": ["wheat gluten", "water"],
     "plant-based meat": ["soy", "wheat", "vegetable oil", "flavoring"],
     "veggie burger": ["vegetable", "legume", "grain", "binding"],
@@ -120,9 +154,10 @@ def flatten_ingredients(raw_str: str) -> List[str]:
     """
     Flatten a raw ingredient string into a list of normalized base ingredients.
 
-    1. Normalize and check processed-food map (e.g. "potato chips" -> ["potato", "vegetable oil", "salt"]).
-    2. Otherwise split by commas (respecting parentheses) and by parentheses; flatten.
-    3. Normalize each part and return deduplicated list (order preserved).
+    1. Normalize; keep-whole registry blocks recipe expansion (Item 2.1).
+    2. Check processed-food map (e.g. "potato chips" -> ["potato", "vegetable oil", "salt"]).
+    3. Otherwise split by commas (respecting parentheses) and by parentheses; flatten.
+    4. Normalize each part and return deduplicated list (order preserved).
 
     Handles:
     - "Enriched Bleached Wheat Flour (Bleached Wheat Flour, Niacin, Folic Acid)"
@@ -137,12 +172,22 @@ def flatten_ingredients(raw_str: str) -> List[str]:
 
     # Check processed food first (whole string normalized)
     key = normalize_ingredient_key(raw_str)
+    try:
+        from core.knowledge.ike2.keep_whole import is_keep_whole
+    except Exception:  # pragma: no cover
+        is_keep_whole = lambda _n: False  # type: ignore[misc, assignment]
+    if is_keep_whole(key):
+        return [key] if key else []
     if key in PROCESSED_FOOD_TO_BASE:
         return list(PROCESSED_FOOD_TO_BASE[key])
 
     flat: List[str] = []
     for clause in _label_clauses(raw_str):
-        for seg in _TOP_LEVEL_SEP.split(clause):
+        clause_body = clause
+        if _is_may_contain_section(clause) or _is_allergen_contains_section(clause):
+            clause_body = _strip_may_contain_markers(clause_body)
+            clause_body = _strip_allergen_contains_markers(clause_body)
+        for seg in split_top_level(clause_body):
             seg = seg.strip()
             if not seg:
                 continue
@@ -156,10 +201,18 @@ def flatten_ingredients(raw_str: str) -> List[str]:
                 p = p.strip()
                 if not p:
                     continue
-                pk = normalize_ingredient_key(p)
-                if pk in PROCESSED_FOOD_TO_BASE:
+                cleaned = _strip_quantity_noise(p)
+                if cleaned is None:
+                    continue
+                pk = normalize_ingredient_key(cleaned)
+                pk = _strip_quantity_noise(pk) or ""
+                if not pk:
+                    continue
+                if is_keep_whole(pk):
+                    flat.append(pk)
+                elif pk in PROCESSED_FOOD_TO_BASE:
                     flat.extend(PROCESSED_FOOD_TO_BASE[pk])
-                elif pk:
+                else:
                     flat.append(pk)
 
     # Deduplicate while preserving order

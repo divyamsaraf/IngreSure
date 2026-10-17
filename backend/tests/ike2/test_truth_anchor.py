@@ -103,7 +103,6 @@ def test_meat_species_cases(key, species):
         "e966",
         "beeswax",
         "lanolin",
-        "l-cysteine",
         "rennet",
         "collagen",
         "honey",

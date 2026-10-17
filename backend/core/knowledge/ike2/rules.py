@@ -22,6 +22,7 @@ VALID_FLAG_COLUMNS = frozenset({
     "peanut_source", "tree_nut_source", "fish_source", "shellfish_source",
     "mustard_source", "celery_source", "lupin_source", "sulphite_source",
     "root_vegetable", "onion_source", "garlic_source", "fermented",
+    "enzyme_animal_source", "enzyme_microbial_source",
 })
 
 _SAFETY = "AUTO_CLASSIFIED"   # allergy + medical: assert only when well-classified
@@ -52,6 +53,7 @@ RULE_SEED = [
     {"category": "sulfite_sensitive", "field": "sulphite_source", "min_knowledge_state": _SAFETY},
     # --- lifestyle / preference --------------------------------------------
     {"category": "vegan", "field": "animal_origin", "min_knowledge_state": _PREF},
+    {"category": "vegan", "field": "enzyme_animal_source", "min_knowledge_state": _PREF},
     {"category": "no_insect_derived", "field": "insect_derived", "min_knowledge_state": _PREF},
     {"category": "no_onion", "field": "onion_source", "min_knowledge_state": _PREF},
     {"category": "no_garlic", "field": "garlic_source", "min_knowledge_state": _PREF},
@@ -67,6 +69,7 @@ RULE_SEED = [
     {"category": "hindu_vegetarian", "field": "egg_source", "min_knowledge_state": _REL},
     # Insect dyes/shellac are not vegetarian; honey stays via bee_product (not insect_derived).
     {"category": "hindu_vegetarian", "field": "insect_derived", "min_knowledge_state": _REL},
+    {"category": "hindu_vegetarian", "field": "enzyme_animal_source", "min_knowledge_state": _REL},
     {"category": "hindu_non_vegetarian", "field": "animal_species", "operator": "in_list", "value": '["cow","pig"]', "min_knowledge_state": _REL},
     {"category": "hindu_non_vegetarian", "field": "insect_derived", "min_knowledge_state": _REL},
     {"category": "jain", "field": "meat_fish_derived", "min_knowledge_state": _REL},
@@ -79,14 +82,18 @@ RULE_SEED = [
     {"category": "jain", "field": "garlic_source", "min_knowledge_state": _REL},
     {"category": "jain", "field": "fermented", "action": "WARN", "min_knowledge_state": _REL},
     {"category": "jain", "field": "fungal", "min_knowledge_state": _REL},
+    {"category": "jain", "field": "enzyme_animal_source", "min_knowledge_state": _REL},
     {"category": "vegetarian", "field": "meat_fish_derived", "min_knowledge_state": _PREF},
     {"category": "vegetarian", "field": "insect_derived", "min_knowledge_state": _PREF},
+    {"category": "vegetarian", "field": "enzyme_animal_source", "min_knowledge_state": _PREF},
     {"category": "lacto_vegetarian", "field": "meat_fish_derived", "min_knowledge_state": _PREF},
     {"category": "lacto_vegetarian", "field": "egg_source", "min_knowledge_state": _PREF},
     {"category": "lacto_vegetarian", "field": "insect_derived", "min_knowledge_state": _PREF},
+    {"category": "lacto_vegetarian", "field": "enzyme_animal_source", "min_knowledge_state": _PREF},
     {"category": "ovo_vegetarian", "field": "meat_fish_derived", "min_knowledge_state": _PREF},
     {"category": "ovo_vegetarian", "field": "dairy_source", "min_knowledge_state": _PREF},
     {"category": "ovo_vegetarian", "field": "insect_derived", "min_knowledge_state": _PREF},
+    {"category": "ovo_vegetarian", "field": "enzyme_animal_source", "min_knowledge_state": _PREF},
     # Land meat only — fish/shellfish allowed. Enumerating species missed turkey/duck/etc.
     {"category": "pescatarian", "field": "meat_land_derived", "min_knowledge_state": _PREF},
 ]
@@ -153,6 +160,25 @@ def _to_rule(row) -> SimpleNamespace:
         action=field("action", "FAIL"),
         min_knowledge_state=field("min_knowledge_state", "AUTO_CLASSIFIED"),
     )
+
+
+def rule_identity(rule) -> str:
+    """Stable id for audit: restriction + kind/flag — not bare restriction name."""
+    restriction = getattr(rule, "restriction", "") or ""
+    kind = getattr(rule, "kind", "flag") or "flag"
+    trigger = getattr(rule, "trigger_flag", None)
+    if kind == "flag" and trigger:
+        return f"{restriction}:{trigger}"
+    if kind in ("meat_fish_derived", "meat_land_derived", "alcohol"):
+        return f"{restriction}:{kind}"
+    match_value = getattr(rule, "match_value", None)
+    if kind in ("species_match", "species_in_list", "alcohol_content") and match_value is not None:
+        if isinstance(match_value, (list, tuple)):
+            mv = ",".join(str(x) for x in match_value)
+        else:
+            mv = str(match_value)
+        return f"{restriction}:{kind}:{mv}"
+    return f"{restriction}:{kind}"
 
 
 def seeded_rules():

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Add a few test unknown ingredients to the DB, then run one enrichment batch.
+Add a few test unknowns to ike2_unknown_queue, then run one enrichment batch.
 
-Useful to exercise: unknown_ingredients → APIs → groups/ingredients/aliases.
+Useful to exercise: ike2_unknown_queue → APIs → ike2_* (enrichment_api / DISCOVERED).
 Requires: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY in env or .env
 
 Run from backend: python scripts/add_test_unknowns_and_enrich.py

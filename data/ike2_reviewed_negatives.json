@@ -1,0 +1,2077 @@
+{
+  "frozen": true,
+  "provenance": "FROZEN merged reviewed-negatives registry.",
+  "negatives": [
+    {
+      "name": "almond flour",
+      "flag": "gluten_source",
+      "sources": [
+        "lexicon_scan_false_friends"
+      ]
+    },
+    {
+      "name": "almond milk",
+      "flag": "dairy_source",
+      "sources": [
+        "lexicon_scan_false_friends"
+      ]
+    },
+    {
+      "name": "american sea scallop",
+      "flag": "fish_source",
+      "sources": [
+        "live_kind_disambiguation_review"
+      ]
+    },
+    {
+      "name": "bread and acesulfame",
+      "flag": "gluten_source",
+      "sources": [
+        "lexicon_scan_false_friends"
+      ]
+    },
+    {
+      "name": "bread and mineral oil",
+      "flag": "gluten_source",
+      "sources": [
+        "lexicon_scan_false_friends"
+      ]
+    },
+    {
+      "name": "butter clarified butter (ghee)",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "butter oil",
+      "flag": "plant_origin",
+      "sources": [
+        "stem_triage"
+      ]
+    },
+    {
+      "name": "butter oil anhydrous",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "butter salted",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "butter stick salted",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "butter stick unsalted",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "butter whipped with salt",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "butter without salt",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "buttermilk low fat",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cassava flour",
+      "flag": "gluten_source",
+      "sources": [
+        "lexicon_scan_false_friends"
+      ]
+    },
+    {
+      "name": "cheese american nonfat or fat free",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese american restaurant",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese blue",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese brick",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese brie",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese camembert",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese caraway",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese cheddar",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese cheddar nonfat or fat free",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese cheddar sharp sliced",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese cheshire",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese colby",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese cotija solid",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese cottage creamed with fruit",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese cottage lowfat 1% milkfat",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese cottage lowfat 2% milkfat",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese cottage with vegetables",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese cream",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese cream fat free",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese cream low fat",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese dry white queso seco",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese edam",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese feta",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese feta whole milk crumbled",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese fontina",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese food cold pack american",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese food pasteurized process swiss",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese fresh queso fresco",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese gjetost",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese goat hard type",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese goat semisoft type",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese goat soft type",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese gouda",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese gruyere",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese limburger",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese low fat cheddar or colby",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese low sodium cheddar or colby",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese mexican blend",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese mexican blend reduced fat",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese mexican queso anejo",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese mexican queso asadero",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese mexican queso chihuahua",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese mexican queso cotija",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese monterey",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese monterey jack solid",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese monterey low fat",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese mozzarella low moisture part skim",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese mozzarella low moisture part skim shredded",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese mozzarella low sodium",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese mozzarella nonfat",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese mozzarella part skim milk",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese mozzarella whole milk",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese mozzarella whole milk low moisture",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese muenster",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese muenster low fat",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese neufchatel",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese oaxaca solid",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese parmesan dry grated reduced fat",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese parmesan grated",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese parmesan grated refrigerated",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese parmesan hard",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese parmesan low sodium",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese parmesan shredded",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese pasteurized process american low fat",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese pasteurized process american vitamin d fortified",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese pasteurized process cheese food or product american singles",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese pasteurized process pimento",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese pasteurized process swiss",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese port de salut",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese provolone",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese provolone reduced fat",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese provolone sliced",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese queso fresco solid",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese ricotta part skim milk",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese ricotta whole milk",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese romano",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese roquefort",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese spread cream cheese base",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese spread pasteurized process american",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese substitute mozzarella",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese swiss",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese swiss low fat",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese swiss low sodium",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese swiss nonfat or fat free",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese tilsit",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cheese white queso blanco",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cocoa butter",
+      "flag": "dairy_source",
+      "sources": [
+        "lexicon_scan_false_friends"
+      ]
+    },
+    {
+      "name": "coconut milk",
+      "flag": "dairy_source",
+      "sources": [
+        "lexicon_scan_false_friends"
+      ]
+    },
+    {
+      "name": "coconut milk powder",
+      "flag": "dairy_source",
+      "sources": [
+        "lexicon_scan_false_friends"
+      ]
+    },
+    {
+      "name": "cooked fish acetylated",
+      "flag": "fish_source",
+      "sources": [
+        "lexicon_scan_false_friends"
+      ]
+    },
+    {
+      "name": "cottage cheese full fat large or small curd",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "crab",
+      "flag": "fish_source",
+      "sources": [
+        "stem_triage"
+      ]
+    },
+    {
+      "name": "crabapples",
+      "flag": "shellfish_source",
+      "sources": [
+        "stem_triage"
+      ]
+    },
+    {
+      "name": "cream cheese full fat block",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cream fluid half and half",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cream fluid heavy whipping",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cream fluid light whipping",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cream half and half fat free",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cream half and half lowfat",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cream heavy",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cream sour cultured",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cream sour full fat",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cream sour reduced fat cultured",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cream substitute flavored liquid",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cream substitute flavored powdered",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cream substitute liquid light",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cream substitute powdered",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cream substitute powdered light",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "cream whipped cream topping pressurized",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "custard apple (bullocks heart) raw",
+      "flag": "animal_origin",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "custard apple (bullocks heart) raw",
+      "flag": "dairy_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "custard apple (bullocks heart) raw",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "dessert topping powdered",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "dessert topping pressurized",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "dessert topping semi solid frozen",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "egg duck whole fresh raw",
+      "flag": "dairy_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "egg goose whole fresh raw",
+      "flag": "dairy_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "egg quail whole fresh raw",
+      "flag": "dairy_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "egg substitute powder",
+      "flag": "dairy_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "egg turkey whole fresh raw",
+      "flag": "dairy_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "egg white dried",
+      "flag": "dairy_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "egg white dried stabilized glucose reduced",
+      "flag": "dairy_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "egg white raw fresh",
+      "flag": "dairy_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "egg white raw frozen pasteurized",
+      "flag": "dairy_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "egg whole cooked fried",
+      "flag": "dairy_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "egg whole cooked hard boiled",
+      "flag": "dairy_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "egg whole cooked omelet",
+      "flag": "dairy_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "egg whole cooked poached",
+      "flag": "dairy_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "egg whole cooked scrambled",
+      "flag": "dairy_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "egg whole dried",
+      "flag": "dairy_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "egg whole dried stabilized glucose reduced",
+      "flag": "dairy_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "egg whole raw fresh",
+      "flag": "dairy_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "egg whole raw frozen pasteurized",
+      "flag": "dairy_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "egg whole raw frozen salted pasteurized",
+      "flag": "dairy_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "egg yolk dried",
+      "flag": "dairy_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "egg yolk raw fresh",
+      "flag": "dairy_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "egg yolk raw frozen pasteurized",
+      "flag": "dairy_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "egg yolk raw frozen salted pasteurized",
+      "flag": "dairy_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "egg yolk raw frozen sugared pasteurized",
+      "flag": "dairy_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "eggs cat fish",
+      "flag": "dairy_source",
+      "sources": [
+        "live_kind_disambiguation_review"
+      ]
+    },
+    {
+      "name": "eggs cat fish",
+      "flag": "plant_origin",
+      "sources": [
+        "live_kind_disambiguation_review"
+      ]
+    },
+    {
+      "name": "eggs cat fish",
+      "flag": "shellfish_source",
+      "sources": [
+        "live_kind_disambiguation_review"
+      ]
+    },
+    {
+      "name": "eggs grade a large egg white",
+      "flag": "dairy_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "eggs grade a large egg whole",
+      "flag": "dairy_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "eggs grade a large egg yolk",
+      "flag": "dairy_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "eggs scrambled frozen mixture",
+      "flag": "dairy_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "emu",
+      "flag": "shellfish_source",
+      "sources": [
+        "stem_triage"
+      ]
+    },
+    {
+      "name": "emu oyster raw",
+      "flag": "animal_origin",
+      "sources": [
+        "usda_shellfish_false_friends"
+      ]
+    },
+    {
+      "name": "emu oyster raw",
+      "flag": "shellfish_source",
+      "sources": [
+        "lexicon_scan_false_friends",
+        "usda_reviewed_asserted_clears",
+        "usda_shellfish_false_friends"
+      ]
+    },
+    {
+      "name": "fish and fish calcium",
+      "flag": "fish_source",
+      "sources": [
+        "lexicon_scan_false_friends"
+      ]
+    },
+    {
+      "name": "for use in salted squid only",
+      "flag": "shellfish_source",
+      "sources": [
+        "lexicon_scan_false_friends"
+      ]
+    },
+    {
+      "name": "for use in shrimps and prawns only",
+      "flag": "shellfish_source",
+      "sources": [
+        "lexicon_scan_false_friends"
+      ]
+    },
+    {
+      "name": "fried fish and hydroxypropy",
+      "flag": "fish_source",
+      "sources": [
+        "lexicon_scan_false_friends"
+      ]
+    },
+    {
+      "name": "frozen fish calcium",
+      "flag": "fish_source",
+      "sources": [
+        "lexicon_scan_false_friends"
+      ]
+    },
+    {
+      "name": "hemp milk",
+      "flag": "dairy_source",
+      "sources": [
+        "lexicon_scan_false_friends",
+        "stem_triage"
+      ]
+    },
+    {
+      "name": "ice cream cookie sandwich",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "ice cream light soft serve chocolate",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "ice cream sandwich",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "ice cream soft serve chocolate",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "ice cream sundae cone",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "kefir lowfat plain lifeway",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "kefir lowfat strawberry lifeway",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "king oyster mushroom",
+      "flag": "animal_origin",
+      "sources": [
+        "usda_shellfish_false_friends"
+      ]
+    },
+    {
+      "name": "king oyster mushroom",
+      "flag": "shellfish_source",
+      "sources": [
+        "usda_reviewed_asserted_clears",
+        "usda_shellfish_false_friends"
+      ]
+    },
+    {
+      "name": "king oyster mushrooms",
+      "flag": "shellfish_source",
+      "sources": [
+        "lexicon_scan_false_friends"
+      ]
+    },
+    {
+      "name": "kokum butter",
+      "flag": "dairy_source",
+      "sources": [
+        "lexicon_scan_false_friends",
+        "stem_triage"
+      ]
+    },
+    {
+      "name": "konjac flour",
+      "flag": "gluten_source",
+      "sources": [
+        "lexicon_scan_false_friends"
+      ]
+    },
+    {
+      "name": "kraft breakstones reduced fat sour cream",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "kraft velveeta pasteurized process cheese spread",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "light ice cream creamsicle",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "magnesium hydroxide",
+      "flag": "dairy_source",
+      "sources": [
+        "stem_triage"
+      ]
+    },
+    {
+      "name": "maize flour",
+      "flag": "gluten_source",
+      "sources": [
+        "lexicon_scan_false_friends"
+      ]
+    },
+    {
+      "name": "milk buttermilk dried",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "milk buttermilk fluid cultured lowfat",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "milk buttermilk fluid cultured reduced fat",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "milk buttermilk fluid whole",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "milk canned condensed sweetened",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "milk chocolate beverage hot cocoa homemade",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "milk chocolate lowfat reduced sugar",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "milk dry nonfat calcium reduced",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "milk fish",
+      "flag": "dairy_source",
+      "sources": [
+        "lexicon_scan_false_friends",
+        "stem_triage"
+      ]
+    },
+    {
+      "name": "milk indian buffalo fluid",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "milk low sodium fluid",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "milk lowfat fluid 1% milkfat with added vitamin a and vitamin d",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "milk nonfat fluid with added vitamin a and vitamin d (fat free or skim)",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "milk producer fluid 37% milkfat",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "milk reduced fat fluid 2% milkfat with added vitamin a and vitamin d",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "milk shakes thick chocolate",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "milk shakes thick vanilla",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "milk sheep fluid",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "milk whole 325% milkfat with added vitamin d",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "mushroom",
+      "flag": "shellfish_source",
+      "sources": [
+        "stem_triage"
+      ]
+    },
+    {
+      "name": "mushroom king oyster",
+      "flag": "animal_origin",
+      "sources": [
+        "usda_reviewed_asserted_clears",
+        "usda_shellfish_false_friends"
+      ]
+    },
+    {
+      "name": "mushroom king oyster",
+      "flag": "shellfish_source",
+      "sources": [
+        "lexicon_scan_false_friends",
+        "usda_reviewed_asserted_clears",
+        "usda_shellfish_false_friends"
+      ]
+    },
+    {
+      "name": "mushroom oyster",
+      "flag": "animal_origin",
+      "sources": [
+        "usda_reviewed_asserted_clears",
+        "usda_shellfish_false_friends"
+      ]
+    },
+    {
+      "name": "mushroom oyster",
+      "flag": "shellfish_source",
+      "sources": [
+        "lexicon_scan_false_friends",
+        "usda_reviewed_asserted_clears",
+        "usda_shellfish_false_friends"
+      ]
+    },
+    {
+      "name": "mushrooms oyster raw",
+      "flag": "animal_origin",
+      "sources": [
+        "usda_reviewed_asserted_clears",
+        "usda_shellfish_false_friends"
+      ]
+    },
+    {
+      "name": "mushrooms oyster raw",
+      "flag": "shellfish_source",
+      "sources": [
+        "lexicon_scan_false_friends",
+        "usda_reviewed_asserted_clears",
+        "usda_shellfish_false_friends"
+      ]
+    },
+    {
+      "name": "oat milk",
+      "flag": "dairy_source",
+      "sources": [
+        "lexicon_scan_false_friends"
+      ]
+    },
+    {
+      "name": "ostrich",
+      "flag": "shellfish_source",
+      "sources": [
+        "stem_triage"
+      ]
+    },
+    {
+      "name": "ostrich oyster cooked",
+      "flag": "animal_origin",
+      "sources": [
+        "usda_shellfish_false_friends"
+      ]
+    },
+    {
+      "name": "ostrich oyster cooked",
+      "flag": "shellfish_source",
+      "sources": [
+        "lexicon_scan_false_friends",
+        "usda_reviewed_asserted_clears",
+        "usda_shellfish_false_friends"
+      ]
+    },
+    {
+      "name": "ostrich oyster raw",
+      "flag": "animal_origin",
+      "sources": [
+        "usda_shellfish_false_friends"
+      ]
+    },
+    {
+      "name": "ostrich oyster raw",
+      "flag": "shellfish_source",
+      "sources": [
+        "lexicon_scan_false_friends",
+        "usda_reviewed_asserted_clears",
+        "usda_shellfish_false_friends"
+      ]
+    },
+    {
+      "name": "other soybean caramel iii",
+      "flag": "soy_source",
+      "sources": [
+        "lexicon_scan_false_friends"
+      ]
+    },
+    {
+      "name": "oyster mushroom dried",
+      "flag": "animal_origin",
+      "sources": [
+        "usda_shellfish_false_friends"
+      ]
+    },
+    {
+      "name": "oyster mushroom dried",
+      "flag": "shellfish_source",
+      "sources": [
+        "lexicon_scan_false_friends",
+        "usda_reviewed_asserted_clears",
+        "usda_shellfish_false_friends"
+      ]
+    },
+    {
+      "name": "oyster mushrooms",
+      "flag": "shellfish_source",
+      "sources": [
+        "lexicon_scan_false_friends"
+      ]
+    },
+    {
+      "name": "oyster mushrooms raw",
+      "flag": "animal_origin",
+      "sources": [
+        "usda_shellfish_false_friends"
+      ]
+    },
+    {
+      "name": "oyster mushrooms raw",
+      "flag": "shellfish_source",
+      "sources": [
+        "usda_reviewed_asserted_clears",
+        "usda_shellfish_false_friends"
+      ]
+    },
+    {
+      "name": "pak choi leaves",
+      "flag": "celery_source",
+      "sources": [
+        "stem_triage"
+      ]
+    },
+    {
+      "name": "pak choi leaves",
+      "flag": "mustard_source",
+      "sources": [
+        "stem_triage"
+      ]
+    },
+    {
+      "name": "parmesan cheese topping fat free",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "peanut butter",
+      "flag": "dairy_source",
+      "sources": [
+        "lexicon_scan_false_friends"
+      ]
+    },
+    {
+      "name": "probiotic milk like drinks",
+      "flag": "dairy_source",
+      "sources": [
+        "stem_triage"
+      ]
+    },
+    {
+      "name": "processed fish acesulfame",
+      "flag": "fish_source",
+      "sources": [
+        "lexicon_scan_false_friends"
+      ]
+    },
+    {
+      "name": "reddi wip fat free whipped topping",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "rice flour",
+      "flag": "gluten_source",
+      "sources": [
+        "lexicon_scan_false_friends"
+      ]
+    },
+    {
+      "name": "rice milk",
+      "flag": "dairy_source",
+      "sources": [
+        "lexicon_scan_false_friends"
+      ]
+    },
+    {
+      "name": "rice semolina",
+      "flag": "gluten_source",
+      "sources": [
+        "stem_triage"
+      ]
+    },
+    {
+      "name": "salmon allura red ac",
+      "flag": "fish_source",
+      "sources": [
+        "lexicon_scan_false_friends"
+      ]
+    },
+    {
+      "name": "salsify",
+      "flag": "shellfish_source",
+      "sources": [
+        "stem_triage"
+      ]
+    },
+    {
+      "name": "salsify (vegetable oyster) raw",
+      "flag": "animal_origin",
+      "sources": [
+        "usda_reviewed_asserted_clears",
+        "usda_shellfish_false_friends"
+      ]
+    },
+    {
+      "name": "salsify (vegetable oyster) raw",
+      "flag": "shellfish_source",
+      "sources": [
+        "lexicon_scan_false_friends",
+        "usda_reviewed_asserted_clears",
+        "usda_shellfish_false_friends"
+      ]
+    },
+    {
+      "name": "salsify cooked boiled drained with salt",
+      "flag": "animal_origin",
+      "sources": [
+        "usda_reviewed_asserted_clears",
+        "usda_shellfish_false_friends"
+      ]
+    },
+    {
+      "name": "salsify cooked boiled drained with salt",
+      "flag": "shellfish_source",
+      "sources": [
+        "usda_reviewed_asserted_clears",
+        "usda_shellfish_false_friends"
+      ]
+    },
+    {
+      "name": "salsify cooked boiled drained without salt",
+      "flag": "animal_origin",
+      "sources": [
+        "usda_reviewed_asserted_clears",
+        "usda_shellfish_false_friends"
+      ]
+    },
+    {
+      "name": "salsify cooked boiled drained without salt",
+      "flag": "shellfish_source",
+      "sources": [
+        "usda_reviewed_asserted_clears",
+        "usda_shellfish_false_friends"
+      ]
+    },
+    {
+      "name": "shea butter",
+      "flag": "dairy_source",
+      "sources": [
+        "lexicon_scan_false_friends"
+      ]
+    },
+    {
+      "name": "sour cream fat free",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "sour cream light",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "sour cream reduced fat",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "sour dressing non butterfat cultured filled cream type",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "soy milk",
+      "flag": "dairy_source",
+      "sources": [
+        "lexicon_scan_false_friends"
+      ]
+    },
+    {
+      "name": "squash",
+      "flag": "shellfish_source",
+      "sources": [
+        "stem_triage"
+      ]
+    },
+    {
+      "name": "squash summer scallop raw",
+      "flag": "animal_origin",
+      "sources": [
+        "usda_reviewed_asserted_clears",
+        "usda_shellfish_false_friends"
+      ]
+    },
+    {
+      "name": "squash summer scallop raw",
+      "flag": "shellfish_source",
+      "sources": [
+        "lexicon_scan_false_friends",
+        "usda_reviewed_asserted_clears",
+        "usda_shellfish_false_friends"
+      ]
+    },
+    {
+      "name": "tofu yogurt",
+      "flag": "dairy_source",
+      "sources": [
+        "lexicon_scan_false_friends",
+        "stem_triage"
+      ]
+    },
+    {
+      "name": "water chestnut",
+      "flag": "tree_nut_source",
+      "sources": [
+        "lexicon_scan_false_friends"
+      ]
+    },
+    {
+      "name": "water chestnuts",
+      "flag": "tree_nut_source",
+      "sources": [
+        "lexicon_scan_false_friends"
+      ]
+    },
+    {
+      "name": "whey acid dried",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "whey acid fluid",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "whey sweet dried",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "whey sweet fluid",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "whipped topping frozen",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "whipped topping frozen low fat",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "yogurt chocolate nonfat milk",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "yogurt fruit variety nonfat",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "yogurt greek 2% fat apricot chobani",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "yogurt greek 2% fat mango chobani",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "yogurt greek 2% fat pineapple chobani",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "yogurt greek 2%fat coconut blend chobani",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "yogurt greek blueberry chobani",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "yogurt greek fruit whole milk",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "yogurt greek nonfat lemon blend chobani",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "yogurt greek nonfat peach chobani",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "yogurt greek nonfat plain chobani",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "yogurt greek nonfat raspberry chobani",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "yogurt greek nonfat strawberry dannon oikos",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "yogurt greek nonfat vanilla chobani",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "yogurt greek nonfat vanilla dannon oikos",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "yogurt greek plain lowfat",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "yogurt greek plain nonfat",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "yogurt greek plain whole milk",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "yogurt greek strawberry dannon oikos",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "yogurt greek strawberry lowfat",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "yogurt greek strawberry nonfat",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "yogurt greek vanilla lowfat",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "yogurt greek vanilla nonfat",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "yogurt greek whole plain chobani",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "yogurt plain low fat",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "yogurt plain nonfat",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "yogurt plain skim milk",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "yogurt plain whole milk",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "yogurt vanilla low fat",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    },
+    {
+      "name": "yogurt vanilla non fat",
+      "flag": "egg_source",
+      "sources": [
+        "usda_reviewed_asserted_clears"
+      ]
+    }
+  ],
+  "n": 291
+}

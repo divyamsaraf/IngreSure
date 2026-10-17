@@ -87,7 +87,8 @@ def _evaluate(ci_list, restrictions: dict):
 
 
 # ---------------------------------------------------------------------------
-# INV-2: untrusted resolution -> never Safe or Avoid (only Depends/UNCERTAIN).
+# INV-2: untrusted resolution -> never Safe. Avoid allowed only for
+# allergy/medical when the hazard flag is true (Item 42).
 # ---------------------------------------------------------------------------
 
 @given(
@@ -100,19 +101,23 @@ def _evaluate(ci_list, restrictions: dict):
     ),
 )
 @settings(max_examples=200)
-def test_untrusted_never_safe_or_fail(restriction, flag_bools, knowledge_state):
+def test_untrusted_never_safe(restriction, flag_bools, knowledge_state):
     ci = _ci(flags=dict(flag_bools), knowledge_state=knowledge_state, trusted=False)
     result = _evaluate([ci], {restriction: "medical"})
-    assert result.verdict not in (Verdict.SAFE, Verdict.FAIL), (
+    assert result.verdict != Verdict.SAFE, (
         restriction, flag_bools, knowledge_state, result.verdict,
     )
+    if result.verdict == Verdict.FAIL:
+        assert restriction in MEDICAL_RESTRICTIONS, (
+            restriction, flag_bools, knowledge_state, result.verdict,
+        )
 
 
-def test_untrusted_peanut_true_is_uncertain_not_fail():
-    """Even a flag that would otherwise FAIL must not escalate when untrusted."""
+def test_untrusted_peanut_true_is_fail_item42():
+    """Item 42: triggered allergy FAIL stands when untrusted (e.g. *_inferred)."""
     ci = _ci(flags={"peanut_source": True}, trusted=False)
     result = _evaluate([ci], {"peanut_allergy": "medical"})
-    assert to_external(result.verdict) == "UNCERTAIN"
+    assert to_external(result.verdict) == "NOT_SAFE"
 
 
 # ---------------------------------------------------------------------------

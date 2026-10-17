@@ -11,3 +11,4 @@ hypothesis==6.157.1
 celery==5.3.6
 redis==5.0.1
 pdfplumber>=0.11.0
+openpyxl>=3.1.0

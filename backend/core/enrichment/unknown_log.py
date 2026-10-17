@@ -91,19 +91,14 @@ class UnknownIngredientsLog:
             ent["profile_context_sample"] = profile_context
         if persist:
             self._save()
-        # Route to Supabase unknown_ingredients when knowledge DB is enabled (worker will enrich)
+        # Item 33 Prompt 4: discovery goes to ike2_unknown_queue, not legacy
+        # unknown_ingredients (nothing drains that table). JSON log above is unchanged.
         try:
-            from core.knowledge.ingredient_db import IngredientKnowledgeDB
-            _db = IngredientKnowledgeDB()
-            if _db.enabled:
-                _db.upsert_unknown_ingredient(
-                    normalized_key=normalized_key,
-                    raw_input=raw_input,
-                    restriction_ids=restriction_ids,
-                    profile_context=profile_context,
-                )
+            from core.knowledge.ike2.unknown_queue import enqueue_unknown
+
+            enqueue_unknown(normalized_key, raw_input)
         except Exception as e:  # pragma: no cover
-            logger.debug("Unknown ingredient DB upsert skipped: %s", e)
+            logger.debug("Unknown ingredient queue write skipped: %s", e)
         logger.info(
             "UNKNOWN_INGREDIENT logged raw=%s normalized_key=%s frequency=%s",
             raw_input[:50], normalized_key, ent["frequency"],

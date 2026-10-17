@@ -1,0 +1,16 @@
+{
+  "keep_whole": [
+    "tempeh",
+    "miso",
+    "koji",
+    "natto",
+    "yeast",
+    "mycoprotein",
+    "quorn",
+    "marmite",
+    "vegemite",
+    "mushroom",
+    "truffle"
+  ],
+  "notes": "Item 2.1 / Prompt 4: foods that must not recipe-expand via PROCESSED_FOOD_TO_BASE. Process identity (fungal/fermented) must survive. Prefixed forms (soy tempeh) are handled by expand_compounds process-identity retain (Prompt 3)."
+}

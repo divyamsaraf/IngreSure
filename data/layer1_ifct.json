@@ -23,13 +23,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Allathi",
@@ -50,13 +47,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Almond",
@@ -77,13 +72,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Aluva",
@@ -105,13 +97,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Amaranth leaves, green",
@@ -141,13 +131,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Amaranth leaves, red and green mix",
@@ -177,13 +164,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Amaranth leaves, red mix",
@@ -213,13 +197,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Amaranth seed, black",
@@ -244,13 +225,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Amaranth seed, pale brown",
@@ -276,13 +254,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Amaranth spinosus, leaves, green mix",
@@ -309,13 +284,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Amaranth spinosus, leaves, red and green mix",
@@ -342,13 +314,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Anchovy",
@@ -368,13 +337,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Apple, big",
@@ -402,13 +369,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Apple, green",
@@ -436,13 +400,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Apple, small",
@@ -470,13 +431,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Apple, small, Kashmir",
@@ -503,13 +461,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Apricot, dried",
@@ -537,13 +492,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Apricot, processed",
@@ -571,13 +523,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Arecanut, dried, brown",
@@ -603,13 +552,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Arecanut, dried, red color",
@@ -636,13 +582,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Arecanut, fresh",
@@ -669,13 +612,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Ari fish",
@@ -691,18 +631,15 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Asafoetida",
     "aliases": [
-      "Hing",
       "Food of the Gods, Jowani Badian, Hengu, Ingu, Kayam, Ting",
       "Hingu",
       "Yangu",
@@ -720,13 +657,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Ash gourd",
@@ -756,13 +690,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Avocado fruit",
@@ -783,13 +714,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Bael fruit",
@@ -811,20 +739,15 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Bajra",
     "aliases": [
       ", Kash. Baajra",
-      "Pearl millet",
-      "Bajri",
       "Sajje",
       "Krai",
       "Kambam",
@@ -840,13 +763,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Bamboo shoot, tender",
@@ -873,13 +793,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Banana, ripe, montham",
@@ -907,13 +824,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Banana, ripe, poovam",
@@ -941,13 +855,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Banana, ripe, red",
@@ -976,13 +887,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Banana, ripe, robusta",
@@ -1011,13 +919,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Barley",
@@ -1041,13 +946,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Basella leaves",
@@ -1074,13 +976,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Bathua leaves",
@@ -1109,13 +1008,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Bean scarlet, tender",
@@ -1137,13 +1033,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Beef, brain",
@@ -1156,13 +1049,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Beef, chops",
@@ -1175,13 +1065,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Beef, heart",
@@ -1194,13 +1081,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Beef, kidneys",
@@ -1213,13 +1097,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Beef, liver",
@@ -1232,13 +1113,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Beef, lungs",
@@ -1251,13 +1129,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Beef, round (leg)",
@@ -1270,13 +1145,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Beef, shoulder",
@@ -1289,13 +1161,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Beef, spleen",
@@ -1308,13 +1177,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Beef, tongue",
@@ -1327,13 +1193,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Beef, tripe",
@@ -1346,13 +1209,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Beet greens",
@@ -1379,13 +1239,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Beet root",
@@ -1407,13 +1264,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Bengal gram, dal",
@@ -1444,13 +1298,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Bengal gram, whole",
@@ -1458,7 +1309,6 @@
       "Boot",
       "Chola",
       "Chickpea",
-      "Chana",
       "Chana, Kala chana",
       "Kadale",
       "Chanu",
@@ -1466,7 +1316,6 @@
       "Kadala",
       "Harbara",
       "Chana Mapum",
-      "Kabuli Chana",
       "Buta",
       "Shole",
       "Chanak",
@@ -1481,13 +1330,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Betel leaves, big (kolkata)",
@@ -1515,13 +1361,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Betel leaves, small",
@@ -1549,13 +1392,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Betki",
@@ -1579,13 +1419,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Bitter gourd, jagged, smooth ridges, elongate",
@@ -1612,13 +1450,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Bitter gourd, jagged, teeth ridges, elongate",
@@ -1646,13 +1481,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Bitter gourd, jagged, teeth ridges, short",
@@ -1681,13 +1513,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Black berry",
@@ -1715,13 +1544,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Black gram, dal",
@@ -1752,13 +1578,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Black gram, whole",
@@ -1787,13 +1610,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Black snapper",
@@ -1808,13 +1628,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Bombay duck",
@@ -1837,13 +1655,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Bommuralu",
@@ -1860,13 +1676,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Bottle gourd, elongate, dark green",
@@ -1896,13 +1710,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Bottle gourd, elongate, pale green",
@@ -1932,13 +1743,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Bottle gourd, round, pale green",
@@ -1968,13 +1776,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Brinjal - all varieties",
@@ -2004,13 +1809,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Brinjal-1",
@@ -2040,13 +1842,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Brinjal-10",
@@ -2076,13 +1875,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Brinjal-11",
@@ -2112,13 +1908,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Brinjal-12",
@@ -2148,13 +1941,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Brinjal-13",
@@ -2184,13 +1974,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Brinjal-14",
@@ -2220,13 +2007,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Brinjal-15",
@@ -2256,13 +2040,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Brinjal-16",
@@ -2292,13 +2073,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Brinjal-17",
@@ -2328,13 +2106,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Brinjal-18",
@@ -2364,13 +2139,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Brinjal-19",
@@ -2400,13 +2172,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Brinjal-2",
@@ -2436,13 +2205,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Brinjal-20",
@@ -2472,13 +2238,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Brinjal-21",
@@ -2508,13 +2271,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Brinjal-3",
@@ -2544,13 +2304,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Brinjal-4",
@@ -2580,13 +2337,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Brinjal-5",
@@ -2616,13 +2370,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Brinjal-6",
@@ -2652,13 +2403,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Brinjal-7",
@@ -2688,13 +2436,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Brinjal-8",
@@ -2724,13 +2469,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Brinjal-9",
@@ -2760,13 +2502,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Broad beans",
@@ -2793,13 +2532,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Brussels sprouts",
@@ -2825,13 +2561,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Button mushroom, fresh",
@@ -2858,13 +2591,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Cabbage, Chinese",
@@ -2882,13 +2612,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Cabbage, collard greens",
@@ -2906,13 +2633,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Cabbage, green",
@@ -2942,13 +2666,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Cabbage, violet",
@@ -2978,13 +2699,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Calf, brain",
@@ -2997,13 +2715,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Calf, chops",
@@ -3016,13 +2731,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Calf, heart",
@@ -3035,13 +2747,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Calf, kidneys",
@@ -3054,13 +2763,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Calf, liver",
@@ -3073,13 +2779,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Calf, round (leg)",
@@ -3092,13 +2795,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Calf, shoulder",
@@ -3111,13 +2811,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Calf, spleen",
@@ -3130,13 +2827,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Calf, tongue",
@@ -3149,13 +2843,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Capsicum, green",
@@ -3182,13 +2873,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Capsicum, red",
@@ -3215,13 +2903,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Capsicum, yellow",
@@ -3248,13 +2933,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Cardamom, black",
@@ -3282,13 +2964,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Cardamom, green",
@@ -3316,13 +2995,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Carrot, orange",
@@ -3345,13 +3021,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Carrot, red",
@@ -3374,13 +3047,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Cashew nut",
@@ -3403,13 +3073,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Cat fish",
@@ -3430,13 +3097,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Catla",
@@ -3463,13 +3128,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Cauliflower",
@@ -3495,13 +3158,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Cauliflower leaves",
@@ -3531,13 +3191,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Celery stalk",
@@ -3556,13 +3213,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Chakla",
@@ -3584,13 +3238,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Chappal",
@@ -3607,13 +3259,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Chelu",
@@ -3632,13 +3282,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Chembali",
@@ -3655,13 +3303,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Cherries, red",
@@ -3683,13 +3329,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Chicken mushroom, fresh",
@@ -3715,13 +3358,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Chicken, poultry, breast, skinless",
@@ -3734,13 +3374,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Chicken, poultry, leg, skinless",
@@ -3753,13 +3390,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Chicken, poultry, thigh, skinless",
@@ -3772,13 +3406,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Chicken, poultry, wing, skinless",
@@ -3791,13 +3422,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Chillies, green - all varieties",
@@ -3824,13 +3452,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Chillies, green-1",
@@ -3858,13 +3483,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Chillies, green-2",
@@ -3892,13 +3514,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Chillies, green-3",
@@ -3926,13 +3545,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Chillies, green-4",
@@ -3959,13 +3575,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Chillies, green-5",
@@ -3993,13 +3606,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Chillies, green-6",
@@ -4027,13 +3637,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Chillies, green-7",
@@ -4061,13 +3668,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Chillies, red",
@@ -4096,13 +3700,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Cho-cho-marrow",
@@ -4123,13 +3724,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Clam, green shell",
@@ -4147,13 +3745,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "shellfish_source": true
   },
   {
     "canonical_name": "Clam, white shell, ribbed",
@@ -4169,13 +3765,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "shellfish_source": true
   },
   {
     "canonical_name": "Cloves",
@@ -4199,13 +3793,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Cluster beans",
@@ -4233,13 +3824,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Coconut oil",
@@ -4252,13 +3840,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Coconut Water",
@@ -4285,13 +3870,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Coconut, kernal, dry",
@@ -4320,13 +3902,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Coconut, kernel, fresh",
@@ -4356,13 +3935,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Colocasia",
@@ -4390,13 +3966,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Colocasia leaves, green",
@@ -4425,13 +3998,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Colocasia, stem, black",
@@ -4458,13 +4028,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Colocasia, stem, green",
@@ -4491,13 +4058,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Coriander leaves",
@@ -4527,13 +4091,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Coriander seeds",
@@ -4562,13 +4123,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Corn oil",
@@ -4581,13 +4139,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Corn, Baby",
@@ -4605,13 +4160,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Cotton seed oil",
@@ -4624,13 +4176,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Country hen, breast, with skin",
@@ -4643,13 +4192,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Country hen, leg, with skin",
@@ -4662,13 +4208,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Country hen, thigh, with skin",
@@ -4681,13 +4224,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Country hen, wing, with skin",
@@ -4700,13 +4240,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Cowpea, brown",
@@ -4736,13 +4273,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Cowpea, white",
@@ -4772,13 +4306,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Crab",
@@ -4798,13 +4329,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "shellfish_source": true
   },
   {
     "canonical_name": "Crab, sea",
@@ -4821,13 +4350,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "shellfish_source": true
   },
   {
     "canonical_name": "Cucumber, green, elongate",
@@ -4858,13 +4385,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Cucumber, green, short",
@@ -4895,13 +4419,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Cucumber, orange, round",
@@ -4930,13 +4451,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Cumin seeds",
@@ -4960,13 +4478,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Currants, black",
@@ -4991,13 +4506,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Curry leaves",
@@ -5027,13 +4539,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Custard apple",
@@ -5055,13 +4564,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Dates, dry, dark brown",
@@ -5088,13 +4594,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Dates, dry, pale brown",
@@ -5122,13 +4625,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Dates, processed",
@@ -5153,13 +4653,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Drumstick",
@@ -5188,13 +4685,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Drumstick leaves",
@@ -5222,13 +4716,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Duck, meat, with skin",
@@ -5241,13 +4732,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Egg, country hen, omlet",
@@ -5260,13 +4748,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": true,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "egg_source": true
   },
   {
     "canonical_name": "Egg, country hen, whole, boiled",
@@ -5279,13 +4765,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": true,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "egg_source": true
   },
   {
     "canonical_name": "Egg, country hen, whole, raw",
@@ -5298,13 +4782,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": true,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "egg_source": true
   },
   {
     "canonical_name": "Egg, duck, whole, boiled",
@@ -5317,13 +4799,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": true,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "egg_source": true
   },
   {
     "canonical_name": "Egg, duck, whole, omlet",
@@ -5336,13 +4816,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": true,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "egg_source": true
   },
   {
     "canonical_name": "Egg, duck, whole, raw",
@@ -5355,13 +4833,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": true,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "egg_source": true
   },
   {
     "canonical_name": "Egg, poultry, omlet",
@@ -5374,13 +4850,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": true,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "egg_source": true
   },
   {
     "canonical_name": "Egg, poultry, white, boiled",
@@ -5393,13 +4867,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": true,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "egg_source": true
   },
   {
     "canonical_name": "Egg, poultry, white, raw",
@@ -5412,13 +4884,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": true,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "egg_source": true
   },
   {
     "canonical_name": "Egg, poultry, whole, boiled",
@@ -5431,13 +4901,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": true,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "egg_source": true
   },
   {
     "canonical_name": "Egg, poultry, whole, raw",
@@ -5450,13 +4918,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": true,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "egg_source": true
   },
   {
     "canonical_name": "Egg, poultry, yolk, boiled",
@@ -5469,13 +4935,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": true,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "egg_source": true
   },
   {
     "canonical_name": "Egg, poultry, yolk, raw",
@@ -5488,13 +4952,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": true,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "egg_source": true
   },
   {
     "canonical_name": "Egg, quial, whole, boiled",
@@ -5507,13 +4969,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": true,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "egg_source": true
   },
   {
     "canonical_name": "Egg, quial, whole, raw",
@@ -5526,13 +4986,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": true,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "egg_source": true
   },
   {
     "canonical_name": "Eggs, Cat fish",
@@ -5549,13 +5007,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Emu, meat, skinless",
@@ -5568,13 +5024,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Eri meen",
@@ -5591,13 +5044,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Fenugreek leaves",
@@ -5625,13 +5076,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Fenugreek seeds",
@@ -5654,13 +5102,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Field bean, black",
@@ -5688,13 +5133,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Field bean, brown",
@@ -5721,13 +5163,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Field bean, white",
@@ -5754,13 +5193,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Field beans, tender, broad",
@@ -5788,13 +5224,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Field beans, tender, lean",
@@ -5822,13 +5255,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Fig",
@@ -5854,13 +5284,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "French beans, country",
@@ -5887,13 +5314,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "French beans, hybrid",
@@ -5920,13 +5344,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Freshwater Eel",
@@ -5943,13 +5364,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Garden cress",
@@ -5977,13 +5396,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Garden cress, seeds",
@@ -6004,13 +5420,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Garlic, big clove",
@@ -6039,13 +5452,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Garlic, single clove, Kashmir",
@@ -6074,13 +5484,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Garlic, small clove",
@@ -6109,13 +5516,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Ghee",
@@ -6128,12 +5532,15 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
+    ],
+    "plant_origin": false,
+    "animal_origin": true,
+    "dairy_source": true,
+    "asserted_flags": [
+      "animal_origin",
+      "dairy_source"
     ]
   },
   {
@@ -6147,13 +5554,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Gingelly seeds, black",
@@ -6178,13 +5582,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Gingelly seeds, brown",
@@ -6209,13 +5610,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Gingelly seeds, white",
@@ -6240,13 +5638,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Ginger, fresh",
@@ -6272,13 +5667,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Goat, brain",
@@ -6291,13 +5683,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Goat, chops",
@@ -6310,13 +5699,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Goat, heart",
@@ -6329,13 +5715,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Goat, kidneys",
@@ -6348,13 +5731,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Goat, legs",
@@ -6367,13 +5747,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Goat, liver",
@@ -6386,13 +5763,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Goat, lungs",
@@ -6405,13 +5779,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Goat, shoulder, meat",
@@ -6424,13 +5795,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Goat, spleen",
@@ -6443,13 +5811,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Goat, testis",
@@ -6462,13 +5827,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Goat, tongue",
@@ -6481,13 +5843,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Goat, tripe",
@@ -6500,13 +5859,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Goat, tube (small intestine)",
@@ -6519,13 +5875,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Gobro",
@@ -6547,13 +5900,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Gogu leaves, green",
@@ -6581,13 +5932,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Gogu leaves, red",
@@ -6615,13 +5963,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Gold fish",
@@ -6638,13 +5983,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Goosberry",
@@ -6669,13 +6012,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Grapes, seeded, round, black",
@@ -6698,13 +6038,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Grapes, seeded, round, green",
@@ -6727,13 +6064,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Grapes, seeded, round, red",
@@ -6756,13 +6090,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Grapes, seedless, oval, black",
@@ -6784,13 +6115,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Grapes, seedless, round, black",
@@ -6813,13 +6141,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Grapes, seedless, round, green",
@@ -6841,13 +6166,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Green gram, dal",
@@ -6877,13 +6199,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Green gram, whole",
@@ -6899,7 +6218,6 @@
       "Cheru Pararu",
       "Mung Hawai",
       "Mun",
-      "Moong",
       "Muga",
       "Sabut moong dal",
       "Mudra",
@@ -6914,13 +6232,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Ground nut",
@@ -6946,13 +6261,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Groundnut oil",
@@ -6965,13 +6277,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Guava, pink flesh",
@@ -7000,13 +6309,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Guava, white flesh",
@@ -7036,13 +6342,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Guinea fowl, meat, with skin",
@@ -7055,13 +6358,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Guitar fish",
@@ -7076,13 +6376,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Hare, chops",
@@ -7095,13 +6393,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Hare, leg",
@@ -7114,13 +6409,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Hare, shoulder",
@@ -7133,13 +6425,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Hilsa",
@@ -7165,13 +6454,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Horse gram, whole",
@@ -7197,13 +6484,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Jack fruit, raw",
@@ -7232,13 +6516,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Jack fruit, ripe",
@@ -7266,13 +6547,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Jack fruit, seed, mature",
@@ -7300,13 +6578,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Jaggery, cane",
@@ -7314,7 +6589,6 @@
       "Gur",
       "Gurh",
       "God",
-      "Gud",
       "Bella",
       "Gor",
       "Mithai Gur",
@@ -7334,13 +6608,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Jallal",
@@ -7357,13 +6628,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Jambu fruit, ripe",
@@ -7387,13 +6656,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Jathi vela meen",
@@ -7413,18 +6679,15 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Jowar",
     "aliases": [
-      "Sorghum",
       "Jolada",
       "Pingu",
       "Krai",
@@ -7443,13 +6706,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Kadal bral",
@@ -7466,13 +6726,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Kadali",
@@ -7488,13 +6746,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Kalamaara",
@@ -7517,13 +6773,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Kalava",
@@ -7539,13 +6793,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Kanamayya",
@@ -7564,13 +6816,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Kannadi paarai",
@@ -7587,13 +6837,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Karimeen",
@@ -7617,13 +6865,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Karnagawala",
@@ -7639,13 +6885,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Karonda fruit",
@@ -7671,13 +6915,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Kayrai",
@@ -7699,13 +6940,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Khoa",
@@ -7724,13 +6963,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": true,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "dairy_source": true
   },
   {
     "canonical_name": "Kiriyan",
@@ -7751,13 +6988,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Kite fish",
@@ -7774,13 +7009,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Knol - Khol",
@@ -7807,13 +7040,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Knol-Khol, leaves",
@@ -7843,13 +7073,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Korka",
@@ -7874,13 +7101,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Kovai, big",
@@ -7906,13 +7131,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Kovai, small",
@@ -7938,13 +7160,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Kulam paarai",
@@ -7961,13 +7180,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Ladies finger",
@@ -7994,13 +7211,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Lemon, juice",
@@ -8027,13 +7241,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Lentil dal",
@@ -8043,7 +7254,6 @@
       "Masoor ni daad",
       "Masoor dal",
       "Laki Bele",
-      "Masoor",
       "U dai saw",
       "Vattu parippu",
       "Hawai Masuri",
@@ -8062,13 +7272,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Lentil whole, brown",
@@ -8095,13 +7302,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Lentil whole, yellowish",
@@ -8129,13 +7333,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Lettuce",
@@ -8162,13 +7363,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Lime, sweet, pulp",
@@ -8191,13 +7389,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Linseeds",
@@ -8223,13 +7418,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Litchi",
@@ -8248,13 +7440,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Lobster, brown",
@@ -8271,13 +7460,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "shellfish_source": true
   },
   {
     "canonical_name": "Lobster, king size",
@@ -8294,13 +7481,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "shellfish_source": true
   },
   {
     "canonical_name": "Lotus root",
@@ -8328,13 +7513,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Maagaa",
@@ -8351,13 +7533,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Mace",
@@ -8380,13 +7560,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Mackerel",
@@ -8410,13 +7587,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Maize, dry",
@@ -8425,7 +7600,6 @@
       "Bhutta",
       "Corn",
       "Makai",
-      "Makka",
       "Mekke jola",
       "Symbai riewhadem stem",
       "Maize",
@@ -8445,13 +7619,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Maize, tender, local",
@@ -8460,7 +7631,6 @@
       "Bhutta",
       "Corn",
       "Lili makai",
-      "Makka",
       "Mekke jola",
       "Makai",
       "Riewhadem Stem",
@@ -8479,13 +7649,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Maize, tender, sweet",
@@ -8494,7 +7661,6 @@
       "Bhutta",
       "Corn",
       "Lili makai",
-      "Makka",
       "Mekke jola",
       "Makai",
       "Riewhadem lieh",
@@ -8513,13 +7679,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Manda clathi",
@@ -8535,13 +7698,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Mango ginger",
@@ -8567,13 +7728,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Mango, green, raw",
@@ -8601,13 +7759,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Mango, ripe, banganapalli",
@@ -8637,13 +7792,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Mango, ripe, gulabkhas",
@@ -8672,13 +7824,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Mango, ripe, himsagar",
@@ -8707,13 +7856,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Mango, ripe, kesar",
@@ -8742,13 +7888,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Mango, ripe, neelam",
@@ -8777,13 +7920,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Mango, ripe, paheri",
@@ -8812,13 +7952,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Mango, ripe, totapari",
@@ -8847,13 +7984,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Mangosteen",
@@ -8871,13 +8005,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Manila tamarind",
@@ -8901,13 +8032,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Matha",
@@ -8925,13 +8053,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Milk fish",
@@ -8951,13 +8077,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Milk, whole, Buffalo",
@@ -8984,13 +8108,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": true,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "dairy_source": true
   },
   {
     "canonical_name": "Milk, whole, Cow",
@@ -9017,13 +8139,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": true,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "dairy_source": true
   },
   {
     "canonical_name": "Mint leaves",
@@ -9045,13 +8165,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Mithun, chops",
@@ -9064,13 +8181,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Mithun, round (leg)",
@@ -9083,13 +8197,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Mithun, shoulder",
@@ -9102,13 +8213,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Moon fish",
@@ -9129,13 +8237,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Moth bean",
@@ -9159,13 +8265,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Mud crab",
@@ -9181,13 +8284,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "shellfish_source": true
   },
   {
     "canonical_name": "Mullet",
@@ -9211,13 +8312,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Mural",
@@ -9238,13 +8337,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Musk melon, orange flesh",
@@ -9267,13 +8364,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Musk melon, yellow flesh",
@@ -9296,13 +8390,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Mustard leaves",
@@ -9333,13 +8424,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Mustard oil",
@@ -9352,13 +8440,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Mustard seeds",
@@ -9385,13 +8470,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Myil meen",
@@ -9411,13 +8493,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Nalla bontha",
@@ -9442,13 +8522,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Narba",
@@ -9469,13 +8547,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Niger seeds, black",
@@ -9499,13 +8575,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Niger seeds, gray",
@@ -9529,13 +8602,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Nutmeg",
@@ -9560,13 +8630,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Octopus",
@@ -9582,13 +8649,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "shellfish_source": true
   },
   {
     "canonical_name": "Omum",
@@ -9615,13 +8680,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Onion, big",
@@ -9653,13 +8715,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Onion, small",
@@ -9689,13 +8748,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Onion, stalk",
@@ -9726,13 +8782,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Orange, pulp",
@@ -9760,13 +8813,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Oyster",
@@ -9784,13 +8834,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "shellfish_source": true
   },
   {
     "canonical_name": "Oyster mushroom, dried",
@@ -9815,13 +8863,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Paarai",
@@ -9838,13 +8883,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Padayappa",
@@ -9861,13 +8904,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Pak Choi leaves",
@@ -9883,13 +8924,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Pali kora",
@@ -9905,13 +8943,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Palm fruit, tender",
@@ -9932,13 +8968,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Palm oil",
@@ -9951,13 +8984,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Pambada",
@@ -9981,13 +9011,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Pandukopa",
@@ -10004,13 +9032,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Paneer",
@@ -10032,13 +9058,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": true,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "dairy_source": true
   },
   {
     "canonical_name": "Pangas",
@@ -10055,13 +9079,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Papaya, raw",
@@ -10090,13 +9112,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Papaya, ripe",
@@ -10125,13 +9144,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Parava",
@@ -10153,13 +9169,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Parcus",
@@ -10181,13 +9195,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Parrot fish",
@@ -10205,13 +9217,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Parsley",
@@ -10233,13 +9243,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Parwar",
@@ -10262,13 +9269,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Peach",
@@ -10288,13 +9292,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Pear",
@@ -10318,13 +9319,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Peas, dry",
@@ -10351,13 +9349,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Peas, fresh",
@@ -10382,13 +9377,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Pepper, black",
@@ -10418,13 +9410,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Perinkilichai",
@@ -10442,13 +9431,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Phalsa",
@@ -10469,13 +9456,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Phopat",
@@ -10500,13 +9484,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Pigeon, meat, with skin",
@@ -10519,13 +9501,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Pine seed",
@@ -10544,13 +9523,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Pineapple",
@@ -10576,13 +9552,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Pippali",
@@ -10608,13 +9581,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Piranha",
@@ -10629,13 +9599,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Pistachio nuts",
@@ -10651,13 +9619,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Plantain, flower",
@@ -10684,13 +9649,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Plantain, green",
@@ -10722,13 +9684,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Plantain, stem",
@@ -10756,13 +9715,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Plum",
@@ -10784,13 +9740,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Pomegranate, maroon seeds",
@@ -10819,13 +9772,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Pomfret, black",
@@ -10848,13 +9798,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Pomfret, snub nose",
@@ -10874,13 +9822,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Pomfret, white",
@@ -10906,13 +9852,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Ponnaganni",
@@ -10937,13 +9881,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Poppy seeds",
@@ -10972,13 +9913,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Pork, chops",
@@ -10991,13 +9929,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Pork, ham",
@@ -11010,13 +9945,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Pork, heart",
@@ -11029,13 +9961,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Pork, kidneys",
@@ -11048,13 +9977,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Pork, liver",
@@ -11067,13 +9993,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Pork, lungs",
@@ -11086,13 +10009,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Pork, shoulder",
@@ -11105,13 +10025,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Pork, spleen",
@@ -11124,13 +10041,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Pork, stomach",
@@ -11143,13 +10057,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Pork, tube (small intestine)",
@@ -11162,13 +10073,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Potato, brown skin, big",
@@ -11195,13 +10103,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Potato, brown skin, small",
@@ -11228,13 +10133,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Potato, red skin",
@@ -11260,13 +10162,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Poultry, chicken, gizzard",
@@ -11279,13 +10178,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Poultry, chicken, liver",
@@ -11298,13 +10194,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Pranel",
@@ -11325,13 +10218,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Prawns, big",
@@ -11348,13 +10239,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "shellfish_source": true
   },
   {
     "canonical_name": "Prawns, small",
@@ -11370,13 +10259,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "shellfish_source": true
   },
   {
     "canonical_name": "Pulli paarai",
@@ -11397,13 +10284,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Pummelo",
@@ -11429,13 +10314,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Pumpkin leaves, tender",
@@ -11464,13 +10346,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Pumpkin, green, cylindrical",
@@ -11499,13 +10378,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Pumpkin, orange, round",
@@ -11534,13 +10410,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Quail, meat, skinless",
@@ -11553,13 +10426,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Queen fish",
@@ -11582,13 +10452,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Quinoa",
@@ -11602,13 +10470,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Raai fish",
@@ -11629,13 +10494,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Raai vanthu",
@@ -11658,13 +10521,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Rabbit, chops",
@@ -11677,13 +10538,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Rabbit, leg",
@@ -11696,13 +10554,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Rabbit, shoulder",
@@ -11715,13 +10570,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Radish leaves",
@@ -11750,13 +10602,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Radish, elongate, red skin",
@@ -11778,13 +10627,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Radish, elongate, white skin",
@@ -11806,13 +10652,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Radish, round, red skin",
@@ -11834,13 +10677,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Radish, round, white skin",
@@ -11862,18 +10702,14 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Ragi",
     "aliases": [
-      "Finger millet",
       "Bavato",
       "Bhakri",
       "Ukrai",
@@ -11893,13 +10729,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Raisins, dried, black",
@@ -11923,13 +10756,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Raisins, dried, golden",
@@ -11954,13 +10784,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Rajmah, black",
@@ -11987,13 +10814,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Rajmah, brown",
@@ -12020,13 +10844,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Rajmah, red",
@@ -12053,13 +10874,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Rambutan",
@@ -12073,13 +10891,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Rani",
@@ -12095,13 +10910,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Ray fish, bow head, spotted",
@@ -12116,13 +10929,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Red gram, dal",
@@ -12153,13 +10964,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Red gram, tender, fresh",
@@ -12178,13 +10986,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Red gram, whole",
@@ -12202,7 +11007,6 @@
       "Arhar sabut dal",
       "Tuvarai",
       "Kandulu",
-      "Tuvar.",
       "Cajanus cajan",
       "IFCT:B022",
       "Grain Legumes"
@@ -12212,13 +11016,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Red snapper",
@@ -12241,13 +11042,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Red snapper, small",
@@ -12271,13 +11070,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Rice bran oil",
@@ -12290,13 +11087,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Rice flakes",
@@ -12311,7 +11105,6 @@
       "Shira",
       "Aval",
       "Chengpaak",
-      "Pohe",
       "Chudaa, Chuda",
       "Chirwre",
       "Atukulu, Attukulu.",
@@ -12324,13 +11117,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Rice puffed",
@@ -12357,13 +11147,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Rice, parboiled, milled",
@@ -12392,13 +11179,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Rice, raw, brown",
@@ -12423,13 +11207,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Rice, raw, milled",
@@ -12456,13 +11237,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Ricebean",
@@ -12482,13 +11260,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Ridge gourd",
@@ -12519,13 +11294,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Ridge gourd, smooth skin",
@@ -12556,13 +11328,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Rohu",
@@ -12589,13 +11358,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Rumex leaves",
@@ -12615,13 +11382,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Sadaya",
@@ -12638,13 +11402,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Safflower oil",
@@ -12657,13 +11419,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Safflower oil (blended)",
@@ -12676,13 +11435,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Safflower seeds",
@@ -12704,13 +11460,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Salmon",
@@ -12727,13 +11480,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Samai",
@@ -12756,13 +11507,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Sangada",
@@ -12779,13 +11527,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Sankata paarai",
@@ -12804,13 +11550,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Sapota",
@@ -12826,13 +11570,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Sardine",
@@ -12855,13 +11596,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Shark",
@@ -12881,13 +11620,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Shark, hammer head",
@@ -12904,13 +11641,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Shark, spotted",
@@ -12932,13 +11667,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Sheep, brain",
@@ -12951,13 +11684,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Sheep, chops",
@@ -12970,13 +11700,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Sheep, heart",
@@ -12989,13 +11716,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Sheep, kidneys",
@@ -13008,13 +11732,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Sheep, leg",
@@ -13027,13 +11748,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Sheep, liver",
@@ -13046,13 +11764,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Sheep, lungs",
@@ -13065,13 +11780,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Sheep, shoulder",
@@ -13084,13 +11796,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Sheep, spleen",
@@ -13103,13 +11812,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Sheep, tongue",
@@ -13122,13 +11828,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Sheep, tripe",
@@ -13141,13 +11844,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Shelavu",
@@ -13168,13 +11868,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Shiitake mushroom, fresh",
@@ -13199,13 +11897,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Silan",
@@ -13224,13 +11919,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Silk fish",
@@ -13247,13 +11940,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Silver carp",
@@ -13270,13 +11961,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Snake gourd, long, dark green",
@@ -13304,13 +11993,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Snake gourd, long, pale green",
@@ -13338,13 +12024,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Snake gourd, short",
@@ -13372,13 +12055,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Sole fish",
@@ -13396,13 +12076,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Soursop",
@@ -13421,13 +12099,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Soya bean, brown",
@@ -13450,13 +12125,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Soya bean, white",
@@ -13479,13 +12151,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Soyabean oil",
@@ -13498,13 +12167,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Spinach",
@@ -13530,13 +12196,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Squid, black",
@@ -13551,13 +12214,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "shellfish_source": true
   },
   {
     "canonical_name": "Squid, hard shell",
@@ -13574,13 +12235,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "shellfish_source": true
   },
   {
     "canonical_name": "Squid, red",
@@ -13595,13 +12254,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "shellfish_source": true
   },
   {
     "canonical_name": "Squid, white, small",
@@ -13617,13 +12274,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "shellfish_source": true
   },
   {
     "canonical_name": "Star fruit",
@@ -13649,13 +12304,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Stingray",
@@ -13673,13 +12325,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Strawberry",
@@ -13698,13 +12348,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Sugarcane, juice",
@@ -13733,13 +12380,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Sunflower oil",
@@ -13752,13 +12396,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Sunflower seeds",
@@ -13783,13 +12424,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Sweet potato, brown skin",
@@ -13817,13 +12455,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Sweet potato, pink skin",
@@ -13851,13 +12486,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Tamarind leaves, tender",
@@ -13882,13 +12514,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Tamarind, pulp",
@@ -13916,13 +12545,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Tapioca",
@@ -13949,13 +12575,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Tarlava",
@@ -13974,13 +12597,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Tholam",
@@ -13998,13 +12619,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Tiger prawns",
@@ -14020,13 +12639,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "shellfish_source": true
   },
   {
     "canonical_name": "Tiger prawns, brown",
@@ -14042,13 +12659,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "shellfish_source": true
   },
   {
     "canonical_name": "Tiger Prawns, orange",
@@ -14065,13 +12680,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "shellfish_source": true
   },
   {
     "canonical_name": "Tilapia",
@@ -14089,13 +12702,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Tinda, tender",
@@ -14115,13 +12726,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Toddy",
@@ -14143,13 +12751,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Tomato, green",
@@ -14177,13 +12782,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Tomato, ripe, hybrid",
@@ -14213,13 +12815,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Tomato, ripe, local",
@@ -14249,13 +12848,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Tuna",
@@ -14277,13 +12873,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Tuna, striped",
@@ -14304,13 +12898,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Turkey, breast, with skin",
@@ -14323,13 +12915,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Turkey, leg, with skin",
@@ -14342,13 +12931,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Turkey, thigh, with skin",
@@ -14361,13 +12947,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Turkey, wing, with skin",
@@ -14380,13 +12963,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true
   },
   {
     "canonical_name": "Turmeric powder",
@@ -14413,13 +12993,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Valava",
@@ -14438,13 +13015,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Vanaspati",
@@ -14457,13 +13032,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Vanjaram",
@@ -14486,13 +13058,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Varagu",
@@ -14517,13 +13087,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Vela meen",
@@ -14540,13 +13107,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Vora",
@@ -14566,13 +13131,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Walnut",
@@ -14596,13 +13159,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Water Chestnut",
@@ -14627,13 +13187,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Water melon, dark green (sugar baby)",
@@ -14664,13 +13221,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Water melon, pale green",
@@ -14701,13 +13255,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Whale shark",
@@ -14730,13 +13281,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Wheat flour, atta",
@@ -14760,13 +13309,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Wheat flour, refined",
@@ -14786,13 +13332,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Wheat, bulgur",
@@ -14817,13 +13360,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Wheat, semolina",
@@ -14847,13 +13387,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Wheat, vermicelli",
@@ -14878,13 +13415,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Wheat, vermicelli, roasted",
@@ -14909,13 +13443,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Wheat, whole",
@@ -14944,13 +13475,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Wood Apple",
@@ -14978,13 +13506,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Xiphinis",
@@ -15004,13 +13529,11 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": false,
-    "animal_origin": true,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "animal_origin": true,
+    "fish_source": true
   },
   {
     "canonical_name": "Yam, elephant",
@@ -15036,13 +13559,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Yam, ordinary",
@@ -15071,13 +13591,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Yam, wild",
@@ -15102,13 +13619,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Zizyphus",
@@ -15137,13 +13651,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Zucchini, green",
@@ -15165,13 +13676,10 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   },
   {
     "canonical_name": "Zucchini, yellow",
@@ -15193,12 +13701,9 @@
     "regions": [
       "IN"
     ],
-    "plant_origin": true,
-    "animal_origin": false,
-    "dairy_source": false,
-    "egg_source": false,
     "uncertainty_flags": [
       "ifct2017_inferred"
-    ]
+    ],
+    "plant_origin": true
   }
 ]

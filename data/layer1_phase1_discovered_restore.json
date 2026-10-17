@@ -1,0 +1,691 @@
+{
+  "source": "ontology",
+  "ingredients": [
+    {
+      "canonical_name": "acetic acid",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "acetylated distarch adipate",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "acetylated distarch phosphate",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "acetylated oxidized starch",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "agar",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "alginic acid",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "alpha tocopherol",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "ammonium alginate",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "annatto",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "beeswax",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "calcium alginate",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "calcium lactate",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "calcium tartrate",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "candelilla wax",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "canthaxanthin",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "carnauba wax",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "carotenes",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "carotenoids",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "carrageenan",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "cassia gum",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "chlorophylls",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "curcumin",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "dextrins",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "disodium 5 ribonucleotides",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "dulce de leche",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "erythritol",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "ethyl cellulose",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "gellan gum",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "ghee",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "glucono delta lactone",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "glycerol",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "guar gum",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "gum arabic",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "honey",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "hydroxypropyl cellulose",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "hydroxypropyl distarch phosphate",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "hydroxypropyl methyl cellulose",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "hydroxypropyl starch",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "isomalt",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "karaya gum",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "l-cysteine",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "lactic acid",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "lactitol",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "lysozyme",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "malic acid",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "maltitol",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "metatartaric acid",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "methyl cellulose",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "methyl ethyl cellulose",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "monostarch phosphate",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "natamycin",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "nisin",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "oxidized starch",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "paprika",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "paprika extract",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "phosphated distarch phosphate",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "polyglycerol esters of fatty acids",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "polyglycerol polyricinoleate",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "potassium alginate",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "potassium lactate",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "potato flour",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "potato pancakes",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "propylene glycol alginate",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "pullulan",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "shellac",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "sodium alginate",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "sodium lactate",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "sorbitan monolaurate",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "sorbitan monooleate",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "sorbitan monopalmitate",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "sorbitan monostearate",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "sorbitol",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "starch sodium octenyl succinate",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "sucroglycerides",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "sucrose esters of fatty acids",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "tara gum",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "tartaric acid",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "thaumatin",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "tragacanth",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "turmeric",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "xanthan gum",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "xylitol",
+      "synthetic": false,
+      "asserted_flags": [
+        "synthetic"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "cultured buttermilk",
+      "dairy_source": true,
+      "animal_origin": true,
+      "asserted_flags": [
+        "dairy_source",
+        "animal_origin"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "flavoured milks",
+      "dairy_source": true,
+      "animal_origin": true,
+      "asserted_flags": [
+        "dairy_source",
+        "animal_origin"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    },
+    {
+      "canonical_name": "traditional buttermilk (churning)",
+      "dairy_source": true,
+      "animal_origin": true,
+      "asserted_flags": [
+        "dairy_source",
+        "animal_origin"
+      ],
+      "knowledge_state": "AUTO_CLASSIFIED"
+    }
+  ]
+}

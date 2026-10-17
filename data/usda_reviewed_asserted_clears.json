@@ -1,0 +1,962 @@
+{
+  "shellfish_false_friends": [
+    "emu oyster raw",
+    "king oyster mushroom",
+    "mushroom king oyster",
+    "mushroom oyster",
+    "mushrooms oyster raw",
+    "ostrich oyster cooked",
+    "ostrich oyster raw",
+    "oyster mushroom dried",
+    "oyster mushrooms raw",
+    "salsify (vegetable oyster) raw",
+    "salsify cooked boiled drained with salt",
+    "salsify cooked boiled drained without salt",
+    "squash summer scallop raw"
+  ],
+  "asserted_clears": [
+    {
+      "name": "custard apple (bullocks heart) raw",
+      "flag": "animal_origin"
+    },
+    {
+      "name": "mushroom king oyster",
+      "flag": "animal_origin"
+    },
+    {
+      "name": "mushroom oyster",
+      "flag": "animal_origin"
+    },
+    {
+      "name": "mushrooms oyster raw",
+      "flag": "animal_origin"
+    },
+    {
+      "name": "salsify (vegetable oyster) raw",
+      "flag": "animal_origin"
+    },
+    {
+      "name": "salsify cooked boiled drained with salt",
+      "flag": "animal_origin"
+    },
+    {
+      "name": "salsify cooked boiled drained without salt",
+      "flag": "animal_origin"
+    },
+    {
+      "name": "squash summer scallop raw",
+      "flag": "animal_origin"
+    },
+    {
+      "name": "custard apple (bullocks heart) raw",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "egg duck whole fresh raw",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "egg goose whole fresh raw",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "egg quail whole fresh raw",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "egg substitute powder",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "egg turkey whole fresh raw",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "egg white dried",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "egg white dried stabilized glucose reduced",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "egg white raw fresh",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "egg white raw frozen pasteurized",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "egg whole cooked fried",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "egg whole cooked hard boiled",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "egg whole cooked omelet",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "egg whole cooked poached",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "egg whole cooked scrambled",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "egg whole dried",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "egg whole dried stabilized glucose reduced",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "egg whole raw fresh",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "egg whole raw frozen pasteurized",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "egg whole raw frozen salted pasteurized",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "egg yolk dried",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "egg yolk raw fresh",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "egg yolk raw frozen pasteurized",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "egg yolk raw frozen salted pasteurized",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "egg yolk raw frozen sugared pasteurized",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "eggs grade a large egg white",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "eggs grade a large egg whole",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "eggs grade a large egg yolk",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "eggs scrambled frozen mixture",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "butter clarified butter (ghee)",
+      "flag": "egg_source"
+    },
+    {
+      "name": "butter oil anhydrous",
+      "flag": "egg_source"
+    },
+    {
+      "name": "butter salted",
+      "flag": "egg_source"
+    },
+    {
+      "name": "butter stick salted",
+      "flag": "egg_source"
+    },
+    {
+      "name": "butter stick unsalted",
+      "flag": "egg_source"
+    },
+    {
+      "name": "butter whipped with salt",
+      "flag": "egg_source"
+    },
+    {
+      "name": "butter without salt",
+      "flag": "egg_source"
+    },
+    {
+      "name": "buttermilk low fat",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese american nonfat or fat free",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese american restaurant",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese blue",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese brick",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese brie",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese camembert",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese caraway",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese cheddar",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese cheddar nonfat or fat free",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese cheddar sharp sliced",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese cheshire",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese colby",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese cotija solid",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese cottage creamed with fruit",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese cottage lowfat 1% milkfat",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese cottage lowfat 2% milkfat",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese cottage with vegetables",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese cream",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese cream fat free",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese cream low fat",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese dry white queso seco",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese edam",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese feta",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese feta whole milk crumbled",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese fontina",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese food cold pack american",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese food pasteurized process swiss",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese fresh queso fresco",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese gjetost",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese goat hard type",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese goat semisoft type",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese goat soft type",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese gouda",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese gruyere",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese limburger",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese low fat cheddar or colby",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese low sodium cheddar or colby",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese mexican blend",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese mexican blend reduced fat",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese mexican queso anejo",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese mexican queso asadero",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese mexican queso chihuahua",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese mexican queso cotija",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese monterey",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese monterey jack solid",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese monterey low fat",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese mozzarella low moisture part skim",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese mozzarella low moisture part skim shredded",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese mozzarella low sodium",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese mozzarella nonfat",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese mozzarella part skim milk",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese mozzarella whole milk",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese mozzarella whole milk low moisture",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese muenster",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese muenster low fat",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese neufchatel",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese oaxaca solid",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese parmesan dry grated reduced fat",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese parmesan grated",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese parmesan grated refrigerated",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese parmesan hard",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese parmesan low sodium",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese parmesan shredded",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese pasteurized process american low fat",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese pasteurized process american vitamin d fortified",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese pasteurized process cheese food or product american singles",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese pasteurized process pimento",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese pasteurized process swiss",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese port de salut",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese provolone",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese provolone reduced fat",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese provolone sliced",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese queso fresco solid",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese ricotta part skim milk",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese ricotta whole milk",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese romano",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese roquefort",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese spread cream cheese base",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese spread pasteurized process american",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese substitute mozzarella",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese swiss",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese swiss low fat",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese swiss low sodium",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese swiss nonfat or fat free",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese tilsit",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cheese white queso blanco",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cottage cheese full fat large or small curd",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cream cheese full fat block",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cream fluid half and half",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cream fluid heavy whipping",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cream fluid light whipping",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cream half and half fat free",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cream half and half lowfat",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cream heavy",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cream sour cultured",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cream sour full fat",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cream sour reduced fat cultured",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cream substitute flavored liquid",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cream substitute flavored powdered",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cream substitute liquid light",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cream substitute powdered",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cream substitute powdered light",
+      "flag": "egg_source"
+    },
+    {
+      "name": "cream whipped cream topping pressurized",
+      "flag": "egg_source"
+    },
+    {
+      "name": "custard apple (bullocks heart) raw",
+      "flag": "egg_source"
+    },
+    {
+      "name": "dessert topping powdered",
+      "flag": "egg_source"
+    },
+    {
+      "name": "dessert topping pressurized",
+      "flag": "egg_source"
+    },
+    {
+      "name": "dessert topping semi solid frozen",
+      "flag": "egg_source"
+    },
+    {
+      "name": "ice cream cookie sandwich",
+      "flag": "egg_source"
+    },
+    {
+      "name": "ice cream light soft serve chocolate",
+      "flag": "egg_source"
+    },
+    {
+      "name": "ice cream sandwich",
+      "flag": "egg_source"
+    },
+    {
+      "name": "ice cream soft serve chocolate",
+      "flag": "egg_source"
+    },
+    {
+      "name": "ice cream sundae cone",
+      "flag": "egg_source"
+    },
+    {
+      "name": "kefir lowfat plain lifeway",
+      "flag": "egg_source"
+    },
+    {
+      "name": "kefir lowfat strawberry lifeway",
+      "flag": "egg_source"
+    },
+    {
+      "name": "kraft breakstones reduced fat sour cream",
+      "flag": "egg_source"
+    },
+    {
+      "name": "kraft velveeta pasteurized process cheese spread",
+      "flag": "egg_source"
+    },
+    {
+      "name": "light ice cream creamsicle",
+      "flag": "egg_source"
+    },
+    {
+      "name": "milk buttermilk dried",
+      "flag": "egg_source"
+    },
+    {
+      "name": "milk buttermilk fluid cultured lowfat",
+      "flag": "egg_source"
+    },
+    {
+      "name": "milk buttermilk fluid cultured reduced fat",
+      "flag": "egg_source"
+    },
+    {
+      "name": "milk buttermilk fluid whole",
+      "flag": "egg_source"
+    },
+    {
+      "name": "milk canned condensed sweetened",
+      "flag": "egg_source"
+    },
+    {
+      "name": "milk chocolate beverage hot cocoa homemade",
+      "flag": "egg_source"
+    },
+    {
+      "name": "milk chocolate lowfat reduced sugar",
+      "flag": "egg_source"
+    },
+    {
+      "name": "milk dry nonfat calcium reduced",
+      "flag": "egg_source"
+    },
+    {
+      "name": "milk indian buffalo fluid",
+      "flag": "egg_source"
+    },
+    {
+      "name": "milk low sodium fluid",
+      "flag": "egg_source"
+    },
+    {
+      "name": "milk lowfat fluid 1% milkfat with added vitamin a and vitamin d",
+      "flag": "egg_source"
+    },
+    {
+      "name": "milk nonfat fluid with added vitamin a and vitamin d (fat free or skim)",
+      "flag": "egg_source"
+    },
+    {
+      "name": "milk producer fluid 37% milkfat",
+      "flag": "egg_source"
+    },
+    {
+      "name": "milk reduced fat fluid 2% milkfat with added vitamin a and vitamin d",
+      "flag": "egg_source"
+    },
+    {
+      "name": "milk shakes thick chocolate",
+      "flag": "egg_source"
+    },
+    {
+      "name": "milk shakes thick vanilla",
+      "flag": "egg_source"
+    },
+    {
+      "name": "milk sheep fluid",
+      "flag": "egg_source"
+    },
+    {
+      "name": "milk whole 325% milkfat with added vitamin d",
+      "flag": "egg_source"
+    },
+    {
+      "name": "parmesan cheese topping fat free",
+      "flag": "egg_source"
+    },
+    {
+      "name": "reddi wip fat free whipped topping",
+      "flag": "egg_source"
+    },
+    {
+      "name": "sour cream fat free",
+      "flag": "egg_source"
+    },
+    {
+      "name": "sour cream light",
+      "flag": "egg_source"
+    },
+    {
+      "name": "sour cream reduced fat",
+      "flag": "egg_source"
+    },
+    {
+      "name": "sour dressing non butterfat cultured filled cream type",
+      "flag": "egg_source"
+    },
+    {
+      "name": "whey acid dried",
+      "flag": "egg_source"
+    },
+    {
+      "name": "whey acid fluid",
+      "flag": "egg_source"
+    },
+    {
+      "name": "whey sweet dried",
+      "flag": "egg_source"
+    },
+    {
+      "name": "whey sweet fluid",
+      "flag": "egg_source"
+    },
+    {
+      "name": "whipped topping frozen",
+      "flag": "egg_source"
+    },
+    {
+      "name": "whipped topping frozen low fat",
+      "flag": "egg_source"
+    },
+    {
+      "name": "yogurt chocolate nonfat milk",
+      "flag": "egg_source"
+    },
+    {
+      "name": "yogurt fruit variety nonfat",
+      "flag": "egg_source"
+    },
+    {
+      "name": "yogurt greek 2% fat apricot chobani",
+      "flag": "egg_source"
+    },
+    {
+      "name": "yogurt greek 2% fat mango chobani",
+      "flag": "egg_source"
+    },
+    {
+      "name": "yogurt greek 2% fat pineapple chobani",
+      "flag": "egg_source"
+    },
+    {
+      "name": "yogurt greek 2%fat coconut blend chobani",
+      "flag": "egg_source"
+    },
+    {
+      "name": "yogurt greek blueberry chobani",
+      "flag": "egg_source"
+    },
+    {
+      "name": "yogurt greek fruit whole milk",
+      "flag": "egg_source"
+    },
+    {
+      "name": "yogurt greek nonfat lemon blend chobani",
+      "flag": "egg_source"
+    },
+    {
+      "name": "yogurt greek nonfat peach chobani",
+      "flag": "egg_source"
+    },
+    {
+      "name": "yogurt greek nonfat plain chobani",
+      "flag": "egg_source"
+    },
+    {
+      "name": "yogurt greek nonfat raspberry chobani",
+      "flag": "egg_source"
+    },
+    {
+      "name": "yogurt greek nonfat strawberry dannon oikos",
+      "flag": "egg_source"
+    },
+    {
+      "name": "yogurt greek nonfat vanilla chobani",
+      "flag": "egg_source"
+    },
+    {
+      "name": "yogurt greek nonfat vanilla dannon oikos",
+      "flag": "egg_source"
+    },
+    {
+      "name": "yogurt greek plain lowfat",
+      "flag": "egg_source"
+    },
+    {
+      "name": "yogurt greek plain nonfat",
+      "flag": "egg_source"
+    },
+    {
+      "name": "yogurt greek plain whole milk",
+      "flag": "egg_source"
+    },
+    {
+      "name": "yogurt greek strawberry dannon oikos",
+      "flag": "egg_source"
+    },
+    {
+      "name": "yogurt greek strawberry lowfat",
+      "flag": "egg_source"
+    },
+    {
+      "name": "yogurt greek strawberry nonfat",
+      "flag": "egg_source"
+    },
+    {
+      "name": "yogurt greek vanilla lowfat",
+      "flag": "egg_source"
+    },
+    {
+      "name": "yogurt greek vanilla nonfat",
+      "flag": "egg_source"
+    },
+    {
+      "name": "yogurt greek whole plain chobani",
+      "flag": "egg_source"
+    },
+    {
+      "name": "yogurt plain low fat",
+      "flag": "egg_source"
+    },
+    {
+      "name": "yogurt plain nonfat",
+      "flag": "egg_source"
+    },
+    {
+      "name": "yogurt plain skim milk",
+      "flag": "egg_source"
+    },
+    {
+      "name": "yogurt plain whole milk",
+      "flag": "egg_source"
+    },
+    {
+      "name": "yogurt vanilla low fat",
+      "flag": "egg_source"
+    },
+    {
+      "name": "yogurt vanilla non fat",
+      "flag": "egg_source"
+    },
+    {
+      "name": "emu oyster raw",
+      "flag": "shellfish_source"
+    },
+    {
+      "name": "king oyster mushroom",
+      "flag": "shellfish_source"
+    },
+    {
+      "name": "mushroom king oyster",
+      "flag": "shellfish_source"
+    },
+    {
+      "name": "mushroom oyster",
+      "flag": "shellfish_source"
+    },
+    {
+      "name": "mushrooms oyster raw",
+      "flag": "shellfish_source"
+    },
+    {
+      "name": "ostrich oyster cooked",
+      "flag": "shellfish_source"
+    },
+    {
+      "name": "ostrich oyster raw",
+      "flag": "shellfish_source"
+    },
+    {
+      "name": "oyster mushroom dried",
+      "flag": "shellfish_source"
+    },
+    {
+      "name": "oyster mushrooms raw",
+      "flag": "shellfish_source"
+    },
+    {
+      "name": "salsify (vegetable oyster) raw",
+      "flag": "shellfish_source"
+    },
+    {
+      "name": "salsify cooked boiled drained with salt",
+      "flag": "shellfish_source"
+    },
+    {
+      "name": "salsify cooked boiled drained without salt",
+      "flag": "shellfish_source"
+    },
+    {
+      "name": "squash summer scallop raw",
+      "flag": "shellfish_source"
+    }
+  ],
+  "note": "Reviewed Item-42 asserted clears. Transform may only emit asserted falses on this list. Excludes processed forms (sauce/extract/paste/powder/oil/broth/canned) and genuine both-cases (eggnog/custard/quiche/souffle).",
+  "provenance": "FROZEN hand-reviewed allowlist. Transform may only emit asserted clears listed here. Originally seeded from transform output (2026-10-13) then filtered and hand-edited; do not regenerate from the dump.",
+  "frozen": true
+}

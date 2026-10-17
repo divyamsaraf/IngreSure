@@ -1,0 +1,69 @@
+{
+  "license_spdx": "CC0-1.0",
+  "source": "animal_catalog",
+  "notes": "Item 1.2 curated animal-product seed (CC0). Small v1 set; lands DISCOVERED (check-in 2026-09-22).",
+  "ingredients": [
+    {
+      "canonical_name": "chicken",
+      "aliases": ["chicken meat", "poulet"],
+      "animal_origin": true,
+      "plant_origin": false,
+      "animal_species": "bird",
+      "regions": ["Global"]
+    },
+    {
+      "canonical_name": "milk",
+      "aliases": ["cow milk", "whole milk", "doodh"],
+      "animal_origin": true,
+      "plant_origin": false,
+      "dairy_source": true,
+      "animal_species": "mammal",
+      "regions": ["Global", "IN"]
+    },
+    {
+      "canonical_name": "egg",
+      "aliases": ["chicken egg", "eggs"],
+      "animal_origin": true,
+      "plant_origin": false,
+      "egg_source": true,
+      "animal_species": "bird",
+      "regions": ["Global"]
+    },
+    {
+      "canonical_name": "salmon",
+      "aliases": ["atlantic salmon"],
+      "animal_origin": true,
+      "plant_origin": false,
+      "fish_source": true,
+      "animal_species": "fish",
+      "regions": ["Global"]
+    },
+    {
+      "canonical_name": "shrimp",
+      "aliases": ["prawn", "prawns"],
+      "animal_origin": true,
+      "plant_origin": false,
+      "shellfish_source": true,
+      "animal_species": "shellfish",
+      "regions": ["Global"]
+    },
+    {
+      "canonical_name": "honey",
+      "aliases": ["bee honey"],
+      "animal_origin": true,
+      "plant_origin": false,
+      "bee_product": true,
+      "insect_derived": true,
+      "animal_species": "insect",
+      "regions": ["Global"]
+    },
+    {
+      "canonical_name": "beef",
+      "aliases": ["cattle meat", "gosht"],
+      "animal_origin": true,
+      "plant_origin": false,
+      "animal_species": "mammal",
+      "regions": ["Global", "IN"]
+    }
+  ]
+}

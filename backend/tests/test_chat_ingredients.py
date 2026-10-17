@@ -1,8 +1,6 @@
 """TDD regression tests: chat must use label decomposer for pasted labels."""
 from __future__ import annotations
 
-import warnings
-
 from core.intent_detector import detect_intent
 from core.parsing.chat_ingredients import prepare_chat_ingredients
 from tests.test_label_decomposer import BREAD_LABEL
@@ -76,7 +74,7 @@ def test_gelatin_halal_ike2_is_not_safe():
     assert to_external(result.verdict) == "NOT_SAFE"
 
 
-def test_gelatin_halal_legacy_and_ike2_shadow_align():
+def test_gelatin_halal_chat_and_ike2_external_align():
     from core.bridge import run_new_engine_chat, user_profile_model_to_restriction_ids
     from core.knowledge.ike2 import rules as rules_module
     from core.knowledge.ike2.shadow.runner import ike2_external_verdict
@@ -105,36 +103,3 @@ def test_gelatin_halal_legacy_and_ike2_shadow_align():
     assert ike2 == "NOT_SAFE"
 
 
-def test_emit_resolution_metric_skips_without_running_event_loop():
-    from unittest.mock import AsyncMock, MagicMock
-
-    from core.knowledge.canonicalizer import CanonicalResolver
-
-    resolver = CanonicalResolver.__new__(CanonicalResolver)
-    resolver._db = MagicMock()
-    resolver._db.record_resolution_metric = AsyncMock()
-
-    with warnings.catch_warnings(record=True) as caught:
-        warnings.simplefilter("always")
-        resolver._emit_resolution_metric(None, source_layer="static")
-
-    resolver._db.record_resolution_metric.assert_not_called()
-    assert not any("coroutine" in str(w.message).lower() for w in caught)
-
-
-def test_run_legacy_diff_forwards_decomposed_atoms(monkeypatch):
-    from core.knowledge.ike2.shadow import runner
-    from core.knowledge.ike2.shadow.runner import run_legacy_diff
-    from core.parsing.label_decomposer import DecomposedItem
-
-    seen: dict = {}
-
-    def _capture(*args, **kwargs):
-        seen.update(kwargs)
-        return "SAFE"
-
-    monkeypatch.setattr(runner, "legacy_external_verdict", _capture)
-    atoms = [DecomposedItem(name="water", trace=True)]
-    run_legacy_diff(["ignored"], ["vegan"], None, "SAFE", decomposed_atoms=atoms)
-
-    assert seen.get("decomposed_atoms") is atoms

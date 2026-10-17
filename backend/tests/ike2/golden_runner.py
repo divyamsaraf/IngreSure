@@ -39,7 +39,7 @@ def safe_resolve(name: str, region):
         return SimpleNamespace(group=None, trusted=False, status="uncertain")
 
 
-def run_case(case: dict) -> str:
+def run_case(case: dict, rules=None) -> str:
     inputs = []
     for atom in parse_atoms(case["raw_input"]):
         resolved = safe_resolve(atom.name, case.get("region"))
@@ -54,7 +54,8 @@ def run_case(case: dict) -> str:
     raw_profile = case["profile"]
     restrictions = raw_profile.get("restrictions", raw_profile)
     profile = SimpleNamespace(restrictions=restrictions)
-    return to_external(evaluate(inputs, profile, rules=rules_module.seeded_rules()))
+    active = rules if rules is not None else rules_module.seeded_rules()
+    return to_external(evaluate(inputs, profile, rules=active))
 
 
 def run_case_full(case: dict):

@@ -25,6 +25,7 @@ from core.config import (
     get_ollama_url,
     get_ollama_model,
     llm_enabled,
+    LLM_ENGLISH_HINT_TIMEOUT,
 )
 
 logger = logging.getLogger(__name__)
@@ -39,7 +40,9 @@ def _cache_key(normalized_query: str) -> str:
     return hashlib.sha256(normalized_query.encode()).hexdigest()[:32]
 
 
-def _resolve_to_english_llm(query: str, timeout: int = 5) -> Optional[str]:
+def _resolve_to_english_llm(
+    query: str, timeout: int = LLM_ENGLISH_HINT_TIMEOUT
+) -> Optional[str]:
     """Optional LLM fallback: ask Ollama for English name when Wikidata missed. Returns one line or None."""
     if not llm_enabled() or not query or not query.strip() or timeout <= 0:
         return None
@@ -109,7 +112,7 @@ def fetch_ingredient_from_apis(
     if len(query_variants) == 1 and query_variants[0].replace("_", " ").strip().lower() == query.lower():
         english = resolve_to_english_label(query, timeout=min(timeout, 8))
         if not english:
-            english = _resolve_to_english_llm(query, timeout=5)
+            english = _resolve_to_english_llm(query, timeout=LLM_ENGLISH_HINT_TIMEOUT)
         if english and english.strip().lower() != query.lower():
             query_variants = [english.strip(), query]
             set_learned_english(normalized_ingredient_key, english.strip())

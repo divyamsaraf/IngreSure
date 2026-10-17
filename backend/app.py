@@ -93,10 +93,16 @@ from core.config import (
     llm_enabled,
 )
 from core.profile_options import get_profile_options_raw
-from core.profile_storage import get_or_create_profile, save_profile, update_profile_partial
+from core.profile_storage import (
+    get_or_create_profile,
+    get_profile as load_stored_profile,
+    save_profile,
+    update_profile_partial,
+)
 from core.models.user_profile import UserProfile
 from core.models.verdict import VerdictStatus
 from core.bridge import (
+    contradictory_diet_pair,
     user_profile_model_to_restriction_ids,
     run_new_engine_chat,
 )
@@ -330,7 +336,15 @@ def root():
 @app.get("/health")
 def health_check():
     """Health for Docker/K8s. ingredient_audit_emitter: true means chat emits INGREDIENT_AUDIT blocks."""
-    return {"status": "ok", "service": "IngreSure AI Scanner", "ingredient_audit_emitter": True}
+    from core.knowledge.ike2.audit_health import live_audit_health
+
+    body = {
+        "status": "ok",
+        "service": "IngreSure AI Scanner",
+        "ingredient_audit_emitter": True,
+    }
+    body.update(live_audit_health())
+    return body
 
 
 @app.get("/config")
@@ -382,6 +396,18 @@ async def get_profile(request: Request, user_id: str):
         return _default_profile_response(user_id)
 
 
+def _contradictory_profile_pair(user_id, org_id, *, dietary_preference, allergens, lifestyle):
+    """The profile that would be saved, checked before the write."""
+    stored = load_stored_profile(user_id, org_id=org_id)
+    profile = UserProfile.from_dict(stored.to_dict()) if stored else UserProfile(user_id=user_id)
+    profile.update_merge(
+        dietary_preference=dietary_preference,
+        allergens=allergens,
+        lifestyle=lifestyle,
+    )
+    return contradictory_diet_pair(user_profile_model_to_restriction_ids(profile))
+
+
 @app.post("/profile")
 @_rate_limit(RATE_LIMIT_PROFILE_WRITE)
 async def create_or_update_profile(request: Request, body: ProfileBody):
@@ -396,6 +422,18 @@ async def create_or_update_profile(request: Request, body: ProfileBody):
             validate_profile_lists(body.allergens, body.lifestyle)
         except ValueError as ve:
             raise HTTPException(status_code=400, detail=str(ve))
+        pair = _contradictory_profile_pair(
+            resolved_user_id,
+            org_id,
+            dietary_preference=body.dietary_preference,
+            allergens=body.allergens,
+            lifestyle=body.lifestyle,
+        )
+        if pair:
+            raise HTTPException(
+                status_code=400,
+                detail=f"{pair[0]} and {pair[1]} cannot be combined",
+            )
     except HTTPException as he:
         completed_at = datetime.now(timezone.utc)
         record_request_history(
@@ -611,6 +649,7 @@ async def chat_grocery(request: Request, body: ChatRequest):
             ingredients = parsed.ingredients
             eval_ingredients = prepared.eval_names
             compound_map = prepared.compound_map
+            derived_from_map = prepared.derived_from_map
 
             if profile.is_empty() and not eval_ingredients:
                 yield f"{PROFILE_REQUIRED_TAG}\n\n"
@@ -647,6 +686,7 @@ async def chat_grocery(request: Request, body: ChatRequest):
                 profile_context=profile_context,
                 use_api_fallback=True,
                 prepared_decomposed=prepared.decomposed,
+                raw_label=prepared.label_text,
             )
             logger.info(
                 "VERDICT=%s confidence=%.2f triggered=%s ingredients=%s",
@@ -716,6 +756,7 @@ async def chat_grocery(request: Request, body: ChatRequest):
                 display_names=compound_map if compound_map else None,
                 explanation_text=explanation_text,
                 explanation_source=explanation_source,
+                derived_from=derived_from_map if derived_from_map else None,
             )
             audit_block = f"{INGREDIENT_AUDIT_TAG}{json.dumps(audit_payload)}{INGREDIENT_AUDIT_TAG}"
             logger.info("INGREDIENT_AUDIT_EMITTED groups=%s", [g.get("status") for g in audit_payload.get("groups", [])])

@@ -1,5 +1,21 @@
 {
-  "errors": [],
+  "errors": [
+    {
+      "e_code": "E626",
+      "check": "tier_b_contradiction",
+      "message": "Tier B has animal_origin=true with source ambiguity uncertainty_flags"
+    },
+    {
+      "e_code": "E630",
+      "check": "tier_b_contradiction",
+      "message": "Tier B has animal_origin=true with source ambiguity uncertainty_flags"
+    },
+    {
+      "e_code": "E631",
+      "check": "tier_b_contradiction",
+      "message": "Tier B has animal_origin=true with source ambiguity uncertainty_flags"
+    }
+  ],
   "warnings": [
     {
       "e_code": "E920",
@@ -78,14 +94,14 @@
   ],
   "stats": {
     "entries": 330,
-    "tier_a": 280,
-    "tier_b": 50,
+    "tier_a": 276,
+    "tier_b": 54,
     "merge_into": 22,
     "catalog_e_codes": 330,
     "off_e_codes": 573,
     "wikidata_e_codes": 532,
     "fssai_e_codes": 381,
-    "error_count": 0,
+    "error_count": 3,
     "warning_count": 5
   }
 }

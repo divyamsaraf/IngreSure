@@ -35,6 +35,7 @@ class FakeWriter:
             if g["id"] == gid:
                 g.update(result.merged_flags)
                 g["knowledge_state"] = result.knowledge_state
+                g["asserted_flags"] = list(result.merged_asserted_flags)
                 return
 
     def upsert_ingredient(self, gid, normalized_name, source):
@@ -71,9 +72,15 @@ def test_new_record_is_inserted_with_ingredient_and_alias():
 
 
 def test_existing_group_reconciles_most_restrictive_and_flags_review():
+    """Asserted false→true demotes; most-restrictive OR still applies."""
     w = FakeWriter()
-    w.seed_group({"canonical_name": "whey", "animal_origin": True,
-                  "dairy_source": False, "knowledge_state": "AUTO_CLASSIFIED"})
+    w.seed_group({
+        "canonical_name": "whey",
+        "animal_origin": True,
+        "dairy_source": False,
+        "knowledge_state": "AUTO_CLASSIFIED",
+        "asserted_flags": ["dairy_source"],
+    })
     stats = inject([_rec(canonical_name="whey", animal_origin=True,
                          dairy_source=True, plant_origin=False, aliases=["whey"])],
                    "openfoodfacts", w)
@@ -81,6 +88,22 @@ def test_existing_group_reconciles_most_restrictive_and_flags_review():
     assert stats.updated == 1
     assert stats.needs_review == 1
     assert w.get_group("whey")["dairy_source"] is True  # most restrictive wins
+
+
+def test_existing_unasserted_false_to_true_no_review():
+    w = FakeWriter()
+    w.seed_group({
+        "canonical_name": "whey",
+        "animal_origin": True,
+        "dairy_source": False,
+        "knowledge_state": "AUTO_CLASSIFIED",
+    })
+    stats = inject([_rec(canonical_name="whey", animal_origin=True,
+                         dairy_source=True, plant_origin=False, aliases=["whey"])],
+                   "openfoodfacts", w)
+    assert stats.needs_review == 0
+    assert w.get_group("whey")["dairy_source"] is True
+    assert "dairy_source" in (w.get_group("whey").get("asserted_flags") or [])
 
 
 def test_invalid_row_is_quarantined_and_batch_continues():

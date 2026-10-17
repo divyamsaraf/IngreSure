@@ -1,0 +1,68 @@
+{
+  "license_spdx": "CC0-1.0",
+  "source": "produce_catalog",
+  "notes": "Item 1.1 curated plant-commodity seed (CC0). Small v1 set; not scraped from licensed sources.",
+  "ingredients": [
+    {
+      "canonical_name": "broccoli",
+      "aliases": ["broccoli florets", "brocoli"],
+      "plant_origin": true,
+      "animal_origin": false,
+      "regions": ["Global"]
+    },
+    {
+      "canonical_name": "carrot",
+      "aliases": ["carrots", "gajar"],
+      "plant_origin": true,
+      "animal_origin": false,
+      "root_vegetable": true,
+      "regions": ["Global", "IN"]
+    },
+    {
+      "canonical_name": "spinach",
+      "aliases": ["palak", "baby spinach"],
+      "plant_origin": true,
+      "animal_origin": false,
+      "regions": ["Global", "IN"]
+    },
+    {
+      "canonical_name": "apple",
+      "aliases": ["apples", "seb"],
+      "plant_origin": true,
+      "animal_origin": false,
+      "regions": ["Global", "IN"]
+    },
+    {
+      "canonical_name": "banana",
+      "aliases": ["bananas", "kela"],
+      "plant_origin": true,
+      "animal_origin": false,
+      "regions": ["Global", "IN"]
+    },
+    {
+      "canonical_name": "garlic",
+      "aliases": ["lahsun", "garlic clove"],
+      "plant_origin": true,
+      "animal_origin": false,
+      "root_vegetable": true,
+      "garlic_source": true,
+      "regions": ["Global", "IN"]
+    },
+    {
+      "canonical_name": "onion",
+      "aliases": ["pyaz", "yellow onion"],
+      "plant_origin": true,
+      "animal_origin": false,
+      "root_vegetable": true,
+      "onion_source": true,
+      "regions": ["Global", "IN"]
+    },
+    {
+      "canonical_name": "tomato",
+      "aliases": ["tomatoes", "tamatar"],
+      "plant_origin": true,
+      "animal_origin": false,
+      "regions": ["Global", "IN"]
+    }
+  ]
+}

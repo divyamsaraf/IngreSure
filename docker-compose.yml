@@ -68,7 +68,8 @@ services:
         required: false
     environment:
       - RUNNING_IN_DOCKER=1
-    command: ["celery", "-A", "worker.celery_app:celery_app", "worker", "--loglevel=info"]
+    # -B: embedded Beat (Item 23). Keep this service at one replica.
+    command: ["celery", "-A", "worker.celery_app:celery_app", "worker", "-B", "--schedule", "/tmp/celerybeat-schedule", "--loglevel=info"]
     volumes:
       - ./backend:/app
       - ./data:/app/../data

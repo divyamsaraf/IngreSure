@@ -190,8 +190,8 @@ def test_discovered_ks_elevated_when_tier1_locked_exists():
     assert to_external(evaluate([ci], profile, rules).verdict) == "NOT_SAFE"
 
 
-def test_discovered_ks_still_blocks_when_no_tier1():
-    """Without Tier-1 curation, DISCOVERED must not firm-Avoid medical allergies."""
+def test_discovered_ks_with_true_hazard_flag_still_avoids_without_tier1():
+    """Item 34: DISCOVERED + true fish_source must Avoid — KS must not silence FAIL."""
     disc = TruthAnchorFact(
         canonical_name="zzzx_discovered_fish_oil_analogue",
         flags={"animal_origin": True, "fish_source": True},
@@ -208,4 +208,4 @@ def test_discovered_ks_still_blocks_when_no_tier1():
     ci = to_compliance_input(ri, query_atom="zzzx_discovered_fish_oil_analogue")
     rules = rules_module.seeded_rules()
     profile = SimpleNamespace(restrictions={"fish_allergy": "medical"})
-    assert to_external(evaluate([ci], profile, rules).verdict) == "UNCERTAIN"
+    assert to_external(evaluate([ci], profile, rules).verdict) == "NOT_SAFE"

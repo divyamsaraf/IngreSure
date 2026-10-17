@@ -11,6 +11,7 @@ def map_record(raw: dict, canonical_source: str, default_state: str):
     if raw.get("knowledge_state"):
         row["knowledge_state"] = raw["knowledge_state"]
     row["classification_method"] = f"bulk:{canonical_source}"
+    row["source"] = canonical_source
 
     aliases: list[tuple[str, str | None, str]] = []
     seen: set[tuple[str, str | None]] = set()

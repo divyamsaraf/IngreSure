@@ -90,4 +90,6 @@ def test_alcohol_ingredient_is_never_safe_for_alcohol_restriction(monkeypatch):
         rules=[_ALCOHOL_RULE],
     )
     assert result.verdict != Verdict.SAFE
-    assert result.verdict == Verdict.FAIL
+    # USDA bulk path is untrusted: lifestyle alcohol is capped to UNCERTAIN
+    # (Item 42 — FAIL stands only for allergy/medical).
+    assert result.verdict == Verdict.UNCERTAIN

@@ -16,6 +16,8 @@ from core.knowledge.ike2.flag_derive import derive_identity_flags
 BOOL_FLAGS = (
     "animal_origin",
     "plant_origin",
+    # FSSAI-inferred synthetic is unreliable; read by no rule. Assert only when
+    # a dump ships curated asserted_flags that deliberately include it.
     "synthetic",
     "fungal",
     "insect_derived",
@@ -37,6 +39,8 @@ BOOL_FLAGS = (
     "onion_source",
     "garlic_source",
     "fermented",
+    "enzyme_animal_source",
+    "enzyme_microbial_source",
 )
 
 
@@ -66,16 +70,21 @@ def _map_nut_source(raw, row):
     """Legacy `nut_source` is free-text (e.g. "peanut butter, creamy", "almond
     paste") — NOT a boolean. Parse it into the specific allergen flags. Anything
     truthy but unrecognized over-flags BOTH (a false-Avoid is acceptable;
-    under-flagging peanut is a catastrophic false-SAFE)."""
+    under-flagging peanut is a catastrophic false-SAFE).
+
+    Returns the set of BOOL_FLAGS names this helper deliberately set.
+    """
+    asserted: set[str] = set()
     nut = raw.get("nut_source")
     if not nut:
-        return
+        return asserted
     val = str(nut).strip().lower()
     if not val:
-        return
+        return asserted
     matched = False
     if "peanut" in val:
         row["peanut_source"] = True
+        asserted.add("peanut_source")
         matched = True
     if any(k in val for k in _TREE_NUTS):
         # "chestnut" must not fire on "water chestnut"
@@ -84,11 +93,13 @@ def _map_nut_source(raw, row):
                 matched = True
             elif any(k in val for k in _TREE_NUTS if k != "chestnut"):
                 row["tree_nut_source"] = True
+                asserted.add("tree_nut_source")
                 matched = True
             else:
                 matched = True  # recognized non-trigger phrase
         else:
             row["tree_nut_source"] = True
+            asserted.add("tree_nut_source")
             matched = True
     if any(k in val for k in _RECOGNIZED_NON_TRIGGER):
         # Recognized but maps to neither flag; suppress the both-True fallback.
@@ -96,6 +107,8 @@ def _map_nut_source(raw, row):
     if not matched:
         row["peanut_source"] = True
         row["tree_nut_source"] = True
+        asserted.update(("peanut_source", "tree_nut_source"))
+    return asserted
 
 
 def _alcohol_role(raw):
@@ -111,15 +124,39 @@ def _alcohol_role(raw):
 
 
 def map_record(raw: dict, canonical_source: str, default_state: str):
-    row = {flag: bool(raw.get(flag, False)) for flag in BOOL_FLAGS}
+    # Asserted falses are verified negatives — only when the dump carries an
+    # explicit asserted_flags list (curated-negative / stem-triage path).
+    # Otherwise bulk adapters assert trues only: key-presence of false is the
+    # default/serializer trap (IFCT, ontology to_dict, triage), not curation.
+    # validate_rows asserted_flags_false_pollution remains the second line.
+    curated_asserted = (
+        set(raw.get("asserted_flags") or []) if "asserted_flags" in raw else None
+    )
+    asserted: set[str] = set()
+    row: dict = {}
+    for flag in BOOL_FLAGS:
+        if flag in raw:
+            row[flag] = bool(raw[flag])
+            if curated_asserted is not None:
+                if flag in curated_asserted:
+                    asserted.add(flag)
+            elif row[flag]:
+                asserted.add(flag)
+        else:
+            row[flag] = False
 
     if row["insect_derived"]:
         row["animal_origin"] = True
+        asserted.add("animal_origin")
     if row.get("bee_product"):
         row["animal_origin"] = True
+        asserted.add("animal_origin")
+    if row.get("enzyme_animal_source"):
+        row["animal_origin"] = True
+        asserted.add("animal_origin")
 
     # Legacy free-text `nut_source` -> specific peanut / tree-nut allergen flags.
-    _map_nut_source(raw, row)
+    asserted |= _map_nut_source(raw, row)
 
     row["canonical_name"] = normalize_ingredient_key(raw.get("canonical_name", ""))
     row["animal_species"] = raw.get("animal_species")
@@ -129,7 +166,9 @@ def map_record(raw: dict, canonical_source: str, default_state: str):
     # Curated "never firm-SAFE" caps must survive Tier-2/bulk ingestion.
     if raw.get("verdict_cap"):
         row["verdict_cap"] = raw.get("verdict_cap")
-    # Prefer explicit curated knowledge_state when present; never invent LOCKED.
+    # Prefer explicit curated knowledge_state when present.
+    # LOCKED/VERIFIED from non–e-number dumps are hard-rejected in validate_rows
+    # (bulk_locked_verified_requires_e_number_catalog) — never silently downgraded.
     raw_ks = (raw.get("knowledge_state") or "").strip()
     if raw_ks in (
         "UNKNOWN", "DISCOVERED", "AUTO_CLASSIFIED", "CLASSIFIED", "VERIFIED", "LOCKED",
@@ -139,6 +178,10 @@ def map_record(raw: dict, canonical_source: str, default_state: str):
         row["knowledge_state"] = default_state
     row["primary_source_url"] = raw.get("primary_source_url") or raw.get("source_url")
     row["classification_method"] = f"bulk:{canonical_source}"
+    row["source"] = canonical_source
+    # Phase 2a: pass role through (not a BOOL_FLAG; not stuffed into identity flags).
+    if raw.get("role"):
+        row["role"] = str(raw.get("role")).strip()
 
     # Systemic allergen derivation from species + name (closes under-flagged seeds).
     derived = derive_identity_flags(
@@ -149,8 +192,11 @@ def map_record(raw: dict, canonical_source: str, default_state: str):
     for flag in BOOL_FLAGS:
         if derived.get(flag):
             row[flag] = True
+            asserted.add(flag)
     if derived.get("animal_species") and not row.get("animal_species"):
         row["animal_species"] = derived["animal_species"]
+
+    row["asserted_flags"] = sorted(asserted)
 
     regions = _regions_to_values(raw.get("regions"))
     aliases = []
