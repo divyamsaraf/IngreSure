@@ -238,6 +238,12 @@ _FALSE_FRIEND_MASK = re.compile(
         # fungi named after shellfish — not crustaceans
         | lobster\s+mushroom
         | crab\s+mushroom
+        # coconut is not a tree-nut under our policy (EN + FR/ES/DE/IT/NL)
+        | noix\s+de\s+coco
+        | nuez\s+de\s+coco
+        | kokosnuss
+        | noce\s+di\s+cocco
+        | kokosnoot
     )
     """
 )
