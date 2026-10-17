@@ -23,9 +23,19 @@ def test_false_friends_do_not_fire_dairy():
         "mandelmilch",
         "milk thistle",
         "milk thistle seed",
+        "tofu yogurt",
+        "soy yoghurt",
+        "coconut yogurt",
     ):
         assert "dairy" not in hazard_hits_in_text(text), text
         assert not derive_identity_flags(text).get("dairy_source"), text
+
+
+def test_tofu_yogurt_does_not_dual_origin_pollute():
+    """Regression: lexicon dairy on tofu yogurt broke ontology inject (CI)."""
+    flags = derive_identity_flags("tofu yogurt", {"plant_origin": True})
+    assert flags.get("dairy_source") is not True
+    assert flags.get("animal_origin") is not True
 
 
 def test_negation_masks_soya_free_and_no_soy():

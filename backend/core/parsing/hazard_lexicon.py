@@ -208,7 +208,7 @@ _FALSE_FRIEND_MASK = re.compile(
         | burro\s+di\s+cacao
         | cacaoboter
         # plant milks
-        | (?:coconut|almond|soy|soya|oat|rice|cashew|hemp|pea|pistachio)
+        | (?:coconut|almond|soy|soya|oat|rice|cashew|hemp|pea|pistachio|tofu)
           [\s\-]*(?:milk|cream|butter|yogurt|yoghurt)
         | lait\s+de\s+(?:coco|amande|avoine|soja|riz|cajou)
         | lait\s+d['\u2019]?\s*amande
