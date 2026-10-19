@@ -33,10 +33,19 @@ def _add(keys, canonical, flags, *, knowledge_state: str = "LOCKED"):
 _COMPOUND_CANONICALS: set[str] = set()
 
 
-def _add_compound(keys, canonical):
-    """Unresolvable compound terms: never firm-SAFE (design §4B)."""
+def _add_compound(keys, canonical, **extra_flags):
+    """Unresolvable compound terms: never firm-SAFE (design §4B).
+
+    ``extra_flags`` are true-only identity bits the name itself asserts
+    (e.g. dairy_source on ice cream) so stored flags stay a superset of derive.
+    """
     _COMPOUND_CANONICALS.add(canonical)
-    _add(keys, canonical, _f(verdict_cap="WARN"), knowledge_state="VERIFIED")
+    _add(
+        keys,
+        canonical,
+        _f(verdict_cap="WARN", **extra_flags),
+        knowledge_state="VERIFIED",
+    )
 
 
 _E_NUMBER_ANCHORS: dict[str, TruthAnchorFact] | None = None
@@ -145,7 +154,7 @@ _add(["octopus"], "octopus", _f(animal_origin=True, shellfish_source=True))
 _add(["seafood"], "seafood",
      _f(animal_origin=True, fish_source=True, shellfish_source=True))
 _add(["snail", "snails", "escargot"], "snail",
-     _f(animal_origin=True, animal_species="mollusk"))
+     _f(animal_origin=True, animal_species="mollusk", shellfish_source=True))
 _add(
     ["worcestershire sauce", "worcestershire", "worcester sauce"],
     "worcestershire sauce",
@@ -276,10 +285,8 @@ _add(["wheat flour", "enriched wheat flour", "bleached wheat flour"], "wheat",
 _add(["wheat gluten"], "gluten", _f(gluten_source=True))
 _add(["malted barley flour"], "barley", _f(gluten_source=True))
 _add(["flour", "flours", "all purpose flour"], "flour", _f(gluten_source=True))
-# Bone-char refining is a process ambiguity on some cane sugars, not a labeled
-# ingredient. We treat bare sugar as plant SAFE (not WARN): FAIL would over-block
-# nearly every list; WARN would erase firm SAFE on the most common staple. Named
-# cane/beet sugar stay plant SAFE the same way.
+# Bone-char refining is process ambiguity on some cane sugars. Bare sugar stays
+# plant SAFE; bridge adds an informational note for vegan/jain/halal.
 _add(["sugar"], "sugar", _f(animal_origin=False, plant_origin=True))
 _add(["cane sugar"], "cane sugar", _f(animal_origin=False, plant_origin=True))
 _add(["beet sugar"], "beet sugar", _f(animal_origin=False, plant_origin=True))
@@ -510,24 +517,34 @@ _add_compound(
 _add_compound(["affogato"], "affogato")
 _add_compound(["tempered spices", "tadka", "tarka"], "tempered spices")
 _add_compound(["tiramisu"], "tiramisu")
-_add_compound(["latte", "cafe latte", "caffè latte"], "latte")
+_add_compound(
+    ["latte", "cafe latte", "caffè latte"],
+    "latte",
+    dairy_source=True,
+    animal_origin=True,
+)
 _add_compound(["cappuccino"], "cappuccino")
 _add_compound(["macchiato", "cafe macchiato"], "macchiato")
 _add_compound(["mocha", "cafe mocha"], "mocha")
 _add_compound(["frappe", "frappé"], "frappe")
-_add_compound(["milkshake"], "milkshake")
+_add_compound(["milkshake"], "milkshake", dairy_source=True, animal_origin=True)
 _add_compound(["hot chocolate", "hot cocoa"], "hot chocolate")
 _add_compound(["sundae"], "sundae")
 _add_compound(["parfait"], "parfait")
 _add_compound(["souffle", "soufflé", "spinach souffle"], "souffle")
-_add_compound(["omelette", "omelet"], "omelette")
+_add_compound(["omelette", "omelet"], "omelette", egg_source=True, animal_origin=True)
 _add_compound(["quiche"], "quiche")
-_add_compound(["ice cream sandwich"], "ice cream sandwich")
-_add_compound(["ice cream"], "ice cream")
+_add_compound(
+    ["ice cream sandwich"],
+    "ice cream sandwich",
+    dairy_source=True,
+    animal_origin=True,
+)
+_add_compound(["ice cream"], "ice cream", dairy_source=True, animal_origin=True)
 _add_compound(["gelato"], "gelato")
 _add_compound(["custard"], "custard")
 _add_compound(["mousse"], "mousse")
-_add_compound(["cheesecake"], "cheesecake")
+_add_compound(["cheesecake"], "cheesecake", dairy_source=True, animal_origin=True)
 _add_compound(["veggie burger", "veggie burgers"], "veggie burger")
 # enzymes already registered above near water/salt
 

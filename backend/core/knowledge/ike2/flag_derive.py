@@ -25,7 +25,12 @@ import re
 from typing import Any, Mapping
 
 from core.normalization.normalizer import normalize_ingredient_key
-from core.parsing.hazard_lexicon import apply_lexicon_flags, family_negated
+from core.parsing.hazard_lexicon import (
+    apply_lexicon_flags,
+    family_negated,
+    hazard_hits_in_text,
+    mask_non_hazards,
+)
 
 _TREE_NUT_TOKENS = frozenset({
     "almond", "hazelnut", "filbert", "cashew", "walnut", "pecan", "pistachio",
@@ -375,10 +380,13 @@ def derive_identity_flags(
     ):
         out["celery_source"] = True
 
+    # Match dairy tokens on the lexicon-masked surface so plant+animal false
+    # friends (cashew cheese) drop, while vernacular (dahi) and bare milk stay.
+    _masked = mask_non_hazards(canonical_name or name)
     if (
         not neg_dairy
         and not any(p in name for p in _NON_DAIRY_PHRASES)
-        and any(_has_token(name, t) for t in _DAIRY_TOKENS)
+        and any(_has_token(_masked, t) for t in _DAIRY_TOKENS)
     ):
         out["dairy_source"] = True
         out["animal_origin"] = True
@@ -394,10 +402,10 @@ def derive_identity_flags(
         out["plant_origin"] = False
 
     if not neg_egg and (
-        name in _EGG_NAMES
-        or _has_token(name, "anda")
+        _masked.strip() in _EGG_NAMES
+        or _has_token(_masked, "anda")
         or (
-            (_has_token(name, "egg") or _has_token(name, "eggs"))
+            (_has_token(_masked, "egg") or _has_token(_masked, "eggs"))
             and "eggplant" not in name
             and "egg plant" not in name
         )

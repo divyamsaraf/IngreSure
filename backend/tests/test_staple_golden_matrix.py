@@ -69,8 +69,8 @@ def _safe_row(**overrides: str) -> dict[str, str]:
 
 
 # Hand table. Keys are query atoms (aliases resolve to the L1 canonical).
-# Sugar: plant SAFE for vegan/jain — bone-char is process ambiguity, not a
-# labeled ingredient; WARN would erase firm SAFE on the most common staple.
+# Sugar: plant SAFE for vegan/jain/halal; bone-char is process ambiguity
+# surfaced as informational_ingredients (see test_sugar_bone_char_informational).
 EXPECTATIONS: dict[str, dict[str, str]] = {
     "flour": _safe_row(gluten_free="NOT_SAFE"),
     "flours": _safe_row(gluten_free="NOT_SAFE"),
