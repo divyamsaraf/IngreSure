@@ -20,7 +20,7 @@ from core.knowledge.ike2.flag_derive import derive_identity_flags
 from core.knowledge.ike2.truth_anchor import all_anchors
 from core.normalization.normalizer import normalize_ingredient_key
 from core.normalization.parser import flatten_ingredients
-from core.parsing.hazard_lexicon import HAZARD_CLASS_TO_FLAG, hazard_hits_in_text
+from core.parsing.hazard_lexicon import HAZARD_CLASS_TO_FLAG
 
 _DUMP = _BACKEND / ".local_reports" / "item44_dump_ingredients.jsonl"
 _ONTOLOGY = _BACKEND.parent / "data" / "ontology.json"
@@ -45,20 +45,37 @@ def _lang(name: str) -> str:
 
 
 def _classify(name: str, flag: str) -> str:
-    """Heuristic: false friend / real gap / ambiguous."""
-    hits = hazard_hits_in_text(name)
-    # If derive adds dairy but lexicon has no dairy hit after masks → shouldn't happen
-    flag_to_cls = {v: k for k, v in HAZARD_CLASS_TO_FLAG.items()}
-    cls = flag_to_cls.get(flag)
-    if cls and cls not in hits:
-        return "false_friend"
-    # plant-looking names with animal flags
-    if flag in ("dairy_source", "egg_source") and re.search(
-        r"\b(vegan|plant[\s\-]*based|tofu|almond|oat|coconut|cocoa|shea|peanut)\b",
-        name,
-        re.I,
-    ):
-        return "false_friend"
+    """Independent heuristic (must not call hazard_lexicon / derive).
+
+    Uses surface regexes only so the audit is not circular with the lexicon
+    that produced the derive-only diffs.
+    """
+    n = re.sub(r"_+", "", (name or "").lower())
+    plant_dairy = re.search(
+        r"(almond|oat|soy|soya|coconut|rice|cashew|hemp|pea|tofu)\s*"
+        r"(milk|cream|yogurt|yoghurt|cheese|butter)"
+        r"|(beurre de (cacao|karit|coco|cacahu)|lait de (coco|amande)|"
+        r"cr[eè]me de coco|manteca de cacao)",
+        n,
+    )
+    dairy = re.search(
+        r"(milk|cream|butter|cheese|whey|casein|lactose|yogurt|yoghurt|ghee|"
+        r"curd|paneer|lait|beurre|fromage|milch|k[aä]se|leche|queso|latte|"
+        r"burro|melk|boter|butterfat|dahi)",
+        n,
+    )
+    if flag == "dairy_source":
+        if plant_dairy:
+            return "false_friend"
+        if dairy:
+            return "real_gap"
+        return "ambiguous"
+    if flag == "egg_source":
+        if re.search(r"vegan\s*egg", n):
+            return "false_friend"
+        if re.search(r"(egg|eggs|oeuf|œuf|eier|huevo|anda)", n):
+            return "real_gap"
+        return "ambiguous"
     if flag in _HAZARD_FLAGS:
         return "real_gap"
     return "ambiguous"
