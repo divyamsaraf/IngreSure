@@ -11,11 +11,14 @@ from typing import Any, Optional
 
 import requests
 
-from core.config import get_ollama_url, get_ollama_model, llm_enabled
+from core.config import (
+    get_ollama_url,
+    get_ollama_model,
+    llm_enabled,
+    LLM_CLASSIFY_TIMEOUT,
+)
 
 logger = logging.getLogger(__name__)
-
-_CLASSIFY_TIMEOUT = 15
 
 _PROMPT = """You are a food ingredient classifier for dietary compliance. Given an ingredient name and optional description, return a JSON object with EXACTLY these boolean or string fields:
 
@@ -37,7 +40,7 @@ Rules: Infer from name and description only. "carmine" -> animal_origin true, in
 def classify_ingredient_origin(
     name: str,
     description: str = "",
-    timeout: int = _CLASSIFY_TIMEOUT,
+    timeout: int = LLM_CLASSIFY_TIMEOUT,
 ) -> Optional[dict[str, Any]]:
     """
     Call LLM to classify ingredient. Returns dict with origin_type, animal_origin, etc.

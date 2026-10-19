@@ -1,0 +1,186 @@
+{
+  "note": "Enumerated (norm_name, flag) exclusions for the live lexicon-vs-verdict scan. Includes plant-analogue false friends and FSSAI phrasing-noise rows. Real gaps must be patched, not listed here.",
+  "false_friends": [
+    {
+      "name": "almond milk",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "oat milk",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "soy milk",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "rice milk",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "coconut milk",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "coconut milk powder",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "hemp milk",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "tofu yogurt",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "peanut butter",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "cocoa butter",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "kokum butter",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "shea butter",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "milk fish",
+      "flag": "dairy_source"
+    },
+    {
+      "name": "oyster mushrooms",
+      "flag": "shellfish_source"
+    },
+    {
+      "name": "oyster mushroom dried",
+      "flag": "shellfish_source"
+    },
+    {
+      "name": "king oyster mushrooms",
+      "flag": "shellfish_source"
+    },
+    {
+      "name": "mushrooms oyster raw",
+      "flag": "shellfish_source"
+    },
+    {
+      "name": "mushroom oyster",
+      "flag": "shellfish_source"
+    },
+    {
+      "name": "mushroom king oyster",
+      "flag": "shellfish_source"
+    },
+    {
+      "name": "emu oyster raw",
+      "flag": "shellfish_source"
+    },
+    {
+      "name": "ostrich oyster raw",
+      "flag": "shellfish_source"
+    },
+    {
+      "name": "ostrich oyster cooked",
+      "flag": "shellfish_source"
+    },
+    {
+      "name": "salsify (vegetable oyster) raw",
+      "flag": "shellfish_source"
+    },
+    {
+      "name": "squash summer scallop raw",
+      "flag": "shellfish_source"
+    },
+    {
+      "name": "rice flour",
+      "flag": "gluten_source"
+    },
+    {
+      "name": "almond flour",
+      "flag": "gluten_source"
+    },
+    {
+      "name": "cassava flour",
+      "flag": "gluten_source"
+    },
+    {
+      "name": "maize flour",
+      "flag": "gluten_source"
+    },
+    {
+      "name": "konjac flour",
+      "flag": "gluten_source"
+    },
+    {
+      "name": "bread and acesulfame",
+      "flag": "gluten_source",
+      "class": "phrasing_noise"
+    },
+    {
+      "name": "bread and mineral oil",
+      "flag": "gluten_source",
+      "class": "phrasing_noise"
+    },
+    {
+      "name": "cooked fish acetylated",
+      "flag": "fish_source",
+      "class": "phrasing_noise"
+    },
+    {
+      "name": "fish and fish calcium",
+      "flag": "fish_source",
+      "class": "phrasing_noise"
+    },
+    {
+      "name": "for use in salted squid only",
+      "flag": "shellfish_source",
+      "class": "phrasing_noise"
+    },
+    {
+      "name": "for use in shrimps and prawns only",
+      "flag": "shellfish_source",
+      "class": "phrasing_noise"
+    },
+    {
+      "name": "fried fish and hydroxypropy",
+      "flag": "fish_source",
+      "class": "phrasing_noise"
+    },
+    {
+      "name": "frozen fish calcium",
+      "flag": "fish_source",
+      "class": "phrasing_noise"
+    },
+    {
+      "name": "other soybean caramel iii",
+      "flag": "soy_source",
+      "class": "phrasing_noise"
+    },
+    {
+      "name": "processed fish acesulfame",
+      "flag": "fish_source",
+      "class": "phrasing_noise"
+    },
+    {
+      "name": "salmon allura red ac",
+      "flag": "fish_source",
+      "class": "phrasing_noise"
+    },
+    {
+      "name": "water chestnut",
+      "flag": "tree_nut_source",
+      "class": "false_friend"
+    },
+    {
+      "name": "water chestnuts",
+      "flag": "tree_nut_source",
+      "class": "false_friend"
+    }
+  ]
+}

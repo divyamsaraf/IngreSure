@@ -110,3 +110,93 @@ def test_uncertainty_flags_carried_through():
     row, _ = map_record(_raw(uncertainty_flags=["requires_classification"]),
                         "wikidata", "DISCOVERED")
     assert row["uncertainty_flags"] == ["requires_classification"]
+
+
+def test_provenance_source_set_from_canonical():
+    row, _ = map_record(_raw(), "usda", "AUTO_CLASSIFIED")
+    assert row["source"] == "usda"
+    assert row["classification_method"] == "bulk:usda"
+
+
+def test_non_enumber_dump_locked_passes_to_validate_for_hard_reject():
+    """adapt keeps declared LOCKED so validate can quarantine — no silent downgrade."""
+    from core.knowledge.ike2.etl.validate import validate_rows
+
+    row, _ = map_record(
+        _raw(knowledge_state="LOCKED", primary_source_url="https://example.com"),
+        "usda",
+        "AUTO_CLASSIFIED",
+    )
+    assert row["knowledge_state"] == "LOCKED"
+    ok, rejects = validate_rows([row])
+    assert ok == []
+    assert rejects[0]["violated_constraint"] == "bulk_locked_verified_requires_e_number_catalog"
+
+
+def test_asserted_flags_only_keys_present_in_raw():
+    row, _ = map_record(_raw(), "usda", "AUTO_CLASSIFIED")
+    # _raw sets plant_origin and gluten_source; omitted flags stay False and unasserted.
+    assert "plant_origin" in row["asserted_flags"]
+    assert "gluten_source" in row["asserted_flags"]
+    assert "synthetic" not in row["asserted_flags"]
+    assert row["synthetic"] is False
+
+
+def test_sparse_false_keys_are_not_asserted():
+    """Bulk adapters assert trues only; sparse falses need curated asserted_flags."""
+    false_keys = [
+        "synthetic",
+        "animal_origin",
+        "dairy_source",
+        "egg_source",
+        "fish_source",
+        "shellfish_source",
+        "gluten_source",
+        "soy_source",
+        "peanut_source",
+        "tree_nut_source",
+        "fungal",
+        "insect_derived",
+    ]
+    assert 4 <= len(false_keys) <= 12
+    raw = {k: False for k in false_keys}
+    raw.update({"canonical_name": "plain rice", "plant_origin": True, "aliases": []})
+    row, _ = map_record(raw, "ifct", "AUTO_CLASSIFIED")
+    false_asserted = [f for f in row["asserted_flags"] if not row.get(f)]
+    assert false_asserted == []
+    assert "plant_origin" in row["asserted_flags"]
+    for k in false_keys:
+        assert k not in row["asserted_flags"], k
+        assert row[k] is False
+
+
+def test_asserted_flags_respects_curated_list_when_present():
+    """Ontology-style dumps ship every bool key; asserted_flags is the decision list."""
+    row, _ = map_record(
+        _raw(
+            plant_origin=True,
+            gluten_source=True,
+            synthetic=False,
+            dairy_source=False,
+            asserted_flags=["plant_origin", "gluten_source", "dairy_source"],
+        ),
+        "ontology",
+        "AUTO_CLASSIFIED",
+    )
+    assert "plant_origin" in row["asserted_flags"]
+    assert "gluten_source" in row["asserted_flags"]
+    assert "dairy_source" in row["asserted_flags"]  # deliberate false-friend
+    assert "synthetic" not in row["asserted_flags"]
+
+
+def test_asserted_flags_include_nut_derive_and_forced_animal():
+    row, _ = map_record(
+        _raw(nut_source="peanut", insect_derived=True, plant_origin=False, gluten_source=False),
+        "usda",
+        "AUTO_CLASSIFIED",
+    )
+    assert row["peanut_source"] is True
+    assert "peanut_source" in row["asserted_flags"]
+    assert row["animal_origin"] is True
+    assert "animal_origin" in row["asserted_flags"]
+    assert "insect_derived" in row["asserted_flags"]

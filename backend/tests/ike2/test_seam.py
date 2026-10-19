@@ -71,6 +71,16 @@ def test_uncertain_resolution_is_fail_closed():
     assert ci.canonical_name == "mystery powder"
 
 
+def test_uncertain_label_still_derives_sulphite_from_query_atom():
+    r = ResolvedIngredient(
+        group=None, source="unknown_queue", confidence_band="none",
+        trusted=False, resolution_layer="L5_unknown_queue", status="uncertain",
+    )
+    ci = to_compliance_input(r, query_atom="apples dried sulphured uncooked")
+    assert ci.flags.get("sulphite_source") is True
+    assert ci.knowledge_state == "UNCLASSIFIED"
+
+
 def test_uncertain_without_query_atom_stays_empty_identity():
     r = ResolvedIngredient(
         group=None, source="unknown_queue", confidence_band="none",

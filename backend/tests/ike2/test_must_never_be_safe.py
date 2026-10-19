@@ -47,7 +47,9 @@ def _must_never_cases() -> list[dict]:
 
 def test_must_never_be_safe_corpus_nonempty():
     cases = _must_never_cases()
-    assert len(cases) >= 80, f"corpus too small: {len(cases)}"
+    # Floor raised in Item 7 Prompt 3 (thin-restriction expansion → 147 jsonl rows).
+    assert len(_load(CORPUS)) >= 147, f"must_never_be_safe.jsonl too small: {len(_load(CORPUS))}"
+    assert len(cases) >= 147, f"combined never-SAFE cases too small: {len(cases)}"
     tiers = {c.get("severity_tier") for c in _load(CORPUS)}
     assert {"M", "R", "P"} <= tiers
 
@@ -68,6 +70,36 @@ def test_zero_false_safe_on_must_never_be_safe_corpus():
                 }
             )
     assert false_safes == [], f"FALSE-SAFE regressions ({len(false_safes)}):\n{false_safes}"
+
+
+@pytest.mark.parametrize(
+    "raw",
+    [
+        "sodium sulfite",
+        "sodium sulphite",
+        "E221",
+        "sulphur dioxide",
+        "E220",
+        "sodium metabisulphite",
+        "E223",
+    ],
+)
+def test_sulfite_family_never_safe_for_sulfite_sensitive(raw):
+    """E220–E228 / common sulfite names must never clear sulfite_sensitive as SAFE.
+
+    Regression for Item 7 finding (2026-10-07): catalog LOCKED anchors had
+    sulphite_source=false; see docs/item7_sulfite_underflag_investigation.md.
+    """
+    case = {
+        "raw_input": raw,
+        "profile": {"restrictions": {"sulfite_sensitive": "medical"}},
+        "region": None,
+        "severity_tier": "M",
+        "ambiguity_class": "allergen_core",
+        "rationale": f"{raw} never Safe for sulfite_sensitive",
+        "must_not_be_safe": True,
+    }
+    assert run_case(case) != "SAFE"
 
 
 def test_medical_tier_never_safe_even_more_strict():

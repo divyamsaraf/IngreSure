@@ -83,6 +83,8 @@ def get_ollama_model() -> str:
 # LLM timeout defaults (seconds)
 LLM_INTENT_TIMEOUT = int(os.environ.get("LLM_INTENT_TIMEOUT", "30"))
 LLM_RESPONSE_TIMEOUT = int(os.environ.get("LLM_RESPONSE_TIMEOUT", "30"))
+LLM_CLASSIFY_TIMEOUT = int(os.environ.get("LLM_CLASSIFY_TIMEOUT", "15"))
+LLM_ENGLISH_HINT_TIMEOUT = int(os.environ.get("LLM_ENGLISH_HINT_TIMEOUT", "5"))
 
 # --- Supabase (Docker-friendly URL) ---
 def get_supabase_url() -> str:

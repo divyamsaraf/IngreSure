@@ -4,10 +4,10 @@ Verify ingredient resolution and DB update flow (no live API/DB required when mo
 
 Flow:
   1. Resolve from static ontology -> no external call.
-  2. Unknown ingredient -> log_unknown_ingredient (JSON) -> enrich_unknown_ingredient (API)
+  2. Unknown ingredient -> log_unknown_ingredient (JSON + ike2_unknown_queue) -> enrich_unknown_ingredient (API)
      -> on high confidence: append_to_dynamic_ontology + add_ingredient (in-memory).
-  3. Background worker: read unknown_ingredients (Supabase) -> fetch_ingredient_from_apis
-     -> upsert_from_enrichment (ingredient_groups, ingredients, ingredient_aliases).
+  3. Background worker: read ike2_unknown_queue -> fetch_ingredient_from_apis
+     -> ike2_* via bulk spine (enrichment_api).
 
 Run: cd backend && python scripts/verify_ingredient_flow.py
 """

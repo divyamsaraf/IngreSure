@@ -15,7 +15,7 @@ from __future__ import annotations
 import logging
 import os
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import Any, List, Optional
 
 from supabase import create_client, Client
@@ -439,69 +439,12 @@ class IngredientKnowledgeDB:
         profile_context: Optional[dict] = None,
     ) -> bool:
         """
-        Record an unknown ingredient for discovery (worker will enrich later).
-        If row exists: increment frequency, append raw_input to raw_inputs, update last_seen.
+        Retired (Item 33 Prompt 4). Discovery writes go to ike2_unknown_queue.
+        Kept so an old caller cannot keep filling the undrained legacy table.
         """
-        if not self._client or not normalized_key:
-            return False
-        client = self._client
-        try:
-            resp = (
-                client.table("unknown_ingredients")
-                .select("id, raw_inputs, frequency, restriction_ids_sample, profile_context_sample")
-                .eq("normalized_key", normalized_key)
-                .limit(1)
-                .execute()
-            )
-            now = datetime.now(timezone.utc).isoformat()
-            if resp.data and len(resp.data) > 0:
-                row = resp.data[0]
-                raw_inputs = list(row.get("raw_inputs") or [])
-                if raw_input and raw_input not in raw_inputs:
-                    raw_inputs = (raw_inputs + [raw_input])[:20]
-                freq = (row.get("frequency") or 0) + 1
-                restr = row.get("restriction_ids_sample") or []
-                if restriction_ids:
-                    for r in restriction_ids[:5]:
-                        if r not in restr:
-                            restr.append(r)
-                    restr = restr[:10]
-                prof = row.get("profile_context_sample") or profile_context
-                client.table("unknown_ingredients").update({
-                    "raw_inputs": raw_inputs,
-                    "frequency": freq,
-                    "last_seen": now,
-                    "restriction_ids_sample": restr,
-                    "profile_context_sample": prof,
-                }).eq("id", row["id"]).execute()
-            else:
-                raw_inputs = [raw_input] if raw_input else []
-                restr = list(restriction_ids)[:10] if restriction_ids else []
-                client.table("unknown_ingredients").insert({
-                    "normalized_key": normalized_key,
-                    "raw_inputs": raw_inputs,
-                    "frequency": 1,
-                    "last_seen": now,
-                    "restriction_ids_sample": restr,
-                    "profile_context_sample": profile_context,
-                }).execute()
-            return True
-        except (OSError, ConnectionError) as e:
-            # Network/DNS unreachable (e.g. Docker without Supabase); don't spam logs
-            logging.getLogger(__name__).debug(
-                "upsert_unknown_ingredient skipped (unreachable) key=%s: %s", normalized_key[:80], e
-            )
-            return False
-        except Exception as e:
-            err_str = str(e)
-            # Supabase/httpx often wrap gaierror; treat as network and log at DEBUG
-            if "Name or service not known" in err_str or "Errno -2" in err_str or "getaddrinfo" in err_str:
-                logging.getLogger(__name__).debug(
-                    "upsert_unknown_ingredient skipped (unreachable) key=%s: %s", normalized_key[:80], e
-                )
-                return False
-            logging.getLogger(__name__).warning(
-                "upsert_unknown_ingredient failed key=%s: %s", normalized_key[:80], e
-            )
-            return False
+        logging.getLogger(__name__).warning(
+            "upsert_unknown_ingredient ignored (legacy table retired) key=%s",
+            (normalized_key or "")[:80],
+        )
+        return False
 

@@ -1,12 +1,18 @@
 """IKE-2 three-tier ingredient resolution (design §9).
 
 Strict order: ResolutionCache -> Tier 1 (bundled truth anchor) -> Tier 2
-(local ontology file) -> Tier 3 (Supabase) -> Unknown queue.
+(local ontology file) -> Tier 3 (Supabase) -> fail-closed uncertain.
 
 After an exact-tier miss, apply the synonymy ladder (§9.3.1):
   L2 curated variant aliases (longest exact key)
   L3 allowlisted facet reduction (only if residual resolves)
-before L5 unknown. No runtime fuzzy / LLM.
+before L5 miss. No runtime fuzzy / LLM.
+
+A true L5 miss is submitted to ``ike2_unknown_queue`` (Item 18) via a
+fire-and-forget background write. The write never raises, never blocks, and
+never changes the returned verdict. Ambiguous / DB-error / malformed Tier-3
+outcomes are not unknowns and are not enqueued. The Celery worker (Beat,
+Item 23) drains the queue.
 """
 import logging
 from typing import Optional
@@ -125,6 +131,10 @@ def resolve(atom: str, region: Optional[str]) -> ResolvedIngredient:
         out.source,
         miss_class=classify_miss_class(atom),
     )
+    if out.resolution_layer == "L5_unknown_queue":
+        from core.knowledge.ike2 import unknown_queue
+
+        unknown_queue.record_miss(norm, atom)
     return tagged
 
 
@@ -178,5 +188,6 @@ def _resolve_uncached(norm: str, region: Optional[str], *, atom: str) -> Resolve
             status="resolved",
         )
 
-    # L5 -- unknown: enqueue for later enrichment and stay uncertain (fail-closed).
+    # L5 — unresolved: fail-closed uncertain. ``resolve()`` submits the queue
+    # write after all alternates miss; this one-shot walk writes nothing.
     return _uncertain("L5_unknown_queue", "unknown_queue")

@@ -1,0 +1,100 @@
+[
+  {
+    "canonical_name": "chicken",
+    "aliases": [
+      "chicken meat",
+      "poulet"
+    ],
+    "plant_origin": false,
+    "animal_origin": true,
+    "regions": [
+      "Global"
+    ],
+    "animal_species": "bird"
+  },
+  {
+    "canonical_name": "milk",
+    "aliases": [
+      "cow milk",
+      "whole milk",
+      "doodh"
+    ],
+    "plant_origin": false,
+    "animal_origin": true,
+    "regions": [
+      "Global",
+      "IN"
+    ],
+    "animal_species": "mammal",
+    "dairy_source": true
+  },
+  {
+    "canonical_name": "egg",
+    "aliases": [
+      "chicken egg",
+      "eggs"
+    ],
+    "plant_origin": false,
+    "animal_origin": true,
+    "regions": [
+      "Global"
+    ],
+    "animal_species": "bird",
+    "egg_source": true
+  },
+  {
+    "canonical_name": "salmon",
+    "aliases": [
+      "atlantic salmon"
+    ],
+    "plant_origin": false,
+    "animal_origin": true,
+    "regions": [
+      "Global"
+    ],
+    "animal_species": "fish",
+    "fish_source": true
+  },
+  {
+    "canonical_name": "shrimp",
+    "aliases": [
+      "prawn",
+      "prawns"
+    ],
+    "plant_origin": false,
+    "animal_origin": true,
+    "regions": [
+      "Global"
+    ],
+    "animal_species": "shellfish",
+    "shellfish_source": true
+  },
+  {
+    "canonical_name": "honey",
+    "aliases": [
+      "bee honey"
+    ],
+    "plant_origin": false,
+    "animal_origin": true,
+    "regions": [
+      "Global"
+    ],
+    "animal_species": "insect",
+    "insect_derived": true,
+    "bee_product": true
+  },
+  {
+    "canonical_name": "beef",
+    "aliases": [
+      "cattle meat",
+      "gosht"
+    ],
+    "plant_origin": false,
+    "animal_origin": true,
+    "regions": [
+      "Global",
+      "IN"
+    ],
+    "animal_species": "mammal"
+  }
+]

@@ -88,10 +88,22 @@ _add(["shellac", "confectioners glaze", "pharmaceutical glaze"], "shellac",
 _add(["beeswax"], "beeswax", _f(animal_origin=True, insect_derived=True))
 _add(["bone phosphate"], "bone phosphate", _f(animal_origin=True))
 _add(["disodium inosinate"], "disodium inosinate", _f(animal_origin=True))
-_add(["l-cysteine", "cysteine"], "l-cysteine", _f(animal_origin=True))
+_add(
+    ["l-cysteine", "cysteine"],
+    "l-cysteine",
+    _f(
+        # Source is contested (feather/hair or microbial fermentation). A firm
+        # animal_origin would Avoid the name while E910 stays Depends.
+        verdict_cap="WARN",
+        uncertainty_flags=[
+            "may_be_synthetic_or_from_plant_fermentation",
+            "traditionally_from_poultry_feathers_or_hog_hair",
+        ],
+    ),
+)
 _add(["lanolin", "wool grease", "wool wax", "wool fat"], "lanolin", _f(animal_origin=True))
-_add(["rennet", "animal rennet"], "rennet", _f(animal_origin=True))
-_add(["pepsin"], "pepsin", _f(animal_origin=True))
+_add(["rennet", "animal rennet"], "rennet", _f(animal_origin=True, enzyme_animal_source=True))
+_add(["pepsin"], "pepsin", _f(animal_origin=True, enzyme_animal_source=True))
 _add(["collagen"], "collagen", _f(animal_origin=True))
 _add(["honey"], "honey", _f(animal_origin=True, bee_product=True))
 _add(["castoreum"], "castoreum", _f(animal_origin=True))
@@ -130,6 +142,15 @@ _add(["mussel"], "mussel", _f(animal_origin=True, shellfish_source=True))
 _add(["scallop"], "scallop", _f(animal_origin=True, shellfish_source=True))
 _add(["squid"], "squid", _f(animal_origin=True, shellfish_source=True))
 _add(["octopus"], "octopus", _f(animal_origin=True, shellfish_source=True))
+_add(["seafood"], "seafood",
+     _f(animal_origin=True, fish_source=True, shellfish_source=True))
+_add(["snail", "snails", "escargot"], "snail",
+     _f(animal_origin=True, animal_species="mollusk"))
+_add(
+    ["worcestershire sauce", "worcestershire", "worcester sauce"],
+    "worcestershire sauce",
+    _f(animal_origin=True, fish_source=True),
+)
 
 # --- common allergens: peanuts / tree nuts -----------------------------------
 _add(["peanut", "peanut butter", "peanut oil"], "peanut", _f(peanut_source=True))
@@ -157,6 +178,7 @@ _add(["curd"], "curd", _f(animal_origin=True, dairy_source=True))
 _add(["egg", "eggs"], "egg", _f(animal_origin=True, egg_source=True))
 _add(["egg white"], "egg white", _f(animal_origin=True, egg_source=True))
 _add(["egg yolk"], "egg yolk", _f(animal_origin=True, egg_source=True))
+_add(["yolk", "yolks", "egg yolks"], "egg yolk", _f(animal_origin=True, egg_source=True))
 _add(["albumin"], "albumin", _f(animal_origin=True, egg_source=True))
 _add(["ovalbumin"], "ovalbumin", _f(animal_origin=True, egg_source=True))
 
@@ -165,31 +187,272 @@ _add(["wheat"], "wheat", _f(gluten_source=True))
 _add(["gluten"], "gluten", _f(gluten_source=True))
 _add(["barley"], "barley", _f(gluten_source=True))
 _add(["rye"], "rye", _f(gluten_source=True))
+_add(["einkorn"], "einkorn", _f(gluten_source=True))
+_add(["khorasan", "khorasan wheat"], "khorasan", _f(gluten_source=True))
+_add(["spelt"], "spelt", _f(gluten_source=True))
+# Idli rava is *usually* parboiled rice grits, but brands blend wheat — same
+# honesty class as L-cysteine. WARN cap, no firm gluten bit either way.
+_add(
+    ["idli rava", "idli ravai", "rice rava", "rice sooji", "rice suji"],
+    "idli rava",
+    _f(
+        plant_origin=True,
+        verdict_cap="WARN",
+        uncertainty_flags=["usually_parboiled_rice_check_blend"],
+    ),
+)
 _add(["soy", "soybean", "edamame"], "soy", _f(soy_source=True))
 _add(["tofu"], "tofu", _f(soy_source=True))
-_add(["tempeh"], "tempeh", _f(soy_source=True))
+_add(["tempeh"], "tempeh", _f(soy_source=True, fungal=True))
 _add(["soy sauce"], "soy sauce", _f(soy_source=True))
 _add(["soy lecithin"], "soy lecithin", _f(soy_source=True))
 _add(["sesame", "sesame seed"], "sesame", _f(sesame_source=True))
-_add(["tahini"], "tahini", _f(sesame_source=True))
-_add(["mustard", "mustard seed"], "mustard", _f(mustard_source=True))
-_add(["celery", "celeriac"], "celery", _f(celery_source=True))
-_add(["lupin", "lupin flour"], "lupin", _f(lupin_source=True))
-_add(["sulphite", "sulfite", "sodium metabisulfite", "potassium metabisulfite"],
-     "sulphite", _f(sulphite_source=True))
+_add(["tahini", "tahini paste"], "tahini", _f(sesame_source=True))
+_add(["mustard", "mustard seed", "mustard seeds", "rai"], "mustard", _f(mustard_source=True))
+_add(["celery", "celeriac", "celery stalk"], "celery", _f(celery_source=True))
+_add(
+    ["lupin", "lupin flour", "lupins", "lupini", "lupini beans", "lupine beans"],
+    "lupin",
+    _f(lupin_source=True),
+)
+_add(
+    ["crustaceans", "crustacean"],
+    "crustaceans",
+    _f(animal_origin=True, shellfish_source=True, animal_species="crustacean"),
+)
+_add(
+    ["mollusks", "mollusk", "molluscs", "mollusc"],
+    "mollusks",
+    _f(animal_origin=True, shellfish_source=True, animal_species="mollusk"),
+)
+# Hand sulphite cluster must cover common EU/US spellings so generated e-number
+# anchors cannot shadow them with sulphite_source=false (Item 7 / 2026-10-07).
+_add(
+    [
+        "sulphite",
+        "sulfite",
+        "sulphites",
+        "sulfites",
+        "sulphur dioxide",
+        "sulfur dioxide",
+        "e220",
+        "sodium sulphite",
+        "sodium sulfite",
+        "e221",
+        "sodium hydrogen sulphite",
+        "sodium hydrogen sulfite",
+        "sodium bisulfite",
+        "sodium bisulphite",
+        "e222",
+        "sodium metabisulfite",
+        "sodium metabisulphite",
+        "sodium pyrosulfite",
+        "e223",
+        "potassium metabisulfite",
+        "potassium metabisulphite",
+        "e224",
+        "potassium sulphite",
+        "potassium sulfite",
+        "e225",
+        "calcium sulphite",
+        "calcium sulfite",
+        "e226",
+        "calcium hydrogen sulphite",
+        "calcium hydrogen sulfite",
+        "calcium bisulfite",
+        "calcium bisulphite",
+        "e227",
+        "potassium hydrogen sulphite",
+        "potassium hydrogen sulfite",
+        "potassium bisulfite",
+        "potassium bisulphite",
+        "e228",
+    ],
+    "sulphite",
+    _f(sulphite_source=True),
+)
 _add(["wheat flour", "enriched wheat flour", "bleached wheat flour"], "wheat",
      _f(gluten_source=True))
 _add(["wheat gluten"], "gluten", _f(gluten_source=True))
 _add(["malted barley flour"], "barley", _f(gluten_source=True))
-_add(["flour", "all purpose flour"], "flour", _f(gluten_source=True))
+_add(["flour", "flours", "all purpose flour"], "flour", _f(gluten_source=True))
+# Bone-char refining is a process ambiguity on some cane sugars, not a labeled
+# ingredient. We treat bare sugar as plant SAFE (not WARN): FAIL would over-block
+# nearly every list; WARN would erase firm SAFE on the most common staple. Named
+# cane/beet sugar stay plant SAFE the same way.
 _add(["sugar"], "sugar", _f(animal_origin=False, plant_origin=True))
 _add(["cane sugar"], "cane sugar", _f(animal_origin=False, plant_origin=True))
 _add(["beet sugar"], "beet sugar", _f(animal_origin=False, plant_origin=True))
 _add(["chicken"], "chicken", _f(animal_origin=True, animal_species="chicken"))
 _add(["potato"], "potato", _f(root_vegetable=True, plant_origin=True))
-_add(["water"], "water", _f())
-_add(["salt", "sea salt"], "salt", _f())
-_add(["yeast"], "yeast", _f())
+_add(["water", "filtered water", "purified water", "drinking water"], "water", _f())
+_add(
+    [
+        "salt",
+        "sea salt",
+        "iodised salt",
+        "iodized salt",
+        "lodised salt",  # OCR / typography variant of iodised
+        "lodized salt",
+        "edible common salt",
+        "table salt",
+        "rock salt",
+    ],
+    "salt",
+    _f(),
+)
+# Culinary oils — named plant oils are L1 staples. Unspecified "vegetable oil"
+# blends may include peanut/sesame/soy/tree-nut oils → WARN-cap only those
+# allergy profiles (not vegan/gluten/dairy where oil is irrelevant).
+_VEGETABLE_OIL_CAP_RESTRICTIONS = (
+    "peanut_allergy",
+    "sesame_allergy",
+    "soy_allergy",
+    "tree_nut_allergy",
+)
+_add(
+    ["vegetable oil", "edible vegetable oil"],
+    "vegetable oil",
+    _f(
+        animal_origin=False,
+        plant_origin=True,
+        # Scoped cap only — do not set uncertainty_flags (those also ceiling
+        # vegan/dairy via _uncertainty_ceiling and would undo the scope).
+        verdict_cap="WARN",
+        verdict_cap_restrictions=list(_VEGETABLE_OIL_CAP_RESTRICTIONS),
+    ),
+)
+for _oil in (
+    "sunflower oil",
+    "rapeseed oil",
+    "canola oil",
+    "olive oil",
+    "corn oil",
+    "coconut oil",
+    "palm oil",
+    "refined palm oil",
+    "safflower oil",
+):
+    _add([_oil], _oil, _f(animal_origin=False, plant_origin=True))
+_add(
+    ["soybean oil", "soya oil", "soy oil"],
+    "soybean oil",
+    _f(animal_origin=False, plant_origin=True, soy_source=True),
+)
+_add(["almond oil"], "almond oil", _f(plant_origin=True, tree_nut_source=True))
+_add(["walnut oil"], "walnut oil", _f(plant_origin=True, tree_nut_source=True))
+_add(["sesame oil"], "sesame oil", _f(plant_origin=True, sesame_source=True))
+_add(
+    ["brown rice", "wholegrain brown rice", "cooked wholegrain brown rice"],
+    "brown rice",
+    _f(animal_origin=False, plant_origin=True),
+)
+_add(
+    ["wheatberries", "wheat berries", "cooked wheatberries"],
+    "wheat",
+    _f(gluten_source=True),
+)
+_add(["glucose syrup", "corn syrup"], "glucose syrup", _f(plant_origin=True))
+# Fortification vitamins — class-level staple clearance (not a hazard signal).
+_add(
+    ["vitamin b12", "cyanocobalamin", "cobalamin"],
+    "vitamin b12",
+    _f(synthetic=True, animal_origin=False, plant_origin=False),
+)
+_ORIGIN_AMBIGUOUS_DIET_CAPS = (
+    "vegan",
+    "jain",
+    "halal",
+    "hindu_vegetarian",
+    "vegetarian",
+    "kosher",
+    "lacto_vegetarian",
+    "ovo_vegetarian",
+)
+_add(
+    ["vitamin b2", "riboflavin"],
+    "vitamin b2",
+    _f(
+        synthetic=True,
+        animal_origin=False,
+        plant_origin=False,
+        # Align with E101 catalog: whey-derived riboflavin is possible.
+        verdict_cap="WARN",
+        verdict_cap_restrictions=list(_ORIGIN_AMBIGUOUS_DIET_CAPS),
+        uncertainty_flags=["may_be_animal_derived_if_from_whey"],
+    ),
+)
+_add(
+    [
+        "thiamine",
+        "thiamine mononitrate",
+        "thiamin mononitrate",
+        "vitamin b1",
+        "thiamin",
+    ],
+    "thiamine",
+    _f(synthetic=True, animal_origin=False, plant_origin=False),
+)
+_add(
+    ["vitamin d2", "ergocalciferol"],
+    "vitamin d2",
+    _f(synthetic=True, animal_origin=False, plant_origin=False),
+)
+_add(
+    ["vitamin a palmitate", "retinyl palmitate"],
+    "vitamin a palmitate",
+    _f(
+        synthetic=True,
+        animal_origin=False,
+        plant_origin=False,
+        # May be fish-oil derived — same WARN pattern as E101 / B2.
+        verdict_cap="WARN",
+        verdict_cap_restrictions=list(_ORIGIN_AMBIGUOUS_DIET_CAPS),
+        uncertainty_flags=["may_be_animal_derived_if_from_fish_oil"],
+    ),
+)
+_add(
+    ["vitamin b6", "pyridoxine", "pyridoxine hydrochloride"],
+    "vitamin b6",
+    _f(synthetic=True, animal_origin=False, plant_origin=False),
+)
+_add(
+    ["vitamin d", "vitamin d3", "cholecalciferol"],
+    "vitamin d",
+    _f(
+        synthetic=True,
+        animal_origin=False,
+        plant_origin=False,
+        # Commercial D3 is usually lanolin-derived.
+        verdict_cap="WARN",
+        verdict_cap_restrictions=list(_ORIGIN_AMBIGUOUS_DIET_CAPS),
+        uncertainty_flags=["may_be_animal_derived_if_from_lanolin"],
+    ),
+)
+_add(["invert sugar syrup", "invert sugar"], "invert sugar", _f(plant_origin=True))
+# Yeast / yeast-culture: Jain fungal FAIL. Empty flags here previously shadowed
+# richer L2 ontology rows (baker's yeast fungal=True) and left plain "yeast" SAFE.
+_add(
+    [
+        "yeast",
+        "baker's yeast",
+        "bakers yeast",
+        "brewer's yeast",
+        "brewers yeast",
+        "nutritional yeast",
+        "active dry yeast",
+        "instant yeast",
+        "dry yeast",
+        "torula yeast",
+    ],
+    "yeast",
+    _f(fungal=True, plant_origin=True, animal_origin=False),
+)
+_add(
+    ["yeast extract", "autolyzed yeast extract", "yeast extract spread"],
+    "yeast extract",
+    _f(fungal=True, plant_origin=True, animal_origin=False),
+)
 _add_compound(["enzymes", "enzyme"], "enzymes")
 
 # --- alcohol sources ---------------------------------------------------------
@@ -280,6 +543,25 @@ def lookup(normalized_key: str) -> Optional[TruthAnchorFact]:
         if hit is not None:
             return hit
     return None
+
+
+def is_compound_umbrella(name: str) -> bool:
+    """True when name is a Tier-1 compound/umbrella registered via _add_compound.
+
+    Uses ``_COMPOUND_CANONICALS`` + ``lookup`` — the same set that caps
+    natural flavors / spices / dish shells to verdict_cap=WARN.
+    """
+    from core.normalization.normalizer import normalize_ingredient_key
+
+    if not name or not str(name).strip():
+        return False
+    key = normalize_ingredient_key(str(name).strip())
+    if key in _COMPOUND_CANONICALS:
+        return True
+    fact = lookup(key) or lookup(str(name).strip())
+    if fact is None:
+        return False
+    return fact.canonical_name in _COMPOUND_CANONICALS
 
 
 def all_anchors() -> dict[str, TruthAnchorFact]:

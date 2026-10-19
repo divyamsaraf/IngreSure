@@ -1,0 +1,1166 @@
+{
+  "seed": 4402,
+  "sampling": "reservoir_stratified_from_off_jsonl_dump",
+  "dump_url": "https://static.openfoodfacts.org/data/openfoodfacts-products.jsonl.gz",
+  "dump_date": "Fri, 16 Oct 2026 06:53:07 GMT",
+  "odbl_attribution": "Product metadata from Open Food Facts (ODbL). Only product codes are stored \u2014 not ingredient texts.",
+  "target_per_cell": 12,
+  "n_products": 216,
+  "cells": {
+    "us/snacks": {
+      "n": 12,
+      "eligible_seen": 88824
+    },
+    "uk_eu/supplements": {
+      "n": 12,
+      "eligible_seen": 4954
+    },
+    "us/bakery": {
+      "n": 12,
+      "eligible_seen": 9190
+    },
+    "us/sauces_condiments": {
+      "n": 12,
+      "eligible_seen": 31383
+    },
+    "uk_eu/bakery": {
+      "n": 12,
+      "eligible_seen": 11202
+    },
+    "uk_eu/snacks": {
+      "n": 12,
+      "eligible_seen": 86792
+    },
+    "uk_eu/sauces_condiments": {
+      "n": 12,
+      "eligible_seen": 29295
+    },
+    "uk_eu/ready_meals": {
+      "n": 12,
+      "eligible_seen": 37053
+    },
+    "us/ready_meals": {
+      "n": 12,
+      "eligible_seen": 19275
+    },
+    "india/sauces_condiments": {
+      "n": 12,
+      "eligible_seen": 462
+    },
+    "uk_eu/dairy_alternatives": {
+      "n": 12,
+      "eligible_seen": 5627
+    },
+    "us/supplements": {
+      "n": 12,
+      "eligible_seen": 3664
+    },
+    "us/dairy_alternatives": {
+      "n": 12,
+      "eligible_seen": 2858
+    },
+    "india/snacks": {
+      "n": 12,
+      "eligible_seen": 1665
+    },
+    "india/supplements": {
+      "n": 12,
+      "eligible_seen": 197
+    },
+    "india/ready_meals": {
+      "n": 12,
+      "eligible_seen": 47
+    },
+    "india/dairy_alternatives": {
+      "n": 12,
+      "eligible_seen": 25
+    },
+    "india/bakery": {
+      "n": 12,
+      "eligible_seen": 207
+    }
+  },
+  "products": [
+    {
+      "code": "0099482424022",
+      "market": "us",
+      "category": "snacks"
+    },
+    {
+      "code": "2000000149714",
+      "market": "us",
+      "category": "snacks"
+    },
+    {
+      "code": "0040000555803",
+      "market": "us",
+      "category": "snacks"
+    },
+    {
+      "code": "0071725727961",
+      "market": "us",
+      "category": "snacks"
+    },
+    {
+      "code": "0825325690251",
+      "market": "us",
+      "category": "snacks"
+    },
+    {
+      "code": "03035100",
+      "market": "us",
+      "category": "snacks"
+    },
+    {
+      "code": "0011110091291",
+      "market": "us",
+      "category": "snacks"
+    },
+    {
+      "code": "0025600086186",
+      "market": "us",
+      "category": "snacks"
+    },
+    {
+      "code": "7622210212573",
+      "market": "us",
+      "category": "snacks"
+    },
+    {
+      "code": "0688267012457",
+      "market": "us",
+      "category": "snacks"
+    },
+    {
+      "code": "0732494001996",
+      "market": "us",
+      "category": "snacks"
+    },
+    {
+      "code": "6936756212319",
+      "market": "us",
+      "category": "snacks"
+    },
+    {
+      "code": "96195529",
+      "market": "uk_eu",
+      "category": "supplements"
+    },
+    {
+      "code": "2000000096931",
+      "market": "uk_eu",
+      "category": "supplements"
+    },
+    {
+      "code": "0745760158539",
+      "market": "uk_eu",
+      "category": "supplements"
+    },
+    {
+      "code": "0759076673211",
+      "market": "uk_eu",
+      "category": "supplements"
+    },
+    {
+      "code": "0088605400221",
+      "market": "uk_eu",
+      "category": "supplements"
+    },
+    {
+      "code": "9344060000473",
+      "market": "uk_eu",
+      "category": "supplements"
+    },
+    {
+      "code": "4260461136229",
+      "market": "uk_eu",
+      "category": "supplements"
+    },
+    {
+      "code": "4068134024299",
+      "market": "uk_eu",
+      "category": "supplements"
+    },
+    {
+      "code": "3663458005910",
+      "market": "uk_eu",
+      "category": "supplements"
+    },
+    {
+      "code": "5055950622012",
+      "market": "uk_eu",
+      "category": "supplements"
+    },
+    {
+      "code": "4068134024374",
+      "market": "uk_eu",
+      "category": "supplements"
+    },
+    {
+      "code": "4305615614489",
+      "market": "uk_eu",
+      "category": "supplements"
+    },
+    {
+      "code": "0031000900199",
+      "market": "us",
+      "category": "bakery"
+    },
+    {
+      "code": "0713733340922",
+      "market": "us",
+      "category": "bakery"
+    },
+    {
+      "code": "0041497001255",
+      "market": "us",
+      "category": "bakery"
+    },
+    {
+      "code": "0014100071044",
+      "market": "us",
+      "category": "bakery"
+    },
+    {
+      "code": "8421691365018",
+      "market": "us",
+      "category": "bakery"
+    },
+    {
+      "code": "0071314040112",
+      "market": "us",
+      "category": "bakery"
+    },
+    {
+      "code": "0041498279592",
+      "market": "us",
+      "category": "bakery"
+    },
+    {
+      "code": "0071314059015",
+      "market": "us",
+      "category": "bakery"
+    },
+    {
+      "code": "0024126015250",
+      "market": "us",
+      "category": "bakery"
+    },
+    {
+      "code": "0229272203487",
+      "market": "us",
+      "category": "bakery"
+    },
+    {
+      "code": "0072220009996",
+      "market": "us",
+      "category": "bakery"
+    },
+    {
+      "code": "0048121304065",
+      "market": "us",
+      "category": "bakery"
+    },
+    {
+      "code": "0070670008910",
+      "market": "us",
+      "category": "sauces_condiments"
+    },
+    {
+      "code": "55109536",
+      "market": "us",
+      "category": "sauces_condiments"
+    },
+    {
+      "code": "0070882039371",
+      "market": "us",
+      "category": "sauces_condiments"
+    },
+    {
+      "code": "0077644901710",
+      "market": "us",
+      "category": "sauces_condiments"
+    },
+    {
+      "code": "0077661022122",
+      "market": "us",
+      "category": "sauces_condiments"
+    },
+    {
+      "code": "0074683620732",
+      "market": "us",
+      "category": "sauces_condiments"
+    },
+    {
+      "code": "5051379106898",
+      "market": "us",
+      "category": "sauces_condiments"
+    },
+    {
+      "code": "0078902400129",
+      "market": "us",
+      "category": "sauces_condiments"
+    },
+    {
+      "code": "0070038654766",
+      "market": "us",
+      "category": "sauces_condiments"
+    },
+    {
+      "code": "0719212101114",
+      "market": "us",
+      "category": "sauces_condiments"
+    },
+    {
+      "code": "4061462288111",
+      "market": "us",
+      "category": "sauces_condiments"
+    },
+    {
+      "code": "0036800637573",
+      "market": "us",
+      "category": "sauces_condiments"
+    },
+    {
+      "code": "3263850588815",
+      "market": "uk_eu",
+      "category": "bakery"
+    },
+    {
+      "code": "0201122011879",
+      "market": "uk_eu",
+      "category": "bakery"
+    },
+    {
+      "code": "4337256852616",
+      "market": "uk_eu",
+      "category": "bakery"
+    },
+    {
+      "code": "2030500476546",
+      "market": "uk_eu",
+      "category": "bakery"
+    },
+    {
+      "code": "0260057005582",
+      "market": "uk_eu",
+      "category": "bakery"
+    },
+    {
+      "code": "3419390043998",
+      "market": "uk_eu",
+      "category": "bakery"
+    },
+    {
+      "code": "5054269266207",
+      "market": "uk_eu",
+      "category": "bakery"
+    },
+    {
+      "code": "20065553",
+      "market": "uk_eu",
+      "category": "bakery"
+    },
+    {
+      "code": "7055450010287",
+      "market": "uk_eu",
+      "category": "bakery"
+    },
+    {
+      "code": "5010024900137",
+      "market": "uk_eu",
+      "category": "bakery"
+    },
+    {
+      "code": "2006050036929",
+      "market": "uk_eu",
+      "category": "bakery"
+    },
+    {
+      "code": "3029330022428",
+      "market": "uk_eu",
+      "category": "bakery"
+    },
+    {
+      "code": "3760177746862",
+      "market": "uk_eu",
+      "category": "snacks"
+    },
+    {
+      "code": "4316268591218",
+      "market": "uk_eu",
+      "category": "snacks"
+    },
+    {
+      "code": "20702502",
+      "market": "uk_eu",
+      "category": "snacks"
+    },
+    {
+      "code": "3263852202818",
+      "market": "uk_eu",
+      "category": "snacks"
+    },
+    {
+      "code": "3464878159623",
+      "market": "uk_eu",
+      "category": "snacks"
+    },
+    {
+      "code": "3770008914476",
+      "market": "uk_eu",
+      "category": "snacks"
+    },
+    {
+      "code": "8723400793489",
+      "market": "uk_eu",
+      "category": "snacks"
+    },
+    {
+      "code": "3564709175423",
+      "market": "uk_eu",
+      "category": "snacks"
+    },
+    {
+      "code": "8410152050143",
+      "market": "uk_eu",
+      "category": "snacks"
+    },
+    {
+      "code": "7616500012646",
+      "market": "uk_eu",
+      "category": "snacks"
+    },
+    {
+      "code": "7616700184211",
+      "market": "uk_eu",
+      "category": "snacks"
+    },
+    {
+      "code": "3178530410136",
+      "market": "uk_eu",
+      "category": "snacks"
+    },
+    {
+      "code": "8008745021771",
+      "market": "uk_eu",
+      "category": "sauces_condiments"
+    },
+    {
+      "code": "00278386",
+      "market": "uk_eu",
+      "category": "sauces_condiments"
+    },
+    {
+      "code": "9011900139616",
+      "market": "uk_eu",
+      "category": "sauces_condiments"
+    },
+    {
+      "code": "4335619114173",
+      "market": "uk_eu",
+      "category": "sauces_condiments"
+    },
+    {
+      "code": "4039057403751",
+      "market": "uk_eu",
+      "category": "sauces_condiments"
+    },
+    {
+      "code": "80103011",
+      "market": "uk_eu",
+      "category": "sauces_condiments"
+    },
+    {
+      "code": "5060524150495",
+      "market": "uk_eu",
+      "category": "sauces_condiments"
+    },
+    {
+      "code": "3179142053018",
+      "market": "uk_eu",
+      "category": "sauces_condiments"
+    },
+    {
+      "code": "0078895143584",
+      "market": "uk_eu",
+      "category": "sauces_condiments"
+    },
+    {
+      "code": "4008122021046",
+      "market": "uk_eu",
+      "category": "sauces_condiments"
+    },
+    {
+      "code": "01897609",
+      "market": "uk_eu",
+      "category": "sauces_condiments"
+    },
+    {
+      "code": "4337185554797",
+      "market": "uk_eu",
+      "category": "sauces_condiments"
+    },
+    {
+      "code": "3551101423382",
+      "market": "uk_eu",
+      "category": "ready_meals"
+    },
+    {
+      "code": "4051009007572",
+      "market": "uk_eu",
+      "category": "ready_meals"
+    },
+    {
+      "code": "3307070065777",
+      "market": "uk_eu",
+      "category": "ready_meals"
+    },
+    {
+      "code": "3367870744470",
+      "market": "uk_eu",
+      "category": "ready_meals"
+    },
+    {
+      "code": "2900633011702",
+      "market": "uk_eu",
+      "category": "ready_meals"
+    },
+    {
+      "code": "3770003130215",
+      "market": "uk_eu",
+      "category": "ready_meals"
+    },
+    {
+      "code": "0628176273921",
+      "market": "uk_eu",
+      "category": "ready_meals"
+    },
+    {
+      "code": "8000139928970",
+      "market": "uk_eu",
+      "category": "ready_meals"
+    },
+    {
+      "code": "26021058",
+      "market": "uk_eu",
+      "category": "ready_meals"
+    },
+    {
+      "code": "3493833100387",
+      "market": "uk_eu",
+      "category": "ready_meals"
+    },
+    {
+      "code": "325622436056800",
+      "market": "uk_eu",
+      "category": "ready_meals"
+    },
+    {
+      "code": "3596710468911",
+      "market": "uk_eu",
+      "category": "ready_meals"
+    },
+    {
+      "code": "13086993442512491",
+      "market": "us",
+      "category": "ready_meals"
+    },
+    {
+      "code": "0072036708977",
+      "market": "us",
+      "category": "ready_meals"
+    },
+    {
+      "code": "9968094404231997207505",
+      "market": "us",
+      "category": "ready_meals"
+    },
+    {
+      "code": "9120003418761",
+      "market": "us",
+      "category": "ready_meals"
+    },
+    {
+      "code": "0711535508229",
+      "market": "us",
+      "category": "ready_meals"
+    },
+    {
+      "code": "2256417547636892",
+      "market": "us",
+      "category": "ready_meals"
+    },
+    {
+      "code": "77254856450683635",
+      "market": "us",
+      "category": "ready_meals"
+    },
+    {
+      "code": "0071921129132",
+      "market": "us",
+      "category": "ready_meals"
+    },
+    {
+      "code": "0043695474046",
+      "market": "us",
+      "category": "ready_meals"
+    },
+    {
+      "code": "0075450237504",
+      "market": "us",
+      "category": "ready_meals"
+    },
+    {
+      "code": "0041196914016",
+      "market": "us",
+      "category": "ready_meals"
+    },
+    {
+      "code": "0851167002204",
+      "market": "us",
+      "category": "ready_meals"
+    },
+    {
+      "code": "8906125240395",
+      "market": "india",
+      "category": "sauces_condiments"
+    },
+    {
+      "code": "8906021121408",
+      "market": "india",
+      "category": "sauces_condiments"
+    },
+    {
+      "code": "8906069400015",
+      "market": "india",
+      "category": "sauces_condiments"
+    },
+    {
+      "code": "8906057206254",
+      "market": "india",
+      "category": "sauces_condiments"
+    },
+    {
+      "code": "8901725125370",
+      "market": "india",
+      "category": "sauces_condiments"
+    },
+    {
+      "code": "8903023005903",
+      "market": "india",
+      "category": "sauces_condiments"
+    },
+    {
+      "code": "8906159670595",
+      "market": "india",
+      "category": "sauces_condiments"
+    },
+    {
+      "code": "8901774002257",
+      "market": "india",
+      "category": "sauces_condiments"
+    },
+    {
+      "code": "0763846998411",
+      "market": "india",
+      "category": "sauces_condiments"
+    },
+    {
+      "code": "8901246005373",
+      "market": "india",
+      "category": "sauces_condiments"
+    },
+    {
+      "code": "8901058023787",
+      "market": "india",
+      "category": "sauces_condiments"
+    },
+    {
+      "code": "8906001052807",
+      "market": "india",
+      "category": "sauces_condiments"
+    },
+    {
+      "code": "4104420204225",
+      "market": "uk_eu",
+      "category": "dairy_alternatives"
+    },
+    {
+      "code": "62784795",
+      "market": "uk_eu",
+      "category": "dairy_alternatives"
+    },
+    {
+      "code": "7025110144720",
+      "market": "uk_eu",
+      "category": "dairy_alternatives"
+    },
+    {
+      "code": "3229820112022",
+      "market": "uk_eu",
+      "category": "dairy_alternatives"
+    },
+    {
+      "code": "3760192499903",
+      "market": "uk_eu",
+      "category": "dairy_alternatives"
+    },
+    {
+      "code": "5213000353938",
+      "market": "uk_eu",
+      "category": "dairy_alternatives"
+    },
+    {
+      "code": "7394376615986",
+      "market": "uk_eu",
+      "category": "dairy_alternatives"
+    },
+    {
+      "code": "5411188141440",
+      "market": "uk_eu",
+      "category": "dairy_alternatives"
+    },
+    {
+      "code": "3222472922711",
+      "market": "uk_eu",
+      "category": "dairy_alternatives"
+    },
+    {
+      "code": "8854404001772",
+      "market": "uk_eu",
+      "category": "dairy_alternatives"
+    },
+    {
+      "code": "8021581180952",
+      "market": "uk_eu",
+      "category": "dairy_alternatives"
+    },
+    {
+      "code": "3428273180040",
+      "market": "uk_eu",
+      "category": "dairy_alternatives"
+    },
+    {
+      "code": "0055840402552",
+      "market": "us",
+      "category": "supplements"
+    },
+    {
+      "code": "0705016601028",
+      "market": "us",
+      "category": "supplements"
+    },
+    {
+      "code": "0096802960499",
+      "market": "us",
+      "category": "supplements"
+    },
+    {
+      "code": "0810014675312",
+      "market": "us",
+      "category": "supplements"
+    },
+    {
+      "code": "0052000055542",
+      "market": "us",
+      "category": "supplements"
+    },
+    {
+      "code": "0602652674570",
+      "market": "us",
+      "category": "supplements"
+    },
+    {
+      "code": "0672691002894",
+      "market": "us",
+      "category": "supplements"
+    },
+    {
+      "code": "0810025671136",
+      "market": "us",
+      "category": "supplements"
+    },
+    {
+      "code": "0851724008212",
+      "market": "us",
+      "category": "supplements"
+    },
+    {
+      "code": "0016185132535",
+      "market": "us",
+      "category": "supplements"
+    },
+    {
+      "code": "0097467305311",
+      "market": "us",
+      "category": "supplements"
+    },
+    {
+      "code": "0810745031739",
+      "market": "us",
+      "category": "supplements"
+    },
+    {
+      "code": "0050000517565",
+      "market": "us",
+      "category": "dairy_alternatives"
+    },
+    {
+      "code": "0041570144312",
+      "market": "us",
+      "category": "dairy_alternatives"
+    },
+    {
+      "code": "0025293003088",
+      "market": "us",
+      "category": "dairy_alternatives"
+    },
+    {
+      "code": "0015418012309",
+      "market": "us",
+      "category": "dairy_alternatives"
+    },
+    {
+      "code": "0050000332236",
+      "market": "us",
+      "category": "dairy_alternatives"
+    },
+    {
+      "code": "0718103443388",
+      "market": "us",
+      "category": "dairy_alternatives"
+    },
+    {
+      "code": "0085239174708",
+      "market": "us",
+      "category": "dairy_alternatives"
+    },
+    {
+      "code": "0865743000393",
+      "market": "us",
+      "category": "dairy_alternatives"
+    },
+    {
+      "code": "0070038646983",
+      "market": "us",
+      "category": "dairy_alternatives"
+    },
+    {
+      "code": "0041415022256",
+      "market": "us",
+      "category": "dairy_alternatives"
+    },
+    {
+      "code": "0025293004450",
+      "market": "us",
+      "category": "dairy_alternatives"
+    },
+    {
+      "code": "0078742179230",
+      "market": "us",
+      "category": "dairy_alternatives"
+    },
+    {
+      "code": "8906143890480",
+      "market": "india",
+      "category": "snacks"
+    },
+    {
+      "code": "7622201685638",
+      "market": "india",
+      "category": "snacks"
+    },
+    {
+      "code": "8904406170492",
+      "market": "india",
+      "category": "snacks"
+    },
+    {
+      "code": "8901262070973",
+      "market": "india",
+      "category": "snacks"
+    },
+    {
+      "code": "8904004400731",
+      "market": "india",
+      "category": "snacks"
+    },
+    {
+      "code": "8906005500557",
+      "market": "india",
+      "category": "snacks"
+    },
+    {
+      "code": "8901576003063",
+      "market": "india",
+      "category": "snacks"
+    },
+    {
+      "code": "8901262170093",
+      "market": "india",
+      "category": "snacks"
+    },
+    {
+      "code": "8901063162648",
+      "market": "india",
+      "category": "snacks"
+    },
+    {
+      "code": "8906005500083",
+      "market": "india",
+      "category": "snacks"
+    },
+    {
+      "code": "8904071704527",
+      "market": "india",
+      "category": "snacks"
+    },
+    {
+      "code": "8901063162723",
+      "market": "india",
+      "category": "snacks"
+    },
+    {
+      "code": "7734883569486",
+      "market": "india",
+      "category": "supplements"
+    },
+    {
+      "code": "8906001026600",
+      "market": "india",
+      "category": "supplements"
+    },
+    {
+      "code": "5059883473734",
+      "market": "india",
+      "category": "supplements"
+    },
+    {
+      "code": "8908013950232",
+      "market": "india",
+      "category": "supplements"
+    },
+    {
+      "code": "8904221694814",
+      "market": "india",
+      "category": "supplements"
+    },
+    {
+      "code": "8906151140126",
+      "market": "india",
+      "category": "supplements"
+    },
+    {
+      "code": "0048107251123",
+      "market": "india",
+      "category": "supplements"
+    },
+    {
+      "code": "8904335601937",
+      "market": "india",
+      "category": "supplements"
+    },
+    {
+      "code": "8901030976179",
+      "market": "india",
+      "category": "supplements"
+    },
+    {
+      "code": "8904335605218",
+      "market": "india",
+      "category": "supplements"
+    },
+    {
+      "code": "8904335604518",
+      "market": "india",
+      "category": "supplements"
+    },
+    {
+      "code": "0631656260175",
+      "market": "india",
+      "category": "supplements"
+    },
+    {
+      "code": "8909106048553",
+      "market": "india",
+      "category": "ready_meals"
+    },
+    {
+      "code": "8901030518232",
+      "market": "india",
+      "category": "ready_meals"
+    },
+    {
+      "code": "8901595971220",
+      "market": "india",
+      "category": "ready_meals"
+    },
+    {
+      "code": "8801043018470",
+      "market": "india",
+      "category": "ready_meals"
+    },
+    {
+      "code": "8901030900150",
+      "market": "india",
+      "category": "ready_meals"
+    },
+    {
+      "code": "8901030900303",
+      "market": "india",
+      "category": "ready_meals"
+    },
+    {
+      "code": "8901030902369",
+      "market": "india",
+      "category": "ready_meals"
+    },
+    {
+      "code": "8906097592911",
+      "market": "india",
+      "category": "ready_meals"
+    },
+    {
+      "code": "19010588",
+      "market": "india",
+      "category": "ready_meals"
+    },
+    {
+      "code": "8901058002997",
+      "market": "india",
+      "category": "ready_meals"
+    },
+    {
+      "code": "8901058029130",
+      "market": "india",
+      "category": "ready_meals"
+    },
+    {
+      "code": "2000000146145",
+      "market": "india",
+      "category": "ready_meals"
+    },
+    {
+      "code": "8850389100769",
+      "market": "india",
+      "category": "dairy_alternatives"
+    },
+    {
+      "code": "8854761951413",
+      "market": "india",
+      "category": "dairy_alternatives"
+    },
+    {
+      "code": "0841541001206",
+      "market": "india",
+      "category": "dairy_alternatives"
+    },
+    {
+      "code": "0841541000025",
+      "market": "india",
+      "category": "dairy_alternatives"
+    },
+    {
+      "code": "0610825925084",
+      "market": "india",
+      "category": "dairy_alternatives"
+    },
+    {
+      "code": "890107130110713",
+      "market": "india",
+      "category": "dairy_alternatives"
+    },
+    {
+      "code": "8908002886238",
+      "market": "india",
+      "category": "dairy_alternatives"
+    },
+    {
+      "code": "8901071732802",
+      "market": "india",
+      "category": "dairy_alternatives"
+    },
+    {
+      "code": "8901071306119",
+      "market": "india",
+      "category": "dairy_alternatives"
+    },
+    {
+      "code": "8906080604744",
+      "market": "india",
+      "category": "dairy_alternatives"
+    },
+    {
+      "code": "7622201766269",
+      "market": "india",
+      "category": "dairy_alternatives"
+    },
+    {
+      "code": "8901071732512",
+      "market": "india",
+      "category": "dairy_alternatives"
+    },
+    {
+      "code": "8904043551715",
+      "market": "india",
+      "category": "bakery"
+    },
+    {
+      "code": "8908014814045",
+      "market": "india",
+      "category": "bakery"
+    },
+    {
+      "code": "8908003761091",
+      "market": "india",
+      "category": "bakery"
+    },
+    {
+      "code": "8904022920648",
+      "market": "india",
+      "category": "bakery"
+    },
+    {
+      "code": "8908021982072",
+      "market": "india",
+      "category": "bakery"
+    },
+    {
+      "code": "8904474001827",
+      "market": "india",
+      "category": "bakery"
+    },
+    {
+      "code": "8906020460683",
+      "market": "india",
+      "category": "bakery"
+    },
+    {
+      "code": "8939108804864",
+      "market": "india",
+      "category": "bakery"
+    },
+    {
+      "code": "8904043501031",
+      "market": "india",
+      "category": "bakery"
+    },
+    {
+      "code": "8906029605344",
+      "market": "india",
+      "category": "bakery"
+    },
+    {
+      "code": "8901648001119",
+      "market": "india",
+      "category": "bakery"
+    },
+    {
+      "code": "8904043551548",
+      "market": "india",
+      "category": "bakery"
+    }
+  ],
+  "parser_note": "Lists must be re-fetched/flattened with current flatten_ingredients."
+}

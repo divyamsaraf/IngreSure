@@ -11,11 +11,14 @@ chestnut generically. Never first-token parent (``cabbage bok choy``).
 from __future__ import annotations
 
 import re
-from typing import Iterable
+from typing import Iterable, Mapping
 
 from core.normalization.normalizer import normalize_ingredient_key
 
-_PREP = r"raw|dried|dry|fresh|frozen|unprepared|canned|smoked|cooked"
+_PREP = (
+    r"raw|dried|dry|fresh|frozen|unprepared|canned|smoked|cooked|"
+    r"ground|pure|shelled|distilled|whole|mixed"
+)
 
 # Exactly one comma, then a prep token — safe to expose the left side as a chat key.
 _SIMPLE_PREP_COMMA = re.compile(
@@ -42,12 +45,34 @@ _PART_SUFFIX = frozenset({
     "leaves", "leaf", "fillets", "fillet", "steaks", "steak",
     "stalks", "stalk", "sprigs", "sprig", "pods", "pod",
     "bulb", "bulbs", "cloves", "flakes", "strips",
+    "coarse", "fine", "powder", "strands", "chunks", "pearls",
 })
 
 # Geographic / breed adjectives (M3). Drop leading token only.
 _GEO_PREFIX = frozenset({
     "atlantic", "pacific", "alaska", "alaskan", "norwegian", "scottish",
     "wild", "farmed",
+})
+
+# Color / grade adjectives on allowlisted commodity heads only
+# (``white rice`` → ``rice``). Never ``white chocolate`` (not in heads).
+_COLOR_PREFIX = frozenset({
+    "white", "brown", "red", "black", "green", "yellow", "dark", "light",
+})
+_COLOR_STRIP_HEADS = frozenset({
+    "rice", "flour", "sugar", "pepper", "onion", "onions", "bean", "beans",
+    "corn", "potato", "potatoes", "tea", "wine", "vinegar", "mustard",
+    "sesame", "cabbage", "quinoa", "lentil", "lentils", "pea", "peas",
+})
+
+# Head-first grocery phrasing (``salt himalayan``, ``vinegar balsamic``).
+# Rotate the head noun to the end so Adj+Noun forms can resolve.
+_HEAD_FIRST_NOUNS = frozenset({
+    "salt", "sugar", "vinegar", "oil", "flour", "milk", "rice", "pepper",
+    "seed", "seeds", "syrup", "sauce", "cheese", "bean", "beans", "pea",
+    "peas", "onion", "onions", "potato", "potatoes", "squash", "tea",
+    "wine", "water", "cream", "yogurt", "butter", "juice", "paste",
+    "starch", "broth", "stock", "bouillon",
 })
 
 # Never strip these (false-Safe / wrong identity risk).
@@ -74,6 +99,10 @@ def simple_commodity_head(name: str) -> str | None:
     """Return a short chat key for a long dump name, or None if unsafe."""
     raw = (name or "").strip()
     if not raw:
+        return None
+    # Sulfured / sulphured fruit must not collapse to the fresh commodity
+    # (loses sulphite_source → false SAFE under sulfite_sensitive).
+    if re.search(r"sulfur|sulphur|sulfited|sulphited", raw, re.I):
         return None
 
     # Prefer original punctuation: multi-comma forms must refuse before
@@ -105,15 +134,32 @@ def simple_commodity_head(name: str) -> str | None:
     return _accept_head(m.group(1).strip())
 
 
-def facet_reduction_candidates(name: str) -> list[str]:
+def facet_reduction_candidates(
+    name: str,
+    *,
+    role_index: Mapping[str, str] | None = None,
+) -> list[str]:
     """Allowlisted shorter forms; caller must confirm residual resolves.
 
     Order: prep-head, trailing part strip, leading geo strip, then combinations.
     Never returns juice/puree/butter-style reductions.
+
+    Culinary/process/tier1 keep (shared neutralize policies) → no facet strip.
+    Residual ``_FORBIDDEN_STRIP`` entries (butter, oil, …) remain for head
+    geometry that is not yet role-seeded (Phase 2a residual).
     """
+    from core.compound_expansion import get_role_index
+    from core.knowledge.ike2.coverage_os.neutralize import apply_policies
+
     n = normalize_ingredient_key(name or "")
     if not n:
         return []
+
+    roles = dict(role_index) if role_index is not None else get_role_index()
+    fired = apply_policies(n, role_index=roles).policy_fired
+    if any(p in fired for p in ("culinary_keep", "process_keep", "tier1_keep")):
+        return []
+
     out: list[str] = []
     seen: set[str] = {n}
 
@@ -145,6 +191,16 @@ def facet_reduction_candidates(name: str) -> list[str]:
             if len(parts) >= 3 and parts[-1] in _PART_SUFFIX:
                 mid = " ".join(parts[1:-1]).strip()
                 _add(_accept_head(mid) or mid)
+        if (
+            first in _COLOR_PREFIX
+            and len(parts) == 2
+            and parts[1] in _COLOR_STRIP_HEADS
+        ):
+            _add(parts[1])
+        # salt himalayan → himalayan salt; vinegar apple cider → apple cider vinegar
+        if first in _HEAD_FIRST_NOUNS and len(parts) >= 2:
+            rotated = " ".join(parts[1:] + parts[:1])
+            _add(normalize_ingredient_key(rotated) or rotated)
 
     return out
 

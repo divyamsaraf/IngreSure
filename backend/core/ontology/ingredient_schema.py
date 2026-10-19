@@ -17,6 +17,9 @@ class Ingredient:
     # Origin flags
     animal_origin: bool = False
     plant_origin: bool = False
+    # FSSAI bulk often sets synthetic=true by inference; that value is unreliable
+    # and is read by no restriction rule / verdict_cap path. Treat as unset
+    # default unless a curated asserted_flags entry deliberately decides it.
     synthetic: bool = False
     fungal: bool = False
     insect_derived: bool = False
@@ -40,6 +43,8 @@ class Ingredient:
     fermented: bool = False
     # Uncertainty: e.g. "natural_flavor", "mono_diglycerides"
     uncertainty_flags: list[str] = field(default_factory=list)
+    # Flag names whose stored bool was deliberately set (not a default false).
+    asserted_flags: list[str] = field(default_factory=list)
     regions: list[str] = field(default_factory=list)
 
     @property
@@ -104,6 +109,7 @@ class Ingredient:
             "garlic_source": self.garlic_source,
             "fermented": self.fermented,
             "uncertainty_flags": list(self.uncertainty_flags),
+            "asserted_flags": list(self.asserted_flags),
             "regions": list(self.regions),
         }
 
@@ -135,5 +141,6 @@ class Ingredient:
             garlic_source=d.get("garlic_source", False),
             fermented=d.get("fermented", False),
             uncertainty_flags=d.get("uncertainty_flags", []) or [],
+            asserted_flags=d.get("asserted_flags", []) or [],
             regions=d.get("regions", []) or [],
         )

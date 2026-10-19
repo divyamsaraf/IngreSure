@@ -1,10 +1,8 @@
 """
-Bridge: map profile diet names to restriction_ids; run compliance engine for chat.
+Bridge: map profile diet names to restriction_ids; run IKE-2 compliance for chat.
 """
 import hashlib
 import logging
-import sys
-from concurrent.futures import ThreadPoolExecutor
 from types import SimpleNamespace
 from typing import Dict, List, Any, Optional, Set, Tuple, TYPE_CHECKING
 
@@ -23,10 +21,6 @@ from core.normalization.parser import flatten_ingredients
 from core.normalization.normalizer import substance_key
 
 logger = logging.getLogger(__name__)
-
-
-def _interpreter_finalizing() -> bool:
-    return bool(getattr(sys, "is_finalizing", lambda: False)())
 
 # ---------------------------------------------------------------------------
 # Mapping dictionaries (single source of truth)
@@ -114,6 +108,19 @@ def _normalize_key(s: str) -> str:
 # ---------------------------------------------------------------------------
 # Profile -> restriction_ids
 # ---------------------------------------------------------------------------
+
+# First-build contradictory pair only. Do not grow this set here.
+CONTRADICTORY_DIET_PAIRS = (frozenset({"vegan", "pescatarian"}),)
+
+
+def contradictory_diet_pair(restriction_ids: Optional[List[str]]) -> Optional[tuple]:
+    """Return the sorted pair when restriction_ids contains a forbidden combination."""
+    present = set(restriction_ids or [])
+    for pair in CONTRADICTORY_DIET_PAIRS:
+        if pair <= present:
+            return tuple(sorted(pair))
+    return None
+
 
 def profile_to_restriction_ids(user_profile: Optional[Dict[str, Any]]) -> List[str]:
     """Build restriction_ids from userProfile dict (dietary_preference, allergens, lifestyle)."""
@@ -422,6 +429,8 @@ def _run_ike2_compliance(
     restriction_ids: Optional[List[str]],
     prepared_decomposed: Optional[List[Any]] = None,
     region: Optional[str] = None,
+    *,
+    raw_label: Optional[str] = None,
 ) -> Tuple[Any, List[Any], Dict[str, str]]:
     """Run the IKE-2 pipeline (input -> resolve -> seam -> rules -> evaluate)
     and return the raw ``ComplianceResult``, its ``ComplianceInput`` list, and
@@ -430,11 +439,15 @@ def _run_ike2_compliance(
     Same pipeline as ``core.knowledge.ike2.shadow.runner.ike2_external_verdict``,
     kept separate because that module returns only the external status string
     while the chat path needs the full result to build a ``ComplianceVerdict``.
+
+    ``raw_label`` (when set) enables the product-level raw-string hazard sweep
+    and parse-quality SAFE ceiling inside ``evaluate``.
     """
     profile = _profile_from_restriction_ids(restriction_ids)
     active_rules = ike2_rules.load_rules()
     inputs = []
     display_map: Dict[str, str] = {}
+    atom_names: List[str] = []
     if prepared_decomposed is not None:
         for idx, atom in enumerate(prepared_decomposed):
             resolved = ike2_resolver.resolve(atom.name, region)
@@ -445,6 +458,7 @@ def _run_ike2_compliance(
                 query_atom=atom.name,
             )
             inputs.append(ci)
+            atom_names.append(atom.name)
             # DecomposedItem carries no original display text (it's already
             # post-decompose), so atom.name is the best available display.
             _record_display(display_map, idx, ci.canonical_name, atom.name)
@@ -460,94 +474,24 @@ def _run_ike2_compliance(
                     query_atom=atom.name,
                 )
                 inputs.append(ci)
+                atom_names.append(atom.name)
                 _record_display(display_map, idx, ci.canonical_name, raw)
                 idx += 1
-    result = ike2_compliance.evaluate(inputs, profile, active_rules)
-    return result, inputs, display_map
-
-
-# Legacy shadow diff is observational only, so it is capped rather than left
-# to run indefinitely -- a hung legacy call must not accumulate threads.
-LEGACY_DIFF_TIMEOUT_SEC = 5
-
-# Worker pool that actually runs the legacy diff. A second, small pool
-# supervises each worker future with a timeout so the *request* thread never
-# waits on either the legacy call or the timeout -- `_schedule_legacy_diff`
-# only submits and returns.
-_LEGACY_DIFF_EXECUTOR = ThreadPoolExecutor(max_workers=2, thread_name_prefix="legacy-diff")
-_LEGACY_DIFF_SUPERVISOR = ThreadPoolExecutor(max_workers=2, thread_name_prefix="legacy-diff-sv")
-
-
-def _run_legacy_diff_job(
-    ingredients: List[str],
-    restriction_ids: Optional[List[str]],
-    primary_status: str,
-    prepared_decomposed: Optional[List[Any]] = None,
-) -> None:
-    """Diff the legacy engine against the already-computed IKE-2 verdict.
-
-    Runs on a background worker thread (see ``_schedule_legacy_diff``).
-    Observational only; must never affect the primary result. Uses
-    ``use_api_fallback=False`` inside ``run_legacy_diff`` to keep the diff
-    deterministic and network-free.
-    """
-    from core.knowledge.ike2.shadow.runner import run_legacy_diff
-
-    run_legacy_diff(
-        ingredients,
-        restriction_ids,
-        None,
-        primary_status,
-        decomposed_atoms=prepared_decomposed,
+    # Prefer explicit raw_label; else join ingredient strings so a multi-atom
+    # paste still gets the product-level hazard sweep / parse-quality ceiling.
+    effective_raw = raw_label
+    if effective_raw is None and ingredients:
+        effective_raw = ingredients[0] if len(ingredients) == 1 else ", ".join(
+            str(x) for x in ingredients if x
+        )
+    result = ike2_compliance.evaluate(
+        inputs,
+        profile,
+        active_rules,
+        raw_label=effective_raw,
+        parsed_atoms=atom_names,
     )
-
-
-def _supervise_legacy_diff(future) -> None:
-    """Wait (with timeout) for a legacy diff future, off the request thread.
-
-    Runs on the supervisor pool. Never raises -- logs and moves on.
-    """
-    try:
-        future.result(timeout=LEGACY_DIFF_TIMEOUT_SEC)
-    except TimeoutError:
-        future.cancel()
-        logger.warning(
-            "IKE-2 legacy diff exceeded %ss timeout; abandoning", LEGACY_DIFF_TIMEOUT_SEC
-        )
-    except Exception:
-        logger.warning("IKE-2 legacy diff failed", exc_info=True)
-
-
-def _schedule_legacy_diff(
-    ingredients: List[str],
-    restriction_ids: Optional[List[str]],
-    primary_status: str,
-    prepared_decomposed: Optional[List[Any]] = None,
-) -> None:
-    """Fire-and-forget: submit the legacy diff to a background worker pool
-    and return immediately. The request thread never blocks on the legacy
-    engine or on the timeout that bounds it.
-    """
-    if _interpreter_finalizing():
-        logger.info("IKE-2 legacy diff scheduling skipped during interpreter finalization")
-        return
-
-    try:
-        future = _LEGACY_DIFF_EXECUTOR.submit(
-            _run_legacy_diff_job,
-            ingredients,
-            restriction_ids,
-            primary_status,
-            prepared_decomposed,
-        )
-        _LEGACY_DIFF_SUPERVISOR.submit(_supervise_legacy_diff, future)
-    except RuntimeError as exc:
-        if "cannot schedule new futures after interpreter shutdown" in str(exc).lower():
-            logger.info("IKE-2 legacy diff scheduling skipped during interpreter shutdown race")
-            return
-        logger.warning("IKE-2 legacy diff scheduling failed", exc_info=True)
-    except Exception:
-        logger.warning("IKE-2 legacy diff scheduling failed", exc_info=True)
+    return result, inputs, display_map
 
 
 def run_new_engine_chat(
@@ -557,10 +501,13 @@ def run_new_engine_chat(
     profile_context: Optional[Dict[str, Any]] = None,
     use_api_fallback: bool = True,
     prepared_decomposed: Optional[List[Any]] = None,
+    *,
+    raw_label: Optional[str] = None,
 ) -> ComplianceVerdict:
     """Run compliance for chat. IKE-2 is the only source of the returned
-    verdict; on any IKE-2 failure this fails closed to UNCERTAIN and never
-    falls back to the legacy engine's result."""
+    verdict; on any IKE-2 failure this fails closed to UNCERTAIN."""
+    _ = (profile_context, use_api_fallback)  # schema compatibility
+
     if restriction_ids is not None:
         rids = restriction_ids
     elif hasattr(user_profile, "dietary_preference"):
@@ -569,22 +516,19 @@ def run_new_engine_chat(
         rids = profile_to_restriction_ids(user_profile if isinstance(user_profile, dict) else None)
 
     try:
-        ike2_output = _run_ike2_compliance(ingredients, rids, prepared_decomposed)
+        ike2_output = _run_ike2_compliance(
+            ingredients, rids, prepared_decomposed, raw_label=raw_label
+        )
         if isinstance(ike2_output, ComplianceVerdict):
-            verdict = ike2_output
-        else:
-            result, inputs, display_map = ike2_output
-            verdict = map_ike2_to_compliance_verdict(
-                result, inputs, input_display_map=display_map
-            )
+            return ike2_output
+        result, inputs, display_map = ike2_output
+        return map_ike2_to_compliance_verdict(
+            result, inputs, input_display_map=display_map
+        )
     except Exception:
         logger.exception(
             "IKE2_PRIMARY_FAILED input_hash=%s restriction_ids=%s",
             _input_hash(ingredients, rids), rids,
         )
-        verdict = ComplianceVerdict(status=VerdictStatus.UNCERTAIN)
-
-    _schedule_legacy_diff(ingredients, rids, verdict.status.value, prepared_decomposed)
-
-    return verdict
+        return ComplianceVerdict(status=VerdictStatus.UNCERTAIN)
 

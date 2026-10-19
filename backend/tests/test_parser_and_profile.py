@@ -65,6 +65,136 @@ def test_flatten_ingredients_enriched_wheat_flour_full():
     assert len(out) >= 5
 
 
+def test_flatten_strips_percentage_only_atoms():
+    """Quantity percents are not ingredients (Item 44 splitter)."""
+    from core.normalization.parser import flatten_ingredients
+
+    out = flatten_ingredients("farine de blé, sucre, 4%, huile de colza, sugar 8%")
+    assert "4%" not in out
+    assert "8%" not in out
+    assert "sugar 8%" not in out
+    assert "sucre" in out
+    assert "sugar" in out
+    assert "huile de colza" in out
+
+
+def test_flatten_keeps_name_when_paren_is_composition_percent():
+    """Composition % must not replace the ingredient (false-SAFE root cause)."""
+    from core.normalization.parser import flatten_ingredients
+
+    out = flatten_ingredients(
+        "PEANUTS (49.5%), honey, dark chocolate (12%) (cocoa mass, cane sugar, cocoa butter), "
+        "SOYA crispies (10.5%), desiccated coconut (7.5%), rice syrup, salt."
+    )
+    assert "peanut" in out or "peanuts" in out
+    assert "honey" in out
+    assert "salt" in out
+    assert "49.5%" not in out
+    assert "12%" not in out
+    # dark chocolate expands or keeps cocoa constituents
+    assert any(x in out for x in ("cocoa", "cocoa mass", "dark chocolate", "cane sugar"))
+
+
+@pytest.mark.parametrize(
+    "raw,must_keep",
+    [
+        ("peanuts (49.5%)", "peanut"),
+        ("peanuts (49,5 %)", "peanut"),
+        ("wheat flour (min. 62%)", "wheat flour"),
+        ("milk 3.5%", "milk"),
+        ("peanuts 49.5%", "peanut"),
+    ],
+)
+def test_flatten_composition_percent_goldens(raw, must_keep):
+    """Hazard/identity tokens must survive composition-percent noise."""
+    from core.normalization.parser import flatten_ingredients
+
+    out = flatten_ingredients(raw)
+    assert must_keep in out, (raw, out)
+    assert not any("%" in a for a in out)
+    assert "min" not in out
+
+
+def test_truth_anchor_class_staple_oils_and_water_variants():
+    """Item 44 class-level staple aliases resolve at L1."""
+    from types import SimpleNamespace
+
+    from core.knowledge.ike2 import resolution_cache as cache
+    from core.knowledge.ike2 import rules as rules_module
+    from core.knowledge.ike2.compliance import evaluate
+    from core.knowledge.ike2.resolver import resolve
+    from core.knowledge.ike2.seam import to_compliance_input
+    from core.knowledge.ike2.verdict import Verdict, to_external
+
+    for atom, canonical in (
+        ("rapeseed oil", "rapeseed oil"),
+        ("sunflower oil", "sunflower oil"),
+        ("edible vegetable oil", "vegetable oil"),
+        ("filtered water", "water"),
+        ("iodised salt", "salt"),
+        ("lodised salt", "salt"),
+        ("wheatberries", "wheat"),
+        ("vitamin b6", "vitamin b6"),
+        ("vitamin d3", "vitamin d"),
+    ):
+        cache.clear()
+        r = resolve(atom, None)
+        assert r.resolution_layer.startswith("L1"), (atom, r.resolution_layer)
+        assert r.trusted is True
+        assert r.group is not None
+        assert r.group.canonical_name == canonical
+
+    rules = rules_module.seeded_rules()
+
+    def _v(atom: str, rid: str, severity: str = "medical"):
+        cache.clear()
+        ci = to_compliance_input(resolve(atom, None), query_atom=atom)
+        return evaluate(
+            [ci], SimpleNamespace(restrictions={rid: severity}), rules
+        ).verdict
+
+    # Unspecified vegetable oil must not firm-SAFE allergen profiles.
+    assert _v("vegetable oil", "peanut_allergy") != Verdict.SAFE
+    assert _v("edible vegetable oil", "sesame_allergy") != Verdict.SAFE
+    # Cap is scoped: oil is irrelevant to vegan / gluten / dairy.
+    assert to_external(_v("vegetable oil", "vegan", "preference")) == "SAFE"
+    assert to_external(_v("vegetable oil", "gluten_free")) == "SAFE"
+    assert to_external(_v("vegetable oil", "dairy_free")) == "SAFE"
+    # Named soy oil must Avoid soy allergy.
+    assert _v("soybean oil", "soy_allergy") == Verdict.FAIL
+    # Wheatberries carry gluten.
+    assert _v("wheatberries", "gluten_free") == Verdict.FAIL
+    # D3 / A palmitate origin-ambiguous for vegan/religious.
+    assert to_external(_v("vitamin d3", "vegan", "preference")) != "SAFE"
+    assert to_external(_v("vitamin a palmitate", "jain", "religious")) != "SAFE"
+
+
+def test_flatten_strips_contains_and_may_contain_markers():
+    """Allergen declarations are not a single opaque atom."""
+    from core.normalization.parser import flatten_ingredients
+
+    out = flatten_ingredients("Ingredients: wheat flour. Contains wheat.")
+    assert "contains wheat" not in out
+    assert "wheat" in out
+    assert "wheat flour" in out
+
+    out2 = flatten_ingredients("milk, salt. May contain peanuts.")
+    assert "may contain peanuts" not in out2
+    assert "peanut" in out2 or "peanuts" in out2
+    assert "milk" in out2
+
+
+def test_flatten_keeps_category_expand_with_cleaned_atoms():
+    """Percent / contains cleanup must not break vegetable oil (A, B) expand."""
+    from core.normalization.parser import flatten_ingredients
+
+    out = flatten_ingredients("vegetable oil (sunflower, canola), salt, 2%")
+    assert "sunflower oil" in out
+    assert "canola oil" in out
+    assert "salt" in out
+    assert "2%" not in out
+
+
 def test_user_profile_is_empty():
     """Empty profile (No rules, no allergens/lifestyle) is_empty()."""
     from core.models.user_profile import UserProfile

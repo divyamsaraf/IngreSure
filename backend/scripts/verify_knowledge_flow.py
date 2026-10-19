@@ -27,17 +27,16 @@ def main() -> int:
     assert "sunflower oil" in out and "canola oil" in out and "salt" in out
     print("   OK: flatten_ingredients category expand")
 
-    print("3. Resolver (DB-first when Supabase configured)")
-    from core.knowledge.canonicalizer import CanonicalResolver
-    resolver = CanonicalResolver()
-    # Static ontology or DB may have "wheat" / "egg"
-    res = resolver.resolve_static("wheat")
-    if res.ingredient:
-        print(f"   OK: resolve_static('wheat') -> {res.ingredient.canonical_name}")
+    print("3. Resolver (IKE-2)")
+    from core.knowledge.ike2.resolver import resolve
+    res = resolve("wheat", None)
+    name = getattr(res.group, "canonical_name", None) if res.group else None
+    if res.status == "resolved" and name:
+        print(f"   OK: resolve('wheat') -> {name} ({res.resolution_layer})")
     else:
-        print("   (wheat not in static ontology; DB may have it after seed)")
+        print("   (wheat did not resolve)")
 
-    print("4. Unknown → DB (when Supabase configured)")
+    print("4. Unknown → ike2_unknown_queue (when Supabase configured)")
     from core.knowledge.ingredient_db import IngredientKnowledgeDB
     from core.enrichment.unknown_log import log_unknown_ingredient
     from core.normalization.normalizer import normalize_ingredient_key
@@ -45,7 +44,7 @@ def main() -> int:
     if db.enabled:
         key = normalize_ingredient_key("dragon fruit powder")
         log_unknown_ingredient("dragon fruit powder", key, restriction_ids=None, profile_context=None)
-        print("   OK: log_unknown_ingredient -> unknown_ingredients table (if DB enabled)")
+        print("   OK: log_unknown_ingredient -> ike2_unknown_queue (not legacy unknown_ingredients)")
     else:
         print("   SKIP: Supabase not configured (unknowns go to JSON only)")
 

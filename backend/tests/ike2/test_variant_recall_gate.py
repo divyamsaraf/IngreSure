@@ -42,6 +42,32 @@ def test_variant_alias_longest_cut():
     assert r.status == "resolved" and r.trusted
 
 
+def test_head_first_salt_and_color_rice():
+    assert "himalayan salt" in facet_reduction_candidates("salt himalayan")
+    assert "rice" in facet_reduction_candidates("white rice")
+    assert resolve("salt himalayan", None).status == "resolved"
+    assert resolve("white rice", None).status == "resolved"
+    assert resolve("sugar brown", None).group.canonical_name == "brown sugar"
+
+
+def test_animal_cut_aliases_avoid_hindu_veg():
+    from types import SimpleNamespace
+    from core.knowledge.ike2.compliance import Verdict, evaluate
+    from core.knowledge.ike2.seam import to_compliance_input
+    from core.knowledge.ike2.rules import seeded_rules
+
+    profile = SimpleNamespace(restrictions={"hindu_vegetarian": "preference"})
+    for raw in (
+        "smoked ham", "turkey ground", "sheep", "seafood", "tenderloin",
+        "yolks", "snail", "worcestershire sauce",
+    ):
+        r = resolve(raw, None)
+        assert r.status == "resolved", raw
+        inp = to_compliance_input(r, query_atom=raw)
+        result = evaluate([inp], profile, seeded_rules())
+        assert result.verdict == Verdict.FAIL, (raw, result.verdict)
+
+
 def test_geo_fish_alias():
     r = resolve("Atlantic salmon", None)
     assert r.status == "resolved" and r.trusted

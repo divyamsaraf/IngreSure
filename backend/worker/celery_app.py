@@ -23,8 +23,22 @@ celery_app = Celery(
     "ingresure_worker",
     broker=_default_broker_url(),
     backend=os.environ.get("CELERY_RESULT_BACKEND", _default_broker_url()),
+    include=["worker.tasks"],
 )
 
-# Keep configuration minimal for now; tuning (acks_late, concurrency, etc.)
-# can be added once tasks are in active use.
+# Item 23: Beat runs embedded in the single compose worker (`worker -B`).
+# Running more than one worker replica with -B would double-schedule.
+celery_app.conf.beat_schedule = {
+    "enrich-unknown-batch-hourly": {
+        "task": "enrich_unknown_batch",
+        "schedule": 3600.0,
+        "kwargs": {"min_frequency": 1, "limit": 50},
+    },
+    # Item 12: nightly IKE-2 live audits (asserted-false, DISCOVERED, L2↔L3 drift,
+    # lexicon vs verdict). Report-only; writes .local_reports/item12_*.json.
+    "ike2-scheduled-audits-daily": {
+        "task": "ike2_scheduled_audits",
+        "schedule": 86400.0,
+    },
+}
 

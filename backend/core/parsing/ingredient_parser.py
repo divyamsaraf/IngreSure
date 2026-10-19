@@ -11,7 +11,7 @@ from typing import List, Dict, Any, Optional, Callable
 from core.normalization.normalizer import normalize_ingredient_key
 from core.parsing.label_normalize import normalize_label_separators
 from core.parsing.label_text import fix_ocr_label_noise, select_ingredient_label_text
-from core.parsing.nesting_split import split_by_nesting
+from core.parsing.nesting_split import split_by_nesting, split_top_level
 
 logger = logging.getLogger(__name__)
 
@@ -271,8 +271,22 @@ def _strip_may_contain_markers(text: str) -> str:
     return t.strip()
 
 
+# Pure quantity: "49.5%", "49,5 %", "min. 62%", "max 10%", "approx. 5%", "~5%"
+_COMPOSITION_PERCENT = re.compile(
+    r"^(?:(?:min|max|minimum|maximum|approx|approximately|about|ca|avg|average)\.?\s+)?"
+    r"~?\s*\d+(?:[.,]\d+)?\s*%$",
+    re.IGNORECASE,
+)
+_COMPOSITION_NUMBER = re.compile(r"^\d+(?:[.,]\d+)?$")
+
+
 def _segment_canonical(part: str) -> str:
-    """Collapse role/qualifier parentheticals before nesting split."""
+    """Collapse role/qualifier parentheticals before nesting split.
+
+    Composition percents like ``PEANUTS (49.5%)`` or ``wheat flour (min. 62%)``
+    keep the ingredient name; only synonym/role parentheticals
+    (e.g. ``Vitamin C (ascorbic acid)``) collapse to the inner form.
+    """
     match = re.search(r"\(([^)]*)\)", part)
     if not match:
         return part
@@ -280,10 +294,23 @@ def _segment_canonical(part: str) -> str:
     if "," in inner:
         return part
     base = part[: match.start()].strip()
+    # Composition % is not a synonym — leave segment intact for nesting split
+    # + quantity strip (must not collapse to "49.5%" / "min" or drop hazards).
+    if _COMPOSITION_PERCENT.match(inner) or _COMPOSITION_NUMBER.match(inner):
+        return part
     inner_lower = inner.lower()
     if any(inner_lower.startswith(q) for q in _QUALIFIERS):
         return base
     if base and inner:
+        # Synonym collapse (e.g. Vitamin C (ascorbic acid)) must not erase a
+        # hazard surface form on the outer token (Wheat Flour (Maida),
+        # Peanut Butter (Unsweetened)).
+        try:
+            from core.parsing.hazard_lexicon import hazard_hits_in_text
+        except Exception:  # pragma: no cover
+            hazard_hits_in_text = lambda _t: set()  # type: ignore
+        if hazard_hits_in_text(base) - hazard_hits_in_text(inner):
+            return part
         return inner
     return part
 
@@ -294,7 +321,7 @@ def _segments_for_clause(clause: str) -> List[tuple[str, bool]]:
         chunk = chunk.strip()
         if not chunk:
             continue
-        for seg in _TOP_LEVEL_SEP.split(chunk):
+        for seg in split_top_level(chunk):
             seg = seg.strip()
             if not seg:
                 continue

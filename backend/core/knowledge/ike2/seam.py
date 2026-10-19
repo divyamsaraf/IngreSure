@@ -67,19 +67,34 @@ def to_compliance_input(
     group = resolved.group
     trusted = bool(getattr(resolved, "trusted", False))
 
-    # Unresolved (L5 / ambiguous): nothing to assert -> fail-closed UNCERTAIN.
+    # Unresolved (L5 / ambiguous): fail-closed UNCERTAIN unless the label text
+    # itself carries an identity-derived hazard (dried sulphured fruit, etc.).
     # Keep the original atom text as identity so multiple unknowns do not collapse
     # onto one empty breakdown key (and so the audit never shows a bare "Unknown").
     if group is None:
         identity = (query_atom or "").strip()
+        flags = _with_derived_flags(identity, {}) if identity else {}
+        # Label-derived hazard on an unknown atom: trusted enough for Avoid
+        # (untrusted gate must not erase Item-34-style FAIL from the name itself).
+        _hazard_keys = (
+            "sulphite_source", "gluten_source", "dairy_source", "egg_source",
+            "fish_source", "shellfish_source", "soy_source", "sesame_source",
+            "peanut_source", "tree_nut_source", "mustard_source", "celery_source",
+            "lupin_source", "animal_origin", "insect_derived", "bee_product",
+            "enzyme_animal_source", "fungal",
+        )
+        label_hazard = any(flags.get(k) for k in _hazard_keys)
         return ComplianceInput(
-            canonical_name=identity, flags={}, knowledge_state="UNCLASSIFIED",
-            trusted=False, alcohol_role=None, verdict_cap=None,
+            canonical_name=identity, flags=flags, knowledge_state="UNCLASSIFIED",
+            trusted=label_hazard, alcohol_role=None, verdict_cap=None,
             trace=trace, may_contain=may_contain,
         )
 
     if isinstance(group, TruthAnchorFact):
         flags = _with_derived_flags(group.canonical_name, dict(group.flags))
+        # Label text may carry stems the head canon dropped (dried sulfured fruit → apples).
+        if query_atom:
+            flags = _with_derived_flags(query_atom, flags)
         return ComplianceInput(
             canonical_name=group.canonical_name,
             flags=flags,
@@ -96,6 +111,8 @@ def to_compliance_input(
     flags = dict(vars(group))
     canon = getattr(group, "canonical_name", "") or ""
     flags = _with_derived_flags(canon, flags)
+    if query_atom:
+        flags = _with_derived_flags(query_atom, flags)
     return ComplianceInput(
         canonical_name=canon,
         flags=flags,
