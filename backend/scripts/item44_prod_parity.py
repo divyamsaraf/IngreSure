@@ -10,12 +10,20 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import ssl
 import sys
 import time
 import urllib.error
 import urllib.request
 from collections import Counter
 from pathlib import Path
+
+try:
+    import certifi
+
+    _SSL_CTX = ssl.create_default_context(cafile=certifi.where())
+except Exception:  # noqa: BLE001
+    _SSL_CTX = ssl.create_default_context()
 
 _BACKEND = Path(__file__).resolve().parent.parent
 _REPO = _BACKEND.parent
@@ -93,7 +101,7 @@ def _prod_eval(base: str, raw: str, rids: list[str], api_key: str | None) -> dic
         headers=headers,
         method="POST",
     )
-    with urllib.request.urlopen(req, timeout=90) as resp:
+    with urllib.request.urlopen(req, timeout=90, context=_SSL_CTX) as resp:
         return json.loads(resp.read().decode())
 
 
