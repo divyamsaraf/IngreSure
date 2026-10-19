@@ -18,5 +18,8 @@
 }
 
 YOUR_API_HOSTNAME {
+	# Default: proxy everything. For an interim /api/v1 lock (pre–Item 9
+	# binaries, or before ENVIRONMENT=production is confirmed), see
+	# deploy/oci_api_deploy_runbook.md §0 — do not rely on app env alone.
 	reverse_proxy 127.0.0.1:8000
 }
