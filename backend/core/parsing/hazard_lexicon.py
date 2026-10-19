@@ -291,7 +291,7 @@ def _blank_keep_plant_second(m: re.Match[str]) -> str:
     return (" " * len(m.group(1))) + m.group(2)
 
 
-def _mask_non_hazards(text: str) -> str:
+def mask_non_hazards(text: str) -> str:
     """Blank plant+animal false-friend spans and free-from claims before match.
 
     Structural rule: animal-product noun adjacent to a plant modifier is masked
@@ -306,6 +306,10 @@ def _mask_non_hazards(text: str) -> str:
     masked = _SPECIAL_FALSE_FRIEND_MASK.sub(_blank, masked)
     masked = _NEGATION_MASK.sub(_blank, masked)
     return masked
+
+
+# Back-compat alias for callers that imported the private name.
+_mask_non_hazards = mask_non_hazards
 
 
 # Lexicon class -> compliance flag column (allergy/medical).
