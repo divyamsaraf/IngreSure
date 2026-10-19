@@ -63,6 +63,8 @@ HAZARD_LEXICON: dict[str, tuple[str, ...]] = {
         "cream",
         "cheese",
         "whey",
+        "caseinate",
+        "caseinates",
         "casein",
         "lactose",
         "yoghurt",
@@ -195,55 +197,56 @@ for _cls, forms in HAZARD_LEXICON.items():
         )
 
 
-# Plant milks / cocoa butters / milk thistle — mask before matching so FR/DE/ES
-# forms do not fire dairy (sweep previously missed these; flag_derive had EN only).
-_FALSE_FRIEND_MASK = re.compile(
+# Plant modifier adjacent to an animal-product noun → mask (structural rule).
+# EN/FR/DE/ES/IT/NL. Span-blanking only: an independent animal token elsewhere
+# in the same string still fires (e.g. "almond milk, milk").
+_PLANT_MOD = (
+    r"(?:coconut|almond|soy|soya|oat|rice|cashew|hemp|pea|pistachio|tofu|"
+    r"cocoa|cacao|shea|peanut|groundnut|apple|seed|kokum|"
+    r"plant[\s\-]*based|vegetable|vegan|vegetarian|"
+    r"coco|amande|avoine|soja|riz|cajou|karit[eé]|cacahu[eè]te|arachide|"
+    r"kokos|mandel|hafer|erdnuss|almendra|avena|arroz|"
+    r"cocco|mandorla|soia|riso|amandel)"
+)
+_ANIMAL_NOUN = (
+    r"(?:milk|cream|butter|yogurt|yoghurt|cheese|egg|eggs|"
+    r"chicken|meat|beef|pork|fish|"
+    r"lait|beurre|cr[eè]me|fromage|oeuf|œuf|"
+    r"milch|butter|k[aä]se|joghurt|jogurt|eier|"
+    r"leche|mantequilla|queso|huevo|"
+    r"latte|burro|formaggio|uovo|"
+    r"melk|boter|kaas|ei|"
+    r"drink)"  # Haferdrink / oat drink class
+)
+# plant + animal (almond milk, vegan egg, plant-based chicken, cashew cheese).
+# Group 1 = plant (kept), group 2 = separator+animal (blanked).
+_STRUCT_PLANT_ANIMAL = re.compile(
+    rf"(?ix)\b({_PLANT_MOD})([\s\-]+{_ANIMAL_NOUN})\b"
+)
+# FR/ES/IT animal de plant — blank animal+"de", keep plant (peanut in cacahuète).
+_STRUCT_ANIMAL_DE_PLANT = re.compile(
+    rf"(?ix)\b({_ANIMAL_NOUN}\s+(?:de\s+|d['\u2019]\s*))({_PLANT_MOD})\b"
+)
+# Closed German/Dutch compounds (Hafermilch, Sojajoghurt, Kakaobutter, Haferdrink)
+_STRUCT_COMPOUND = re.compile(
+    r"""(?ix)\b(?:
+        (?:kokos|mandel|hafer|soja|erdnuss|kakao|cacao|shea|amandel)
+        (?:milch|butter|joghurt|jogurt|drink|kaas|melk|boter)
+      | kakaobutter | cacaoboter
+    )\b"""
+)
+
+# Non-structural false friends (not plant+animal adjacency).
+_SPECIAL_FALSE_FRIEND_MASK = re.compile(
     r"""(?ix)
     (?:
-        # cocoa / cacao butter (EN + FR/DE/ES/IT/NL)
-        (?:cocoa|cacao)\s+butter
-        | beurre\s+de\s+cacao
-        | kakaobutter
-        | manteca\s+de\s+cacao
-        | burro\s+di\s+cacao
-        | cacaoboter
-        # plant milks
-        | (?:coconut|almond|soy|soya|oat|rice|cashew|hemp|pea|pistachio|tofu)
-          [\s\-]*(?:milk|cream|butter|yogurt|yoghurt)
-        | lait\s+de\s+(?:coco|amande|avoine|soja|riz|cajou)
-        | lait\s+d['\u2019]?\s*amande
-        | leche\s+de\s+(?:coco|almendra|avena|soja|arroz)
-        | kokosmilch
-        | mandelmilch
-        | hafermilch
-        | sojamilch
-        | latte\s+di\s+(?:cocco|mandorla|avena|soia|riso)
-        | kokosmelk
-        | amandelmelk
-        | shea\s+butter
-        | kokum\s+butter
-        | peanut\s+butter
-        | almond\s+butter
-        | cashew\s+butter
-        | seed\s+butter
-        | apple\s+butter
-        | butter\s*bean
-        | butternut
-        | cream\s+of\s+tartar
-        | cream\s+soda
-        | milk\s+thistle
-        | milkweed
-        | milkfish
-        | milk\s+fish
-        # fungi named after shellfish — not crustaceans
-        | lobster\s+mushroom
-        | crab\s+mushroom
-        # coconut is not a tree-nut under our policy (EN + FR/ES/DE/IT/NL)
-        | noix\s+de\s+coco
-        | nuez\s+de\s+coco
-        | kokosnuss
-        | noce\s+di\s+cocco
-        | kokosnoot
+        butter\s*bean | butternut
+      | cream\s+of\s+tartar | cream\s+soda
+      | milk\s+thistle | milkweed | milkfish | milk\s+fish
+      | lobster\s+mushroom | crab\s+mushroom
+        # coconut is not a tree-nut under our policy
+      | noix\s+de\s+coco | nuez\s+de\s+coco | kokosnuss
+      | noce\s+di\s+cocco | kokosnoot
     )
     """
 )
@@ -256,13 +259,16 @@ _NEGATION_MASK = re.compile(
         (?:gluten|dairy|milk|lactose|soy|soya|soybean|nut|peanut|egg|eggs|
            sesame|wheat|fish|shellfish|tree[\s\-]*nut)
         [\s\-]*free
+        # claim + residual noun in the same phrase (dairy-free cheese)
+        (?:\s+(?:cheese|butter|creamer|cream|milk|yogurt|yoghurt|eggs?))?
       | free[\s\-]+(?:from[\s\-]+)?
         (?:gluten|dairy|milk|lactose|soy|soya|soybean|nut|peanut|egg|eggs|
            sesame|wheat|fish|shellfish|tree[\s\-]*nut)s?
-      | (?:no|without|sans|ohne|sin|senza|zonder)[\s\-]+
+      | (?:no|non|without|sans|ohne|sin|senza|zonder)[\s\-]+
         (?:added[\s\-]+)?
         (?:gluten|dairy|milk|lactose|soy|soya|soybean|nut|peanut|egg|eggs|
            sesame|wheat|fish|shellfish|tree[\s\-]*nut|milch|lait|soja|blé)s?
+        (?:\s+(?:cheese|butter|creamer|cream|milk|yogurt|yoghurt|eggs?))?
       | contains\s+no\s+
         (?:gluten|dairy|milk|lactose|soy|soya|soybean|nut|peanut|egg|eggs|
            sesame|wheat)s?
@@ -271,13 +277,51 @@ _NEGATION_MASK = re.compile(
 )
 
 
+def _blank(m: re.Match[str]) -> str:
+    return " " * len(m.group(0))
+
+
+def _blank_keep_plant_first(m: re.Match[str]) -> str:
+    """Keep plant modifier (g1), blank animal tail (g2)."""
+    return m.group(1) + (" " * len(m.group(2)))
+
+
+def _blank_keep_plant_second(m: re.Match[str]) -> str:
+    """Blank animal+de (g1), keep plant (g2)."""
+    return (" " * len(m.group(1))) + m.group(2)
+
+
 def _mask_non_hazards(text: str) -> str:
-    """Blank out false-friend and free-from spans before lexicon match."""
+    """Blank plant+animal false-friend spans and free-from claims before match.
+
+    Structural rule: animal-product noun adjacent to a plant modifier is masked
+    unless the animal token also appears independently elsewhere in the string.
+    Plant tokens are preserved so peanut in "beurre de cacahuète" still hits.
+    """
     if not text:
         return text
-    masked = _FALSE_FRIEND_MASK.sub(lambda m: " " * len(m.group(0)), text)
-    masked = _NEGATION_MASK.sub(lambda m: " " * len(m.group(0)), masked)
+    masked = _STRUCT_PLANT_ANIMAL.sub(_blank_keep_plant_first, text)
+    masked = _STRUCT_ANIMAL_DE_PLANT.sub(_blank_keep_plant_second, masked)
+    masked = _STRUCT_COMPOUND.sub(_blank, masked)
+    masked = _SPECIAL_FALSE_FRIEND_MASK.sub(_blank, masked)
+    masked = _NEGATION_MASK.sub(_blank, masked)
     return masked
+
+
+# Lexicon class -> compliance flag column (allergy/medical).
+HAZARD_CLASS_TO_FLAG: dict[str, str] = {
+    "peanut": "peanut_source",
+    "gluten": "gluten_source",
+    "dairy": "dairy_source",
+    "egg": "egg_source",
+    "soy": "soy_source",
+    "sesame": "sesame_source",
+    "fish": "fish_source",
+    "shellfish": "shellfish_source",
+    "tree_nut": "tree_nut_source",
+}
+
+_ANIMAL_CLASSES = frozenset({"dairy", "egg", "fish", "shellfish"})
 
 
 def family_negated(name: str, tokens: Iterable[str]) -> bool:
@@ -295,7 +339,7 @@ def family_negated(name: str, tokens: Iterable[str]) -> bool:
         if re.search(rf"\bfree[\s-]+(?:from[\s-]+)?{t}s?\b", low):
             return True
         if re.search(
-            rf"\b(?:no|without|sans|ohne|sin|senza|zonder)[\s-]+(?:added[\s-]+)?{t}s?\b",
+            rf"\b(?:no|non|without|sans|ohne|sin|senza|zonder)[\s-]+(?:added[\s-]+)?{t}s?\b",
             low,
         ):
             return True
@@ -329,45 +373,15 @@ def conservation_misses(raw: str, atoms: Iterable[str]) -> set[str]:
     return hazard_hits_in_text(raw) - hazard_hits_in_atoms(atoms)
 
 
-# Lexicon class -> compliance flag column (allergy/medical).
-HAZARD_CLASS_TO_FLAG: dict[str, str] = {
-    "peanut": "peanut_source",
-    "gluten": "gluten_source",
-    "dairy": "dairy_source",
-    "egg": "egg_source",
-    "soy": "soy_source",
-    "sesame": "sesame_source",
-    "fish": "fish_source",
-    "shellfish": "shellfish_source",
-    "tree_nut": "tree_nut_source",
-}
-
-_ANIMAL_CLASSES = frozenset({"dairy", "egg", "fish", "shellfish"})
-
-
-# Tokens used to suppress a class when the whole phrase is a free-from claim
-# (e.g. "dairy free cheese" must not pick up dairy from residual "cheese").
-_CLASS_NEGATION_TOKENS: dict[str, tuple[str, ...]] = {
-    "peanut": ("peanut", "groundnut"),
-    "gluten": ("gluten", "wheat", "barley", "rye"),
-    "dairy": ("dairy", "milk", "lactose", "whey", "casein", "lait", "milch", "leche"),
-    "egg": ("egg", "eggs"),
-    "soy": ("soy", "soya", "soybean", "soja"),
-    "sesame": ("sesame", "tahini"),
-    "fish": ("fish", "poisson", "fisch"),
-    "shellfish": ("shellfish", "crustacean", "mollusk", "mollusc"),
-    "tree_nut": ("nut", "tree nut", "treenut", "almond", "amande"),
-}
-
-
 def apply_lexicon_flags(name: str, flags: dict | None = None) -> dict:
-    """OR lexicon hazard hits onto a flags dict (atom-level derive path)."""
+    """OR lexicon hazard hits onto a flags dict (atom-level derive path).
+
+    Free-from / non-dairy claims are handled by masking in ``hazard_hits_in_text``;
+    independent dairy tokens (e.g. caseinate after a non-dairy claim) still fire.
+    """
     out = dict(flags or {})
     raw = name or ""
     for cls in hazard_hits_in_text(raw):
-        toks = _CLASS_NEGATION_TOKENS.get(cls)
-        if toks and family_negated(raw, toks):
-            continue
         flag = HAZARD_CLASS_TO_FLAG.get(cls)
         if not flag:
             continue

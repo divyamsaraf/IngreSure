@@ -548,6 +548,42 @@ def compose_profile_update(
     return " ".join(parts)
 
 
+_BONE_CHAR_SUGAR = frozenset({"sugar", "cane sugar"})
+
+
+def _informational_note(
+    informational_ingredients: list[str] | None,
+    *,
+    low_confidence: bool,
+) -> str:
+    """Format informational ingredient notes (trace amounts vs bone-char sugar)."""
+    if not informational_ingredients:
+        return ""
+    bone_char = []
+    other = []
+    for name in informational_ingredients:
+        key = (name or "").strip().lower()
+        if key in _BONE_CHAR_SUGAR:
+            bone_char.append(name)
+        else:
+            other.append(name)
+    parts = []
+    if bone_char:
+        labeled = ", ".join(bone_char)
+        parts.append(
+            f"\n_Note: {labeled} — may be refined with bone char; not detectable from the label._"
+        )
+    if other:
+        minors = ", ".join(other)
+        if low_confidence:
+            parts.append(
+                f"\n_Note: {minors} — present in trace amounts, flagged at low confidence._"
+            )
+        else:
+            parts.append(f"\n_Note: {minors} — present in trace amounts._")
+    return "".join(parts)
+
+
 # ---------------------------------------------------------------------------
 # Compliance verdict → conversational answer
 # ---------------------------------------------------------------------------
@@ -695,9 +731,9 @@ def compose_verdict(
             parts.append(f"\n🟧 {items} — may need manual checking.")
 
         # Minor/informational note
-        if verdict.informational_ingredients and verdict.confidence_score < 1.0:
-            minors = ", ".join(verdict.informational_ingredients)
-            parts.append(f"\n_Note: {minors} — present in trace amounts, flagged at low confidence._")
+        note = _informational_note(verdict.informational_ingredients, low_confidence=True)
+        if note:
+            parts.append(note)
 
     # ------ SAFE ------
     elif verdict.status == VerdictStatus.SAFE:
@@ -715,9 +751,12 @@ def compose_verdict(
             parts.append(
                 f"✅ No disqualifying ingredients found on this label for your **{diet}** diet — {ing_str} all check out."
             )
-        if verdict.informational_ingredients and verdict.confidence_score < 1.0:
-            minors = ", ".join(verdict.informational_ingredients)
-            parts.append(f"\n_Note: {minors} — present in trace amounts._")
+        note = _informational_note(
+            verdict.informational_ingredients,
+            low_confidence=verdict.confidence_score < 1.0,
+        )
+        if note:
+            parts.append(note)
 
     # ------ UNCERTAIN ------
     elif verdict.status == VerdictStatus.UNCERTAIN:

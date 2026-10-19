@@ -275,8 +275,17 @@ def _compute_evidence_tier(inputs) -> str:
     return "standard"
 
 
+_BONE_CHAR_NOTE_DIETS = frozenset({"vegan", "jain", "halal"})
+_BONE_CHAR_SUGAR_NAMES = frozenset({"sugar", "cane sugar"})
+
+
 def map_ike2_to_compliance_verdict(
-    result, inputs, *, ontology_version: str = "", input_display_map: dict | None = None
+    result,
+    inputs,
+    *,
+    ontology_version: str = "",
+    input_display_map: dict | None = None,
+    restriction_ids: Optional[List[str]] = None,
 ) -> ComplianceVerdict:
     """Map an IKE-2 ``ComplianceResult`` (+ its ``ComplianceInput`` list) to the
     external ``ComplianceVerdict`` shape. Status comes only from
@@ -321,6 +330,15 @@ def map_ike2_to_compliance_verdict(
     informational_ingredients = [
         name for name in informational_ingredients if name not in triggered_ingredients
     ]
+
+    # Bone-char refining is process ambiguity: keep firm SAFE for vegan/jain/halal
+    # but surface sugar as informational (not detectable from the label).
+    if _BONE_CHAR_NOTE_DIETS.intersection(restriction_ids or []):
+        for inp in inputs or []:
+            canon = (getattr(inp, "canonical_name", None) or "").strip().lower()
+            if canon in _BONE_CHAR_SUGAR_NAMES and canon not in informational_ingredients:
+                if per_ingredient_verdict.get(canon, Verdict.SAFE) != Verdict.FAIL:
+                    informational_ingredients.append(canon)
 
     triggered_restrictions = []
     seen_restrictions = set()
@@ -523,7 +541,10 @@ def run_new_engine_chat(
             return ike2_output
         result, inputs, display_map = ike2_output
         return map_ike2_to_compliance_verdict(
-            result, inputs, input_display_map=display_map
+            result,
+            inputs,
+            input_display_map=display_map,
+            restriction_ids=rids,
         )
     except Exception:
         logger.exception(

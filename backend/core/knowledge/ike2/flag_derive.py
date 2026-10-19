@@ -25,7 +25,11 @@ import re
 from typing import Any, Mapping
 
 from core.normalization.normalizer import normalize_ingredient_key
-from core.parsing.hazard_lexicon import apply_lexicon_flags, family_negated
+from core.parsing.hazard_lexicon import (
+    apply_lexicon_flags,
+    family_negated,
+    hazard_hits_in_text,
+)
 
 _TREE_NUT_TOKENS = frozenset({
     "almond", "hazelnut", "filbert", "cashew", "walnut", "pecan", "pistachio",
@@ -375,10 +379,13 @@ def derive_identity_flags(
     ):
         out["celery_source"] = True
 
+    # Gate EN dairy tokens through the shared lexicon mask so structural
+    # plant+animal phrases (cashew cheese, beurre de cacahuète) stay clean.
     if (
         not neg_dairy
         and not any(p in name for p in _NON_DAIRY_PHRASES)
         and any(_has_token(name, t) for t in _DAIRY_TOKENS)
+        and "dairy" in hazard_hits_in_text(canonical_name or name)
     ):
         out["dairy_source"] = True
         out["animal_origin"] = True
@@ -401,7 +408,7 @@ def derive_identity_flags(
             and "eggplant" not in name
             and "egg plant" not in name
         )
-    ):
+    ) and "egg" in hazard_hits_in_text(canonical_name or name):
         out["egg_source"] = True
         out["animal_origin"] = True
         out["plant_origin"] = False

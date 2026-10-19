@@ -276,10 +276,8 @@ _add(["wheat flour", "enriched wheat flour", "bleached wheat flour"], "wheat",
 _add(["wheat gluten"], "gluten", _f(gluten_source=True))
 _add(["malted barley flour"], "barley", _f(gluten_source=True))
 _add(["flour", "flours", "all purpose flour"], "flour", _f(gluten_source=True))
-# Bone-char refining is a process ambiguity on some cane sugars, not a labeled
-# ingredient. We treat bare sugar as plant SAFE (not WARN): FAIL would over-block
-# nearly every list; WARN would erase firm SAFE on the most common staple. Named
-# cane/beet sugar stay plant SAFE the same way.
+# Bone-char refining is process ambiguity on some cane sugars. Bare sugar stays
+# plant SAFE; bridge adds an informational note for vegan/jain/halal.
 _add(["sugar"], "sugar", _f(animal_origin=False, plant_origin=True))
 _add(["cane sugar"], "cane sugar", _f(animal_origin=False, plant_origin=True))
 _add(["beet sugar"], "beet sugar", _f(animal_origin=False, plant_origin=True))
