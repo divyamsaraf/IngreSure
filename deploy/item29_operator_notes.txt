@@ -1,0 +1,48 @@
+Item 29 — operator notes (no secrets, no production execution)
+
+Canonical write-up: docs/item29/prod_data_readiness.md
+L3 bulk:            docs/item29/l3_bulk_plan.md
+Same-seed recipe:   docs/item29/same_seed_reference.md
+Dry-run JSON:       docs/item29/reports/l3_dry_run.json
+
+API database
+  Intended prod project ref: gcufjqokqqmcuuayaybu
+  Confirm on the OCI host from SUPABASE_URL hostname only.
+  Production API host: ingresure-api.gleeze.com
+  Local CLI project_id: ingresure (127.0.0.1) — not hosted.
+
+Staging
+  Create a separate hosted project (suggested name ingresure-staging).
+  Do not reuse gcufjqokqqmcuuayaybu for experiments.
+
+Migrations on documented remote (as of Item 29 seed plan + OCI runbook)
+  Last applied: 20260808000000_ike2_shadow_diffs_route_context
+  Pending to HEAD (do not apply from this track):
+    20260918000000 ike2_trust_refreshed_at
+    20260918010000 ike2_enzyme_origin_flags
+    20260919000000 ike2_group_provenance_source
+    20261003000000 ike2_asserted_flags
+    20261014000000 ike2_alias_view_include_source
+  Re-confirm with: supabase migration list --linked
+
+View
+  ike2_v_alias_resolution exposes source only after 20261014000000
+  (g.* is expanded at CREATE VIEW time; 20260919 added source later).
+
+Ontology seed (local / staging only)
+  cd backend && python scripts/seed_ike2_ontology.py
+  Expect ike2_restriction_rules = 52 from 20260617000000.
+
+L3 first slice (add hazards, never clearance)
+  foodex2 (1,258) -> nin (82) -> fda_gras (1,414)
+  Local dry-run: cd backend && python scripts/item29_dry_run_l3_sources.py
+  Rollback = restore pre-bulk ike2_* snapshot. Do not DELETE WHERE source=.
+
+Same-seed parity (PR #17 owns item44_prod_parity.py)
+  python scripts/seed_same_seed_reference.py --emit-recipe
+  Flags (do not edit that script here): --write-reference, --reference-json, --same-seed
+  95% bar is valid only against an ontology-seed reference.
+
+Privacy
+  Allergy/diet profiles are health-related. Counsel review before pilot.
+  Do not draft a privacy policy in-repo.

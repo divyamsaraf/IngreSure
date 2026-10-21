@@ -1,0 +1,647 @@
+{
+  "dry_run": true,
+  "injected": false,
+  "remote_db": false,
+  "count_checks": {
+    "fda_gras": {
+      "path": "data/layer1_fda_gras.json",
+      "count": 1414,
+      "expected": 1414,
+      "ok": true
+    },
+    "nin": {
+      "path": "data/layer1_nin.json",
+      "count": 82,
+      "expected": 82,
+      "ok": true
+    },
+    "foodex2": {
+      "path": "data/layer1_foodex2.json",
+      "count": 1258,
+      "expected": 1258,
+      "ok": true
+    }
+  },
+  "count_checks_ok": true,
+  "transform_replay": {
+    "fda_gras": {
+      "transform_n": 16,
+      "raw_scogs": false,
+      "raw_gras_notices": false,
+      "manual": true,
+      "complete": false,
+      "note": "Committed layer1_fda_gras.json is the count of record (1,414). data/raw/ is gitignored; without SCOGS + GRAS Notices the in-memory transform only sees the 16-row manual US list."
+    },
+    "nin": {
+      "transform_n": 82,
+      "input": true,
+      "complete": true,
+      "matches_expected": true
+    },
+    "foodex2": {
+      "transform_n": 0,
+      "raw_csv": false,
+      "complete": false,
+      "note": "Committed layer1_foodex2.json is the count of record (1,258). Re-run ./scripts/download_sources_5_6.sh then python backend/scripts/transform_foodex2_bulk.py to replay the adapter; this run has no raw CSV."
+    }
+  },
+  "replays": {
+    "fda_gras": {
+      "cli_source": "fda_gras",
+      "canonical_source": "fda",
+      "dump_n": 1414,
+      "ontology_seeded": {
+        "seed": {
+          "seeded": 1740,
+          "stats": {
+            "total": 1857,
+            "inserted": 1740,
+            "updated": 117,
+            "ingredients": 1857,
+            "aliases": 7761,
+            "rejected": 0,
+            "needs_review": 0
+          }
+        },
+        "first_pass": {
+          "total": 1414,
+          "inserted": 1304,
+          "updated": 109,
+          "ingredients": 1413,
+          "aliases": 3590,
+          "rejected": 1,
+          "needs_review": 0
+        },
+        "second_pass": {
+          "total": 1414,
+          "inserted": 0,
+          "updated": 1413,
+          "ingredients": 1413,
+          "aliases": 3590,
+          "rejected": 1,
+          "needs_review": 0
+        },
+        "replay_idempotent": true,
+        "new_discovered_sample": [],
+        "new_discovered_n": 0,
+        "rejects": [
+          {
+            "canonical_name": "fish oil",
+            "violated_constraint": "dual_origin_requires_uncertainty"
+          }
+        ],
+        "cleared_hazards": [],
+        "cleared_hazard_n": 0,
+        "groups_after": 3044
+      },
+      "live_seeded": {
+        "seed": {
+          "ontology": {
+            "seeded": 1740,
+            "stats": {
+              "total": 1857,
+              "inserted": 1740,
+              "updated": 117,
+              "ingredients": 1857,
+              "aliases": 7761,
+              "rejected": 0,
+              "needs_review": 0
+            }
+          },
+          "extra": [
+            {
+              "source": "e_number_catalog",
+              "n": 330,
+              "stats": {
+                "total": 330,
+                "inserted": 8,
+                "updated": 322,
+                "ingredients": 330,
+                "aliases": 1240,
+                "rejected": 0,
+                "needs_review": 0
+              }
+            },
+            {
+              "source": "fssai",
+              "n": 913,
+              "stats": {
+                "total": 913,
+                "inserted": 749,
+                "updated": 164,
+                "ingredients": 913,
+                "aliases": 4560,
+                "rejected": 0,
+                "needs_review": 0
+              }
+            },
+            {
+              "source": "ifct",
+              "n": 540,
+              "stats": {
+                "total": 540,
+                "inserted": 324,
+                "updated": 216,
+                "ingredients": 540,
+                "aliases": 6547,
+                "rejected": 0,
+                "needs_review": 0
+              }
+            },
+            {
+              "source": "produce_catalog",
+              "n": 8,
+              "stats": {
+                "total": 8,
+                "inserted": 0,
+                "updated": 8,
+                "ingredients": 8,
+                "aliases": 37,
+                "rejected": 0,
+                "needs_review": 0
+              }
+            },
+            {
+              "source": "animal_catalog",
+              "n": 7,
+              "stats": {
+                "total": 7,
+                "inserted": 0,
+                "updated": 7,
+                "ingredients": 7,
+                "aliases": 25,
+                "rejected": 0,
+                "needs_review": 0
+              }
+            }
+          ],
+          "seeded": 2821,
+          "mode": "repo_proxy",
+          "live_db": "no_local_supabase_env"
+        },
+        "first_pass": {
+          "total": 1414,
+          "inserted": 1265,
+          "updated": 148,
+          "ingredients": 1413,
+          "aliases": 3590,
+          "rejected": 1,
+          "needs_review": 0
+        },
+        "second_pass": {
+          "total": 1414,
+          "inserted": 0,
+          "updated": 1413,
+          "ingredients": 1413,
+          "aliases": 3590,
+          "rejected": 1,
+          "needs_review": 0
+        },
+        "replay_idempotent": true,
+        "new_discovered_sample": [],
+        "new_discovered_n": 0,
+        "rejects": [
+          {
+            "canonical_name": "fish oil",
+            "violated_constraint": "dual_origin_requires_uncertainty"
+          }
+        ],
+        "cleared_hazards": [],
+        "cleared_hazard_n": 0,
+        "groups_after": 4086
+      }
+    },
+    "nin": {
+      "cli_source": "nin",
+      "canonical_source": "nin",
+      "dump_n": 82,
+      "ontology_seeded": {
+        "seed": {
+          "seeded": 1740,
+          "stats": {
+            "total": 1857,
+            "inserted": 1740,
+            "updated": 117,
+            "ingredients": 1857,
+            "aliases": 7761,
+            "rejected": 0,
+            "needs_review": 0
+          }
+        },
+        "first_pass": {
+          "total": 82,
+          "inserted": 1,
+          "updated": 81,
+          "ingredients": 82,
+          "aliases": 205,
+          "rejected": 0,
+          "needs_review": 0
+        },
+        "second_pass": {
+          "total": 82,
+          "inserted": 0,
+          "updated": 82,
+          "ingredients": 82,
+          "aliases": 205,
+          "rejected": 0,
+          "needs_review": 0
+        },
+        "replay_idempotent": true,
+        "new_discovered_sample": [],
+        "new_discovered_n": 0,
+        "rejects": [],
+        "cleared_hazards": [],
+        "cleared_hazard_n": 0,
+        "groups_after": 1741
+      },
+      "live_seeded": {
+        "seed": {
+          "ontology": {
+            "seeded": 1740,
+            "stats": {
+              "total": 1857,
+              "inserted": 1740,
+              "updated": 117,
+              "ingredients": 1857,
+              "aliases": 7761,
+              "rejected": 0,
+              "needs_review": 0
+            }
+          },
+          "extra": [
+            {
+              "source": "e_number_catalog",
+              "n": 330,
+              "stats": {
+                "total": 330,
+                "inserted": 8,
+                "updated": 322,
+                "ingredients": 330,
+                "aliases": 1240,
+                "rejected": 0,
+                "needs_review": 0
+              }
+            },
+            {
+              "source": "fssai",
+              "n": 913,
+              "stats": {
+                "total": 913,
+                "inserted": 749,
+                "updated": 164,
+                "ingredients": 913,
+                "aliases": 4560,
+                "rejected": 0,
+                "needs_review": 0
+              }
+            },
+            {
+              "source": "ifct",
+              "n": 540,
+              "stats": {
+                "total": 540,
+                "inserted": 324,
+                "updated": 216,
+                "ingredients": 540,
+                "aliases": 6547,
+                "rejected": 0,
+                "needs_review": 0
+              }
+            },
+            {
+              "source": "produce_catalog",
+              "n": 8,
+              "stats": {
+                "total": 8,
+                "inserted": 0,
+                "updated": 8,
+                "ingredients": 8,
+                "aliases": 37,
+                "rejected": 0,
+                "needs_review": 0
+              }
+            },
+            {
+              "source": "animal_catalog",
+              "n": 7,
+              "stats": {
+                "total": 7,
+                "inserted": 0,
+                "updated": 7,
+                "ingredients": 7,
+                "aliases": 25,
+                "rejected": 0,
+                "needs_review": 0
+              }
+            }
+          ],
+          "seeded": 2821,
+          "mode": "repo_proxy",
+          "live_db": "no_local_supabase_env"
+        },
+        "first_pass": {
+          "total": 82,
+          "inserted": 0,
+          "updated": 82,
+          "ingredients": 82,
+          "aliases": 205,
+          "rejected": 0,
+          "needs_review": 0
+        },
+        "second_pass": {
+          "total": 82,
+          "inserted": 0,
+          "updated": 82,
+          "ingredients": 82,
+          "aliases": 205,
+          "rejected": 0,
+          "needs_review": 0
+        },
+        "replay_idempotent": true,
+        "new_discovered_sample": [],
+        "new_discovered_n": 0,
+        "rejects": [],
+        "cleared_hazards": [],
+        "cleared_hazard_n": 0,
+        "groups_after": 2821
+      }
+    },
+    "foodex2": {
+      "cli_source": "foodex2",
+      "canonical_source": "foodex2",
+      "dump_n": 1258,
+      "ontology_seeded": {
+        "seed": {
+          "seeded": 1740,
+          "stats": {
+            "total": 1857,
+            "inserted": 1740,
+            "updated": 117,
+            "ingredients": 1857,
+            "aliases": 7761,
+            "rejected": 0,
+            "needs_review": 0
+          }
+        },
+        "first_pass": {
+          "total": 1258,
+          "inserted": 1002,
+          "updated": 248,
+          "ingredients": 1250,
+          "aliases": 3692,
+          "rejected": 8,
+          "needs_review": 0
+        },
+        "second_pass": {
+          "total": 1258,
+          "inserted": 0,
+          "updated": 1250,
+          "ingredients": 1250,
+          "aliases": 3692,
+          "rejected": 8,
+          "needs_review": 0
+        },
+        "replay_idempotent": true,
+        "new_discovered_sample": [
+          "acid",
+          "acidity regulator",
+          "alcopop and flavoured wine",
+          "algae based fortifying agents (eg spirulina chlorella)",
+          "almond essence",
+          "almond flavour",
+          "aloe vera juice",
+          "amarena cherry flavour",
+          "amaretto flavour",
+          "andean lupin (dry)",
+          "angelica dry",
+          "animal fats and oils (processed fat from animal tissue)",
+          "anise flavour",
+          "anti caking agent",
+          "anti foaming agent",
+          "antioxidant",
+          "apple flavour",
+          "apple green flavour",
+          "apple red flavour",
+          "apricot flavour",
+          "apricot peach flavour",
+          "artichoke flavour",
+          "artificial food colour",
+          "artificial sweeteners (eg aspartam saccharine)",
+          "artificial sweeteners (eg aspartame saccharine) (as part nature)"
+        ],
+        "new_discovered_n": 1002,
+        "rejects": [
+          {
+            "canonical_name": "boiled eggs",
+            "violated_constraint": "dual_origin_requires_uncertainty"
+          },
+          {
+            "canonical_name": "butter oil",
+            "violated_constraint": "dual_origin_requires_uncertainty"
+          },
+          {
+            "canonical_name": "cod liver oil",
+            "violated_constraint": "dual_origin_requires_uncertainty"
+          },
+          {
+            "canonical_name": "fish oil",
+            "violated_constraint": "dual_origin_requires_uncertainty"
+          },
+          {
+            "canonical_name": "meat extract",
+            "violated_constraint": "dual_origin_requires_uncertainty"
+          },
+          {
+            "canonical_name": "porchetta",
+            "violated_constraint": "dual_origin_requires_uncertainty"
+          },
+          {
+            "canonical_name": "sardine oil",
+            "violated_constraint": "dual_origin_requires_uncertainty"
+          },
+          {
+            "canonical_name": "wine like drinks",
+            "violated_constraint": "dual_origin_requires_uncertainty"
+          }
+        ],
+        "cleared_hazards": [],
+        "cleared_hazard_n": 0,
+        "groups_after": 2742
+      },
+      "live_seeded": {
+        "seed": {
+          "ontology": {
+            "seeded": 1740,
+            "stats": {
+              "total": 1857,
+              "inserted": 1740,
+              "updated": 117,
+              "ingredients": 1857,
+              "aliases": 7761,
+              "rejected": 0,
+              "needs_review": 0
+            }
+          },
+          "extra": [
+            {
+              "source": "e_number_catalog",
+              "n": 330,
+              "stats": {
+                "total": 330,
+                "inserted": 8,
+                "updated": 322,
+                "ingredients": 330,
+                "aliases": 1240,
+                "rejected": 0,
+                "needs_review": 0
+              }
+            },
+            {
+              "source": "fssai",
+              "n": 913,
+              "stats": {
+                "total": 913,
+                "inserted": 749,
+                "updated": 164,
+                "ingredients": 913,
+                "aliases": 4560,
+                "rejected": 0,
+                "needs_review": 0
+              }
+            },
+            {
+              "source": "ifct",
+              "n": 540,
+              "stats": {
+                "total": 540,
+                "inserted": 324,
+                "updated": 216,
+                "ingredients": 540,
+                "aliases": 6547,
+                "rejected": 0,
+                "needs_review": 0
+              }
+            },
+            {
+              "source": "produce_catalog",
+              "n": 8,
+              "stats": {
+                "total": 8,
+                "inserted": 0,
+                "updated": 8,
+                "ingredients": 8,
+                "aliases": 37,
+                "rejected": 0,
+                "needs_review": 0
+              }
+            },
+            {
+              "source": "animal_catalog",
+              "n": 7,
+              "stats": {
+                "total": 7,
+                "inserted": 0,
+                "updated": 7,
+                "ingredients": 7,
+                "aliases": 25,
+                "rejected": 0,
+                "needs_review": 0
+              }
+            }
+          ],
+          "seeded": 2821,
+          "mode": "repo_proxy",
+          "live_db": "no_local_supabase_env"
+        },
+        "first_pass": {
+          "total": 1258,
+          "inserted": 996,
+          "updated": 254,
+          "ingredients": 1250,
+          "aliases": 3692,
+          "rejected": 8,
+          "needs_review": 0
+        },
+        "second_pass": {
+          "total": 1258,
+          "inserted": 0,
+          "updated": 1250,
+          "ingredients": 1250,
+          "aliases": 3692,
+          "rejected": 8,
+          "needs_review": 0
+        },
+        "replay_idempotent": true,
+        "new_discovered_sample": [
+          "acid",
+          "acidity regulator",
+          "alcopop and flavoured wine",
+          "algae based fortifying agents (eg spirulina chlorella)",
+          "almond essence",
+          "almond flavour",
+          "aloe vera juice",
+          "amarena cherry flavour",
+          "amaretto flavour",
+          "andean lupin (dry)",
+          "angelica dry",
+          "animal fats and oils (processed fat from animal tissue)",
+          "anise flavour",
+          "anti caking agent",
+          "anti foaming agent",
+          "antioxidant",
+          "apple flavour",
+          "apple green flavour",
+          "apple red flavour",
+          "apricot flavour",
+          "apricot peach flavour",
+          "artichoke flavour",
+          "artificial food colour",
+          "artificial sweeteners (eg aspartam saccharine)",
+          "artificial sweeteners (eg aspartame saccharine) (as part nature)"
+        ],
+        "new_discovered_n": 996,
+        "rejects": [
+          {
+            "canonical_name": "boiled eggs",
+            "violated_constraint": "dual_origin_requires_uncertainty"
+          },
+          {
+            "canonical_name": "butter oil",
+            "violated_constraint": "dual_origin_requires_uncertainty"
+          },
+          {
+            "canonical_name": "cod liver oil",
+            "violated_constraint": "dual_origin_requires_uncertainty"
+          },
+          {
+            "canonical_name": "fish oil",
+            "violated_constraint": "dual_origin_requires_uncertainty"
+          },
+          {
+            "canonical_name": "meat extract",
+            "violated_constraint": "dual_origin_requires_uncertainty"
+          },
+          {
+            "canonical_name": "porchetta",
+            "violated_constraint": "dual_origin_requires_uncertainty"
+          },
+          {
+            "canonical_name": "sardine oil",
+            "violated_constraint": "dual_origin_requires_uncertainty"
+          },
+          {
+            "canonical_name": "wine like drinks",
+            "violated_constraint": "dual_origin_requires_uncertainty"
+          }
+        ],
+        "cleared_hazards": [],
+        "cleared_hazard_n": 0,
+        "groups_after": 3817
+      }
+    }
+  },
+  "invariants": {
+    "bulk_adds_hazard_never_clearance": true,
+    "second_pass_inserts_zero": true
+  }
+}
