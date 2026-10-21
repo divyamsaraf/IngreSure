@@ -1,0 +1,98 @@
+{
+  "source": "own_curated_reviewed",
+  "license": "CC0-1.0",
+  "note": "True-only asserted_flags. Maps_to existing L1/L2 staples; ODbL OFF stays unpromoted.",
+  "promotions": [
+    {
+      "canonical_name": "milk solids",
+      "aliases": [
+        "milk solid",
+        "total milk solids",
+        "nonfat milk solids"
+      ],
+      "maps_to": "milk",
+      "animal_origin": true,
+      "dairy_source": true,
+      "asserted_flags": [
+        "animal_origin",
+        "dairy_source"
+      ]
+    },
+    {
+      "canonical_name": "cocoa solids",
+      "aliases": [
+        "cocoa solid"
+      ],
+      "maps_to": "cocoa",
+      "plant_origin": true,
+      "asserted_flags": [
+        "plant_origin"
+      ]
+    },
+    {
+      "canonical_name": "palmolein",
+      "aliases": [
+        "palmolein oil",
+        "refined palmolein",
+        "palm olein"
+      ],
+      "maps_to": "palm oil",
+      "plant_origin": true,
+      "asserted_flags": [
+        "plant_origin"
+      ]
+    },
+    {
+      "canonical_name": "iodised salt",
+      "aliases": [
+        "iodized salt"
+      ],
+      "maps_to": "salt",
+      "asserted_flags": []
+    },
+    {
+      "canonical_name": "vitamin a palmitate",
+      "aliases": [
+        "retinyl palmitate"
+      ],
+      "maps_to": "vitamin a palmitate",
+      "synthetic": true,
+      "asserted_flags": [
+        "synthetic"
+      ]
+    },
+    {
+      "canonical_name": "vitamin b12",
+      "aliases": [
+        "cyanocobalamin"
+      ],
+      "maps_to": "vitamin b12",
+      "synthetic": true,
+      "asserted_flags": [
+        "synthetic"
+      ]
+    },
+    {
+      "canonical_name": "vitamin d2",
+      "aliases": [
+        "ergocalciferol"
+      ],
+      "maps_to": "vitamin d2",
+      "synthetic": true,
+      "asserted_flags": [
+        "synthetic"
+      ]
+    },
+    {
+      "canonical_name": "thiamin mononitrate",
+      "aliases": [
+        "thiamine mononitrate"
+      ],
+      "maps_to": "thiamine",
+      "synthetic": true,
+      "asserted_flags": [
+        "synthetic"
+      ]
+    }
+  ]
+}

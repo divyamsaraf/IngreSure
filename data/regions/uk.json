@@ -1,0 +1,113 @@
+{
+  "region": "UK",
+  "name": "United Kingdom",
+  "verified": true,
+  "allergens": [
+    {
+      "id": "celery",
+      "flag": "celery_source",
+      "restriction_id": "celery_allergy",
+      "derive_token": "celery"
+    },
+    {
+      "id": "gluten",
+      "flag": "gluten_source",
+      "restriction_id": "gluten_free",
+      "derive_token": "wheat",
+      "cereals": [
+        "wheat",
+        "rye",
+        "barley",
+        "oats",
+        "spelt",
+        "kamut"
+      ]
+    },
+    {
+      "id": "crustacean",
+      "flag": "shellfish_source",
+      "restriction_id": "shellfish_allergy",
+      "derive_token": "shrimp"
+    },
+    {
+      "id": "egg",
+      "flag": "egg_source",
+      "restriction_id": "egg_free",
+      "derive_token": "egg"
+    },
+    {
+      "id": "fish",
+      "flag": "fish_source",
+      "restriction_id": "fish_allergy",
+      "derive_token": "fish"
+    },
+    {
+      "id": "lupin",
+      "flag": "lupin_source",
+      "restriction_id": "lupin_allergy",
+      "derive_token": "lupin"
+    },
+    {
+      "id": "dairy",
+      "flag": "dairy_source",
+      "restriction_id": "dairy_free",
+      "derive_token": "milk"
+    },
+    {
+      "id": "mollusc",
+      "flag": "shellfish_source",
+      "restriction_id": "shellfish_allergy",
+      "derive_token": "mollusc"
+    },
+    {
+      "id": "mustard",
+      "flag": "mustard_source",
+      "restriction_id": "mustard_allergy",
+      "derive_token": "mustard"
+    },
+    {
+      "id": "tree_nut",
+      "flag": "tree_nut_source",
+      "restriction_id": "tree_nut_allergy",
+      "derive_token": "almond"
+    },
+    {
+      "id": "peanut",
+      "flag": "peanut_source",
+      "restriction_id": "peanut_allergy",
+      "derive_token": "peanut"
+    },
+    {
+      "id": "sesame",
+      "flag": "sesame_source",
+      "restriction_id": "sesame_allergy",
+      "derive_token": "sesame"
+    },
+    {
+      "id": "soy",
+      "flag": "soy_source",
+      "restriction_id": "soy_allergy",
+      "derive_token": "soy"
+    },
+    {
+      "id": "sulphite",
+      "flag": "sulphite_source",
+      "restriction_id": "sulfite_sensitive",
+      "derive_token": "sulphite",
+      "threshold": "10 mg/kg as SO2"
+    }
+  ],
+  "numbering": "E-numbers (retained EU additive numbering)",
+  "emergency_numbers": [
+    "999",
+    "112"
+  ],
+  "sulphite_label_threshold": "10 mg/kg as SO2",
+  "sources": [
+    {
+      "title": "FSA 14 allergens",
+      "url": "https://www.food.gov.uk/safety-hygiene/food-allergy-and-intolerance",
+      "retrieved": "2026-10-21"
+    }
+  ]
+}

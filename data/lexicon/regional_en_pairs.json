@@ -1,0 +1,836 @@
+{
+  "description": "Own-curated UK/AU/NZ/IN vs US pantry name pairs. Not OFF dump text.",
+  "pairs": [
+    {
+      "regional": "aubergine",
+      "us": "eggplant",
+      "regions": [
+        "UK",
+        "NZ"
+      ]
+    },
+    {
+      "regional": "courgette",
+      "us": "zucchini",
+      "regions": [
+        "UK",
+        "NZ"
+      ]
+    },
+    {
+      "regional": "rocket",
+      "us": "arugula",
+      "regions": [
+        "UK",
+        "AU",
+        "NZ"
+      ]
+    },
+    {
+      "regional": "swede",
+      "us": "rutabaga",
+      "regions": [
+        "UK"
+      ]
+    },
+    {
+      "regional": "neeps",
+      "us": "rutabaga",
+      "regions": [
+        "UK"
+      ]
+    },
+    {
+      "regional": "spring onion",
+      "us": "scallion",
+      "regions": [
+        "UK",
+        "AU",
+        "NZ"
+      ]
+    },
+    {
+      "regional": "spring onions",
+      "us": "scallions",
+      "regions": [
+        "UK",
+        "AU",
+        "NZ"
+      ]
+    },
+    {
+      "regional": "capsicum",
+      "us": "bell pepper",
+      "regions": [
+        "AU",
+        "NZ",
+        "IN"
+      ]
+    },
+    {
+      "regional": "red capsicum",
+      "us": "red bell pepper",
+      "regions": [
+        "AU",
+        "NZ",
+        "IN"
+      ]
+    },
+    {
+      "regional": "green capsicum",
+      "us": "green bell pepper",
+      "regions": [
+        "AU",
+        "NZ",
+        "IN"
+      ]
+    },
+    {
+      "regional": "icing sugar",
+      "us": "powdered sugar",
+      "regions": [
+        "UK",
+        "AU",
+        "NZ"
+      ]
+    },
+    {
+      "regional": "icing mixture",
+      "us": "powdered sugar",
+      "regions": [
+        "AU",
+        "NZ"
+      ]
+    },
+    {
+      "regional": "caster sugar",
+      "us": "superfine sugar",
+      "regions": [
+        "UK",
+        "AU",
+        "NZ"
+      ]
+    },
+    {
+      "regional": "castor sugar",
+      "us": "superfine sugar",
+      "regions": [
+        "UK"
+      ]
+    },
+    {
+      "regional": "demerara sugar",
+      "us": "raw sugar",
+      "regions": [
+        "UK"
+      ]
+    },
+    {
+      "regional": "bicarbonate of soda",
+      "us": "baking soda",
+      "regions": [
+        "UK",
+        "AU",
+        "NZ"
+      ]
+    },
+    {
+      "regional": "bicarb",
+      "us": "baking soda",
+      "regions": [
+        "UK",
+        "AU"
+      ]
+    },
+    {
+      "regional": "cornflour",
+      "us": "cornstarch",
+      "regions": [
+        "UK",
+        "AU",
+        "NZ",
+        "IN"
+      ]
+    },
+    {
+      "regional": "maize flour",
+      "us": "cornmeal",
+      "regions": [
+        "UK",
+        "AU",
+        "IN"
+      ]
+    },
+    {
+      "regional": "beef mince",
+      "us": "ground beef",
+      "regions": [
+        "UK",
+        "AU",
+        "NZ"
+      ]
+    },
+    {
+      "regional": "minced beef",
+      "us": "ground beef",
+      "regions": [
+        "UK"
+      ]
+    },
+    {
+      "regional": "lamb mince",
+      "us": "ground lamb",
+      "regions": [
+        "UK",
+        "AU",
+        "NZ"
+      ]
+    },
+    {
+      "regional": "pork mince",
+      "us": "ground pork",
+      "regions": [
+        "UK",
+        "AU",
+        "NZ"
+      ]
+    },
+    {
+      "regional": "chicken mince",
+      "us": "ground chicken",
+      "regions": [
+        "UK",
+        "AU",
+        "NZ"
+      ]
+    },
+    {
+      "regional": "soured cream",
+      "us": "sour cream",
+      "regions": [
+        "UK"
+      ]
+    },
+    {
+      "regional": "double cream",
+      "us": "heavy cream",
+      "regions": [
+        "UK"
+      ]
+    },
+    {
+      "regional": "single cream",
+      "us": "light cream",
+      "regions": [
+        "UK"
+      ]
+    },
+    {
+      "regional": "natural yoghurt",
+      "us": "plain yogurt",
+      "regions": [
+        "UK",
+        "AU",
+        "NZ"
+      ]
+    },
+    {
+      "regional": "yoghurt",
+      "us": "yogurt",
+      "regions": [
+        "UK",
+        "AU",
+        "NZ",
+        "IN"
+      ]
+    },
+    {
+      "regional": "brinjal",
+      "us": "eggplant",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "baingan",
+      "us": "eggplant",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "bhindi",
+      "us": "okra",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "ladyfinger",
+      "us": "okra",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "aloo",
+      "us": "potato",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "pyaz",
+      "us": "onion",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "tamatar",
+      "us": "tomato",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "palak",
+      "us": "spinach",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "methi leaves",
+      "us": "fenugreek leaves",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "saunf",
+      "us": "fennel",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "jeera",
+      "us": "cumin",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "haldi",
+      "us": "turmeric",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "lal mirch",
+      "us": "red chili",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "hari mirch",
+      "us": "green chili",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "sooji",
+      "us": "semolina",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "rava",
+      "us": "semolina",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "besan",
+      "us": "chickpea flour",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "poha",
+      "us": "flattened rice",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "gur",
+      "us": "jaggery",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "sweetcorn",
+      "us": "corn",
+      "regions": [
+        "UK",
+        "AU",
+        "NZ"
+      ]
+    },
+    {
+      "regional": "maize",
+      "us": "corn",
+      "regions": [
+        "UK",
+        "AU",
+        "IN"
+      ]
+    },
+    {
+      "regional": "mange tout",
+      "us": "snow peas",
+      "regions": [
+        "UK"
+      ]
+    },
+    {
+      "regional": "mange-tout",
+      "us": "snow peas",
+      "regions": [
+        "UK"
+      ]
+    },
+    {
+      "regional": "broad beans",
+      "us": "fava beans",
+      "regions": [
+        "UK",
+        "AU",
+        "NZ"
+      ]
+    },
+    {
+      "regional": "chana",
+      "us": "chickpea",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "rajma",
+      "us": "kidney beans",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "toor dal",
+      "us": "pigeon peas",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "moong dal",
+      "us": "mung beans",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "masoor dal",
+      "us": "red lentils",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "desiccated coconut",
+      "us": "shredded coconut",
+      "regions": [
+        "UK",
+        "AU",
+        "NZ",
+        "IN"
+      ]
+    },
+    {
+      "regional": "prawn",
+      "us": "shrimp",
+      "regions": [
+        "UK",
+        "AU",
+        "NZ",
+        "IN"
+      ]
+    },
+    {
+      "regional": "self-raising flour",
+      "us": "self-rising flour",
+      "regions": [
+        "UK",
+        "AU",
+        "NZ"
+      ]
+    },
+    {
+      "regional": "plain flour",
+      "us": "all purpose flour",
+      "regions": [
+        "UK",
+        "AU",
+        "NZ"
+      ]
+    },
+    {
+      "regional": "wholemeal",
+      "us": "whole wheat",
+      "regions": [
+        "UK",
+        "AU",
+        "NZ"
+      ]
+    },
+    {
+      "regional": "wholemeal flour",
+      "us": "whole wheat flour",
+      "regions": [
+        "UK",
+        "AU",
+        "NZ"
+      ]
+    },
+    {
+      "regional": "beetroot",
+      "us": "beet",
+      "regions": [
+        "UK",
+        "AU",
+        "NZ",
+        "IN"
+      ]
+    },
+    {
+      "regional": "cos lettuce",
+      "us": "romaine",
+      "regions": [
+        "UK",
+        "AU",
+        "NZ"
+      ]
+    },
+    {
+      "regional": "kumara",
+      "us": "sweet potato",
+      "regions": [
+        "NZ"
+      ]
+    },
+    {
+      "regional": "silverbeet",
+      "us": "swiss chard",
+      "regions": [
+        "AU",
+        "NZ"
+      ]
+    },
+    {
+      "regional": "sultana",
+      "us": "golden raisin",
+      "regions": [
+        "UK",
+        "AU",
+        "NZ"
+      ]
+    },
+    {
+      "regional": "sultanas",
+      "us": "golden raisins",
+      "regions": [
+        "UK",
+        "AU",
+        "NZ"
+      ]
+    },
+    {
+      "regional": "black treacle",
+      "us": "molasses",
+      "regions": [
+        "UK"
+      ]
+    },
+    {
+      "regional": "treacle",
+      "us": "molasses",
+      "regions": [
+        "UK"
+      ]
+    },
+    {
+      "regional": "streaky bacon",
+      "us": "bacon",
+      "regions": [
+        "UK"
+      ]
+    },
+    {
+      "regional": "back bacon",
+      "us": "canadian bacon",
+      "regions": [
+        "UK"
+      ]
+    },
+    {
+      "regional": "porridge oats",
+      "us": "rolled oats",
+      "regions": [
+        "UK",
+        "AU",
+        "NZ"
+      ]
+    },
+    {
+      "regional": "coriander leaves",
+      "us": "cilantro",
+      "regions": [
+        "UK",
+        "AU",
+        "NZ",
+        "IN"
+      ]
+    },
+    {
+      "regional": "fresh coriander",
+      "us": "cilantro",
+      "regions": [
+        "UK",
+        "AU",
+        "IN"
+      ]
+    },
+    {
+      "regional": "dhania leaves",
+      "us": "cilantro",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "karela",
+      "us": "bitter melon",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "lauki",
+      "us": "bottle gourd",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "arbi",
+      "us": "taro root",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "makki",
+      "us": "corn",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "sarson",
+      "us": "mustard greens",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "atta",
+      "us": "whole wheat flour",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "maida",
+      "us": "all purpose flour",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "ghee",
+      "us": "clarified butter",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "curd",
+      "us": "yogurt",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "dahi",
+      "us": "yogurt",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "imli",
+      "us": "tamarind",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "amchur",
+      "us": "dried mango powder",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "hing",
+      "us": "asafetida",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "ajwain",
+      "us": "carom seeds",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "sabudana",
+      "us": "tapioca pearls",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "soya chunks",
+      "us": "textured soy protein",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "vanaspati",
+      "us": "hydrogenated vegetable oil",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "palmolein",
+      "us": "palm olein",
+      "regions": [
+        "IN"
+      ]
+    },
+    {
+      "regional": "iodised salt",
+      "us": "iodized salt",
+      "regions": [
+        "UK",
+        "AU",
+        "NZ",
+        "IN"
+      ]
+    },
+    {
+      "regional": "colour",
+      "us": "color",
+      "regions": [
+        "UK",
+        "AU",
+        "NZ",
+        "IN"
+      ]
+    },
+    {
+      "regional": "flavour",
+      "us": "flavor",
+      "regions": [
+        "UK",
+        "AU",
+        "NZ",
+        "IN"
+      ]
+    },
+    {
+      "regional": "chicory",
+      "us": "endive",
+      "regions": [
+        "UK"
+      ]
+    },
+    {
+      "regional": "marrow",
+      "us": "summer squash",
+      "regions": [
+        "UK"
+      ]
+    },
+    {
+      "regional": "runner beans",
+      "us": "string beans",
+      "regions": [
+        "UK"
+      ]
+    },
+    {
+      "regional": "mangetout",
+      "us": "snow peas",
+      "regions": [
+        "UK",
+        "AU"
+      ]
+    },
+    {
+      "regional": "courgettes",
+      "us": "zucchini",
+      "regions": [
+        "UK"
+      ]
+    },
+    {
+      "regional": "aubergines",
+      "us": "eggplant",
+      "regions": [
+        "UK"
+      ]
+    },
+    {
+      "regional": "capsicums",
+      "us": "bell peppers",
+      "regions": [
+        "AU",
+        "NZ",
+        "IN"
+      ]
+    }
+  ]
+}

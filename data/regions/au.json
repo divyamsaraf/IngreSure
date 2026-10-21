@@ -1,0 +1,99 @@
+{
+  "region": "AU",
+  "name": "Australia",
+  "verified": true,
+  "allergens": [
+    {
+      "id": "peanut",
+      "flag": "peanut_source",
+      "restriction_id": "peanut_allergy",
+      "derive_token": "peanut"
+    },
+    {
+      "id": "tree_nut",
+      "flag": "tree_nut_source",
+      "restriction_id": "tree_nut_allergy",
+      "derive_token": "almond"
+    },
+    {
+      "id": "dairy",
+      "flag": "dairy_source",
+      "restriction_id": "dairy_free",
+      "derive_token": "milk"
+    },
+    {
+      "id": "egg",
+      "flag": "egg_source",
+      "restriction_id": "egg_free",
+      "derive_token": "egg"
+    },
+    {
+      "id": "fish",
+      "flag": "fish_source",
+      "restriction_id": "fish_allergy",
+      "derive_token": "fish"
+    },
+    {
+      "id": "crustacean",
+      "flag": "shellfish_source",
+      "restriction_id": "shellfish_allergy",
+      "derive_token": "shrimp"
+    },
+    {
+      "id": "mollusc",
+      "flag": "shellfish_source",
+      "restriction_id": "shellfish_allergy",
+      "derive_token": "mollusc"
+    },
+    {
+      "id": "sesame",
+      "flag": "sesame_source",
+      "restriction_id": "sesame_allergy",
+      "derive_token": "sesame"
+    },
+    {
+      "id": "soy",
+      "flag": "soy_source",
+      "restriction_id": "soy_allergy",
+      "derive_token": "soy"
+    },
+    {
+      "id": "gluten",
+      "flag": "gluten_source",
+      "restriction_id": "gluten_free",
+      "derive_token": "wheat",
+      "cereals": [
+        "wheat",
+        "rye",
+        "barley",
+        "oats",
+        "spelt"
+      ]
+    },
+    {
+      "id": "lupin",
+      "flag": "lupin_source",
+      "restriction_id": "lupin_allergy",
+      "derive_token": "lupin"
+    },
+    {
+      "id": "sulphite",
+      "flag": "sulphite_source",
+      "restriction_id": "sulfite_sensitive",
+      "derive_token": "sulphite",
+      "threshold": "10 mg/kg as SO2"
+    }
+  ],
+  "numbering": "INS numbers (FSANZ Schedule 8), often written without E prefix",
+  "emergency_numbers": [
+    "000"
+  ],
+  "sulphite_label_threshold": "10 mg/kg as SO2",
+  "sources": [
+    {
+      "title": "FSANZ Standard 1.2.3 Information requirements – warning statements, advisory statements and declarations",
+      "url": "https://www.legislation.gov.au/F2015L00386/latest",
+      "retrieved": "2026-10-21"
+    }
+  ]
+}
