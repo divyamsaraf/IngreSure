@@ -1,0 +1,6 @@
+# Governance-protected files: changes require a reviewed PR from the owner.
+# OGL-UK-3.0 / OGL-Canada-2.0 are recommended for the allowlist but not yet
+# owner-confirmed (D10 lives on PR #17). Do not add those SPDX ids here.
+/backend/core/knowledge/ike2/etl/license_allowlist.json @divyamsaraf
+/backend/core/knowledge/ike2/etl/license_attribution.json @divyamsaraf
+/data/ike2_reviewed_negatives.json @divyamsaraf

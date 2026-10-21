@@ -1,0 +1,8 @@
+{
+  "note": "OGL SPDX identifiers are recommended but not yet owner-confirmed for license_allowlist.json (D10 / PR #17). Store attribution strings here; do not add the SPDX ids to the allowlist until the owner explicitly approves.",
+  "owner_confirmed": false,
+  "attributions": {
+    "OGL-UK-3.0": "Contains public sector information licensed under the Open Government Licence v3.0.",
+    "OGL-Canada-2.0": "Contains information licensed under the Open Government Licence – Canada."
+  }
+}
