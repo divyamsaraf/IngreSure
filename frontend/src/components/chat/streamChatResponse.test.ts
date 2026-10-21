@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest'
-import { normalizeAuditData, deriveTopLevelVerdict, buildRecentChecksFromMessages } from './streamChatResponse'
+import {
+  normalizeAuditData,
+  deriveTopLevelVerdict,
+  buildRecentChecksFromMessages,
+  applyAssistantContract,
+} from './streamChatResponse'
 import { PROFILE_REQUIRED_TAG, PROFILE_UPDATE_TAG, INGREDIENT_AUDIT_TAG } from '@/constants/chatProtocol'
 
 describe('normalizeAuditData', () => {
@@ -69,6 +74,11 @@ describe('normalizeAuditData', () => {
     const raw = { groups: [] }
     const result = normalizeAuditData(raw)
     expect(result.confidenceTier).toBeUndefined()
+  })
+
+  it('passes through degraded when the audit JSON includes it', () => {
+    const result = normalizeAuditData({ groups: [], degraded: true })
+    expect(result.degraded).toBe(true)
   })
 
   it('maps item fields (diets, allergens, alternatives)', () => {
@@ -161,5 +171,64 @@ describe('chat protocol tags', () => {
     const text = `Before${tag}{"groups":[]}${tag}After`
     const regex = new RegExp(`${tag}[\\s\\S]*?${tag}`, 'g')
     expect(text.replace(regex, '')).toBe('BeforeAfter')
+  })
+})
+
+describe('applyAssistantContract', () => {
+  it('flags PROFILE_REQUIRED and drops audit', () => {
+    const applied = applyAssistantContract(
+      `${PROFILE_REQUIRED_TAG}\nI need to know which restrictions apply.`,
+      {
+        profileRequired: true,
+        audit: normalizeAuditData({
+          groups: [{ status: 'safe', items: [{ name: 'Water' }] }],
+        }),
+      },
+    )
+    expect(applied.profileRequired).toBe(true)
+    expect(applied.audit).toBeUndefined()
+    expect(applied.content).toContain('restrictions')
+  })
+
+  it('extracts understanding echo and confirm, keeps audit', () => {
+    const audit = normalizeAuditData({
+      groups: [{ status: 'avoid', items: [{ name: 'Milk' }] }],
+    })
+    const applied = applyAssistantContract(
+      "I'll treat this as a dairy restriction for this check. Is lactose-free dairy acceptable, and should I save this on your profile?\n\nI understood: milk, sugar. Checking against: dairy-free.",
+      { audit },
+    )
+    expect(applied.understandingEcho?.understood).toBe('milk, sugar')
+    expect(applied.understandingEcho?.checkingAgainst).toBe('dairy-free')
+    expect(applied.confirmPending).toBe(true)
+    expect(applied.audit).toBe(audit)
+  })
+
+  it('flags emergency and drops audit', () => {
+    const applied = applyAssistantContract(
+      'If this is a medical emergency, stop using this app and call 999 now (or your local emergency number). I am not emergency services and I will not evaluate ingredients while you may need urgent care.',
+      {
+        audit: normalizeAuditData({
+          groups: [{ status: 'safe', items: [{ name: 'Water' }] }],
+        }),
+      },
+    )
+    expect(applied.emergency).toBe(true)
+    expect(applied.audit).toBeUndefined()
+    expect(applied.profileRequired).toBe(false)
+  })
+
+  it('flags degraded fail-closed text', () => {
+    const applied = applyAssistantContract(
+      'I could not finish that check. Treat this as UNCERTAIN, not safe.',
+      {
+        audit: normalizeAuditData({
+          groups: [{ status: 'safe', items: [{ name: 'Water' }] }],
+          degraded: true,
+        }),
+      },
+    )
+    expect(applied.degraded).toBe(true)
+    expect(applied.audit?.degraded).toBe(true)
   })
 })

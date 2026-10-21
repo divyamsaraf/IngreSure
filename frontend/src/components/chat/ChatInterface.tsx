@@ -6,8 +6,12 @@ import OnboardingModal from './OnboardingModal'
 import FormattedMessage from './FormattedMessage'
 import IngredientAuditCards from './IngredientAuditCards'
 import ChatEmptyPreview from './ChatEmptyPreview'
+import EmergencyBlock from './EmergencyBlock'
+import UnderstandingEcho from './UnderstandingEcho'
+import ConfirmRestrictionActions from './ConfirmRestrictionActions'
 import { type Message, streamChatResponse, stripStatusPlaceholders } from './streamChatResponse'
 import { UserProfile, profileToBackend, hasProfileRules } from '@/types/userProfile'
+import { httpErrorMessage, isEmergencyQuery, resolveRegionHint } from '@/lib/chatContract'
 import { useProfileContext } from '@/context/ProfileContext'
 import { useConfig } from '@/context/ConfigContext'
 import { PROFILE_BANNER_DISMISSED_KEY } from '@/constants/profileStorage'
@@ -70,6 +74,10 @@ export default function ChatInterface({
     const maxChatLength = config.max_chat_message_length
     const dietIcon = config.profile_options.diet_icon ?? {}
     const showPersonaliseNudge = profileLoaded && !hasProfileRules(profile)
+    const regionHint = resolveRegionHint(
+        profile.region,
+        typeof navigator !== 'undefined' ? navigator.language : null,
+    )
 
     // Open profile modal when navigating with ?openProfile=1 (e.g. from navbar avatar)
     useEffect(() => {
@@ -200,10 +208,11 @@ export default function ChatInterface({
         setInput('')
         setLoading(true)
         setAnalysisStatus('checking')
+        const emergencyTurn = isEmergencyQuery(userMsg)
         setMessages(prev => [
             ...prev,
             { role: 'user', content: userMsg },
-            { role: 'assistant', content: '' },
+            { role: 'assistant', content: '', emergency: emergencyTurn },
         ])
 
         try {
@@ -225,15 +234,15 @@ export default function ChatInterface({
             })
 
             if (!response.ok) {
-                let errMsg = 'Chat failed'
+                let detail = ''
                 try {
                     const errBody = await response.json()
-                    if (errBody?.detail) errMsg = typeof errBody.detail === 'string' ? errBody.detail : errMsg
-                    else if (errBody?.error) errMsg = errBody.error + (errBody.detail ? `: ${errBody.detail}` : '')
+                    if (typeof errBody?.detail === 'string') detail = errBody.detail
+                    else if (typeof errBody?.error === 'string') detail = errBody.error
                 } catch {
                     // ignore
                 }
-                throw new Error(errMsg)
+                throw new Error(httpErrorMessage(response.status, detail))
             }
 
             const reader = response.body?.getReader()
@@ -248,7 +257,7 @@ export default function ChatInterface({
             const message = error instanceof Error ? error.message : 'Sorry, I encountered an error. Please try again.'
             setMessages(prev => [
                 ...prev.slice(0, -1),
-                { role: 'assistant', content: `Sorry, something went wrong. ${message}` }
+                { role: 'assistant', content: message }
             ])
         } finally {
             setLoading(false)
@@ -265,7 +274,11 @@ export default function ChatInterface({
     const hasAssistantResult = messages.some(
         (m) =>
             m.role === 'assistant' &&
-            (!!m.audit || !!stripStatusPlaceholders(m.content)),
+            (!!m.audit ||
+                !!m.emergency ||
+                !!m.profileRequired ||
+                !!m.understandingEcho ||
+                !!stripStatusPlaceholders(m.content)),
     )
 
     return (
@@ -439,12 +452,19 @@ export default function ChatInterface({
                         analysisStatus === 'error' ? 'Something went wrong' : null
                     const displayContent =
                         msg.role === 'assistant' ? stripStatusPlaceholders(msg.content) : msg.content
-                    const hasResultContent = !!(msg.audit || displayContent)
+                    const hasResultContent = !!(
+                        msg.audit ||
+                        msg.emergency ||
+                        msg.profileRequired ||
+                        msg.understandingEcho ||
+                        displayContent
+                    )
                     const isPendingAssistant =
                         msg.role === 'assistant' &&
                         loading &&
                         idx === messages.length - 1 &&
-                        !hasResultContent
+                        !hasResultContent &&
+                        !msg.emergency
                     const showStatusLabel =
                         showAnalysisStatus &&
                         !!analysisStatusText &&
@@ -462,7 +482,7 @@ export default function ChatInterface({
                             className={`rounded-2xl shadow-card font-sans ${
                                 msg.role === 'user'
                                     ? 'max-w-[85%] sm:max-w-[75%] bg-primary text-white rounded-br-none px-4 py-3.5'
-                                    : msg.audit
+                                    : msg.audit || msg.emergency
                                       ? 'max-w-full flex-1 bg-white border border-slate-100 text-primary rounded-bl-none px-4 py-4 sm:max-w-[min(100%,42rem)]'
                                       : 'max-w-[85%] sm:max-w-[80%] bg-white border border-slate-100 text-primary rounded-bl-none px-4 py-3.5'
                             }`}
@@ -486,16 +506,56 @@ export default function ChatInterface({
                                             <span className="loading-dot" />
                                         </span>
                                     </div>
-                                ) : msg.role === 'assistant' && msg.audit ? (
+                                ) : msg.role === 'assistant' ? (
                                     <div className="space-y-3">
-                                        {displayContent ? (
+                                        {msg.emergency ? <EmergencyBlock region={regionHint} /> : null}
+                                        {!msg.emergency && msg.understandingEcho ? (
+                                            <UnderstandingEcho echo={msg.understandingEcho} />
+                                        ) : null}
+                                        {!msg.emergency && msg.profileRequired ? (
+                                            <div
+                                                data-testid="profile-required-notice"
+                                                className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-950"
+                                            >
+                                                I need your diet or allergies before I can say SAFE or NOT SAFE.{' '}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setShowOnboarding(true)}
+                                                    className="font-semibold underline underline-offset-2"
+                                                >
+                                                    Set profile →
+                                                </button>
+                                            </div>
+                                        ) : null}
+                                        {!msg.emergency && msg.degraded ? (
+                                            <div
+                                                data-testid="degraded-notice"
+                                                className="rounded-xl border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-950"
+                                            >
+                                                I could not finish that check. Treat this as UNCERTAIN, not safe.
+                                            </div>
+                                        ) : null}
+                                        {!msg.emergency && displayContent ? (
                                             <FormattedMessage content={displayContent} isUser={false} />
                                         ) : null}
-                                        <IngredientAuditCards
-                                            data={msg.audit}
-                                            showPersonaliseNudge={showPersonaliseNudge && !bannerVisible}
-                                            onPersonalise={() => setShowOnboarding(true)}
-                                        />
+                                        {!msg.emergency && !msg.profileRequired && msg.audit ? (
+                                            <IngredientAuditCards
+                                                data={msg.audit}
+                                                hideVerdictChips={Boolean(msg.degraded)}
+                                                showPersonaliseNudge={showPersonaliseNudge && !bannerVisible}
+                                                onPersonalise={() => setShowOnboarding(true)}
+                                            />
+                                        ) : null}
+                                        {!msg.emergency &&
+                                        msg.confirmPending &&
+                                        idx === messages.length - 1 ? (
+                                            <ConfirmRestrictionActions
+                                                disabled={loading}
+                                                onReply={(text) => {
+                                                    void submitMessage(text)
+                                                }}
+                                            />
+                                        ) : null}
                                     </div>
                                 ) : (
                                     <FormattedMessage content={displayContent} isUser={msg.role === 'user'} />
@@ -549,6 +609,7 @@ export default function ChatInterface({
                                     }
                                 }
                             }}
+                            data-testid="chat-input"
                             placeholder="Paste an ingredient list or ask a question…"
                             className={`max-h-40 min-h-[52px] w-full resize-none overflow-y-auto rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3.5 font-sans text-chat-input font-medium text-slate-700 shadow-card transition-all placeholder:text-slate-400 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30 ${input ? 'pr-10' : 'pr-4'}`}
                             disabled={loading || !profileLoaded}
