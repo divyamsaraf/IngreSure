@@ -9,8 +9,11 @@ def test_a31_bilingual_blocks_are_one_product():
     )
     assert block.kind != "multi_product"
     blob = " ".join(block.atoms).lower()
-    assert "sugar" in blob or "sucre" in blob or "zucker" in blob
-    assert "milk" in blob or "lait" in blob or "milch" in blob
+    assert "sugar" in blob
+    assert "milk" in blob
+    # Language blocks are joined, not last-wins.
+    assert "sucre" in blob or "lait" in blob
+    assert "zucker" in blob or "milch" in blob
 
 
 def test_a32_slash_translation_is_one_atom_not_alternatives():

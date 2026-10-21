@@ -21,8 +21,8 @@ _LANG_ING_HEADER = re.compile(
     re.IGNORECASE,
 )
 _LANG_VARIANT_HEADER = re.compile(
-    r"(?:zutaten|ingr[eé]dients?|ingredienti|ingredientes|"
-    r"ingredi[eë]nten|ingredienser|složen[ií]|składniki|"
+    r"(?:zutaten|ingrédients?|ingredienti|ingredientes|"
+    r"ingrediënten|ingredienser|složen[ií]|składniki|"
     r"ingredients?\s*\([^)]+\))",
     re.IGNORECASE,
 )
