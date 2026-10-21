@@ -5,9 +5,15 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import sys
+
 _BACKEND = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(_BACKEND))
+sys.path.insert(0, str(_BACKEND / "tests" / "corpus"))
+from spec_asserts import for_spec  # noqa: E402
 _SPEC = _BACKEND / "tests" / "corpus" / "input_cases_spec.jsonl"
 _ADDENDUM = _BACKEND / "tests" / "corpus" / "step1_input_cases_addendum.jsonl"
+_ADDENDUM2 = _BACKEND / "tests" / "corpus" / "step1_input_cases_addendum2.jsonl"
 _OUT = _BACKEND / "tests" / "corpus" / "input_cases_expanded.jsonl"
 
 # Reconstructed corpus IDs that must not be treated as spec IDs.
@@ -68,18 +74,30 @@ def expand(spec: dict) -> list[dict]:
             _chat("Contains: milk, soy"),
         ],
         "A07": [
-            _product("oats. May contain traces of nuts", ["tree_nut_allergy"]),
-            _product("oats; made in a facility that handles peanuts", ["peanut_allergy"]),
+            {
+                **_product("oats. May contain traces of nuts", ["tree_nut_allergy"]),
+                "assert": {"verdict_not": ["SAFE"]},
+            },
+            {
+                **_product("oats; made in a facility that handles peanuts", ["peanut_allergy"]),
+                "assert": {"verdict_not": ["SAFE"]},
+            },
             _product("May contain traces of nuts", ["vegan"]),
         ],
         "A08": [
             _product("gluten free, no added sugar, vegan, dairy-free cheese", ["gluten_free"]),
-            _product("dairy-free cheese", ["dairy_free"]),
+            {
+                **_product("dairy-free cheese", ["dairy_free"]),
+                "assert": {"verdict_not": ["SAFE"]},
+            },
             _chat("gluten free bread: water, salt"),
         ],
         "A09": [
             _product("palm oil or sunflower oil", ["vegan"]),
-            _product("milk/soy lecithin", ["dairy_free"]),
+            {
+                **_product("milk/soy lecithin", ["dairy_free"]),
+                "assert": {"verdict_in": ["NOT_SAFE"]},
+            },
             _product("sugar and/or glucose syrup", ["vegan"]),
         ],
         "A10": [
@@ -122,8 +140,14 @@ def expand(spec: dict) -> list[dict]:
             _chat("flavouring (contains milk)"),
         ],
         "A18": [
-            _chat("2 cups flour, 1 tbsp butter, 3 eggs, sifted"),
-            _product("2 cups flour, 1 tbsp butter, 3 eggs, sifted", ["dairy_free"]),
+            {
+                **_chat("2 cups flour, 1 tbsp butter, 3 eggs, sifted"),
+                "assert": {"atoms_contain": ["flour", "butter", "egg"]},
+            },
+            {
+                **_product("2 cups flour, 1 tbsp butter, 3 eggs, sifted", ["dairy_free"]),
+                "assert": {"atoms_contain": ["flour", "butter", "egg"], "verdict_in": ["NOT_SAFE"]},
+            },
             _chat("Recipe: 2 cups flour, 1 tbsp butter"),
         ],
         "A19": [
@@ -362,10 +386,13 @@ def expand(spec: dict) -> list[dict]:
             _product("water, salt", ["vegan"]),
         ],
         "A31": [
-            _product(
-                "Ingredients: Sugar, milk. Ingredients (FR): Sucre, lait. Zutaten: Zucker, Milch",
-                ["dairy_free"],
-            ),
+            {
+                **_product(
+                    "Ingredients: Sugar, milk. Ingredients (FR): Sucre, lait. Zutaten: Zucker, Milch",
+                    ["dairy_free"],
+                ),
+                "assert": {"atoms_contain": ["sugar", "milk"], "verdict_in": ["NOT_SAFE"]},
+            },
             _product(
                 "Ingredients: wheat, water. Ingrédients: blé, eau. Zutaten: Weizen, Wasser",
                 ["gluten_free"],
@@ -380,12 +407,18 @@ def expand(spec: dict) -> list[dict]:
             _chat("Sugar/Sucre, milk/lait"),
         ],
         "A33": [
-            _product(
-                "citric acid (to preserve freshness), annatto (color), cocoa processed with alkali",
-                ["vegan"],
+            {
+                **_product(
+                    "citric acid (to preserve freshness), annatto (color), "
+                    "cocoa processed with alkali, natural and artificial flavors, color added",
+                    ["vegan"],
+                ),
+                "assert": {"atoms_must_not": ["alkali", "color", "colour"]},
+            },
+            _product("natural and artificial flavors, spices, seasoning", ["vegetarian"]),
+            _chat(
+                "cocoa processed with alkali, natural and artificial flavors, citric acid"
             ),
-            _product("natural and artificial flavors, color added, water", ["vegan"]),
-            _chat("cocoa processed with alkali, citric acid (to preserve freshness)"),
         ],
         "A34": [
             _product("INS 322(ii), E 150 d, ins 330, E471(a)", ["vegan"]),
@@ -427,23 +460,77 @@ def expand(spec: dict) -> list[dict]:
             _product("halal chicken, beef", ["halal"]),
             _chat("chicken, beef"),
         ],
+        "A35": [
+            _product(
+                "Emulsifier (322, 471), Thickener (412), Acidity regulator (330), "
+                "Colour (102, 110), Preservative (202), Antioxidant (E300)",
+                ["vegan"],
+            ),
+            _product("Emulsifier (INS 322(ii)), Thickener (412)", ["vegan"]),
+            # Real OFF labels (ODbL tagged; parser corpus only, not promoted aliases).
+            _product(
+                "Raising agent (500(ii)), Yeast, Flour treatment agents (516 and 1101(i))",
+                ["vegan"],
+            ),
+            _product(
+                "Thickener (412), Emulsifiers (481, 472e), Preservative (282)",
+                ["vegan"],
+            ),
+            _chat("Emulsifier (322, 471), Thickener (412)"),
+        ],
+        "A36": [
+            _product(
+                "soy lecithin (an emulsifier), lecithin (soya), flavour (nature identical)",
+                ["soy_allergy"],
+            ),
+            _product("soy lecithin (an emulsifier), lecithin (soya)", ["vegan"]),
+            _chat("lecithin (soya), flavour (nature identical)"),
+        ],
     }
+
+    baseline = for_spec(spec)
     for i, v in enumerate(table.get(sid, [_product(ex), _chat(ex)]), 1):
+        asserts = dict(baseline)
+        asserts.update(v.pop("assert", {}) or {})
+        src = str(v.get("input") or "")
+        keep = [t for t in asserts.get("atoms_contain") or [] if t.lower() in src.lower()]
+        if keep:
+            asserts["atoms_contain"] = keep
+        elif "atoms_contain" in asserts:
+            asserts.pop("atoms_contain")
         row = {
             "spec_id": sid,
             "variant": i,
             "area": spec["area"],
             "expected": spec["expected"],
             "must_never": spec["must_never"],
+            "assert": asserts,
             **v,
         }
         variants.append(row)
     return variants[:5]
 
 
+def _stamp_assert_on_specs() -> None:
+    for path in (_SPEC, _ADDENDUM, _ADDENDUM2):
+        if not path.exists():
+            continue
+        rows = []
+        for line in path.read_text(encoding="utf-8").splitlines():
+            if not line.strip():
+                continue
+            spec = json.loads(line)
+            spec["assert"] = for_spec(spec)
+            rows.append(spec)
+        with path.open("w", encoding="utf-8") as f:
+            for row in rows:
+                f.write(json.dumps(row, ensure_ascii=False) + "\n")
+
+
 def main() -> None:
+    _stamp_assert_on_specs()
     specs = []
-    for path in (_SPEC, _ADDENDUM):
+    for path in (_SPEC, _ADDENDUM, _ADDENDUM2):
         if not path.exists():
             continue
         with path.open(encoding="utf-8") as f:

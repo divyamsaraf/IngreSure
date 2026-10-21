@@ -12,6 +12,11 @@ from core.normalization.normalizer import normalize_ingredient_key
 from core.parsing.label_normalize import normalize_label_separators
 from core.parsing.label_text import fix_ocr_label_noise, select_ingredient_label_text
 from core.parsing.nesting_split import split_by_nesting, split_top_level
+from core.parsing.parenthetical import (
+    FUNCTION_HEADERS,
+    additive_atom,
+    classify_parenthetical,
+)
 from core.parsing.translation_pairs import expand_slash_atom
 
 logger = logging.getLogger(__name__)
@@ -188,23 +193,17 @@ _BARE_QUALIFIER_ATOMS = frozenset({
     "added",
     "color added",
     "colour added",
+    "i",
+    "ii",
+    "iii",
+    "iv",
 })
 _SECTION_SLASH = re.compile(
     r"\s*/\s*(?=(?:contains|contient|enthält|gluten\s+source|source\s+de\s+gluten)\s*:)",
     re.IGNORECASE,
 )
 # Category headers before parenthetical lists (not standalone ingredients).
-_STRUCTURAL_HEADERS = frozenset({
-    "preservatives",
-    "preservative",
-    "colors",
-    "colours",
-    "color",
-    "colour",
-    "flavors",
-    "flavours",
-    "flavor",
-    "flavour",
+_STRUCTURAL_HEADERS = frozenset(FUNCTION_HEADERS) | frozenset({
     "spices",
     "spice",
 })
@@ -350,6 +349,21 @@ _COMPOSITION_PERCENT = re.compile(
 _COMPOSITION_NUMBER = re.compile(r"^\d+(?:[.,]\d+)?$")
 _ADDITIVE_HEAD = re.compile(r"^(?:e|ins)\s*\d{2,4}$", re.IGNORECASE)
 _ADDITIVE_SUBVARIANT = re.compile(r"^(?:[ivxlcdm]+|[a-z])$", re.IGNORECASE)
+_BARE_INS_SUB = re.compile(r"^(?:[ivxlcdm]{2,}|[a-z])$", re.IGNORECASE)
+
+
+def _glue_ins_subvariants(pieces: List[str]) -> List[str]:
+    """Attach a leftover roman/letter fragment onto the preceding additive number."""
+    out: List[str] = []
+    for piece in pieces:
+        t = (piece or "").strip()
+        if not t:
+            continue
+        if out and _BARE_INS_SUB.match(t) and re.search(r"\d{2,4}\s*$", out[-1]):
+            out[-1] = additive_atom(f"{out[-1]}({t})")
+            continue
+        out.append(t)
+    return out
 
 
 def _segment_canonical(part: str) -> str:
@@ -407,6 +421,36 @@ def _segments_for_clause(clause: str) -> List[tuple[str, bool]]:
             seg = _strip_subsection_header(seg)
             inline_trace = bool(_INLINE_TRACE_PAREN.search(seg))
             seg = _strip_inline_trace_parens(seg)
+            kind, payload = classify_parenthetical(seg)
+            if kind in ("function_header_numbers", "ins_e_list"):
+                for code in payload.get("codes") or []:
+                    segments.append((additive_atom(code), inline_trace))
+                continue
+            if kind == "function_header_payload":
+                for inner_item in payload.get("inners") or [payload.get("inner") or ""]:
+                    item = (inner_item or "").strip()
+                    if item:
+                        segments.append((item, inline_trace))
+                continue
+            if kind == "additive_subvariant":
+                code = payload.get("codes") or [
+                    f"{payload.get('base', '')}({payload.get('inner', '')})"
+                ]
+                segments.append((additive_atom(code[0]), inline_trace))
+                continue
+            if kind in ("name_function", "quantity", "claim", "translation"):
+                base = (payload.get("base") or "").strip()
+                if base:
+                    segments.append((base, inline_trace))
+                continue
+            if kind == "name_origin":
+                base = (payload.get("base") or "").strip()
+                inner = (payload.get("inner") or "").strip()
+                if base:
+                    segments.append((base, inline_trace))
+                if inner:
+                    segments.append((inner, inline_trace))
+                continue
             collapsed = _segment_canonical(seg)
             if collapsed != seg:
                 segments.append((collapsed, inline_trace))
@@ -420,7 +464,8 @@ def _segments_for_clause(clause: str) -> List[tuple[str, bool]]:
                     head = normalize_ingredient_key(pieces[0])
                     if head in _STRUCTURAL_HEADERS:
                         pieces = pieces[1:]
-                for piece in pieces:
+                glued = _glue_ins_subvariants(pieces)
+                for piece in glued:
                     segments.append((piece, inline_trace))
     return segments
 

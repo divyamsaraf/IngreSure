@@ -21,5 +21,7 @@ YOUR_API_HOSTNAME {
 	request_body {
 		max_size 512KB
 	}
+	# Blue/green: live 8000, candidate 8001. Flip this upstream after /health,
+	# smoke, same-seed parity, and the Vercel preview chat round trip pass on 8001.
 	reverse_proxy 127.0.0.1:8000
 }

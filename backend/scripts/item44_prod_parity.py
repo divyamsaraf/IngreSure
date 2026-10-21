@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
-"""Parity: held-out 216 OFF lists × 3 profiles, local TestClient vs production API.
+"""Parity: held-out OFF lists × 3 profiles, same-seed reference vs candidate API.
+
+Hard gates (always):
+  - zero candidate-SAFE where the reference is NOT_SAFE or UNCERTAIN
+  - zero 5xx
+
+95% agreement is a gate only with ``--same-seed`` (reference and candidate
+share the ontology seed; production will not have the ~6,800 bulk groups).
 
 Writes ``backend/.local_reports/item44_prod_parity.json``.
 Throttles production calls (~50/min) so default RATE_LIMIT_API_V1_DEFAULT holds.
-No API key — production gate is currently inactive (ENVIRONMENT ≠ production).
 """
 from __future__ import annotations
 
@@ -81,6 +87,9 @@ def _classify_diff(local: dict, prod: dict) -> str:
     return "data"
 
 
+_UNSAFE = {"NOT_SAFE", "AVOID", "UNCERTAIN", "CHECK", "WARN"}
+
+
 def _local_eval(client: TestClient, raw: str, rids: list[str]) -> dict:
     r = client.post(
         "/api/v1/evaluate-product",
@@ -105,6 +114,22 @@ def _prod_eval(base: str, raw: str, rids: list[str], api_key: str | None) -> dic
         return json.loads(resp.read().decode())
 
 
+def _load_reference(path: Path) -> dict[tuple[str, str], dict]:
+    raw = json.loads(path.read_text(encoding="utf-8"))
+    rows = raw.get("rows") if isinstance(raw, dict) else raw
+    out: dict[tuple[str, str], dict] = {}
+    for row in rows or []:
+        if not isinstance(row, dict) or row.get("error"):
+            continue
+        code = str(row.get("code") or "")
+        profile = str(row.get("profile") or "")
+        status = row.get("status") or row.get("local_status") or row.get("ref_status")
+        if code and profile and status:
+            out[(code, profile)] = row
+            out[(code, profile)]["status"] = status
+    return out
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--prod-base", default=os.environ.get("PROD_API_BASE", _DEFAULT_PROD))
@@ -112,15 +137,36 @@ def main() -> int:
     ap.add_argument("--limit", type=int, default=0, help="Max products (0=all)")
     ap.add_argument("--sleep", type=float, default=1.2, help="Seconds between prod calls")
     ap.add_argument("--offset", type=int, default=0)
+    ap.add_argument(
+        "--reference-json",
+        type=Path,
+        default=None,
+        help="Same-seed reference run (from --write-reference). Required for a valid 95% bar.",
+    )
+    ap.add_argument(
+        "--write-reference",
+        type=Path,
+        default=None,
+        help="Write local TestClient results as a reference run (use on ontology-seed DB only).",
+    )
+    ap.add_argument(
+        "--same-seed",
+        action="store_true",
+        help="Reference and candidate share the ontology seed. Enables the 95% agreement gate.",
+    )
     args = ap.parse_args()
 
     held = json.loads(_HELD.read_text(encoding="utf-8"))["products"]
     cache = _cache_by_code()
-    client = TestClient(app)
+    client = None if args.reference_json else TestClient(app)
+    ref_index = _load_reference(args.reference_json) if args.reference_json else {}
+    reference_rows = []
 
     rows = []
     missing = 0
     errors = 0
+    n_5xx = 0
+    unsafe_safe = 0
     agree = Counter()
     diff_class = Counter()
 
@@ -136,7 +182,29 @@ def main() -> int:
             continue
         for profile_name, rids in _PROFILES:
             try:
-                local = _local_eval(client, raw, rids)
+                if args.reference_json:
+                    hit = ref_index.get((code, profile_name))
+                    if not hit:
+                        missing += 1
+                        continue
+                    local = {
+                        "verdict": {"status": hit.get("status"), "triggered_ingredients": hit.get("triggered")},
+                        "parsed_ingredients": hit.get("parsed_ingredients") or [],
+                    }
+                else:
+                    local = _local_eval(client, raw, rids)
+                    if args.write_reference:
+                        reference_rows.append(
+                            {
+                                "code": code,
+                                "profile": profile_name,
+                                "status": (local.get("verdict") or {}).get("status"),
+                                "parsed_ingredients": local.get("parsed_ingredients") or [],
+                                "triggered": (local.get("verdict") or {}).get(
+                                    "triggered_ingredients"
+                                ),
+                            }
+                        )
             except Exception as exc:  # noqa: BLE001
                 errors += 1
                 rows.append(
@@ -151,6 +219,8 @@ def main() -> int:
                 prod = _prod_eval(args.prod_base, raw, rids, args.api_key)
             except urllib.error.HTTPError as exc:
                 errors += 1
+                if exc.code >= 500:
+                    n_5xx += 1
                 body = exc.read().decode()[:300] if exc.fp else ""
                 rows.append(
                     {
@@ -177,12 +247,15 @@ def main() -> int:
             ps = prod.get("verdict", {}).get("status")
             same = ls == ps
             agree["agree" if same else "disagree"] += 1
+            if ps == "SAFE" and ls in _UNSAFE:
+                unsafe_safe += 1
             entry = {
                 "code": code,
                 "profile": profile_name,
                 "local_status": ls,
                 "prod_status": ps,
                 "agree": same,
+                "hard_unsafe_safe": bool(ps == "SAFE" and ls in _UNSAFE),
                 "local_parsed_n": len(local.get("parsed_ingredients") or []),
                 "prod_parsed_n": len(prod.get("parsed_ingredients") or []),
             }
@@ -205,20 +278,54 @@ def main() -> int:
                 flush=True,
             )
 
+    compared = agree["agree"] + agree["disagree"]
+    agreement = (agree["agree"] / compared) if compared else 0.0
+    hard_ok = unsafe_safe == 0 and n_5xx == 0
+    agree_ok = (not args.same_seed) or agreement >= 0.95
     report = {
         "prod_base": args.prod_base,
         "api_key_sent": bool(args.api_key),
+        "same_seed": args.same_seed,
+        "reference_json": str(args.reference_json) if args.reference_json else None,
         "n_products_requested": len(products),
         "n_missing_text": missing,
         "n_errors": errors,
+        "n_5xx": n_5xx,
+        "hard_unsafe_safe": unsafe_safe,
+        "hard_gates_pass": hard_ok,
+        "agreement": round(agreement, 4),
+        "agreement_gate_applied": args.same_seed,
         "agree": dict(agree),
         "diff_class": dict(diff_class),
+        "note": (
+            "95% agreement is only a gate with --same-seed against an ontology-seed "
+            "reference. A local DB with bulk groups will disagree for data reasons."
+        ),
         "rows": rows,
     }
     _OUT.parent.mkdir(parents=True, exist_ok=True)
     _OUT.write_text(json.dumps(report, indent=2) + "\n")
+    if args.write_reference:
+        args.write_reference.parent.mkdir(parents=True, exist_ok=True)
+        args.write_reference.write_text(
+            json.dumps(
+                {
+                    "same_seed": args.same_seed,
+                    "n": len(reference_rows),
+                    "rows": reference_rows,
+                },
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        print("wrote reference", args.write_reference)
     print(json.dumps({k: report[k] for k in report if k != "rows"}, indent=2))
     print("out", _OUT)
+    if not hard_ok:
+        return 2
+    if not agree_ok:
+        return 3
     return 0
 
 

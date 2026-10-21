@@ -148,6 +148,9 @@ def evaluate_product(request: Request, req: EvaluateProductRequest) -> EvaluateP
             status_code=400,
             detail=f"{pair[0]} and {pair[1]} cannot be combined",
         )
+    from core.parsing.ingredient_block import extract_ingredient_block
+
+    paste = extract_ingredient_block(req.ingredients_text)
     try:
         parsed = preprocess_ingredients_to_strings(req.ingredients_text)
     except Exception:
@@ -157,7 +160,7 @@ def evaluate_product(request: Request, req: EvaluateProductRequest) -> EvaluateP
     if len(parsed) > MAX_ATOMS:
         raise HTTPException(status_code=413, detail=f"Too many ingredients (max {MAX_ATOMS})")
     try:
-        verdict, block = evaluate_http(
+        verdict, ike2_block = evaluate_http(
             parsed,
             ids,
             include_matrix=req.include_restriction_matrix,
@@ -168,7 +171,14 @@ def evaluate_product(request: Request, req: EvaluateProductRequest) -> EvaluateP
         record_degraded("eval_failed", where="evaluate_product")
         return _fail_closed_product(parsed)
     _ = (req.use_api_fallback, req.profile_context)
+    if paste.kind == "product_name" and getattr(verdict, "status", None) is not None:
+        from core.models.verdict import VerdictStatus
+
+        status = verdict.status
+        status_val = status.value if hasattr(status, "value") else str(status)
+        if status_val == "SAFE":
+            verdict.status = VerdictStatus.UNCERTAIN
     return EvaluateProductResponse(
-        parsed_ingredients=parsed, verdict=verdict.to_dict(), ike2=block
+        parsed_ingredients=parsed, verdict=verdict.to_dict(), ike2=ike2_block
     )
 

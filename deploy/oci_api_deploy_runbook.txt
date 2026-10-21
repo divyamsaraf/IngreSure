@@ -91,9 +91,9 @@ L1 truth_anchor and L2 `data/ontology.json` ship with the app binary/checkout; e
 
 ---
 
-## 3. Deploy current `main` to the API
+## 3. Deploy the **merge commit on main** (blue/green — do not in-place swap)
 
-Assumes git checkout deploy (adjust if Docker image):
+Do **not** deploy PR tip `6325e81`. A merge commit on `main` gets a new SHA.
 
 ```bash
 # on OCI, as deploy user
@@ -101,72 +101,122 @@ cd /path/to/IngreSure
 git fetch origin
 git checkout main
 git pull --ff-only origin main
-EXPECTED_SHA=$(git rev-parse HEAD)
-
-# backend env (names — set values on host)
-# ENVIRONMENT=production
-# B2B_API_KEYS={"<pilot-key>":"starter"}
-# SUPABASE_URL=https://<project-ref>.supabase.co
-# SUPABASE_SERVICE_ROLE_KEY=...
-# CORS_ORIGINS=https://<vercel-app>.vercel.app,...
-# GIT_SHA=$EXPECTED_SHA          # required so /health matches without relying on .git
-# RATE_LIMIT_* as needed
-
-cd backend
-# venv + deps if not image-based
-source venv/bin/activate   # or recreate
-pip install -r requirements.txt
-
-# restart API (pick what the host uses)
-sudo systemctl restart ingresure-backend   # example unit name
-# or: docker compose up -d --build backend
+EXPECTED_SHA=$(git rev-parse HEAD)   # merge commit, not the PR tip
+# Confirm GitHub CI is green on this SHA before continuing.
 ```
 
-**Docker variant:** build/push image tagged with `$EXPECTED_SHA`, set `GIT_SHA` in compose/k8s, roll the container.
+Set `EXPECTED_GIT_SHA=$EXPECTED_SHA` and `GIT_SHA=$EXPECTED_SHA` on the **new** container.
 
-**After app restart:** remove or relax the interim Caddy key check only once `/health` shows `production: true` and unauthenticated `/api/v1` returns **401**.
+Live (green) stays on `127.0.0.1:8000`. Start the new (blue) container on a **second port** against the **already migrated** database:
+
+```bash
+# example: docker
+docker run -d --name ingresure-api-blue \
+  -p 127.0.0.1:8001:8000 \
+  -e GIT_SHA=$EXPECTED_SHA \
+  -e ENVIRONMENT=production \
+  # same SUPABASE_* / B2B_API_KEYS / CORS_ORIGINS / RATE_LIMIT_* as live
+  ingresure-api:$EXPECTED_SHA
+
+# or systemd: a second unit bound to 127.0.0.1:8001
+```
+
+Do **not** stop the live container yet.
+
+Env names (values on host only):
+
+- `ENVIRONMENT=production`
+- `B2B_API_KEYS`
+- `SUPABASE_URL` / `SUPABASE_SERVICE_ROLE_KEY`
+- `CORS_ORIGINS` (include the Vercel **preview** URL used in §4b)
+- `GIT_SHA=$EXPECTED_SHA`
+- `RATE_LIMIT_*` as needed
 
 ---
 
-## 4. Post-deploy verify
+## 4. Verify the blue container **before** flipping Caddy
+
+Point checks at `http://127.0.0.1:8001`, not the public hostname.
 
 ```bash
-export PROD_API_BASE=https://ingresure-api.gleeze.com
+export BLUE=http://127.0.0.1:8001
 export EXPECTED_GIT_SHA=$EXPECTED_SHA
-export PROD_API_KEY=<pilot-key>   # required once gate is on
+export PROD_API_KEY=<pilot-key>
 
-cd backend
-python scripts/post_deploy_smoke.py
+curl -sS $BLUE/health   # git_sha == $EXPECTED_SHA, engine=ike2, production true
+
+# smoke against blue (same script; override base)
+PROD_API_BASE=$BLUE python scripts/post_deploy_smoke.py
 ```
 
-Asserts:
+Smoke asserts:
 
-- `GET /health` → `git_sha` equals merge tip (or prefix match), `engine=ike2`
+- `GET /health` → `git_sha` equals the **merge** SHA, `engine=ike2`
 - `POST /api/v1/evaluate-product` with `PEANUTS (49.5%), honey, salt` + `peanut_allergy` → **`NOT_SAFE`**, no bare percent atom
 
-Then rerun held-out parity through the **keyed** endpoint:
+### 4a. Same-seed parity (not local bulk groups vs production seed)
+
+Production’s database holds the ontology seed. A local reference with ~6,800 bulk groups will disagree for **data** reasons and must not be used as the 95% bar.
+
+On a machine whose DB is the **same ontology seed** as production:
 
 ```bash
-PROD_API_KEY=<pilot-key> python scripts/item44_prod_parity.py --sleep 1.2
+# write the reference once
+python scripts/item44_prod_parity.py --write-reference backend/.local_reports/item44_same_seed_reference.json --limit 0
+
+# score blue against that reference
+PROD_API_BASE=$BLUE PROD_API_KEY=<pilot-key> \
+  python scripts/item44_prod_parity.py \
+    --reference-json backend/.local_reports/item44_same_seed_reference.json \
+    --same-seed --sleep 1.2
 ```
 
+Hard gates (fail the cutover if any fire):
+
+- zero blue-SAFE where the reference is NOT_SAFE or UNCERTAIN
+- zero 500s
+
+Hold the 95% agreement bar **only** with `--same-seed` against that reference.
+
+### 4b. Vercel preview chat round trip (before switching production)
+
+Chat contract changes: `PROFILE_REQUIRED`, the confirm line (`yes` / `no` / `only today`), the understanding echo, and `degraded`. A production frontend that does not know these markers shows raw text or breaks confirm.
+
+1. Deploy a **Vercel preview** with `BACKEND_URL` pointing at the blue API (SSH tunnel or a temporary Caddy host that proxies `:8001` behind the lock — not the production hostname).
+2. Exercise chat end to end: empty profile → PROFILE_REQUIRED; add a restriction → understanding echo; confirm persist with yes / no / only today; a swallowed-path list shows degraded.
+3. Only then point production Vercel `BACKEND_URL` at the flipped hostname.
+
 ---
 
-## 5. Rollback
+## 5. Flip Caddy, then keep old for rollback
 
-1. `git checkout <previous_sha>` (or redeploy previous image digest).  
-2. Restart API; set `GIT_SHA` to that sha.  
-3. DB: migrations are forward-only — do **not** auto-down. If a migration broke the view, restore from snapshot taken before `db push`.  
-4. Re-enable interim Caddy `/api/v1` lock if rolling back to pre–Item 9 code.  
-5. Re-run `post_deploy_smoke.py` against the rolled-back SHA (expect peanut behavior of that SHA).
+Once `/health`, smoke, same-seed parity, and the preview chat round trip pass on blue:
+
+1. Point the vhost `reverse_proxy` from `127.0.0.1:8000` to `127.0.0.1:8001`.
+2. `sudo caddy validate --config /etc/caddy/Caddyfile && sudo systemctl reload caddy`
+3. Re-run smoke + `/health` on `https://ingresure-api.gleeze.com` with `EXPECTED_GIT_SHA` still the merge SHA.
+4. **Stop** the old container; do **not** delete it. Rollback is only to restore availability **behind the lock** — the old binary is unsafe relative to this merge.
+
+Remove or relax the interim Caddy key check only once public `/health` shows `production: true` and unauthenticated `/api/v1` returns **401**.
 
 ---
 
-## 6. Vercel coupling
+## 6. Rollback (availability only)
+
+The stopped green container is unsafe. Use it only to restore availability behind the Caddy lock.
+
+1. Flip Caddy back to `127.0.0.1:8000` (old) or start the previous image on `:8000`.
+2. Reload Caddy. Re-enable the interim `/api/v1` lock if rolling back to pre–Item 9 code.
+3. DB: migrations are forward-only — do **not** auto-down. If a migration broke the view, restore from the snapshot taken before `db push`.
+4. Set `GIT_SHA` to the rolled-back SHA. Re-run `post_deploy_smoke.py` against that SHA.
+
+---
+
+## 7. Vercel coupling
 
 | Surface | Env | Routes |
 |---------|-----|--------|
 | Frontend BFF | `BACKEND_URL` | `/chat/grocery`, `/profile`, `/config`, `/anon-session` |
 | Direct B2B | clients → API host | `/api/v1/*` |
 
-If Vercel `BACKEND_URL` is this hostname, consumer chat uses the **same** engine as the public API. Locking only `/api/v1` does not stop legacy chat until the API binary is upgraded or chat is pointed elsewhere.
+If Vercel `BACKEND_URL` is this hostname, consumer chat uses the **same** engine as the public API. Locking only `/api/v1` does not stop legacy chat until the API binary is upgraded or chat is pointed elsewhere. Preview (§4b) must pass before production `BACKEND_URL` follows the flip.

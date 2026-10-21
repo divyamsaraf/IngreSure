@@ -16,6 +16,15 @@ _MULTI_PRODUCT = re.compile(
 )
 _BARCODE = re.compile(r"^\s*\d{8,14}\s*$")
 _ING_HEADER = re.compile(r"\bingredients?\s*[:;]", re.IGNORECASE)
+_Q_PREFIX = re.compile(
+    r"^\s*(?:is|are|can\s+i\s+(?:eat|have)|does)\s+",
+    re.IGNORECASE,
+)
+_DIET_TAIL = re.compile(
+    r"\b(?:vegan|vegetarian|jain|halal|kosher|gluten[\s-]*free|"
+    r"dairy[\s-]*free|peanut[\s-]*free|nut[\s-]*free|safe|ok|okay)\s*\??\s*$",
+    re.IGNORECASE,
+)
 
 
 @dataclass
@@ -27,11 +36,38 @@ class IngredientBlock:
     unparsed: list[str] = field(default_factory=list)
 
 
+def _product_question_subject(text: str) -> str | None:
+    """Return the name in 'Is Nutella vegan?' when there is no ingredient list."""
+    if "," in text or _ING_HEADER.search(text):
+        return None
+    t = (text or "").strip()
+    if not (_Q_PREFIX.search(t) or "?" in t):
+        return None
+    t = _Q_PREFIX.sub("", t)
+    t = _DIET_TAIL.sub("", t).strip(" ?.")
+    if not t or len(t.split()) > 6:
+        return None
+    return t
+
+
+def _is_trusted_single_ingredient(name: str) -> bool:
+    if len((name or "").split()) != 1:
+        return False
+    from core.knowledge.ike2.resolver import resolve
+
+    hit = resolve(name, None)
+    return bool(getattr(hit, "trusted", False))
+
+
 def extract_ingredient_block(raw: str) -> IngredientBlock:
     """Classify paste and return the atoms a later stage may evaluate."""
     text = (raw or "").strip()
     if not text:
         return IngredientBlock(kind="none", text="")
+
+    subject = _product_question_subject(text)
+    if subject and not _is_trusted_single_ingredient(subject):
+        return IngredientBlock(kind="product_name", text=text, unparsed=[subject])
 
     if _BARCODE.match(text):
         return IngredientBlock(kind="product_name", text=text, unparsed=[text])

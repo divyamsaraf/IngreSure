@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Run Step 1 corpus (tests/corpus/input_cases.jsonl) against current local code.
+"""Run Step 1 expanded corpus against current local code.
 
-Classifies each case as: crash_500, silent_drop, wrong_intent, wrong_restriction,
-unsafe_SAFE, or ok. Prints a failure matrix by area (A–E).
+Checks only machine-checkable ``assert`` fields (verdict_in, atoms_contain,
+intent, status_code, no_5xx, …). Reports by spec ID. No prose heuristics.
 """
 from __future__ import annotations
 
@@ -103,10 +103,20 @@ def _verdict_status(payload) -> str | None:
         groups = payload.get("groups") or []
         if groups:
             # worst of audit groups
-            order = {"NOT_SAFE": 3, "AVOID": 3, "UNCERTAIN": 2, "CHECK": 2, "SAFE": 1}
+            order = {
+                "NOT_SAFE": 3,
+                "AVOID": 3,
+                "UNCERTAIN": 2,
+                "DEPENDS": 2,
+                "CHECK": 2,
+                "WARN": 2,
+                "SAFE": 1,
+            }
             worst = "SAFE"
             for g in groups:
                 st = str(g.get("status") or "").upper()
+                if st == "DEPENDS":
+                    st = "UNCERTAIN"
                 if order.get(st, 0) > order.get(worst, 0):
                     worst = "NOT_SAFE" if st in ("AVOID", "NOT_SAFE") else st
             return worst
@@ -142,75 +152,64 @@ def _expected_tokens(text: str) -> list[str]:
     return [n for n in needles if n in low]
 
 
-def _silent_drop(raw: str, parsed: list[str]) -> bool:
-    blob = " ".join(parsed or []).lower()
-    missed = [t for t in _expected_tokens(raw) if t not in blob]
-    return bool(missed) and bool(parsed is not None)
+def _blob(parsed) -> str:
+    return " ".join(str(x).lower() for x in (parsed or []))
 
 
 def _classify(case: dict, *, status_code: int | None, body, parsed, intent, exception) -> list[str]:
+    """Check only machine-checkable ``assert`` fields. No prose heuristics."""
     fails: list[str] = []
-    mn = (case.get("must_never") or "").lower()
-    expected = (case.get("expected") or "").lower()
-    if exception or status_code == 500:
-        fails.append("crash_500")
-    if "crash" in mn and (exception or status_code == 500):
-        fails.append("crash_500")
-    if status_code and status_code >= 500:
-        fails.append("crash_500")
-
-    if parsed is not None and _silent_drop(case.get("input") or "", parsed):
-        if "drop" in mn or "silent" in mn or case["area"] == "A":
-            fails.append("silent_drop")
-
-    if case["route"] == "chat" and intent:
-        # wrong intent: greeting treated as ingredient SAFE, or recipe as packaged SAFE
-        if "greeting" in expected and intent.intent not in ("GREETING", "GENERAL_QUESTION"):
-            fails.append("wrong_intent")
-        if "ask" in expected and intent.intent == "INGREDIENT_QUERY" and not intent.ingredients:
-            pass
-        if "emergency" in expected and intent.intent not in ("GENERAL_QUESTION", "GREETING"):
-            # evaluating ingredients during emergency is wrong intent
-            if intent.has_ingredients:
-                fails.append("wrong_intent")
-
-    if "restriction" in mn or "silent vegan" in mn or "confirm" in expected:
-        if intent and intent.has_profile_update:
-            pu = intent.profile_updates or {}
-            if "do not apply vegan" in expected or "negation does not add vegan" in expected:
-                if str(pu.get("dietary_preference") or "").lower() == "vegan":
-                    fails.append("wrong_restriction")
-            if "confirm before removing" in expected or "do not apply vegan without confirm" in expected:
-                if pu.get("dietary_preference") or pu.get("remove_allergens"):
-                    fails.append("wrong_restriction")
-        if "unsupported" in expected and intent and not intent.has_profile_update:
-            # keto/diabetic silently ignored
-            fails.append("wrong_restriction")
-
+    spec = case.get("assert") or {}
     verdict = _verdict_status(body if isinstance(body, dict) else None)
     if isinstance(body, str):
         audit = _extract_audit(body)
         verdict = _verdict_status(audit) or verdict
-        if "safe" in body.lower() and "not_safe" not in (verdict or "").lower():
-            if "SAFE" in (case.get("must_never") or "") or "firm SAFE" in mn:
-                if verdict == "SAFE":
-                    fails.append("unsafe_SAFE")
-    if verdict == "SAFE" and ("safe" in mn or "SAFE" in (case.get("must_never") or "")):
-        fails.append("unsafe_SAFE")
+    body_text = body if isinstance(body, str) else json.dumps(body or {})
 
-    # 400/422 expected for contradiction / validation
-    if "400" in expected or "422" in expected or "413" in expected:
-        if status_code not in (400, 413, 422):
-            if status_code == 200 and verdict == "SAFE":
-                fails.append("unsafe_SAFE")
-            elif status_code == 200:
-                fails.append("wrong_restriction")
-            elif status_code and status_code >= 500:
-                fails.append("crash_500")
-
-    # HTTP 500 must never
-    if "http 500" in mn and status_code == 500:
+    if spec.get("no_5xx", True) and (exception or (status_code and status_code >= 500)):
         fails.append("crash_500")
+
+    want_status = spec.get("status_code")
+    if want_status is not None:
+        allowed = want_status if isinstance(want_status, list) else [want_status]
+        if status_code not in allowed:
+            fails.append("status_code")
+
+    if verdict is not None:
+        if spec.get("verdict_in") and verdict not in spec["verdict_in"]:
+            fails.append("verdict")
+        if spec.get("verdict_not") and verdict in spec["verdict_not"]:
+            fails.append("unsafe_SAFE" if verdict == "SAFE" else "verdict")
+
+    blob = _blob(parsed)
+    for tok in spec.get("atoms_contain") or []:
+        if tok.lower() not in blob:
+            fails.append("atoms_contain")
+            break
+    for tok in spec.get("atoms_must_not") or []:
+        if any(str(a).lower().strip() == tok.lower() for a in (parsed or [])):
+            fails.append("atoms_must_not")
+            break
+
+    want_intent = spec.get("intent")
+    if want_intent and intent:
+        allowed = want_intent if isinstance(want_intent, list) else [want_intent]
+        if intent.intent not in allowed:
+            fails.append("intent")
+
+    for needle in spec.get("body_contains") or []:
+        if needle.lower() not in body_text.lower():
+            fails.append("body_contains")
+            break
+    for needle in spec.get("body_must_not") or []:
+        if needle.lower() in body_text.lower():
+            fails.append("body_must_not")
+            break
+
+    if spec.get("audit") is False and isinstance(body, str) and INGREDIENT_AUDIT_TAG in body:
+        fails.append("audit")
+    if spec.get("audit") is True and isinstance(body, str) and INGREDIENT_AUDIT_TAG not in body:
+        fails.append("audit")
 
     return sorted(set(fails))
 

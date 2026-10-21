@@ -43,6 +43,11 @@ def test_product_name_only_is_not_a_label():
     assert block.kind == "product_name"
 
 
+def test_product_diet_question_is_product_name():
+    block = extract_ingredient_block("Is Nutella vegan?")
+    assert block.kind == "product_name"
+
+
 def test_ingredients_header_is_label():
     block = extract_ingredient_block("Ingredients: oats. Contains: milk, soy.")
     assert block.kind == "label"

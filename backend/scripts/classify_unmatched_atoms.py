@@ -20,6 +20,7 @@ sys.path.insert(0, str(_BACKEND))
 
 from core.knowledge.ike2.resolver import resolve  # noqa: E402
 from core.parsing.ingredient_parser import preprocess_ingredients_to_strings  # noqa: E402
+from core.parsing.parenthetical import FUNCTION_HEADERS  # noqa: E402
 from core.parsing.translation_pairs import is_translation_pair  # noqa: E402
 
 _ADDITIVE_SUB = re.compile(
@@ -36,25 +37,38 @@ _QUALIFIER = re.compile(
 )
 
 
+_LANGUAGE_WORDS = frozenset({
+    "sel", "sucre", "eau", "lait", "farine", "blé", "ble", "beurre", "huile",
+    "zucker", "wasser", "salz", "speisesalz", "mehl", "weizen", "milch",
+    "azucar", "agua", "harina", "leche", "zucchero", "acqua", "farina",
+    "suiker", "meersalz", "knoblauch", "gewürze", "gewurze",
+    "sucre", "huile de tournesol", "beurre de cacao",
+})
+
+
 def _classify_atom(atom: str) -> str:
-    a = (atom or "").strip()
+    a = (atom or "").strip().lower()
     if not a:
-        return "fragment"
+        return "ins_fragment"
+    if a in FUNCTION_HEADERS:
+        return "function_header"
     if _ADDITIVE_SUB.match(a) or re.search(r"\b(?:e|ins)\s*\d{2,4}\s*\(", a, re.I):
-        return "ins_sub_variant"
-    if _FRAGMENT.match(a):
-        return "fragment"
+        return "ins_fragment"
+    if _FRAGMENT.match(a) or re.fullmatch(r"\d{2,4}", a):
+        return "ins_fragment"
     if _QUALIFIER.search(a):
         return "qualifier"
-    if "/" in a:
-        parts = [p.strip() for p in a.split("/") if p.strip()]
-        if len(parts) == 2 and is_translation_pair(parts[0], parts[1]):
-            return "language"
-        return "language"
+    if a in _LANGUAGE_WORDS or "/" in a:
+        if "/" in a:
+            parts = [p.strip() for p in a.split("/") if p.strip()]
+            if len(parts) == 2 and is_translation_pair(parts[0], parts[1]):
+                return "language_word"
+            return "language_word"
+        return "language_word"
     if re.search(r"[àâäéèêëïîôùûüçñßæœ]", a, re.I):
-        return "language"
+        return "language_word"
     if re.search(r"[\u0600-\u06FF\u0900-\u097F\u4e00-\u9fff]", a):
-        return "language"
+        return "language_word"
     return "true_gap"
 
 
@@ -117,9 +131,28 @@ def main(argv=None) -> int:
                         unmatched[market][atom] += 1
                         class_by_market[market][_classify_atom(atom)] += 1
 
+    summary_path = _BACKEND / ".local_reports" / "region_dump_sample_summary.json"
+    dump_meta = {}
+    if summary_path.exists():
+        try:
+            dump_meta = json.loads(summary_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            dump_meta = {}
+
     report = {
         "supabase_url_set": bool(os.environ.get("SUPABASE_URL")),
         "odbl_note": "Tagged OFF sample. Do not promote aliases pending counsel.",
+        "dump_reached_eof": dump_meta.get("reached_eof"),
+        "dump_eligible_seen": {
+            m: (info or {}).get("eligible_seen")
+            for m, info in (dump_meta.get("markets") or {}).items()
+        },
+        "dump_sampling": {
+            m: (info or {}).get("sampling")
+            for m, info in (dump_meta.get("markets") or {}).items()
+        },
+        "uae_note": dump_meta.get("uae_note")
+        or "OFF-UAE is OFF coverage, not UAE shelves. first-200 is non-random until dump EOF.",
         "lists_per_market": dict(n_lists),
         "layers": {m: dict(c) for m, c in by_market.items()},
         "unmatched_class_counts": {m: dict(c) for m, c in class_by_market.items()},
