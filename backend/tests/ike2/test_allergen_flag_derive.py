@@ -63,3 +63,6 @@ def test_free_from_negation_suppresses_family_derive():
     assert derive_identity_flags("gluten", {})["gluten_source"] is True
     assert derive_identity_flags("sodium sulphite", {})["sulphite_source"] is True
     assert derive_identity_flags("peanuts", {})["peanut_source"] is True
+    # Claims never clear oats (R05).
+    assert derive_identity_flags("gluten free oats", {})["gluten_source"] is True
+    assert derive_identity_flags("oats", {})["gluten_source"] is True

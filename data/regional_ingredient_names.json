@@ -48,6 +48,10 @@
     { "regional": ["garam masala"], "canonical": "garam masala" },
     { "regional": ["curry leaves", "kadi patta"], "canonical": "curry leaves" },
     { "regional": ["kokum", "garcinia"], "canonical": "kokum" },
-    { "regional": ["tadka", "tarka"], "canonical": "tempered spices" }
+    { "regional": ["tadka", "tarka"], "canonical": "tempered spices" },
+    { "regional": ["aubergine"], "canonical": "eggplant" },
+    { "regional": ["courgette"], "canonical": "zucchini" },
+    { "regional": ["plain flour"], "canonical": "all purpose flour" },
+    { "regional": ["caster sugar", "superfine sugar"], "canonical": "sugar" }
   ]
 }

@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import logging
 import re
+import threading
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from typing import Any, Optional
@@ -25,6 +26,7 @@ MAX_RAW_INPUTS = 20
 _JUNK_PATTERN = re.compile(r"^zyzzx\b")
 
 _executor: Optional[ThreadPoolExecutor] = None
+_executor_lock = threading.Lock()
 _client = None
 
 
@@ -105,9 +107,10 @@ def record_miss(normalized_key: str, raw_input: Optional[str] = None) -> None:
     try:
         if not normalized_key or is_junk_key(normalized_key):
             return
-        if _executor is None:
-            _executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="ike2-unknown-queue")
-        _executor.submit(enqueue_unknown, normalized_key, raw_input)
+        with _executor_lock:
+            if _executor is None:
+                _executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="ike2-unknown-queue")
+            _executor.submit(enqueue_unknown, normalized_key, raw_input)
     except Exception as exc:  # pragma: no cover - defensive
         logger.warning("IKE2_UNKNOWN_QUEUE_WRITE_FAILED key=%s: %s", (normalized_key or "")[:80], exc)
 

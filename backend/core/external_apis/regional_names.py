@@ -26,6 +26,10 @@ _BUILTIN_REGIONAL: dict[str, str] = {
     "atta": "wheat flour", "maida": "all purpose flour",
     "haldi": "turmeric", "jeera": "cumin", "dhania": "coriander", "methi": "fenugreek",
     "poha": "flattened rice", "sabudana": "sago", "paneer": "paneer", "ghee": "ghee",
+    "aubergine": "eggplant", "courgette": "zucchini",
+    "cilantro": "coriander",
+    "plain flour": "all purpose flour", "caster sugar": "sugar",
+    "superfine sugar": "sugar",
 }
 
 # regional_key (normalized) -> canonical English name (built-in + static + learned)
