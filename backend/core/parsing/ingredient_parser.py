@@ -4,8 +4,10 @@ Preprocess complex ingredient strings into atomic ingredients for evaluation.
 - Normalize each part via normalizer.
 - Detect <2% trace ingredients (informational unless they conflict with user profile).
 """
-import re
 import logging
+import os
+import re
+import time
 from typing import List, Dict, Any, Optional, Callable
 
 from core.normalization.normalizer import normalize_ingredient_key
@@ -20,6 +22,12 @@ from core.parsing.parenthetical import (
 from core.parsing.translation_pairs import expand_slash_atom
 
 logger = logging.getLogger(__name__)
+
+PARSE_BUDGET_S = float(os.environ.get("PARSE_BUDGET_S", "2"))
+
+
+class ParseBudgetExceeded(Exception):
+    """Parse exceeded PARSE_BUDGET_S; callers fail closed to UNCERTAIN."""
 
 # Patterns for trace/minor ingredient labels (often at end of ingredient list)
 TRACE_PATTERNS = [
@@ -141,7 +149,6 @@ MAY_CONTAIN_PATTERNS = [
     re.compile(r"processed\s+in\s+a\s+facility", re.IGNORECASE),
     re.compile(r"made\s+in\s+a\s+facility", re.IGNORECASE),
 ]
-_TOP_LEVEL_SEP = re.compile(r"[,;](?![^(\[\{]*[\)\]\}])")
 _QUALIFIERS = ("from", "derived from", "made from")
 _PAREN_KEEP_OUTER = frozenset(
     {
@@ -549,6 +556,7 @@ def preprocess_ingredients(
     """
     if not raw_str or not isinstance(raw_str, str):
         return []
+    t0 = time.monotonic()
     raw_str = normalize_label_separators(
         select_ingredient_label_text(fix_ocr_label_noise(raw_str))
     )
@@ -598,6 +606,10 @@ def preprocess_ingredients(
                     norm_fn=norm_fn,
                 )
 
+    if PARSE_BUDGET_S >= 0 and (time.monotonic() - t0) > PARSE_BUDGET_S:
+        raise ParseBudgetExceeded(
+            f"ingredient parse exceeded {PARSE_BUDGET_S}s"
+        )
     return list(result_by_key.values())
 
 
