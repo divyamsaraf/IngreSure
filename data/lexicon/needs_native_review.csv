@@ -1,0 +1,529 @@
+language,token,matched_class/context,needs_native_review,false_friend,notes
+hi,ajmod,celery,true,false,Hindi/Hinglish; celery → celery_source
+hi,celery,celery,true,false,Hindi/Hinglish; celery variant of ajmod → celery_source
+hi,अजमोद,celery,true,false,Hindi/Hinglish; celery variant of ajmod → celery_source
+hi,jheenga,crustacean,true,false,Hindi/Hinglish; crustacean → shellfish_source
+hi,jhinga,crustacean,true,false,Hindi/Hinglish; crustacean variant of jheenga → shellfish_source
+hi,prawn,crustacean,true,false,Hindi/Hinglish; crustacean variant of jheenga → shellfish_source
+hi,झींगा,crustacean,true,false,Hindi/Hinglish; crustacean variant of jheenga → shellfish_source
+hi,dahi,dairy,true,false,Hindi/Hinglish; dairy variant of doodh → dairy_source
+hi,doodh,dairy,true,false,Hindi/Hinglish; dairy → dairy_source
+hi,dudh,dairy,true,false,Hindi/Hinglish; dairy variant of doodh → dairy_source
+hi,ghee,dairy,true,false,Hindi/Hinglish; dairy variant of doodh → dairy_source
+hi,makhan,dairy,true,false,Hindi/Hinglish; dairy variant of doodh → dairy_source
+hi,paneer,dairy,true,false,Hindi/Hinglish; dairy variant of doodh → dairy_source
+hi,दूध,dairy,true,false,Hindi/Hinglish; dairy variant of doodh → dairy_source
+hi,anda,egg,true,false,Hindi/Hinglish; egg → egg_source
+hi,ande,egg,true,false,Hindi/Hinglish; egg variant of anda → egg_source
+hi,andé,egg,true,false,Hindi/Hinglish; egg variant of anda → egg_source
+hi,अंडा,egg,true,false,Hindi/Hinglish; egg variant of anda → egg_source
+hi,अण्डा,egg,true,false,Hindi/Hinglish; egg variant of anda → egg_source
+hi,fish,fish,true,false,Hindi/Hinglish; fish variant of machli → fish_source
+hi,machhli,fish,true,false,Hindi/Hinglish; fish variant of machli → fish_source
+hi,machli,fish,true,false,Hindi/Hinglish; fish → fish_source
+hi,मछली,fish,true,false,Hindi/Hinglish; fish variant of machli → fish_source
+hi,atta,gluten,true,false,Hindi/Hinglish; gluten variant of gehu → gluten_source
+hi,gehu,gluten,true,false,Hindi/Hinglish; gluten → gluten_source
+hi,gehun,gluten,true,false,Hindi/Hinglish; gluten variant of gehu → gluten_source
+hi,jai,gluten,true,false,Hindi/Hinglish; gluten variant of gehu → gluten_source
+hi,jau,gluten,true,false,Hindi/Hinglish; gluten variant of gehu → gluten_source
+hi,maida,gluten,true,false,Hindi/Hinglish; gluten variant of gehu → gluten_source
+hi,wheat,gluten,true,false,Hindi/Hinglish; gluten variant of gehu → gluten_source
+hi,गेहूं,gluten,true,false,Hindi/Hinglish; gluten variant of gehu → gluten_source
+hi,lupin,lupin,true,false,Hindi/Hinglish; lupin → lupin_source
+hi,lupine,lupin,true,false,Hindi/Hinglish; lupin variant of lupin → lupin_source
+hi,ल्यूपिन,lupin,true,false,Hindi/Hinglish; lupin variant of lupin → lupin_source
+hi,mollusc,mollusc,true,false,Hindi/Hinglish; mollusc → shellfish_source
+hi,molluscs,mollusc,true,false,Hindi/Hinglish; mollusc variant of mollusc → shellfish_source
+hi,sipi,mollusc,true,false,Hindi/Hinglish; mollusc variant of mollusc → shellfish_source
+hi,mustard,mustard,true,false,Hindi/Hinglish; mustard variant of rai → mustard_source
+hi,rai,mustard,true,false,Hindi/Hinglish; mustard → mustard_source
+hi,sarson,mustard,true,false,Hindi/Hinglish; mustard variant of rai → mustard_source
+hi,सरसों,mustard,true,false,Hindi/Hinglish; mustard variant of rai → mustard_source
+hi,groundnut,peanut,true,false,Hindi/Hinglish; peanut variant of moongfali → peanut_source
+hi,moongfali,peanut,true,false,Hindi/Hinglish; peanut → peanut_source
+hi,mungfali,peanut,true,false,Hindi/Hinglish; peanut variant of moongfali → peanut_source
+hi,shengdana,peanut,true,false,Hindi/Hinglish; peanut variant of moongfali → peanut_source
+hi,मूंगफली,peanut,true,false,Hindi/Hinglish; peanut variant of moongfali → peanut_source
+hi,sesame,sesame,true,false,Hindi/Hinglish; sesame variant of til → sesame_source
+hi,tahini,sesame,true,false,Hindi/Hinglish; sesame variant of til → sesame_source
+hi,til,sesame,true,false,Hindi/Hinglish; sesame → sesame_source
+hi,तिल,sesame,true,false,Hindi/Hinglish; sesame variant of til → sesame_source
+hi,soya,soy,true,false,Hindi/Hinglish; soy → soy_source
+hi,soyabean,soy,true,false,Hindi/Hinglish; soy variant of soya → soy_source
+hi,soybean,soy,true,false,Hindi/Hinglish; soy variant of soya → soy_source
+hi,सोया,soy,true,false,Hindi/Hinglish; soy variant of soya → soy_source
+hi,sulfite,sulphite,true,false,Hindi/Hinglish; sulphite variant of sulphite → sulphite_source
+hi,sulphite,sulphite,true,false,Hindi/Hinglish; sulphite → sulphite_source
+hi,सल्फाइट,sulphite,true,false,Hindi/Hinglish; sulphite variant of sulphite → sulphite_source
+hi,akhrot,tree_nut,true,false,Hindi/Hinglish; tree_nut variant of badam → tree_nut_source
+hi,badam,tree_nut,true,false,Hindi/Hinglish; tree_nut → tree_nut_source
+hi,kaju,tree_nut,true,false,Hindi/Hinglish; tree_nut variant of badam → tree_nut_source
+hi,pista,tree_nut,true,false,Hindi/Hinglish; tree_nut variant of badam → tree_nut_source
+hi,काजू,tree_nut,true,false,Hindi/Hinglish; tree_nut variant of badam → tree_nut_source
+hi,बादाम,tree_nut,true,false,Hindi/Hinglish; tree_nut variant of badam → tree_nut_source
+hi,badam doodh,dairy,true,true,Hindi/Hinglish; false friend; would false-trigger dairy
+hi,nariyal doodh,dairy,true,true,Hindi/Hinglish; false friend; would false-trigger dairy
+hi,bin,negation,true,false,Hindi/Hinglish; negation word
+hi,bina,negation,true,false,Hindi/Hinglish; negation word
+fr,celeri,celery,true,false,celery variant of céleri → celery_source
+fr,céleri,celery,true,false,celery → celery_source
+fr,céleri-rave,celery,true,false,celery variant of céleri → celery_source
+fr,céleris,celery,true,false,celery variant of céleri → celery_source
+fr,crevette,crustacean,true,false,crustacean variant of crustacés → shellfish_source
+fr,crevettes,crustacean,true,false,crustacean variant of crustacés → shellfish_source
+fr,crustaces,crustacean,true,false,crustacean variant of crustacés → shellfish_source
+fr,crustacés,crustacean,true,false,crustacean → shellfish_source
+fr,beurre,dairy,true,false,dairy variant of lait → dairy_source
+fr,creme,dairy,true,false,dairy variant of lait → dairy_source
+fr,crème,dairy,true,false,dairy variant of lait → dairy_source
+fr,fromage,dairy,true,false,dairy variant of lait → dairy_source
+fr,lait,dairy,true,false,dairy → dairy_source
+fr,laits,dairy,true,false,dairy variant of lait → dairy_source
+fr,yaourt,dairy,true,false,dairy variant of lait → dairy_source
+fr,yoghourt,dairy,true,false,dairy variant of lait → dairy_source
+fr,blanc d'oeuf,egg,true,false,egg variant of œuf → egg_source
+fr,jaune d'oeuf,egg,true,false,egg variant of œuf → egg_source
+fr,oeuf,egg,true,false,egg variant of œuf → egg_source
+fr,oeufs,egg,true,false,egg variant of œuf → egg_source
+fr,œuf,egg,true,false,egg → egg_source
+fr,œufs,egg,true,false,egg variant of œuf → egg_source
+fr,anchois,fish,true,false,fish variant of poisson → fish_source
+fr,huile de poisson,fish,true,false,fish variant of poisson → fish_source
+fr,poisson,fish,true,false,fish → fish_source
+fr,poissons,fish,true,false,fish variant of poisson → fish_source
+fr,avoine,gluten,true,false,gluten variant of blé → gluten_source
+fr,ble,gluten,true,false,gluten variant of blé → gluten_source
+fr,blé,gluten,true,false,gluten → gluten_source
+fr,epeautre,gluten,true,false,gluten variant of blé → gluten_source
+fr,farine de blé,gluten,true,false,gluten variant of blé → gluten_source
+fr,orge,gluten,true,false,gluten variant of blé → gluten_source
+fr,seigle,gluten,true,false,gluten variant of blé → gluten_source
+fr,épeautre,gluten,true,false,gluten variant of blé → gluten_source
+fr,lupin,lupin,true,false,lupin → lupin_source
+fr,lupins,lupin,true,false,lupin variant of lupin → lupin_source
+fr,mollusque,mollusc,true,false,mollusc variant of mollusques → shellfish_source
+fr,mollusques,mollusc,true,false,mollusc → shellfish_source
+fr,moule,mollusc,true,false,mollusc variant of mollusques → shellfish_source
+fr,moules,mollusc,true,false,mollusc variant of mollusques → shellfish_source
+fr,moutarde,mustard,true,false,mustard → mustard_source
+fr,moutardes,mustard,true,false,mustard variant of moutarde → mustard_source
+fr,arachide,peanut,true,false,peanut → peanut_source
+fr,arachides,peanut,true,false,peanut variant of arachide → peanut_source
+fr,cacahuete,peanut,true,false,peanut variant of arachide → peanut_source
+fr,cacahuète,peanut,true,false,peanut variant of arachide → peanut_source
+fr,cacahuètes,peanut,true,false,peanut variant of arachide → peanut_source
+fr,graines de sésame,sesame,true,false,sesame variant of sésame → sesame_source
+fr,sesame,sesame,true,false,sesame variant of sésame → sesame_source
+fr,sésame,sesame,true,false,sesame → sesame_source
+fr,tahini,sesame,true,false,sesame variant of sésame → sesame_source
+fr,lecithine de soja,soy,true,false,soy variant of soja → soy_source
+fr,lécithine de soja,soy,true,false,soy variant of soja → soy_source
+fr,soja,soy,true,false,soy → soy_source
+fr,soya,soy,true,false,soy variant of soja → soy_source
+fr,anhydride sulfureux,sulphite,true,false,sulphite variant of sulfites → sulphite_source
+fr,sulfite,sulphite,true,false,sulphite variant of sulfites → sulphite_source
+fr,sulfites,sulphite,true,false,sulphite → sulphite_source
+fr,amande,tree_nut,true,false,tree_nut → tree_nut_source
+fr,amandes,tree_nut,true,false,tree_nut variant of amande → tree_nut_source
+fr,fruits à coque,tree_nut,true,false,tree_nut variant of amande → tree_nut_source
+fr,noisette,tree_nut,true,false,tree_nut variant of amande → tree_nut_source
+fr,noisettes,tree_nut,true,false,tree_nut variant of amande → tree_nut_source
+fr,noix,tree_nut,true,false,tree_nut variant of amande → tree_nut_source
+fr,beurre de cacao,dairy,true,true,false friend; would false-trigger dairy
+fr,lait d'amande,dairy,true,true,false friend; would false-trigger dairy
+fr,lait de coco,dairy,true,true,false friend; would false-trigger dairy
+fr,sans,negation,true,false,negation word
+de,knollensellerie,celery,true,false,celery variant of sellerie → celery_source
+de,sellerie,celery,true,false,celery → celery_source
+de,stangensellerie,celery,true,false,celery variant of sellerie → celery_source
+de,garnele,crustacean,true,false,crustacean variant of krebstiere → shellfish_source
+de,garnelen,crustacean,true,false,crustacean variant of krebstiere → shellfish_source
+de,krebs,crustacean,true,false,crustacean variant of krebstiere → shellfish_source
+de,krebstiere,crustacean,true,false,crustacean → shellfish_source
+de,butter,dairy,true,false,dairy variant of milch → dairy_source
+de,joghurt,dairy,true,false,dairy variant of milch → dairy_source
+de,kaese,dairy,true,false,dairy variant of milch → dairy_source
+de,käse,dairy,true,false,dairy variant of milch → dairy_source
+de,milch,dairy,true,false,dairy → dairy_source
+de,milchpulver,dairy,true,false,dairy variant of milch → dairy_source
+de,sahne,dairy,true,false,dairy variant of milch → dairy_source
+de,ei,egg,true,false,egg → egg_source
+de,eier,egg,true,false,egg variant of ei → egg_source
+de,eigelb,egg,true,false,egg variant of ei → egg_source
+de,eiweiß,egg,true,false,egg variant of ei → egg_source
+de,eiweiss,egg,true,false,egg variant of ei → egg_source
+de,fisch,fish,true,false,fish → fish_source
+de,fische,fish,true,false,fish variant of fisch → fish_source
+de,fischöl,fish,true,false,fish variant of fisch → fish_source
+de,sardine,fish,true,false,fish variant of fisch → fish_source
+de,dinkel,gluten,true,false,gluten variant of weizen → gluten_source
+de,gerste,gluten,true,false,gluten variant of weizen → gluten_source
+de,gluten,gluten,true,false,gluten variant of weizen → gluten_source
+de,hafer,gluten,true,false,gluten variant of weizen → gluten_source
+de,roggen,gluten,true,false,gluten variant of weizen → gluten_source
+de,weizen,gluten,true,false,gluten → gluten_source
+de,weizenmehl,gluten,true,false,gluten variant of weizen → gluten_source
+de,lupine,lupin,true,false,lupin → lupin_source
+de,lupinen,lupin,true,false,lupin variant of lupine → lupin_source
+de,muschel,mollusc,true,false,mollusc variant of weichtiere → shellfish_source
+de,muscheln,mollusc,true,false,mollusc variant of weichtiere → shellfish_source
+de,weichtier,mollusc,true,false,mollusc variant of weichtiere → shellfish_source
+de,weichtiere,mollusc,true,false,mollusc → shellfish_source
+de,senf,mustard,true,false,mustard → mustard_source
+de,senfkorner,mustard,true,false,mustard variant of senf → mustard_source
+de,senfkörner,mustard,true,false,mustard variant of senf → mustard_source
+de,erdnuss,peanut,true,false,peanut → peanut_source
+de,erdnusse,peanut,true,false,peanut variant of erdnuss → peanut_source
+de,erdnussöl,peanut,true,false,peanut variant of erdnuss → peanut_source
+de,erdnüsse,peanut,true,false,peanut variant of erdnuss → peanut_source
+de,sesam,sesame,true,false,sesame → sesame_source
+de,sesamsamen,sesame,true,false,sesame variant of sesam → sesame_source
+de,tahina,sesame,true,false,sesame variant of sesam → sesame_source
+de,soja,soy,true,false,soy → soy_source
+de,sojalecithin,soy,true,false,soy variant of soja → soy_source
+de,sojasoße,soy,true,false,soy variant of soja → soy_source
+de,schwefeldioxid,sulphite,true,false,sulphite variant of sulfite → sulphite_source
+de,sulfite,sulphite,true,false,sulphite → sulphite_source
+de,haselnuss,tree_nut,true,false,tree_nut variant of mandel → tree_nut_source
+de,mandel,tree_nut,true,false,tree_nut → tree_nut_source
+de,mandeln,tree_nut,true,false,tree_nut variant of mandel → tree_nut_source
+de,schalenfrüchte,tree_nut,true,false,tree_nut variant of mandel → tree_nut_source
+de,walnuss,tree_nut,true,false,tree_nut variant of mandel → tree_nut_source
+de,kakaobutter,dairy,true,true,false friend; would false-trigger dairy
+de,kokosmilch,dairy,true,true,false friend; would false-trigger dairy
+de,mandelmilch,dairy,true,true,false friend; would false-trigger dairy
+de,ohne,negation,true,false,negation word
+es,apio,celery,true,false,celery → celery_source
+es,apios,celery,true,false,celery variant of apio → celery_source
+es,camaron,crustacean,true,false,crustacean variant of crustáceos → shellfish_source
+es,camarón,crustacean,true,false,crustacean variant of crustáceos → shellfish_source
+es,crustaceos,crustacean,true,false,crustacean variant of crustáceos → shellfish_source
+es,crustáceos,crustacean,true,false,crustacean → shellfish_source
+es,gamba,crustacean,true,false,crustacean variant of crustáceos → shellfish_source
+es,leche,dairy,true,false,dairy → dairy_source
+es,leches,dairy,true,false,dairy variant of leche → dairy_source
+es,mantequilla,dairy,true,false,dairy variant of leche → dairy_source
+es,nata,dairy,true,false,dairy variant of leche → dairy_source
+es,queso,dairy,true,false,dairy variant of leche → dairy_source
+es,yogur,dairy,true,false,dairy variant of leche → dairy_source
+es,clara de huevo,egg,true,false,egg variant of huevo → egg_source
+es,huevo,egg,true,false,egg → egg_source
+es,huevos,egg,true,false,egg variant of huevo → egg_source
+es,yema,egg,true,false,egg variant of huevo → egg_source
+es,aceite de pescado,fish,true,false,fish variant of pescado → fish_source
+es,anchoa,fish,true,false,fish variant of pescado → fish_source
+es,pescado,fish,true,false,fish → fish_source
+es,pescados,fish,true,false,fish variant of pescado → fish_source
+es,avena,gluten,true,false,gluten variant of trigo → gluten_source
+es,cebada,gluten,true,false,gluten variant of trigo → gluten_source
+es,centeno,gluten,true,false,gluten variant of trigo → gluten_source
+es,espelta,gluten,true,false,gluten variant of trigo → gluten_source
+es,harina de trigo,gluten,true,false,gluten variant of trigo → gluten_source
+es,trigo,gluten,true,false,gluten → gluten_source
+es,altramuces,lupin,true,false,lupin variant of altramuz → lupin_source
+es,altramuz,lupin,true,false,lupin → lupin_source
+es,lupino,lupin,true,false,lupin variant of altramuz → lupin_source
+es,mejillon,mollusc,true,false,mollusc variant of moluscos → shellfish_source
+es,mejillón,mollusc,true,false,mollusc variant of moluscos → shellfish_source
+es,molusco,mollusc,true,false,mollusc variant of moluscos → shellfish_source
+es,moluscos,mollusc,true,false,mollusc → shellfish_source
+es,mostaza,mustard,true,false,mustard → mustard_source
+es,mostazas,mustard,true,false,mustard variant of mostaza → mustard_source
+es,cacahuete,peanut,true,false,peanut → peanut_source
+es,cacahuetes,peanut,true,false,peanut variant of cacahuete → peanut_source
+es,mani,peanut,true,false,peanut variant of cacahuete → peanut_source
+es,maní,peanut,true,false,peanut variant of cacahuete → peanut_source
+es,ajonjoli,sesame,true,false,sesame variant of sésamo → sesame_source
+es,ajonjolí,sesame,true,false,sesame variant of sésamo → sesame_source
+es,sesamo,sesame,true,false,sesame variant of sésamo → sesame_source
+es,sésamo,sesame,true,false,sesame → sesame_source
+es,lecitina de soja,soy,true,false,soy variant of soja → soy_source
+es,soja,soy,true,false,soy → soy_source
+es,soya,soy,true,false,soy variant of soja → soy_source
+es,dioxido de azufre,sulphite,true,false,sulphite variant of sulfitos → sulphite_source
+es,dióxido de azufre,sulphite,true,false,sulphite variant of sulfitos → sulphite_source
+es,sulfito,sulphite,true,false,sulphite variant of sulfitos → sulphite_source
+es,sulfitos,sulphite,true,false,sulphite → sulphite_source
+es,almendra,tree_nut,true,false,tree_nut → tree_nut_source
+es,almendras,tree_nut,true,false,tree_nut variant of almendra → tree_nut_source
+es,avellana,tree_nut,true,false,tree_nut variant of almendra → tree_nut_source
+es,frutos secos,tree_nut,true,false,tree_nut variant of almendra → tree_nut_source
+es,nuez,tree_nut,true,false,tree_nut variant of almendra → tree_nut_source
+es,leche de almendra,dairy,true,true,false friend; would false-trigger dairy
+es,leche de coco,dairy,true,true,false friend; would false-trigger dairy
+es,manteca de cacao,dairy,true,true,false friend; would false-trigger dairy
+es,sin,negation,true,false,negation word
+it,sedani,celery,true,false,celery variant of sedano → celery_source
+it,sedano,celery,true,false,celery → celery_source
+it,crostacei,crustacean,true,false,crustacean → shellfish_source
+it,gamberi,crustacean,true,false,crustacean variant of crostacei → shellfish_source
+it,gambero,crustacean,true,false,crustacean variant of crostacei → shellfish_source
+it,burro,dairy,true,false,dairy variant of latte → dairy_source
+it,formaggio,dairy,true,false,dairy variant of latte → dairy_source
+it,latte,dairy,true,false,dairy → dairy_source
+it,latticini,dairy,true,false,dairy variant of latte → dairy_source
+it,panna,dairy,true,false,dairy variant of latte → dairy_source
+it,yogurt,dairy,true,false,dairy variant of latte → dairy_source
+it,albume,egg,true,false,egg variant of uovo → egg_source
+it,tuorlo,egg,true,false,egg variant of uovo → egg_source
+it,uova,egg,true,false,egg variant of uovo → egg_source
+it,uovo,egg,true,false,egg → egg_source
+it,acciuga,fish,true,false,fish variant of pesce → fish_source
+it,olio di pesce,fish,true,false,fish variant of pesce → fish_source
+it,pesce,fish,true,false,fish → fish_source
+it,pesci,fish,true,false,fish variant of pesce → fish_source
+it,avena,gluten,true,false,gluten variant of frumento → gluten_source
+it,farina di grano,gluten,true,false,gluten variant of frumento → gluten_source
+it,farro,gluten,true,false,gluten variant of frumento → gluten_source
+it,frumento,gluten,true,false,gluten → gluten_source
+it,grano,gluten,true,false,gluten variant of frumento → gluten_source
+it,orzo,gluten,true,false,gluten variant of frumento → gluten_source
+it,segale,gluten,true,false,gluten variant of frumento → gluten_source
+it,lupini,lupin,true,false,lupin variant of lupino → lupin_source
+it,lupino,lupin,true,false,lupin → lupin_source
+it,cozza,mollusc,true,false,mollusc variant of molluschi → shellfish_source
+it,cozze,mollusc,true,false,mollusc variant of molluschi → shellfish_source
+it,molluschi,mollusc,true,false,mollusc → shellfish_source
+it,mollusco,mollusc,true,false,mollusc variant of molluschi → shellfish_source
+it,senape,mustard,true,false,mustard → mustard_source
+it,senapi,mustard,true,false,mustard variant of senape → mustard_source
+it,arachide,peanut,true,false,peanut → peanut_source
+it,arachidi,peanut,true,false,peanut variant of arachide → peanut_source
+it,semi di sesamo,sesame,true,false,sesame variant of sesamo → sesame_source
+it,sesamo,sesame,true,false,sesame → sesame_source
+it,tahina,sesame,true,false,sesame variant of sesamo → sesame_source
+it,lecitina di soia,soy,true,false,soy variant of soia → soy_source
+it,soia,soy,true,false,soy → soy_source
+it,anidride solforosa,sulphite,true,false,sulphite variant of solfiti → sulphite_source
+it,solfiti,sulphite,true,false,sulphite → sulphite_source
+it,solfito,sulphite,true,false,sulphite variant of solfiti → sulphite_source
+it,frutta a guscio,tree_nut,true,false,tree_nut variant of mandorla → tree_nut_source
+it,mandorla,tree_nut,true,false,tree_nut → tree_nut_source
+it,mandorle,tree_nut,true,false,tree_nut variant of mandorla → tree_nut_source
+it,nocciola,tree_nut,true,false,tree_nut variant of mandorla → tree_nut_source
+it,noce,tree_nut,true,false,tree_nut variant of mandorla → tree_nut_source
+it,burro di cacao,dairy,true,true,false friend; would false-trigger dairy
+it,latte di cocco,dairy,true,true,false friend; would false-trigger dairy
+it,senza,negation,true,false,negation word
+nl,bleekselderij,celery,true,false,celery variant of selderij → celery_source
+nl,knolselderij,celery,true,false,celery variant of selderij → celery_source
+nl,selderij,celery,true,false,celery → celery_source
+nl,garnaal,crustacean,true,false,crustacean variant of schaaldieren → shellfish_source
+nl,garnalen,crustacean,true,false,crustacean variant of schaaldieren → shellfish_source
+nl,schaaldieren,crustacean,true,false,crustacean → shellfish_source
+nl,boter,dairy,true,false,dairy variant of melk → dairy_source
+nl,kaas,dairy,true,false,dairy variant of melk → dairy_source
+nl,melk,dairy,true,false,dairy → dairy_source
+nl,room,dairy,true,false,dairy variant of melk → dairy_source
+nl,yoghurt,dairy,true,false,dairy variant of melk → dairy_source
+nl,ei,egg,true,false,egg → egg_source
+nl,eieren,egg,true,false,egg variant of ei → egg_source
+nl,eigeel,egg,true,false,egg variant of ei → egg_source
+nl,eiwit,egg,true,false,egg variant of ei → egg_source
+nl,ansjovis,fish,true,false,fish variant of vis → fish_source
+nl,vis,fish,true,false,fish → fish_source
+nl,visolie,fish,true,false,fish variant of vis → fish_source
+nl,vissen,fish,true,false,fish variant of vis → fish_source
+nl,gerst,gluten,true,false,gluten variant of tarwe → gluten_source
+nl,haver,gluten,true,false,gluten variant of tarwe → gluten_source
+nl,rogge,gluten,true,false,gluten variant of tarwe → gluten_source
+nl,spelt,gluten,true,false,gluten variant of tarwe → gluten_source
+nl,tarwe,gluten,true,false,gluten → gluten_source
+nl,tarwemeel,gluten,true,false,gluten variant of tarwe → gluten_source
+nl,lupine,lupin,true,false,lupin → lupin_source
+nl,lupinen,lupin,true,false,lupin variant of lupine → lupin_source
+nl,mossel,mollusc,true,false,mollusc variant of weekdieren → shellfish_source
+nl,mosselen,mollusc,true,false,mollusc variant of weekdieren → shellfish_source
+nl,weekdier,mollusc,true,false,mollusc variant of weekdieren → shellfish_source
+nl,weekdieren,mollusc,true,false,mollusc → shellfish_source
+nl,mosterd,mustard,true,false,mustard → mustard_source
+nl,mosterds,mustard,true,false,mustard variant of mosterd → mustard_source
+nl,aardnoot,peanut,true,false,peanut variant of pinda → peanut_source
+nl,aardnoten,peanut,true,false,peanut variant of pinda → peanut_source
+nl,pinda,peanut,true,false,peanut → peanut_source
+nl,pindas,peanut,true,false,peanut variant of pinda → peanut_source
+nl,sesam,sesame,true,false,sesame → sesame_source
+nl,sesamzaad,sesame,true,false,sesame variant of sesam → sesame_source
+nl,tahin,sesame,true,false,sesame variant of sesam → sesame_source
+nl,soja,soy,true,false,soy → soy_source
+nl,sojalecithine,soy,true,false,soy variant of soja → soy_source
+nl,sulfiet,sulphite,true,false,sulphite variant of sulfieten → sulphite_source
+nl,sulfieten,sulphite,true,false,sulphite → sulphite_source
+nl,zwaveldioxide,sulphite,true,false,sulphite variant of sulfieten → sulphite_source
+nl,amandel,tree_nut,true,false,tree_nut → tree_nut_source
+nl,amandelen,tree_nut,true,false,tree_nut variant of amandel → tree_nut_source
+nl,hazelnoot,tree_nut,true,false,tree_nut variant of amandel → tree_nut_source
+nl,noten,tree_nut,true,false,tree_nut variant of amandel → tree_nut_source
+nl,walnoot,tree_nut,true,false,tree_nut variant of amandel → tree_nut_source
+nl,amandelmelk,dairy,true,true,false friend; would false-trigger dairy
+nl,kokosmelk,dairy,true,true,false friend; would false-trigger dairy
+nl,zonder,negation,true,false,negation word
+pl,seler,celery,true,false,celery → celery_source
+pl,seler naciowy,celery,true,false,celery variant of seler → celery_source
+pl,selery,celery,true,false,celery variant of seler → celery_source
+pl,krewetka,crustacean,true,false,crustacean variant of skorupiaki → shellfish_source
+pl,krewetki,crustacean,true,false,crustacean variant of skorupiaki → shellfish_source
+pl,skorupiaki,crustacean,true,false,crustacean → shellfish_source
+pl,maslo,dairy,true,false,dairy variant of mleko → dairy_source
+pl,masło,dairy,true,false,dairy variant of mleko → dairy_source
+pl,mleka,dairy,true,false,dairy variant of mleko → dairy_source
+pl,mleko,dairy,true,false,dairy → dairy_source
+pl,ser,dairy,true,false,dairy variant of mleko → dairy_source
+pl,smietana,dairy,true,false,dairy variant of mleko → dairy_source
+pl,śmietana,dairy,true,false,dairy variant of mleko → dairy_source
+pl,białko,egg,true,false,egg variant of jajko → egg_source
+pl,jaja,egg,true,false,egg variant of jajko → egg_source
+pl,jajka,egg,true,false,egg variant of jajko → egg_source
+pl,jajko,egg,true,false,egg → egg_source
+pl,zolteko,egg,true,false,egg variant of jajko → egg_source
+pl,żółtko,egg,true,false,egg variant of jajko → egg_source
+pl,anchois,fish,true,false,fish variant of ryba → fish_source
+pl,olej rybi,fish,true,false,fish variant of ryba → fish_source
+pl,ryba,fish,true,false,fish → fish_source
+pl,ryby,fish,true,false,fish variant of ryba → fish_source
+pl,jeczmien,gluten,true,false,gluten variant of pszenica → gluten_source
+pl,jęczmień,gluten,true,false,gluten variant of pszenica → gluten_source
+pl,orkisz,gluten,true,false,gluten variant of pszenica → gluten_source
+pl,owies,gluten,true,false,gluten variant of pszenica → gluten_source
+pl,pszenica,gluten,true,false,gluten → gluten_source
+pl,zyto,gluten,true,false,gluten variant of pszenica → gluten_source
+pl,żyto,gluten,true,false,gluten variant of pszenica → gluten_source
+pl,lubin,lupin,true,false,lupin variant of łubin → lupin_source
+pl,łubin,lupin,true,false,lupin → lupin_source
+pl,łubiny,lupin,true,false,lupin variant of łubin → lupin_source
+pl,malz,mollusc,true,false,mollusc variant of mięczaki → shellfish_source
+pl,małż,mollusc,true,false,mollusc variant of mięczaki → shellfish_source
+pl,mieczaki,mollusc,true,false,mollusc variant of mięczaki → shellfish_source
+pl,mięczaki,mollusc,true,false,mollusc → shellfish_source
+pl,gorczyca,mustard,true,false,mustard → mustard_source
+pl,musztarda,mustard,true,false,mustard variant of gorczyca → mustard_source
+pl,arachid,peanut,true,false,peanut variant of orzech ziemny → peanut_source
+pl,orzech arachidowy,peanut,true,false,peanut variant of orzech ziemny → peanut_source
+pl,orzech ziemny,peanut,true,false,peanut → peanut_source
+pl,orzeszki ziemne,peanut,true,false,peanut variant of orzech ziemny → peanut_source
+pl,sezam,sesame,true,false,sesame → sesame_source
+pl,sezamowy,sesame,true,false,sesame variant of sezam → sesame_source
+pl,tahini,sesame,true,false,sesame variant of sezam → sesame_source
+pl,lecytyna sojowa,soy,true,false,soy variant of soja → soy_source
+pl,soja,soy,true,false,soy → soy_source
+pl,dwutlenek siarki,sulphite,true,false,sulphite variant of siarczyny → sulphite_source
+pl,siarczyn,sulphite,true,false,sulphite variant of siarczyny → sulphite_source
+pl,siarczyny,sulphite,true,false,sulphite → sulphite_source
+pl,migdal,tree_nut,true,false,tree_nut variant of migdał → tree_nut_source
+pl,migdał,tree_nut,true,false,tree_nut → tree_nut_source
+pl,orzech laskowy,tree_nut,true,false,tree_nut variant of migdał → tree_nut_source
+pl,orzech włoski,tree_nut,true,false,tree_nut variant of migdał → tree_nut_source
+pl,orzechy,tree_nut,true,false,tree_nut variant of migdał → tree_nut_source
+pl,masło kakaowe,dairy,true,true,false friend; would false-trigger dairy
+pl,mleko kokosowe,dairy,true,true,false friend; would false-trigger dairy
+pl,bez,negation,true,false,negation word
+pt,aipo,celery,true,false,celery → celery_source
+pt,salsao,celery,true,false,celery variant of aipo → celery_source
+pt,salsão,celery,true,false,celery variant of aipo → celery_source
+pt,camarao,crustacean,true,false,crustacean variant of crustáceos → shellfish_source
+pt,camarão,crustacean,true,false,crustacean variant of crustáceos → shellfish_source
+pt,crustaceos,crustacean,true,false,crustacean variant of crustáceos → shellfish_source
+pt,crustáceos,crustacean,true,false,crustacean → shellfish_source
+pt,iogurte,dairy,true,false,dairy variant of leite → dairy_source
+pt,leite,dairy,true,false,dairy → dairy_source
+pt,leites,dairy,true,false,dairy variant of leite → dairy_source
+pt,manteiga,dairy,true,false,dairy variant of leite → dairy_source
+pt,nata,dairy,true,false,dairy variant of leite → dairy_source
+pt,queijo,dairy,true,false,dairy variant of leite → dairy_source
+pt,clara de ovo,egg,true,false,egg variant of ovo → egg_source
+pt,gema,egg,true,false,egg variant of ovo → egg_source
+pt,ovo,egg,true,false,egg → egg_source
+pt,ovos,egg,true,false,egg variant of ovo → egg_source
+pt,anchova,fish,true,false,fish variant of peixe → fish_source
+pt,peixe,fish,true,false,fish → fish_source
+pt,peixes,fish,true,false,fish variant of peixe → fish_source
+pt,óleo de peixe,fish,true,false,fish variant of peixe → fish_source
+pt,aveia,gluten,true,false,gluten variant of trigo → gluten_source
+pt,centeio,gluten,true,false,gluten variant of trigo → gluten_source
+pt,cevada,gluten,true,false,gluten variant of trigo → gluten_source
+pt,espelta,gluten,true,false,gluten variant of trigo → gluten_source
+pt,farinha de trigo,gluten,true,false,gluten variant of trigo → gluten_source
+pt,trigo,gluten,true,false,gluten → gluten_source
+pt,lupino,lupin,true,false,lupin variant of tremoço → lupin_source
+pt,tremoco,lupin,true,false,lupin variant of tremoço → lupin_source
+pt,tremoço,lupin,true,false,lupin → lupin_source
+pt,tremoços,lupin,true,false,lupin variant of tremoço → lupin_source
+pt,mexilhao,mollusc,true,false,mollusc variant of moluscos → shellfish_source
+pt,mexilhão,mollusc,true,false,mollusc variant of moluscos → shellfish_source
+pt,molusco,mollusc,true,false,mollusc variant of moluscos → shellfish_source
+pt,moluscos,mollusc,true,false,mollusc → shellfish_source
+pt,mostarda,mustard,true,false,mustard → mustard_source
+pt,mostardas,mustard,true,false,mustard variant of mostarda → mustard_source
+pt,amendoim,peanut,true,false,peanut → peanut_source
+pt,amendoins,peanut,true,false,peanut variant of amendoim → peanut_source
+pt,gergelim,sesame,true,false,sesame variant of sésamo → sesame_source
+pt,sesamo,sesame,true,false,sesame variant of sésamo → sesame_source
+pt,sésamo,sesame,true,false,sesame → sesame_source
+pt,lecitina de soja,soy,true,false,soy variant of soja → soy_source
+pt,soja,soy,true,false,soy → soy_source
+pt,dioxido de enxofre,sulphite,true,false,sulphite variant of sulfitos → sulphite_source
+pt,dióxido de enxofre,sulphite,true,false,sulphite variant of sulfitos → sulphite_source
+pt,sulfito,sulphite,true,false,sulphite variant of sulfitos → sulphite_source
+pt,sulfitos,sulphite,true,false,sulphite → sulphite_source
+pt,amendoa,tree_nut,true,false,tree_nut variant of amêndoa → tree_nut_source
+pt,amêndoa,tree_nut,true,false,tree_nut → tree_nut_source
+pt,avela,tree_nut,true,false,tree_nut variant of amêndoa → tree_nut_source
+pt,avelã,tree_nut,true,false,tree_nut variant of amêndoa → tree_nut_source
+pt,frutos de casca rija,tree_nut,true,false,tree_nut variant of amêndoa → tree_nut_source
+pt,noz,tree_nut,true,false,tree_nut variant of amêndoa → tree_nut_source
+pt,leite de coco,dairy,true,true,false friend; would false-trigger dairy
+pt,manteiga de cacau,dairy,true,true,false friend; would false-trigger dairy
+pt,sem,negation,true,false,negation word
+ar,كرفس,celery,true,false,celery → celery_source
+ar,كرفس نيئ,celery,true,false,celery variant of كرفس → celery_source
+ar,جمبري,crustacean,true,false,crustacean variant of قشريات → shellfish_source
+ar,ربيان,crustacean,true,false,crustacean variant of قشريات → shellfish_source
+ar,روبيان,crustacean,true,false,crustacean variant of قشريات → shellfish_source
+ar,قشريات,crustacean,true,false,crustacean → shellfish_source
+ar,ألبان,dairy,true,false,dairy variant of حليب → dairy_source
+ar,جبن,dairy,true,false,dairy variant of حليب → dairy_source
+ar,جبنة,dairy,true,false,dairy variant of حليب → dairy_source
+ar,حليب,dairy,true,false,dairy → dairy_source
+ar,زبدة,dairy,true,false,dairy variant of حليب → dairy_source
+ar,لبن,dairy,true,false,dairy variant of حليب → dairy_source
+ar,بياض البيض,egg,true,false,egg variant of بيض → egg_source
+ar,بيض,egg,true,false,egg → egg_source
+ar,بيضة,egg,true,false,egg variant of بيض → egg_source
+ar,صفار,egg,true,false,egg variant of بيض → egg_source
+ar,أسماك,fish,true,false,fish variant of سمك → fish_source
+ar,أنشوجة,fish,true,false,fish variant of سمك → fish_source
+ar,سمك,fish,true,false,fish → fish_source
+ar,جاودار,gluten,true,false,gluten variant of قمح → gluten_source
+ar,حنطة,gluten,true,false,gluten variant of قمح → gluten_source
+ar,دقيق القمح,gluten,true,false,gluten variant of قمح → gluten_source
+ar,شعير,gluten,true,false,gluten variant of قمح → gluten_source
+ar,شوفان,gluten,true,false,gluten variant of قمح → gluten_source
+ar,قمح,gluten,true,false,gluten → gluten_source
+ar,الترمس,lupin,true,false,lupin variant of ترمس → lupin_source
+ar,ترمس,lupin,true,false,lupin → lupin_source
+ar,بلح البحر,mollusc,true,false,mollusc variant of رخويات → shellfish_source
+ar,رخويات,mollusc,true,false,mollusc → shellfish_source
+ar,محار,mollusc,true,false,mollusc variant of رخويات → shellfish_source
+ar,خردل,mustard,true,false,mustard → mustard_source
+ar,مستردة,mustard,true,false,mustard variant of خردل → mustard_source
+ar,سوداني,peanut,true,false,peanut variant of فول سوداني → peanut_source
+ar,فستق عبيد,peanut,true,false,peanut variant of فول سوداني → peanut_source
+ar,فول سوداني,peanut,true,false,peanut → peanut_source
+ar,بذور السمسم,sesame,true,false,sesame variant of سمسم → sesame_source
+ar,سمسم,sesame,true,false,sesame → sesame_source
+ar,طحينة,sesame,true,false,sesame variant of سمسم → sesame_source
+ar,صويا,soy,true,false,soy → soy_source
+ar,فول الصويا,soy,true,false,soy variant of صويا → soy_source
+ar,ليسيثين الصويا,soy,true,false,soy variant of صويا → soy_source
+ar,ثاني أكسيد الكبريت,sulphite,true,false,sulphite variant of كبريتيت → sulphite_source
+ar,كبريتيات,sulphite,true,false,sulphite variant of كبريتيت → sulphite_source
+ar,كبريتيت,sulphite,true,false,sulphite → sulphite_source
+ar,بندق,tree_nut,true,false,tree_nut variant of لوز → tree_nut_source
+ar,جوز,tree_nut,true,false,tree_nut variant of لوز → tree_nut_source
+ar,لوز,tree_nut,true,false,tree_nut → tree_nut_source
+ar,مكسرات,tree_nut,true,false,tree_nut variant of لوز → tree_nut_source
+ar,حليب جوز الهند,dairy,true,true,false friend; would false-trigger dairy
+ar,زبدة الكاكاو,dairy,true,true,false friend; would false-trigger dairy
+ar,بدون,negation,true,false,negation word
+ar,خالي من,negation,true,false,negation word

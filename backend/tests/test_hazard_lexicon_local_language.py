@@ -1,6 +1,7 @@
 """Local-language hazard lexicon: derive tokens, false friends, native review."""
 from __future__ import annotations
 
+import csv
 import json
 from pathlib import Path
 from types import SimpleNamespace
@@ -17,6 +18,7 @@ from core.parsing.hazard_lexicon import hazard_hits_in_text
 _REPO = Path(__file__).resolve().parents[2]
 _LEXICON = _REPO / "data" / "lexicon" / "hazard_tokens.json"
 _REVIEW_LIST = _REPO / "data" / "lexicon" / "NEEDS_NATIVE_REVIEW.md"
+_REVIEW_CSV = _REPO / "data" / "lexicon" / "needs_native_review.csv"
 
 EU14_PLUS = frozenset({
     "celery",
@@ -84,6 +86,56 @@ def test_lexicon_file_and_review_list_exist():
     text = _REVIEW_LIST.read_text(encoding="utf-8")
     assert "needs_native_review" in text.lower() or "native review" in text.lower()
     assert all(lang in text for lang in LANGS)
+
+
+def test_native_review_csv_covers_lexicon_and_groups_languages():
+    assert _REVIEW_CSV.is_file()
+    with _REVIEW_CSV.open(encoding="utf-8", newline="") as fh:
+        rows = list(csv.DictReader(fh))
+    cols = {
+        "language",
+        "token",
+        "matched_class/context",
+        "needs_native_review",
+        "false_friend",
+        "notes",
+    }
+    assert cols <= set(rows[0])
+    assert all(r["needs_native_review"].lower() == "true" for r in rows)
+
+    expected = set()
+    data = _load()
+    for cls, payload in data["classes"].items():
+        for tok in payload["tokens"]:
+            expected.add((tok["lang"], tok["surface"], cls, False))
+            for variant in tok.get("variants") or []:
+                expected.add((tok["lang"], variant, cls, False))
+    for row in data["false_friends"]:
+        expected.add(
+            (row["lang"], row["surface"], row["would_false_trigger"], True)
+        )
+    for row in data["negation_words"]:
+        expected.add((row["lang"], row["surface"], "negation", False))
+
+    got = {
+        (
+            r["language"],
+            r["token"],
+            r["matched_class/context"],
+            r["false_friend"].lower() == "true",
+        )
+        for r in rows
+    }
+    assert expected <= got
+
+    order = ["hi", "fr", "de", "es", "it", "nl", "pl", "pt", "ar"]
+    first_idx = {}
+    for i, r in enumerate(rows):
+        first_idx.setdefault(r["language"], i)
+    ranked = [first_idx[lang] for lang in order if lang in first_idx]
+    assert ranked == sorted(ranked)
+    assert rows[0]["language"] == "hi"
+    assert rows[-1]["language"] == "ar"
 
 
 def test_every_class_and_language_has_reviewed_tokens():

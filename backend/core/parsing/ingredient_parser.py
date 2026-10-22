@@ -12,6 +12,7 @@ from core.normalization.normalizer import normalize_ingredient_key
 from core.parsing.label_normalize import normalize_label_separators
 from core.parsing.label_text import fix_ocr_label_noise, select_ingredient_label_text
 from core.parsing.nesting_split import split_by_nesting, split_top_level
+from core.parsing.bare_function_headers import parse_bare_function_headers
 from core.parsing.parenthetical import (
     FUNCTION_HEADERS,
     additive_atom,
@@ -407,12 +408,42 @@ def _segment_canonical(part: str) -> str:
     return part
 
 
+_BARE_ADDITIVE_CODE = re.compile(
+    r"^(?:e|ins)?\s*\d{2,4}(?:[a-z]|\([ivxlcdm]+\)|\([a-z]\))?$",
+    re.IGNORECASE,
+)
+
+
+def _bare_function_atoms(
+    seg: str, pending_class: str | None
+) -> tuple[list[str] | None, str | None]:
+    """Expand bracket-less AU/NZ headers; carry INS lists across commas."""
+    hits = parse_bare_function_headers(seg)
+    if hits:
+        atoms: list[str] = []
+        pending = pending_class
+        for hit in hits:
+            if hit.substance:
+                atoms.append(hit.substance)
+                pending = None
+            elif hit.code:
+                atoms.append(additive_atom(hit.code))
+                pending = hit.function_class
+        if atoms:
+            return atoms, pending
+        return None, None
+    if pending_class and _BARE_ADDITIVE_CODE.match((seg or "").strip()):
+        return [additive_atom(seg.strip())], pending_class
+    return None, None
+
+
 def _segments_for_clause(clause: str) -> List[tuple[str, bool]]:
     segments: List[tuple[str, bool]] = []
     for chunk in _EMBEDDED_SUBSECTION.split(clause):
         chunk = chunk.strip()
         if not chunk:
             continue
+        pending_fn: str | None = None
         for seg in split_top_level(chunk):
             seg = seg.strip()
             if not seg:
@@ -422,6 +453,15 @@ def _segments_for_clause(clause: str) -> List[tuple[str, bool]]:
             inline_trace = bool(_INLINE_TRACE_PAREN.search(seg))
             seg = _strip_inline_trace_parens(seg)
             kind, payload = classify_parenthetical(seg)
+            if kind == "none":
+                expanded, pending_fn = _bare_function_atoms(seg, pending_fn)
+                if expanded is not None:
+                    for atom in expanded:
+                        segments.append((atom, inline_trace))
+                    continue
+                pending_fn = None
+            else:
+                pending_fn = None
             if kind in ("function_header_numbers", "ins_e_list"):
                 for code in payload.get("codes") or []:
                     segments.append((additive_atom(code), inline_trace))

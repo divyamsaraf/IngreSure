@@ -1,7 +1,8 @@
 """Parse bracket-less AU/NZ Codex function-class headers.
 
-Standalone helper for strings such as ``Emulsifier 322`` or
-``Emulsifier: soy lecithin``. Not wired into ``ingredient_parser``.
+Handles strings such as ``Emulsifier 322`` or ``Emulsifier: soy lecithin``.
+``ingredient_parser`` calls this for bracket-less shapes; parenthetical
+headers stay in ``parenthetical.classify_parenthetical``.
 """
 from __future__ import annotations
 
