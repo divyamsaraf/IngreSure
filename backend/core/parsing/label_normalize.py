@@ -17,7 +17,8 @@ _PROTECTED_AND_PHRASES = re.compile(
     r"disodium\s+inosinate\s+and\s+disodium\s+guanylate|"
     r"mono(?:glycerides?)?\s+and\s+di(?:glycerides?)?|"
     r"fruits?\s+and\s+vegetables|"
-    r"herbs?\s+and\s+spices"
+    r"herbs?\s+and\s+spices|"
+    r"natural\s+and\s+artificial"
     r")\b",
     re.IGNORECASE,
 )

@@ -936,6 +936,11 @@ def detect_intent(query: str) -> ParsedIntent:
     if not query:
         return ParsedIntent(intent="GENERAL_QUESTION", original_query=query)
 
+    from core.emergency import detect_emergency
+
+    if detect_emergency(query):
+        return ParsedIntent(intent="GENERAL_QUESTION", profile_updates={}, ingredients=[], original_query=query)
+
     from core.parsing.label_text import fix_ocr_label_noise
 
     query = fix_ocr_label_noise(query)
@@ -979,6 +984,29 @@ def detect_intent(query: str) -> ParsedIntent:
                         )
 
     # ---- Step 3: Extract profile signals ----
+    from core.parsing.restriction_statement import _NOT_DIET, parse_restriction_statement
+
+    restriction_stmt = parse_restriction_statement(query)
+    if restriction_stmt.action in {"confirm", "unsupported", "tighten"} or _NOT_DIET.search(query):
+        # Confirm-before-change / negation / unsupported: do not mutate profile.
+        # Tightening is session-only (core.pending_restrictions); remainder avoids
+        # gluing restriction prose onto the first ingredient atom.
+        source = restriction_stmt.remainder or base_text
+        ingredients_only = _extract_ingredients_from_text(source)
+        if not ingredients_only and _is_plausible_ingredient_query(source):
+            ingredients_only = _bare_ingredients_fallback(source)
+        if ingredients_only:
+            ingredients_only = [
+                i for i in ingredients_only if i.lower().strip() not in _DIET_NAMES_LOWER
+            ]
+            return ParsedIntent(
+                intent="INGREDIENT_QUERY",
+                profile_updates={},
+                ingredients=ingredients_only,
+                original_query=query,
+            )
+        return ParsedIntent(intent="GENERAL_QUESTION", original_query=query)
+
     profile_updates: Dict[str, object] = {}
 
     # Try sentence-based diet extraction on the base text (without trailing question)
@@ -1009,6 +1037,34 @@ def detect_intent(query: str) -> ParsedIntent:
     lifestyle_flags, remaining = _extract_lifestyle(remaining)
     if lifestyle_flags:
         profile_updates["lifestyle"] = lifestyle_flags
+
+    if restriction_stmt.action == "apply":
+        if restriction_stmt.dietary_preference:
+            profile_updates["dietary_preference"] = restriction_stmt.dietary_preference
+        existing = list(profile_updates.get("allergens") or [])
+        for a in restriction_stmt.allergens:
+            if a not in existing:
+                existing.append(a)
+        # Extra restriction ids that don't fit the single dietary_preference slot.
+        pref_rid = {
+            "Vegan": "vegan",
+            "Vegetarian": "vegetarian",
+            "Jain": "jain",
+            "Halal": "halal",
+            "Kosher": "kosher",
+            "Gluten-Free": "gluten_free",
+            "Dairy-Free": "dairy_free",
+        }.get(restriction_stmt.dietary_preference or "")
+        for rid in restriction_stmt.restriction_ids:
+            if rid == pref_rid:
+                continue
+            extra = {"gluten_free": "gluten", "dairy_free": "dairy", "tree_nut_allergy": "nuts"}.get(rid)
+            if extra and extra not in existing:
+                existing.append(extra)
+        if existing:
+            profile_updates["allergens"] = existing
+    if restriction_stmt.remainder and remaining == base_text:
+        remaining = restriction_stmt.remainder or remaining
 
     # ---- Step 4: Check general-question patterns ----
     is_general = any(p.search(base_text) for p in _GENERAL_QUESTION_RES)
