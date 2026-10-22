@@ -12,6 +12,12 @@ from core.normalization.normalizer import normalize_ingredient_key
 from core.parsing.label_normalize import normalize_label_separators
 from core.parsing.label_text import fix_ocr_label_noise, select_ingredient_label_text
 from core.parsing.nesting_split import split_by_nesting, split_top_level
+from core.parsing.parenthetical import (
+    FUNCTION_HEADERS,
+    additive_atom,
+    classify_parenthetical,
+)
+from core.parsing.translation_pairs import expand_slash_atom
 
 logger = logging.getLogger(__name__)
 
@@ -82,9 +88,12 @@ _SEMICOLON_CLAUSE = re.compile(
     r";\s+(?=contains\s+2%|<\s*2%|less\s+than\s+2%)",
     re.IGNORECASE,
 )
-_ALLERGEN_CONTAINS_COLON = re.compile(r"^\s*contains\s*:\s*", re.IGNORECASE)
+_ALLERGEN_CONTAINS_COLON = re.compile(
+    r"^\s*(?:contains|contient|enthält)\s*[:;]\s*",
+    re.IGNORECASE,
+)
 _ALLERGEN_CONTAINS_BARE = re.compile(
-    r"^\s*contains\s+(?!2\s*%|less\s+than|<\s*2)",
+    r"^\s*(?:contains|contient|enthält)\s+(?!2\s*%|less\s+than|<\s*2)",
     re.IGNORECASE,
 )
 _EMBEDDED_SUBSECTION = re.compile(
@@ -134,18 +143,67 @@ MAY_CONTAIN_PATTERNS = [
 ]
 _TOP_LEVEL_SEP = re.compile(r"[,;](?![^(\[\{]*[\)\]\}])")
 _QUALIFIERS = ("from", "derived from", "made from")
-# Category headers before parenthetical lists (not standalone ingredients).
-_STRUCTURAL_HEADERS = frozenset({
-    "preservatives",
-    "preservative",
-    "colors",
-    "colours",
+_PAREN_KEEP_OUTER = frozenset(
+    {
+        "purified",
+        "filtered",
+        "organic",
+        "raw",
+        "fresh",
+        "unsweetened",
+        "unsalted",
+        "roasted",
+        "cooked",
+        "dried",
+        "powdered",
+        "ground",
+        "minced",
+        "chopped",
+        "sliced",
+        "color",
+        "colour",
+        "alkali",
+    }
+)
+_FUNCTION_INNER = re.compile(
+    r"^(?:to\s+|for\s+|as\s+)?"
+    r"(?:preserve|preserv(?:e|ative)|color|colour|freshness|flavour|flavor|alkali)\b",
+    re.IGNORECASE,
+)
+_ATTACHED_QUALIFIER = re.compile(
+    r"\s+(?:"
+    r"processed\s+with\s+alkali|"
+    r"to\s+preserve\s+freshness|"
+    r"color\s+added|"
+    r"colour\s+added"
+    r")\b",
+    re.IGNORECASE,
+)
+_NATURAL_ARTIFICIAL = re.compile(
+    r"\bnatural\s+and\s+artificial\s+(?=flavou?rs?\b)",
+    re.IGNORECASE,
+)
+_BARE_QUALIFIER_ATOMS = frozenset({
     "color",
     "colour",
-    "flavors",
-    "flavours",
-    "flavor",
-    "flavour",
+    "alkali",
+    "natural",
+    "artificial",
+    "freshness",
+    "added",
+    "color added",
+    "colour added",
+    "i",
+    "ii",
+    "iii",
+    "iv",
+})
+_SECTION_SLASH = re.compile(
+    r"\s*/\s*(?=(?:contains|contient|enthält|gluten\s+source|source\s+de\s+gluten)\s*:)",
+    re.IGNORECASE,
+)
+# Category headers before parenthetical lists (not standalone ingredients).
+_STRUCTURAL_HEADERS = frozenset(FUNCTION_HEADERS) | frozenset({
     "spices",
     "spice",
 })
@@ -156,7 +214,13 @@ def _sanitize_atom_fragment(text: str) -> str:
     t = (text or "").strip()
     if not t:
         return t
-    t = re.sub(r"[\)\]\}]+\s*$", "", t)
+    stripped = re.sub(r"[\)\]\}]+\s*$", "", t)
+    # Keep the closing delimiter when it belongs to an additive sub-variant
+    # (INS 322(ii), E471(a)) rather than an orphan from nesting split.
+    if stripped.count("(") > stripped.count(")") or stripped.count("[") > stripped.count("]"):
+        pass
+    else:
+        t = stripped
     t = re.sub(r"^\s*[\(\[\{]+", "", t)
     return t.strip()
 
@@ -210,6 +274,11 @@ def _label_clauses(raw_str: str) -> List[str]:
     if not text:
         return []
     clauses: List[str] = []
+    if _SECTION_SLASH.search(text):
+        out: List[str] = []
+        for chunk in _SECTION_SLASH.split(text):
+            out.extend(_label_clauses(chunk))
+        return out
     if _CLAUSE_BREAK.search(text):
         clauses = [c.strip() for c in _CLAUSE_BREAK.split(text) if c.strip()]
     elif _CATEGORY_CLAUSE.search(text):
@@ -278,6 +347,23 @@ _COMPOSITION_PERCENT = re.compile(
     re.IGNORECASE,
 )
 _COMPOSITION_NUMBER = re.compile(r"^\d+(?:[.,]\d+)?$")
+_ADDITIVE_HEAD = re.compile(r"^(?:e|ins)\s*\d{2,4}$", re.IGNORECASE)
+_ADDITIVE_SUBVARIANT = re.compile(r"^(?:[ivxlcdm]+|[a-z])$", re.IGNORECASE)
+_BARE_INS_SUB = re.compile(r"^(?:[ivxlcdm]{2,}|[a-z])$", re.IGNORECASE)
+
+
+def _glue_ins_subvariants(pieces: List[str]) -> List[str]:
+    """Attach a leftover roman/letter fragment onto the preceding additive number."""
+    out: List[str] = []
+    for piece in pieces:
+        t = (piece or "").strip()
+        if not t:
+            continue
+        if out and _BARE_INS_SUB.match(t) and re.search(r"\d{2,4}\s*$", out[-1]):
+            out[-1] = additive_atom(f"{out[-1]}({t})")
+            continue
+        out.append(t)
+    return out
 
 
 def _segment_canonical(part: str) -> str:
@@ -298,8 +384,14 @@ def _segment_canonical(part: str) -> str:
     # + quantity strip (must not collapse to "49.5%" / "min" or drop hazards).
     if _COMPOSITION_PERCENT.match(inner) or _COMPOSITION_NUMBER.match(inner):
         return part
+    if _ADDITIVE_HEAD.match(base) and _ADDITIVE_SUBVARIANT.match(inner):
+        return part
     inner_lower = inner.lower()
-    if any(inner_lower.startswith(q) for q in _QUALIFIERS):
+    if (
+        inner_lower in _PAREN_KEEP_OUTER
+        or any(inner_lower.startswith(q) for q in _QUALIFIERS)
+        or _FUNCTION_INNER.match(inner_lower)
+    ):
         return base
     if base and inner:
         # Synonym collapse (e.g. Vitamin C (ascorbic acid)) must not erase a
@@ -329,6 +421,38 @@ def _segments_for_clause(clause: str) -> List[tuple[str, bool]]:
             seg = _strip_subsection_header(seg)
             inline_trace = bool(_INLINE_TRACE_PAREN.search(seg))
             seg = _strip_inline_trace_parens(seg)
+            kind, payload = classify_parenthetical(seg)
+            if kind in ("function_header_numbers", "ins_e_list"):
+                for code in payload.get("codes") or []:
+                    segments.append((additive_atom(code), inline_trace))
+                continue
+            if kind == "function_header_payload":
+                for inner_item in payload.get("inners") or [payload.get("inner") or ""]:
+                    item = (inner_item or "").strip()
+                    if item:
+                        segments.append((item, inline_trace))
+                continue
+            if kind == "additive_subvariant":
+                code = payload.get("codes") or [
+                    f"{payload.get('base', '')}({payload.get('inner', '')})"
+                ]
+                segments.append((additive_atom(code[0]), inline_trace))
+                continue
+            if kind in ("name_function", "quantity", "claim", "translation"):
+                base = (payload.get("base") or "").strip()
+                if base:
+                    segments.append((base, inline_trace))
+                continue
+            if kind == "name_origin":
+                base = (payload.get("base") or "").strip()
+                inner = (payload.get("inner") or "").strip()
+                if inner:
+                    segments.append((inner, inline_trace))
+                # Short origin token (soya, milk): keep the outer name too.
+                # Multi-word inners are the real ingredient (Sourdough (Wheat Flour)).
+                if base and len(inner.split()) <= 1:
+                    segments.append((base, inline_trace))
+                continue
             collapsed = _segment_canonical(seg)
             if collapsed != seg:
                 segments.append((collapsed, inline_trace))
@@ -342,7 +466,8 @@ def _segments_for_clause(clause: str) -> List[tuple[str, bool]]:
                     head = normalize_ingredient_key(pieces[0])
                     if head in _STRUCTURAL_HEADERS:
                         pieces = pieces[1:]
-                for piece in pieces:
+                glued = _glue_ins_subvariants(pieces)
+                for piece in glued:
                     segments.append((piece, inline_trace))
     return segments
 
@@ -449,6 +574,8 @@ def preprocess_ingredients(
             part_clean = _strip_inline_trace_parens(part_clean)
             part_clean = _strip_category_headers(part_clean)
             part_clean = _sanitize_atom_fragment(part_clean)
+            part_clean = _NATURAL_ARTIFICIAL.sub("", part_clean)
+            part_clean = _ATTACHED_QUALIFIER.sub("", part_clean).strip()
             if not part_clean:
                 continue
             is_trace = trace_until_end or _is_trace_section(part) or inline_trace
@@ -461,31 +588,51 @@ def preprocess_ingredients(
                 trace_until_end = True
             if _is_may_contain_section(part) or _is_allergen_contains_section(part):
                 may_contain_until_end = True
-            key = norm_fn(part_clean)
-            # Structural category words (spices, flavors, preservatives) are
-            # headers when they introduce a parenthetical list. A bare token
-            # the user typed ("Are spices safe?") is a real ingredient and
-            # must NOT be dropped — otherwise compound umbrellas vanish and
-            # falsely land in Safe.
-            if not key:
-                continue
-            if key in _STRUCTURAL_HEADERS and (
-                "(" in part or "[" in part or "{" in part or ":" in part
-            ):
-                continue
-            if key in result_by_key:
-                result_by_key[key]["trace"] = result_by_key[key]["trace"] or is_trace
-                result_by_key[key]["may_contain"] = (
-                    result_by_key[key]["may_contain"] or is_may_contain
+            for slash_part in expand_slash_atom(part_clean):
+                _record_atom(
+                    result_by_key,
+                    slash_part,
+                    part,
+                    is_trace=is_trace,
+                    is_may_contain=is_may_contain,
+                    norm_fn=norm_fn,
                 )
-            else:
-                result_by_key[key] = {
-                    "name": key,
-                    "trace": is_trace,
-                    "may_contain": is_may_contain,
-                }
 
     return list(result_by_key.values())
+
+
+def _record_atom(
+    result_by_key: Dict[str, Dict[str, Any]],
+    part_clean: str,
+    part: str,
+    *,
+    is_trace: bool,
+    is_may_contain: bool,
+    norm_fn: Callable[[str], str],
+) -> None:
+    key = norm_fn(part_clean)
+    if not key or key in _BARE_QUALIFIER_ATOMS:
+        return
+    # Structural category words (spices, flavors, preservatives) are
+    # headers when they introduce a parenthetical list. A bare token
+    # the user typed ("Are spices safe?") is a real ingredient and
+    # must NOT be dropped — otherwise compound umbrellas vanish and
+    # falsely land in Safe.
+    if key in _STRUCTURAL_HEADERS and (
+        "(" in part or "[" in part or "{" in part or ":" in part
+    ):
+        return
+    if key in result_by_key:
+        result_by_key[key]["trace"] = result_by_key[key]["trace"] or is_trace
+        result_by_key[key]["may_contain"] = (
+            result_by_key[key]["may_contain"] or is_may_contain
+        )
+        return
+    result_by_key[key] = {
+        "name": key,
+        "trace": is_trace,
+        "may_contain": is_may_contain,
+    }
 
 
 def preprocess_ingredients_to_strings(
