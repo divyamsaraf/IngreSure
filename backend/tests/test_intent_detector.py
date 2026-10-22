@@ -618,15 +618,15 @@ class TestComprehensiveRestrictions:
         v = self._verdict("Halal", ["wine"])
         assert v.status == VerdictStatus.NOT_SAFE
 
-    def test_halal_chicken_safe(self):
+    def test_halal_chicken_not_safe_without_cert(self):
         from core.models.verdict import VerdictStatus
         v = self._verdict("Halal", ["chicken"])
-        assert v.status == VerdictStatus.SAFE
+        assert v.status != VerdictStatus.SAFE
 
-    def test_halal_lamb_safe(self):
+    def test_halal_lamb_not_safe_without_cert(self):
         from core.models.verdict import VerdictStatus
         v = self._verdict("Halal", ["lamb"])
-        assert v.status == VerdictStatus.SAFE
+        assert v.status != VerdictStatus.SAFE
 
     # === KOSHER ===
     def test_kosher_pork_not_safe(self):

@@ -35,6 +35,13 @@ def test_allowlisted_global_license_allows():
     assert d.reason == "allow_global_license"
 
 
+def test_ogl_uk_and_canada_are_allowlisted():
+    assert license_check("cofid", "OGL-UK-3.0").allowed is True
+    assert license_check("canadian_nutrient_file", "OGL-Canada-2.0").allowed is True
+    assert license_check("new_local_names", "OGL-UK-3.0").allowed is True
+    assert license_check("new_local_names", "OGL-Canada-2.0").allowed is True
+
+
 def test_unknown_license_denies():
     d = license_check("some_new_source", "Proprietary-All-Rights")
     assert d.allowed is False
