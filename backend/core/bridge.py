@@ -105,6 +105,24 @@ def _normalize_key(s: str) -> str:
     return (s or "").lower().strip().replace(" ", "_").replace("-", "_")
 
 
+def known_restriction_ids() -> Set[str]:
+    return set(DIETARY_PREFERENCE_TO_RESTRICTION_ID.values()) | set(
+        ALLERGEN_TO_RESTRICTION_ID.values()
+    ) | set(LIFESTYLE_TO_RESTRICTION_ID.values())
+
+
+def normalize_restriction_ids(raw: Optional[List[str]]) -> List[str]:
+    """Strip/case-fold ids. Unknown values stay as folded strings for the caller to reject."""
+    out: List[str] = []
+    seen: Set[str] = set()
+    for item in raw or []:
+        rid = _normalize_key(str(item))
+        if rid and rid not in seen:
+            seen.add(rid)
+            out.append(rid)
+    return out
+
+
 # ---------------------------------------------------------------------------
 # Profile -> restriction_ids
 # ---------------------------------------------------------------------------

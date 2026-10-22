@@ -28,6 +28,8 @@ class PreparedChatIngredients:
     derived_from_map: dict[str, str] = field(default_factory=dict)
     decomposed: list[DecomposedItem] | None = None
     label_text: str | None = None
+    block_kind: str = "label"
+    unparsed: list[str] = field(default_factory=list)
 
 
 def _needs_label_decomposer(query: str, ingredients: list[str]) -> bool:
@@ -60,9 +62,25 @@ def _label_source_text(query: str) -> str:
 
 def prepare_chat_ingredients(query: str, parsed: ParsedIntent) -> PreparedChatIngredients:
     """Route label-shaped pastes through ``decompose_label``; simple lists through compounds."""
+    from core.parsing.ingredient_block import extract_ingredient_block
+
+    block = extract_ingredient_block(query)
+    if block.kind in {"product_name", "multi_product"}:
+        return PreparedChatIngredients(
+            eval_names=[],
+            compound_map={},
+            block_kind=block.kind,
+            unparsed=block.unparsed or ([block.text] if block.text else []),
+            label_text=block.text or None,
+        )
     ingredients = list(parsed.ingredients or [])
     if not ingredients and not _has_ingredient_list_indicator(query):
-        return PreparedChatIngredients(eval_names=[], compound_map={})
+        return PreparedChatIngredients(
+            eval_names=[],
+            compound_map={},
+            block_kind=block.kind,
+            unparsed=block.unparsed,
+        )
 
     if _needs_label_decomposer(query, ingredients):
         label_text = _label_source_text(query)
@@ -73,6 +91,8 @@ def prepare_chat_ingredients(query: str, parsed: ParsedIntent) -> PreparedChatIn
             compound_map={},
             decomposed=items,
             label_text=label_text,
+            block_kind=block.kind,
+            unparsed=block.unparsed,
         )
 
     eval_names, compound_map, derived_from_map = expand_compounds(ingredients)
@@ -82,4 +102,6 @@ def prepare_chat_ingredients(query: str, parsed: ParsedIntent) -> PreparedChatIn
         derived_from_map=derived_from_map,
         decomposed=None,
         label_text=None,
+        block_kind=block.kind,
+        unparsed=block.unparsed,
     )

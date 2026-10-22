@@ -57,13 +57,16 @@ _GLUTEN_NAMES = frozenset({
     "couscous", "seitan", "graham flour", "durum", "durum wheat",
     "einkorn", "khorasan", "khorasan wheat", "gluten",
     "chapati", "chapatti", "roti", "paratha", "naan", "puri", "dalia",
+    "oat", "oats", "oatmeal", "rolled oats", "oat flour",
 })
 _GLUTEN_TOKENS = frozenset({
     "wheat", "barley", "rye", "spelt", "einkorn", "khorasan", "seitan",
     "semolina", "atta", "maida", "suji", "sooji", "rava", "farro", "freekeh",
     "bulgur", "couscous", "kamut", "durum", "gluten",
     "chapati", "chapatti", "roti", "paratha", "naan", "puri", "dalia",
+    "oat", "oats", "oatmeal",
 })
+_MALTED_FALSE_FRIENDS = ("maltodextrin", "maltitol", "maltose")
 # Rice-marked "rava" forms — do not auto-set gluten from the rava token.
 # (Truth anchor / ontology may still WARN-cap idli/rice rava; brands blend.)
 _NON_GLUTEN_RAVA_PHRASES = (
@@ -337,12 +340,26 @@ def derive_identity_flags(
         out["peanut_source"] = True
 
     non_gluten_rava = any(p in name for p in _NON_GLUTEN_RAVA_PHRASES)
-    if not neg_gluten and not non_gluten_rava and (
-        name in _GLUTEN_NAMES
+    oat_or_malt = (
+        any(_has_token(name, t) for t in ("oat", "oats", "oatmeal"))
         or (
-            any(_has_token(name, t) for t in _GLUTEN_TOKENS)
-            and "buckwheat" not in name
-            and "buck wheat" not in name
+            ("malted" in name or _has_token(name, "malt"))
+            and not any(p in name for p in _MALTED_FALSE_FRIENDS)
+        )
+    )
+    # Claims never clear oats/malted cereals (R05): one strict gluten rule.
+    if not non_gluten_rava and (
+        oat_or_malt
+        or (
+            not neg_gluten
+            and (
+                name in _GLUTEN_NAMES
+                or (
+                    any(_has_token(name, t) for t in _GLUTEN_TOKENS)
+                    and "buckwheat" not in name
+                    and "buck wheat" not in name
+                )
+            )
         )
     ):
         out["gluten_source"] = True
