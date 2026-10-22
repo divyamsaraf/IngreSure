@@ -356,6 +356,16 @@ def _verdict_for(r, rule, severity: Optional[str]):
         if ceiling is not None:
             return ceiling, triggered, trace, "inherent_uncertainty"
 
+    # Halal meat/fish from an ingredient list is never firm SAFE (R06).
+    # A halal mark is display-only and never clears slaughter uncertainty.
+    if (
+        restriction == "halal"
+        and base == Verdict.SAFE
+        and _meat_fish_derived(flags)
+        and not flags.get("halal_certified")
+    ):
+        return Verdict.UNCERTAIN, triggered, trace, "halal_slaughter_unverified"
+
     # Conservative knowledge-state propagation on a clean pass only.
     # Triggered FAIL / WARN stand regardless of knowledge_state (Item 34):
     # a positive hazard flag does not need "freshness" to caution the user.

@@ -31,6 +31,8 @@ class ComplianceVerdict:
     # LOCKED/VERIFIED knowledge, "limited" when any ingredient is untrusted
     # or from a low-trust/unclassified source, else "standard".
     evidence_tier: str = "standard"
+    # True when the engine swallowed an exception and fail-closed to UNCERTAIN.
+    degraded: bool = False
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -46,4 +48,5 @@ class ComplianceVerdict:
             "confidence_score": self.confidence_score,
             "ontology_version": self.ontology_version,
             "evidence_tier": self.evidence_tier,
+            "degraded": bool(self.degraded),
         }

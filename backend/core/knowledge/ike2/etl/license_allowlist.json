@@ -3,11 +3,35 @@
     "CC0-1.0",
     "CC-BY-4.0",
     "ODbL-1.0",
-    "public-domain"
+    "public-domain",
+    "OGL-UK-3.0",
+    "OGL-Canada-2.0"
   ],
   "source_licenses": {
     "produce_catalog": ["CC0-1.0", "public-domain"],
     "animal_catalog": ["CC0-1.0", "public-domain"],
-    "infoods": ["CC-BY-4.0"]
+    "infoods": ["CC-BY-4.0"],
+    "cofid": ["OGL-UK-3.0"],
+    "canadian_nutrient_file": ["OGL-Canada-2.0"]
+  },
+  "notes": {
+    "OGL-UK-3.0": {
+      "read_date": "2026-10-21",
+      "url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
+      "spdx": "https://spdx.org/licenses/OGL-UK-3.0.html",
+      "covers": "CoFID (McCance and Widdowson)",
+      "kind": "attribution, like CC-BY-4.0; no share-alike",
+      "must": "Acknowledge the source; default statement is 'Contains public sector information licensed under the Open Government Licence v3.0.'",
+      "must_not": "Suggest endorsement; use personal data or third-party rights the provider cannot license."
+    },
+    "OGL-Canada-2.0": {
+      "read_date": "2026-10-21",
+      "url": "https://open.canada.ca/en/open-government-licence-canada",
+      "spdx": "https://spdx.org/licenses/OGL-Canada-2.0.html",
+      "covers": "Canadian Nutrient File",
+      "kind": "attribution, like CC-BY-4.0; no share-alike",
+      "must": "Acknowledge the source; default statement is 'Contains information licensed under the Open Government Licence – Canada.'",
+      "must_not": "Suggest endorsement; use personal information, official symbols, or third-party rights the provider cannot license."
+    }
   }
 }

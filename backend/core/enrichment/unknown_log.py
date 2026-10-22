@@ -4,6 +4,7 @@ Used for enrichment process and traceability.
 """
 import json
 import logging
+import threading
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -29,6 +30,7 @@ class UnknownIngredientsLog:
     def __init__(self, path: Optional[Path] = None):
         self._path = path or _DEFAULT_PATH
         self._entries: Dict[str, Dict[str, Any]] = {}
+        self._lock = threading.Lock()
         self._load()
 
     def _load(self) -> None:
@@ -43,9 +45,11 @@ class UnknownIngredientsLog:
 
     def _save(self) -> None:
         self._path.parent.mkdir(parents=True, exist_ok=True)
+        with self._lock:
+            snapshot = dict(self._entries)
         with open(self._path, "w", encoding="utf-8") as f:
             json.dump(
-                {"unknown_ingredients": self._entries, "version": "1.0"},
+                {"unknown_ingredients": snapshot, "version": "1.0"},
                 f,
                 indent=2,
             )
@@ -66,29 +70,31 @@ class UnknownIngredientsLog:
             return
         import time
         now = time.time()
-        if normalized_key not in self._entries:
-            self._entries[normalized_key] = {
-                "normalized_key": normalized_key,
-                "raw_inputs": [],
-                "frequency": 0,
-                "first_seen": now,
-                "last_seen": now,
-                "restriction_ids_sample": [],
-                "profile_context_sample": None,
-            }
-        ent = self._entries[normalized_key]
-        if raw_input and raw_input not in ent["raw_inputs"]:
-            ent["raw_inputs"] = (ent["raw_inputs"] + [raw_input])[:20]
-        ent["frequency"] = ent.get("frequency", 0) + 1
-        ent["last_seen"] = now
-        if restriction_ids and ent.get("restriction_ids_sample") is not None:
-            sample = list(ent["restriction_ids_sample"])
-            for r in restriction_ids[:5]:
-                if r not in sample:
-                    sample.append(r)
-            ent["restriction_ids_sample"] = sample[:10]
-        if profile_context and not ent.get("profile_context_sample"):
-            ent["profile_context_sample"] = profile_context
+        with self._lock:
+            if normalized_key not in self._entries:
+                self._entries[normalized_key] = {
+                    "normalized_key": normalized_key,
+                    "raw_inputs": [],
+                    "frequency": 0,
+                    "first_seen": now,
+                    "last_seen": now,
+                    "restriction_ids_sample": [],
+                    "profile_context_sample": None,
+                }
+            ent = self._entries[normalized_key]
+            if raw_input and raw_input not in ent["raw_inputs"]:
+                ent["raw_inputs"] = (ent["raw_inputs"] + [raw_input])[:20]
+            ent["frequency"] = ent.get("frequency", 0) + 1
+            ent["last_seen"] = now
+            freq = ent["frequency"]
+            if restriction_ids and ent.get("restriction_ids_sample") is not None:
+                sample = list(ent["restriction_ids_sample"])
+                for r in restriction_ids[:5]:
+                    if r not in sample:
+                        sample.append(r)
+                ent["restriction_ids_sample"] = sample[:10]
+            if profile_context and not ent.get("profile_context_sample"):
+                ent["profile_context_sample"] = profile_context
         if persist:
             self._save()
         # Item 33 Prompt 4: discovery goes to ike2_unknown_queue, not legacy
@@ -101,18 +107,20 @@ class UnknownIngredientsLog:
             logger.debug("Unknown ingredient queue write skipped: %s", e)
         logger.info(
             "UNKNOWN_INGREDIENT logged raw=%s normalized_key=%s frequency=%s",
-            raw_input[:50], normalized_key, ent["frequency"],
+            raw_input[:50], normalized_key, freq,
         )
 
     def get_entries(self) -> Dict[str, Dict[str, Any]]:
-        return dict(self._entries)
+        with self._lock:
+            return dict(self._entries)
 
     def get_keys_for_enrichment(self, min_frequency: int = 1) -> List[str]:
         """Return normalized keys that should be enriched (e.g. by scheduled job)."""
-        return [
-            k for k, v in self._entries.items()
-            if v.get("frequency", 0) >= min_frequency
-        ]
+        with self._lock:
+            return [
+                k for k, v in self._entries.items()
+                if v.get("frequency", 0) >= min_frequency
+            ]
 
 
 _default_log: Optional[UnknownIngredientsLog] = None

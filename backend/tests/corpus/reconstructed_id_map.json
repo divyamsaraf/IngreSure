@@ -1,0 +1,11 @@
+{
+  "note": "backend/tests/corpus/input_cases.jsonl was reconstructed before the owner export. Spec IDs in input_cases_spec.jsonl win.",
+  "map": {
+    "reconstructed_A17": "spec A23 (Hinglish atta/maida). Spec A17 is flavouring (contains milk).",
+    "reconstructed_B04": "was lactose+milk fragment glue. Spec B04 is vegan, no nuts, gluten free. Glue is A17 parenthetical and B03 remainder.",
+    "reconstructed_C02": "spec C02 (empty restrictions).",
+    "reconstructed_C08": "was Call 911 + water. Spec C07 is emergency; spec C08 is diabetes medical-advice.",
+    "reconstructed_D02": "spec D02 hidden restriction reset.",
+    "reconstructed_E06": "was oversize 413. Spec E04 is 5 MB 413; spec E06 is duplicate/burst."
+  }
+}

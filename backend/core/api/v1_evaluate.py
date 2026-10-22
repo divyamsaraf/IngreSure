@@ -43,7 +43,10 @@ def _run_ike2_evaluate_with_flags(
             (ingredients or [])[:20],
             restriction_ids,
         )
-        return ComplianceVerdict(status=VerdictStatus.UNCERTAIN), []
+        from core.degraded import record as record_degraded
+
+        record_degraded("ike2_evaluate_failed", where="v1_evaluate")
+        return ComplianceVerdict(status=VerdictStatus.UNCERTAIN, degraded=True), []
 
 
 def evaluate_http(
@@ -87,7 +90,10 @@ def evaluate_http(
             (ingredients or [])[:20],
             restriction_ids,
         )
-        return ComplianceVerdict(status=VerdictStatus.UNCERTAIN), {
+        from core.degraded import record as record_degraded
+
+        record_degraded("ike2_http_evaluate_failed", where="v1_evaluate")
+        return ComplianceVerdict(status=VerdictStatus.UNCERTAIN, degraded=True), {
             "schema_version": SCHEMA_VERSION,
             "by_restriction": [],
         }

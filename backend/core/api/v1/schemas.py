@@ -20,7 +20,7 @@ class ResolvedIngredientResponse(BaseModel):
 
 class EvaluateComplianceRequest(BaseModel):
     ingredients: List[str] = Field(default_factory=list)
-    restriction_ids: List[str] = Field(default_factory=list)
+    restriction_ids: List[str] = Field(..., min_length=1)
     region_scope: Optional[str] = None
     use_api_fallback: bool = True
     profile_context: Optional[Dict[str, Any]] = None
@@ -35,7 +35,7 @@ class EvaluateComplianceResponse(BaseModel):
 class EvaluateProductRequest(BaseModel):
     product_name: Optional[str] = None
     ingredients_text: str = Field(..., min_length=1, description="Raw ingredient label text")
-    restriction_ids: List[str] = Field(default_factory=list)
+    restriction_ids: List[str] = Field(..., min_length=1)
     use_api_fallback: bool = True
     profile_context: Optional[Dict[str, Any]] = None
     include_restriction_matrix: bool = False
