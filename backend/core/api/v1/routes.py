@@ -150,8 +150,8 @@ def evaluate_product(request: Request, req: EvaluateProductRequest) -> EvaluateP
         )
     from core.parsing.ingredient_block import extract_ingredient_block
 
-    paste = extract_ingredient_block(req.ingredients_text)
     try:
+        paste = extract_ingredient_block(req.ingredients_text)
         parsed = preprocess_ingredients_to_strings(req.ingredients_text)
     except Exception:
         logger.exception("EVALUATE_PRODUCT_PARSE_FAILED")
