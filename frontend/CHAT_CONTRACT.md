@@ -4,6 +4,17 @@ Read-only source: PR #17 backend (`/chat/grocery` stream). Frontend tag literals
 
 This file is what Next.js chat consumes. It does not change the backend.
 
+## Dual-stream compatibility
+
+The frontend ships before the grocery-chat API flip, so it must accept **both**:
+
+| Shape | PROFILE_REQUIRED | Confirm / yes-no-only-today | Echo | Degraded | Emergency | 413/422/429 |
+| --- | --- | --- | --- | --- | --- | --- |
+| **Old** | HTTP 200 + `<<<PROFILE_REQUIRED>>>` **or** unmarked prose | Unmarked prose | Unmarked `I understood` / `I could not use` / `Checking against` | Fail-closed sentence | Unmarked guidance; **no** `<<<EMERGENCY>>>` | May be BFF/proxy only |
+| **New** | Those, plus structured `<<<PROFILE_REQUIRED>>>` / `<<<PROFILE_UPDATE>>>` / `<<<INGREDIENT_AUDIT>>>` | Same prose, plus any structured markers | Same | Same | Same (still no emergency tag) | Same |
+
+Replay fixtures live in `src/lib/chatContractStreams.ts` (`OLD_UNMARKED_STREAMS` and `STREAMS`).
+
 ## Stream tags
 
 | Tag | Backend emit | Frontend consume |

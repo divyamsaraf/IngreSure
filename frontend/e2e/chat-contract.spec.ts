@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test'
-import { STREAMS } from './fixtures/contractStreams'
+import { OLD_UNMARKED_STREAMS, STREAMS } from './fixtures/contractStreams'
 
 const LIVE = process.env.E2E_LIVE_BACKEND === '1'
 
@@ -83,6 +83,26 @@ test.describe('chat contract states', () => {
     await dismissOnboarding(page)
     await expect(page.getByTestId('verdict-chips')).toHaveCount(0)
     await expect(input).toBeEnabled()
+  })
+
+  test('profile required: unmarked 200 prose (pre-flip backend)', async ({ page }) => {
+    if (LIVE) test.skip()
+    await mockChat(page, OLD_UNMARKED_STREAMS.profileRequired)
+    await openChat(page)
+    await send(page, 'Ingredients: water, salt.')
+    await expect(page.getByTestId('profile-required-notice')).toBeVisible({ timeout: 15_000 })
+    await dismissOnboarding(page)
+    await expect(page.getByTestId('verdict-chips')).toHaveCount(0)
+  })
+
+  test('profile required: 200+marker with no prose', async ({ page }) => {
+    if (LIVE) test.skip()
+    await mockChat(page, OLD_UNMARKED_STREAMS.profileRequiredMarkerOnly)
+    await openChat(page)
+    await send(page, 'Ingredients: water, salt.')
+    await expect(page.getByTestId('profile-required-notice')).toBeVisible({ timeout: 15_000 })
+    await dismissOnboarding(page)
+    await expect(page.getByTestId('verdict-chips')).toHaveCount(0)
   })
 
   test('lactose confirm shows echo, avoid, and yes/no/only-today', async ({ page }) => {

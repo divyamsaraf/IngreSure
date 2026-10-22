@@ -3,10 +3,12 @@ import {
   classifyConfirmReply,
   emergencyNumberForRegion,
   httpErrorMessage,
+  hasProfileRequiredMarker,
   isConfirmPrompt,
   isDegradedText,
   isEmergencyGuidance,
   isEmergencyQuery,
+  isProfileRequiredText,
   parseUnderstandingEcho,
   regionFromLocale,
   resolveRegionHint,
@@ -50,6 +52,25 @@ describe('emergency detection', () => {
       ),
     ).toBe(true)
     expect(isEmergencyGuidance('I understood: water. Checking against: vegan.')).toBe(false)
+  })
+})
+
+describe('PROFILE_REQUIRED dual-stream', () => {
+  it('accepts the 200+marker and unmarked fail-closed prose', () => {
+    expect(hasProfileRequiredMarker('<<<PROFILE_REQUIRED>>>\n')).toBe(true)
+    expect(isProfileRequiredText('<<<PROFILE_REQUIRED>>>')).toBe(true)
+    expect(
+      isProfileRequiredText(
+        'I need to know which restrictions apply before I can say SAFE or NOT SAFE. Tell me your diet or allergies.',
+      ),
+    ).toBe(true)
+    expect(
+      isProfileRequiredText(
+        'Please set up your dietary profile first so I can give you personalized advice.',
+      ),
+    ).toBe(true)
+    expect(isProfileRequiredText('I understood: water. Checking against: vegan.')).toBe(false)
+    expect(isProfileRequiredText('Ingredients: water, salt.')).toBe(false)
   })
 })
 

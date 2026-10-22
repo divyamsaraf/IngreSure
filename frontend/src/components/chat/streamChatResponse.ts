@@ -13,6 +13,7 @@ import {
   isConfirmPrompt,
   isDegradedText,
   isEmergencyGuidance,
+  isProfileRequiredText,
   parseUnderstandingEcho,
   type UnderstandingEcho,
 } from '@/lib/chatContract'
@@ -50,7 +51,8 @@ export function applyAssistantContract(
 > {
   const { echo, remainder } = parseUnderstandingEcho(content)
   const emergency = Boolean(extras.forceEmergency) || isEmergencyGuidance(content)
-  const profileRequired = Boolean(extras.profileRequired) && !emergency
+  const profileRequired =
+    (Boolean(extras.profileRequired) || isProfileRequiredText(content)) && !emergency
   const degraded = extras.audit?.degraded === true || isDegradedText(content)
   const confirmPending = !emergency && !profileRequired && isConfirmPrompt(content)
   let visible = remainder
@@ -236,7 +238,7 @@ export async function streamChatResponse(
     const chunk = decoder.decode(value, { stream: true })
     buffer += chunk
 
-    if (buffer.includes(PROFILE_REQUIRED_TAG)) {
+    if (buffer.includes(PROFILE_REQUIRED_TAG) || isProfileRequiredText(buffer)) {
       flags.profileRequired = true
       setShowOnboarding(true)
     }

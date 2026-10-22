@@ -104,6 +104,23 @@ export function isDegradedText(text: string): boolean {
   return /treat this as uncertain, not safe/i.test(text || '')
 }
 
+/** Bare `<<<PROFILE_REQUIRED>>>` (200 + marker) or the unmarked grocery-chat prose. */
+export function hasProfileRequiredMarker(text: string): boolean {
+  return (text || '').includes('<<<PROFILE_REQUIRED>>>')
+}
+
+export function isProfileRequiredText(text: string): boolean {
+  const t = text || ''
+  if (hasProfileRequiredMarker(t)) return true
+  if (/i need to know which restrictions apply before i can say safe or not safe/i.test(t)) {
+    return true
+  }
+  if (/please set up your dietary profile first so i can give you personalized advice/i.test(t)) {
+    return true
+  }
+  return false
+}
+
 export function isConfirmPrompt(text: string): boolean {
   const t = text || ''
   return CONFIRM_PROMPT_PATTERNS.some((re) => re.test(t))
