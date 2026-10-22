@@ -50,7 +50,7 @@ def test_governance_check_script_exits_0():
 
 def test_ogl_attribution_strings_exact():
     data = json.loads(_ATTR.read_text(encoding="utf-8"))
-    assert data["owner_confirmed"] is False
+    assert data["owner_confirmed"] is True
     assert data["attributions"]["OGL-UK-3.0"] == (
         "Contains public sector information licensed under the Open Government Licence v3.0."
     )
@@ -59,9 +59,12 @@ def test_ogl_attribution_strings_exact():
     )
 
 
-def test_ogl_spdx_not_silently_in_allowlist():
-    """Owner must confirm before OGL ids land on the allowlist (PR #17 / D10)."""
+def test_ogl_spdx_on_allowlist_only_with_attribution():
+    """PR #17 confirmed OGL ids on the allowlist; keep matching attribution strings."""
     allow = json.loads(_ALLOW.read_text(encoding="utf-8"))
     ids = set(allow.get("allowed_licenses") or [])
-    assert "OGL-UK-3.0" not in ids
-    assert "OGL-Canada-2.0" not in ids
+    attr = json.loads(_ATTR.read_text(encoding="utf-8"))
+    assert "OGL-UK-3.0" in ids
+    assert "OGL-Canada-2.0" in ids
+    assert attr["owner_confirmed"] is True
+    assert set(attr["attributions"]) >= {"OGL-UK-3.0", "OGL-Canada-2.0"}
