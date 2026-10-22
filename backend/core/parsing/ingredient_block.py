@@ -17,14 +17,16 @@ _MULTI_PRODUCT = re.compile(
 _BARCODE = re.compile(r"^\s*\d{8,14}\s*$")
 _ING_HEADER = re.compile(r"\bingredients?\s*[:;]", re.IGNORECASE)
 _Q_PREFIX = re.compile(
-    r"^\s*(?:is|are|can\s+i\s+(?:eat|have)|does)\s+",
+    r"^\s*(?:is|are|can\s+i\s+(?:eat|have)|does|what\s+about|how\s+about)\s+",
     re.IGNORECASE,
 )
 _DIET_TAIL = re.compile(
     r"\b(?:vegan|vegetarian|jain|halal|kosher|gluten[\s-]*free|"
-    r"dairy[\s-]*free|peanut[\s-]*free|nut[\s-]*free|safe|ok|okay)\s*\??\s*$",
+    r"dairy[\s-]*free|peanut[\s-]*free|nut[\s-]*free|"
+    r"safe(?:\s+for\s+me)?|ok(?:ay)?(?:\s+for\s+me)?)\s*\??\s*$",
     re.IGNORECASE,
 )
+_LIST_HINT = re.compile(r"\b(?:with|and|or)\b|,")
 
 
 @dataclass
@@ -38,7 +40,9 @@ class IngredientBlock:
 
 def _product_question_subject(text: str) -> str | None:
     """Return the name in 'Is Nutella vegan?' when there is no ingredient list."""
-    if "," in text or _ING_HEADER.search(text):
+    if _ING_HEADER.search(text or ""):
+        return None
+    if _LIST_HINT.search(text or ""):
         return None
     t = (text or "").strip()
     if not (_Q_PREFIX.search(t) or "?" in t):
@@ -50,13 +54,24 @@ def _product_question_subject(text: str) -> str | None:
     return t
 
 
-def _is_trusted_single_ingredient(name: str) -> bool:
+def _is_known_single_ingredient(name: str) -> bool:
+    """True for a one-token L1/L2 commodity. No synonymy ladder (Cadbury ≠ milk)."""
     if len((name or "").split()) != 1:
         return False
-    from core.knowledge.ike2.resolver import resolve
+    from core.knowledge.ike2 import truth_anchor
+    from core.knowledge.ike2.stores import local_ontology
+    from core.normalization.normalizer import normalize_ingredient_key
 
-    hit = resolve(name, None)
-    return bool(getattr(hit, "trusted", False))
+    raw = (name or "").strip()
+    key = normalize_ingredient_key(raw) or raw.lower()
+    if truth_anchor.lookup(raw) is not None or truth_anchor.lookup(key) is not None:
+        return True
+    # Exact index keys only — lookup() would commodity-head "Dairy Milk" to milk.
+    index = local_ontology._index()
+    for candidate in local_ontology._index_keys_for_label(raw):
+        if candidate in index:
+            return True
+    return False
 
 
 def extract_ingredient_block(raw: str) -> IngredientBlock:
@@ -66,7 +81,7 @@ def extract_ingredient_block(raw: str) -> IngredientBlock:
         return IngredientBlock(kind="none", text="")
 
     subject = _product_question_subject(text)
-    if subject and not _is_trusted_single_ingredient(subject):
+    if subject and not _is_known_single_ingredient(subject):
         return IngredientBlock(kind="product_name", text=text, unparsed=[subject])
 
     if _BARCODE.match(text):

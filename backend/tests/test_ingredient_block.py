@@ -48,6 +48,19 @@ def test_product_diet_question_is_product_name():
     assert block.kind == "product_name"
 
 
+def test_known_commodity_questions_are_not_product_names():
+    for query in (
+        "Is milk vegan?",
+        "Is yam safe for me?",
+        "Can I have egg?",
+        "Can I eat onion?",
+        "What about milk?",
+        "Can I eat burger with chicken?",
+    ):
+        block = extract_ingredient_block(query)
+        assert block.kind != "product_name", (query, block.kind)
+
+
 def test_ingredients_header_is_label():
     block = extract_ingredient_block("Ingredients: oats. Contains: milk, soy.")
     assert block.kind == "label"

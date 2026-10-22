@@ -446,10 +446,12 @@ def _segments_for_clause(clause: str) -> List[tuple[str, bool]]:
             if kind == "name_origin":
                 base = (payload.get("base") or "").strip()
                 inner = (payload.get("inner") or "").strip()
-                if base:
-                    segments.append((base, inline_trace))
                 if inner:
                     segments.append((inner, inline_trace))
+                # Short origin token (soya, milk): keep the outer name too.
+                # Multi-word inners are the real ingredient (Sourdough (Wheat Flour)).
+                if base and len(inner.split()) <= 1:
+                    segments.append((base, inline_trace))
                 continue
             collapsed = _segment_canonical(seg)
             if collapsed != seg:

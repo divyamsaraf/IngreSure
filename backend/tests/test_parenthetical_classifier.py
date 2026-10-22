@@ -96,6 +96,27 @@ def test_function_header_named_payload_drops_header():
     assert "lecithin" in blob or "soya" in blob
 
 
+def test_sub_ingredient_list_not_name_origin():
+    kind, _ = classify_parenthetical("chocolate (sugar, cocoa butter, milk)")
+    assert kind == "sub_ingredient_list"
+    atoms = preprocess_ingredients_to_strings(
+        "chocolate (sugar, cocoa butter, milk), flour"
+    )
+    blob = " ".join(a.lower() for a in atoms)
+    for tok in ("chocolate", "sugar", "cocoa", "milk", "flour"):
+        assert tok in blob, atoms
+
+
+def test_sourdough_wheat_flour_keeps_flour_not_unknown_starter():
+    kind, _ = classify_parenthetical("Sourdough (Wheat Flour)")
+    assert kind == "name_origin"
+    atoms = preprocess_ingredients_to_strings("Sourdough (Wheat Flour)")
+    blob = " ".join(a.lower() for a in atoms)
+    bare = {a.lower().strip() for a in atoms}
+    assert "wheat" in blob
+    assert "sourdough" not in bare
+
+
 def test_a36_keeps_name_and_soya_origin():
     atoms = preprocess_ingredients_to_strings(
         "soy lecithin (an emulsifier), lecithin (soya), flavour (nature identical)"

@@ -157,11 +157,11 @@ def classify_parenthetical(segment: str) -> tuple[str, dict]:
         payload["inners"] = items or [inner]
         return "function_header_payload", payload
 
-    if _HAZARD_ORIGIN.search(inner):
-        return "name_origin", payload
-
     if len(items) >= 2:
         return "sub_ingredient_list", payload
+
+    if _HAZARD_ORIGIN.search(inner):
+        return "name_origin", payload
 
     if base and is_translation_pair(base, inner):
         return "translation", payload
