@@ -23,4 +23,5 @@ _EXTERNAL = {
 
 
 def to_external(v):
-    return _EXTERNAL[v]
+    """Unknown / missing enum values fail closed to UNCERTAIN, never SAFE."""
+    return _EXTERNAL.get(v, "UNCERTAIN")

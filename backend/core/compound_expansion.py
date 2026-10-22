@@ -75,6 +75,19 @@ def _load_role_index() -> dict[str, str]:
     return _ROLE_INDEX_CACHE
 
 
+def named_restricted_atoms(*texts: str) -> List[str]:
+    """Known restricted tokens named in product-shaped text (positives stand)."""
+    found: List[str] = []
+    seen: Set[str] = set()
+    for text in texts:
+        for atom in find_sub_ingredients(text or ""):
+            key = atom.lower().strip()
+            if key and key not in seen:
+                seen.add(key)
+                found.append(atom)
+    return found
+
+
 def find_sub_ingredients(name: str) -> List[str]:
     """Extract known restricted-ingredient keywords (passthrough path only).
 
