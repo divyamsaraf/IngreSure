@@ -46,7 +46,12 @@ invent keys). `tests/test_l3_rls_anon.py` selects every `ike2_*` relation
 as anon and expects empty or error.
 
 Expected policy: RLS enabled, no policies, grants revoked for
-`anon`/`authenticated` (migration `20261023120000_ike2_revoke_anon.sql`).
+`anon`/`authenticated`. The REVOKE lives in
+`supabase/migrations_draft/20261023120000_ike2_revoke_anon.sql` (not
+applied by `supabase start` or the production apply kit). The RLS test
+runs it against localhost Postgres only. Do not move it into
+`supabase/migrations/` until after the flip — it ENABLE RLS on existing
+`ike2_staging` tables.
 `ike2_v_alias_resolution` is `security_invoker` so it cannot bypass table RLS.
 
 ## Dependency audit (non-blocking)

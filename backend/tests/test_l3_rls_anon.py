@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import os
+from pathlib import Path
 
 import pytest
 from dotenv import load_dotenv
@@ -48,6 +49,54 @@ pytestmark = pytest.mark.skipif(
     reason="needs local supabase + SUPABASE_ANON_KEY from supabase start",
 )
 
+_REVOKE_SQL = (
+    Path(__file__).resolve().parents[2]
+    / "supabase"
+    / "migrations_draft"
+    / "20261023120000_ike2_revoke_anon.sql"
+)
+
+
+def _local_db_url() -> str:
+    url = (
+        os.getenv("SUPABASE_DB_URL")
+        or os.getenv("DATABASE_URL")
+        or "postgresql://postgres:postgres@127.0.0.1:54322/postgres"
+    ).strip()
+    if "127.0.0.1" not in url and "localhost" not in url:
+        pytest.skip("refuse non-local DATABASE_URL for revoke apply")
+    return url
+
+
+def _sql_statements(sql: str) -> list[str]:
+    out: list[str] = []
+    buf: list[str] = []
+    for line in sql.splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("--"):
+            continue
+        buf.append(line)
+        if stripped.endswith(";"):
+            out.append("\n".join(buf))
+            buf = []
+    return out
+
+
+def _apply_revoke_draft_locally() -> None:
+    """Apply the draft REVOKE SQL on localhost only. Never production."""
+    import psycopg2
+
+    url = _local_db_url()
+    sql = _REVOKE_SQL.read_text(encoding="utf-8")
+    conn = psycopg2.connect(url)
+    try:
+        conn.autocommit = True
+        with conn.cursor() as cur:
+            for stmt in _sql_statements(sql):
+                cur.execute(stmt)
+    finally:
+        conn.close()
+
 
 def test_anon_key_cannot_read_ike2_tables():
     """Expected policy: RLS on, no GRANT/policies for anon → empty or error.
@@ -60,6 +109,7 @@ def test_anon_key_cannot_read_ike2_tables():
     url = _local_url()
     key = _anon_key()
     assert "supabase.co" not in url
+    _apply_revoke_draft_locally()
     client = create_client(url, key)
     leaked = []
     for name in _IKE2_RELATIONS:

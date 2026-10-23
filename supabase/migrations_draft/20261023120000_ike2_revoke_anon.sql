@@ -1,6 +1,13 @@
+-- DRAFT ONLY. Not applied.
+-- Lives in supabase/migrations_draft/, not supabase/migrations/.
+-- Do not move this file into migrations/ until after the production flip:
+-- it ENABLE ROW LEVEL SECURITY on existing ike2_staging tables and would
+-- run in the same-project apply kit.
+--
 -- L3: ike2_* is backend-only. RLS is already on with no policies; also revoke
 -- table/view grants so the anon key cannot read via PostgREST (including the
 -- alias view, which would otherwise run as owner and skip RLS).
+-- The local RLS test applies this against localhost Postgres only.
 alter view if exists public.ike2_v_alias_resolution set (security_invoker = true);
 
 revoke all on table public.ike2_ingredient_groups from anon, authenticated;
