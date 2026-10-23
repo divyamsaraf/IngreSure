@@ -13,3 +13,8 @@ def test_warn_maps_to_depends_never_safe():
     assert to_external(Verdict.UNCERTAIN) == "UNCERTAIN"
     assert to_external(Verdict.FAIL) == "NOT_SAFE"
     assert to_external(Verdict.SAFE) == "SAFE"
+
+
+def test_unknown_enum_maps_to_uncertain_never_safe():
+    assert to_external(None) == "UNCERTAIN"
+    assert to_external("not-a-verdict") == "UNCERTAIN"

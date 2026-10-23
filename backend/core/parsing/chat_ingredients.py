@@ -65,9 +65,20 @@ def prepare_chat_ingredients(query: str, parsed: ParsedIntent) -> PreparedChatIn
     from core.parsing.ingredient_block import extract_ingredient_block
 
     block = extract_ingredient_block(query)
-    if block.kind in {"product_name", "multi_product"}:
+    if block.kind == "multi_product":
         return PreparedChatIngredients(
             eval_names=[],
+            compound_map={},
+            block_kind=block.kind,
+            unparsed=block.unparsed or ([block.text] if block.text else []),
+            label_text=block.text or None,
+        )
+    if block.kind == "product_name":
+        from core.compound_expansion import named_restricted_atoms
+
+        named = named_restricted_atoms(*(block.unparsed or [block.text]))
+        return PreparedChatIngredients(
+            eval_names=named,
             compound_map={},
             block_kind=block.kind,
             unparsed=block.unparsed or ([block.text] if block.text else []),

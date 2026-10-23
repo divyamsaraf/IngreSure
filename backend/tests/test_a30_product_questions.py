@@ -68,6 +68,73 @@ def test_cadbury_dairy_milk_not_safe_from_milk_token_alone():
     assert r.json()["verdict"]["status"] != "SAFE"
 
 
+def test_chicken_burger_vegan_is_not_safe():
+    r = client.post(
+        "/chat/grocery",
+        json={
+            "query": "is a chicken burger vegan?",
+            "user_id": "g3-chicken-burger-vegan",
+            "userProfile": {
+                "dietary_preference": "Vegan",
+                "allergens": [],
+                "lifestyle": [],
+            },
+        },
+    )
+    assert r.status_code == 200
+    text = r.text
+    start = text.find(INGREDIENT_AUDIT_TAG)
+    assert start != -1, text
+    end = text.find(INGREDIENT_AUDIT_TAG, start + len(INGREDIENT_AUDIT_TAG))
+    assert end != -1
+    import json
+
+    audit = json.loads(text[start + len(INGREDIENT_AUDIT_TAG) : end])
+    statuses = {str(g.get("status") or "").lower() for g in (audit.get("groups") or [])}
+    assert "avoid" in statuses or "not_safe" in statuses, (statuses, text)
+    ev = client.post(
+        "/api/v1/evaluate-product",
+        json={"ingredients_text": "is a chicken burger vegan?", "restriction_ids": ["vegan"]},
+    )
+    assert ev.status_code == 200
+    assert ev.json()["verdict"]["status"] == "NOT_SAFE"
+
+
+def test_nutella_vegan_asks_for_label_not_safe():
+    r = client.post(
+        "/chat/grocery",
+        json={
+            "query": "Is Nutella vegan?",
+            "user_id": "g3-nutella-vegan",
+            "userProfile": {
+                "dietary_preference": "Vegan",
+                "allergens": [],
+                "lifestyle": [],
+            },
+        },
+    )
+    assert r.status_code == 200
+    text = r.text
+    low = text.lower()
+    asked = "ingredient list" in low or "product name" in low
+    assert asked, text
+    start = text.find(INGREDIENT_AUDIT_TAG)
+    if start != -1:
+        end = text.find(INGREDIENT_AUDIT_TAG, start + len(INGREDIENT_AUDIT_TAG))
+        if end != -1:
+            import json
+
+            audit = json.loads(text[start + len(INGREDIENT_AUDIT_TAG) : end])
+            statuses = {str(g.get("status") or "").lower() for g in (audit.get("groups") or [])}
+            assert "safe" not in statuses, (statuses, text)
+    ev = client.post(
+        "/api/v1/evaluate-product",
+        json={"ingredients_text": "Is Nutella vegan?", "restriction_ids": ["vegan"]},
+    )
+    assert ev.status_code == 200
+    assert ev.json()["verdict"]["status"] != "SAFE"
+
+
 def test_thirty_product_questions_ask_or_uncertain_never_safe():
     assert len(_PRODUCT_QUESTIONS) == 30
     for i, query in enumerate(_PRODUCT_QUESTIONS):

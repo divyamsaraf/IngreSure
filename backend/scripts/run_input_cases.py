@@ -26,6 +26,10 @@ from fastapi.testclient import TestClient  # noqa: E402
 
 from app import app  # noqa: E402
 from core.intent_detector import detect_intent  # noqa: E402
+from core.models.verdict import (  # noqa: E402
+    normalize_external_status,
+    worst_external_status,
+)
 from core.parsing.ingredient_parser import preprocess_ingredients_to_strings  # noqa: E402
 from core.stream_tags import INGREDIENT_AUDIT_TAG, PROFILE_UPDATE_TAG  # noqa: E402
 
@@ -99,27 +103,12 @@ def _verdict_status(payload) -> str | None:
         return None
     if isinstance(payload, dict):
         if "verdict" in payload and isinstance(payload["verdict"], dict):
-            return payload["verdict"].get("status")
+            raw = payload["verdict"].get("status")
+            if raw is not None:
+                return normalize_external_status(raw)
         groups = payload.get("groups") or []
         if groups:
-            # worst of audit groups
-            order = {
-                "NOT_SAFE": 3,
-                "AVOID": 3,
-                "UNCERTAIN": 2,
-                "DEPENDS": 2,
-                "CHECK": 2,
-                "WARN": 2,
-                "SAFE": 1,
-            }
-            worst = "SAFE"
-            for g in groups:
-                st = str(g.get("status") or "").upper()
-                if st == "DEPENDS":
-                    st = "UNCERTAIN"
-                if order.get(st, 0) > order.get(worst, 0):
-                    worst = "NOT_SAFE" if st in ("AVOID", "NOT_SAFE") else st
-            return worst
+            return worst_external_status(g.get("status") for g in groups)
     return None
 
 

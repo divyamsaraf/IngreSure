@@ -767,7 +767,7 @@ async def chat_grocery(request: Request, body: ChatRequest):
                 )
                 yield _profile_json(profile)
                 return
-            if prepared.block_kind == "product_name":
+            if prepared.block_kind == "product_name" and not prepared.eval_names:
                 yield (
                     "I need the ingredient list from the pack, not just the product name. "
                     "I will not mark this SAFE from the name alone.\n"
@@ -834,6 +834,13 @@ async def chat_grocery(request: Request, body: ChatRequest):
                 prepared_decomposed=prepared.decomposed,
                 raw_label=prepared.label_text,
             )
+            if prepared.block_kind == "product_name" and verdict.status != VerdictStatus.NOT_SAFE:
+                yield (
+                    "I need the ingredient list from the pack, not just the product name. "
+                    "I will not mark this SAFE from the name alone.\n"
+                )
+                yield _profile_json(profile)
+                return
             if prepared.block_kind == "recipe" and verdict.status == VerdictStatus.SAFE:
                 verdict.status = VerdictStatus.UNCERTAIN
             logger.info(
