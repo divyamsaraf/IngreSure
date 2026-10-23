@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Newsreader } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import BetaBanner from "@/components/BetaBanner";
 import { ConfigProvider } from "@/context/ConfigContext";
 import { ProfileProvider } from "@/context/ProfileContext";
 import { Analytics } from "@vercel/analytics/react";
@@ -42,6 +43,7 @@ export default function RootLayout({
         <ConfigProvider>
           <ProfileProvider>
             <Navbar />
+            <BetaBanner />
             {children}
           </ProfileProvider>
         </ConfigProvider>
