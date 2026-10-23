@@ -1,0 +1,6 @@
+ba30f870dc7d81c3e8c0d3a5975bd8e4d160faff
+# origin/main at flip kit (merge #28). Confirm with:
+#   git fetch origin && git rev-parse origin/main
+# Freeze merges to main except flip-critical PRs until the cut.
+# EXPECTED_GIT_SHA must be the SHA actually deployed (this pin, or the
+# merge commit of the L1 kit if that lands first).

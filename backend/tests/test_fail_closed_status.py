@@ -14,7 +14,14 @@ def test_avoid_and_fail_map_to_not_safe():
     assert normalize_external_status("AVOID") == "NOT_SAFE"
     assert normalize_external_status("avoid") == "NOT_SAFE"
     assert normalize_external_status("NOT_SAFE") == "NOT_SAFE"
+    assert normalize_external_status("not_safe") == "NOT_SAFE"
     assert normalize_external_status("FAIL") == "NOT_SAFE"
+
+
+def test_unmapped_never_maps_to_safe():
+    for raw in (None, "", "   ", "UNKNOWN", "GARBAGE", 0, object()):
+        assert normalize_external_status(raw) == "UNCERTAIN"
+        assert normalize_external_status(raw) != "SAFE"
 
 
 def test_worst_starts_uncertain_not_safe():
@@ -25,6 +32,15 @@ def test_worst_starts_uncertain_not_safe():
     assert worst_external_status(["SAFE", "UNKNOWN"]) == "UNCERTAIN"
     assert worst_external_status(["SAFE"]) == "SAFE"
     assert worst_external_status(["SAFE", "AVOID"]) == "NOT_SAFE"
+
+
+def test_worst_list_set_generator_none_agree():
+    data = ["SAFE", "avoid"]
+    assert worst_external_status(data) == "NOT_SAFE"
+    assert worst_external_status(set(data)) == "NOT_SAFE"
+    assert worst_external_status(x for x in data) == "NOT_SAFE"
+    assert worst_external_status(None) == "UNCERTAIN"
+    assert worst_external_status((x for x in [])) == "UNCERTAIN"
 
 
 def test_unknown_ike2_enum_is_uncertain_not_safe():

@@ -1,0 +1,69 @@
+Same-project flip kit
+======================
+
+No hosted staging twin. Local Supabase is the destructive lab. :8001 behind
+the Caddy lock is the production-specific check window. Never run restore,
+RLS stress, DB-down, or schema chaos against the live project.
+
+Pinned SHA: see deploy/PINNED_SHA.txt. Confirm CI green on that commit
+(gh run list --branch main). Freeze merges to main except this kit and
+the beta banner.
+
+Containment env (new container)
+-------------------------------
+
+UNKNOWN_QUEUE_ENABLED=0
+WORKER_ENABLED=0
+PROFILE_READ_ONLY=0
+# verification container only:
+# PROFILE_SNAPSHOT_PATH=/data/profiles.snap.json
+# PROFILE_READ_ONLY=1
+EXPECTED_GIT_SHA=<pinned>
+GIT_SHA=<pinned>
+ENVIRONMENT=production
+
+Test user ids must start with test_. Issue a throwaway PROD_API_KEY, revoke
+after smoke. python scripts/cleanup_test_data.py then --apply.
+
+Volume (profiles.json)
+----------------------
+
+Two containers must not write the same data/profiles.json without the atomic
+saver. Writes are temp-file + os.replace under a lock. For verification,
+copy the file to a snapshot and set PROFILE_SNAPSHOT_PATH + PROFILE_READ_ONLY=1
+on :8001. At the flip, point the new container at the real volume.
+
+UUID migrate: USE_PROFILE_DB=1 python scripts/migrate_profiles_to_db.py.
+
+Flip window (owner)
+-------------------
+
+1. Dump restorable: two copies + sha256. Restore into scratch Postgres
+   (scripts/restore_dump_drill.py once L3 lands; until then pg_restore
+   into a throwaway container and compare public / ike2_staging counts).
+   Dump must include public, ike2_staging, legacy tables, policies, grants.
+2. Main CI green on the pinned SHA.
+3. Caddy lock + 512KB cap (or maintenance). Still an owner host step.
+4. Schema diff: pg_dump --schema-only of production vs the chain up to the
+   last applied migration. Apply only what is missing.
+5. DATABASE_URL=... python scripts/apply_prod_migrations.py (dry-run),
+   then --apply one file at a time. If objects exist off-record:
+   --repair-tracker --apply.
+6. python scripts/seed_prod.py then --apply (ontology + produce/animal/infoods).
+   Never seed ike2_unknown_queue or shadow diffs.
+7. python scripts/verify_prod.py — REST view columns include source and
+   asserted_flags, rules = 58, non-zero exit on fail.
+8. Start :8001 with containment on. /health shows the pinned SHA. HEAD /health is 200.
+9. Smoke (scripts/post_deploy_smoke.py), same-seed parity, Vercel preview chat,
+   profile round trip (test_ user).
+10. Flip Caddy, stop the old container.
+11. Watch degraded and 5xx for 24 hours.
+
+Rollback = do not flip. Expand-only migrations keep the old container working.
+
+Cream of Wheat (PR #26)
+-----------------------
+
+Old card assertion: assert "safe" not in statuses (failed: cream card SAFE,
+wheat AVOID). New: mixed cards OK when avoid/not_safe is present. Overall
+evaluate-product / chat verdict must stay NOT_SAFE.

@@ -46,6 +46,8 @@ jobs:
         run: python scripts/ci_seed_ike2_min.py
       - name: Check secrets hygiene (no SERVICE_ROLE / NEXT_PUBLIC_*SECRET* in frontend/)
         run: python scripts/check_secrets_hygiene.py
+      - name: Expand-only migration lint (no DROP/RENAME/ALTER TYPE/DISABLE RLS)
+        run: python scripts/check_migration_expand_only.py
       - name: ReDoS scan (parsing + flag_derive)
         run: python scripts/redos_scan.py
       - name: Verify E-number catalog

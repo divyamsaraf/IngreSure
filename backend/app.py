@@ -360,7 +360,7 @@ def root():
     return {"status": "ok", "service": "IngreSure AI Scanner"}
 
 
-@app.get("/health")
+@app.api_route("/health", methods=["GET", "HEAD"])
 def health_check():
     """Health for Docker/K8s. ingredient_audit_emitter: true means chat emits INGREDIENT_AUDIT blocks.
 

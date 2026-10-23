@@ -20,6 +20,7 @@ from __future__ import annotations
 import json
 import logging
 import os
+import tempfile
 import threading
 from pathlib import Path
 from typing import Any, Optional
@@ -31,10 +32,29 @@ from core.config import redact_pii
 logger = logging.getLogger(__name__)
 
 _PROFILES_PATH = Path(__file__).resolve().parent.parent.parent / "data" / "profiles.json"
+_file_lock = threading.Lock()
 
 _PROFILE_CACHE_MAX = 500
 _profile_cache: dict[tuple[str, str], UserProfile] = {}
 _profile_cache_lock = threading.Lock()
+
+
+def _env_on(name: str, default: bool = False) -> bool:
+    raw = (os.environ.get(name) or "").strip().lower()
+    if not raw:
+        return default
+    return raw in ("1", "true", "yes", "on")
+
+
+def _active_profiles_path() -> Path:
+    snap = (os.environ.get("PROFILE_SNAPSHOT_PATH") or "").strip()
+    if snap:
+        return Path(snap)
+    return _PROFILES_PATH
+
+
+def _read_only() -> bool:
+    return _env_on("PROFILE_READ_ONLY", default=False)
 
 
 def use_profile_db() -> bool:
@@ -57,7 +77,17 @@ def _storage_key(user_id: str, org_id: Optional[str] = None) -> str:
 
 
 def _cache_key(storage_key: str) -> tuple[str, str]:
-    return (str(_PROFILES_PATH), storage_key)
+    return (str(_active_profiles_path()), storage_key)
+
+
+def _profile_json(profile: UserProfile) -> dict:
+    return {
+        "dietary_preference": profile.dietary_preference,
+        "allergens": list(profile.allergens),
+        "lifestyle": list(profile.lifestyle),
+        "unsupported_restrictions": list(profile.unsupported_restrictions),
+        "legacy_fields": dict(profile.legacy_fields or {}),
+    }
 
 
 def _use_db_for(user_id: str, org_id: Optional[str]) -> bool:
@@ -65,20 +95,37 @@ def _use_db_for(user_id: str, org_id: Optional[str]) -> bool:
 
 
 def _load_all() -> dict:
-    if not _PROFILES_PATH.exists():
+    path = _active_profiles_path()
+    if not path.exists():
         return {}
-    try:
-        with open(_PROFILES_PATH, encoding="utf-8") as f:
-            return json.load(f)
-    except Exception as e:
-        logger.warning("Failed to load profiles: %s", e)
-        return {}
+    with open(path, encoding="utf-8") as f:
+        data = json.load(f)
+    if not isinstance(data, dict):
+        raise ValueError(f"{path} is not a JSON object")
+    return data
 
 
 def _save_all(data: dict) -> None:
-    _PROFILES_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with open(_PROFILES_PATH, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2)
+    path = _active_profiles_path()
+    if _read_only():
+        logger.warning("PROFILE_READ_ONLY skip write path=%s", path)
+        return
+    path.parent.mkdir(parents=True, exist_ok=True)
+    payload = json.dumps(data, indent=2)
+    with _file_lock:
+        fd, tmp = tempfile.mkstemp(prefix=".profiles.", suffix=".tmp", dir=str(path.parent))
+        try:
+            with os.fdopen(fd, "w", encoding="utf-8") as f:
+                f.write(payload)
+                f.flush()
+                os.fsync(f.fileno())
+            os.replace(tmp, path)
+        except Exception:
+            try:
+                os.unlink(tmp)
+            except OSError:
+                pass
+            raise
 
 
 def _evict_oldest_cached() -> None:
@@ -234,11 +281,7 @@ def save_profile(profile: UserProfile, org_id: Optional[str] = None) -> None:
         if not ok:
             # Fall back to JSON so a FK miss doesn't silently drop profile edits.
             data = _load_all()
-            data[storage_key] = {
-                "dietary_preference": profile.dietary_preference,
-                "allergens": list(profile.allergens),
-                "lifestyle": list(profile.lifestyle),
-            }
+            data[storage_key] = _profile_json(profile)
             _save_all(data)
             logger.warning(
                 "PROFILE_SAVE_DB_FALLBACK_JSON user_id=%s (users row missing or auth FK)",
@@ -246,11 +289,7 @@ def save_profile(profile: UserProfile, org_id: Optional[str] = None) -> None:
             )
     else:
         data = _load_all()
-        data[storage_key] = {
-            "dietary_preference": profile.dietary_preference,
-            "allergens": list(profile.allergens),
-            "lifestyle": list(profile.lifestyle),
-        }
+        data[storage_key] = _profile_json(profile)
         _save_all(data)
 
     with _profile_cache_lock:
