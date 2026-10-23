@@ -130,8 +130,11 @@ def _chat_not_safe(query: str, restriction_id: str, user_id: str) -> None:
             audit = json.loads(text[start + len(INGREDIENT_AUDIT_TAG) : end])
     if audit:
         statuses = {str(g.get("status") or "").lower() for g in (audit.get("groups") or [])}
-        # Named-hazard positives may emit mixed cards (wheat AVOID + cream SAFE).
-        # The gate is: not a SAFE-only audit. Avoid/not_safe is enough.
+        # Cream of Wheat / gluten_free (PR #26): mixed cards are allowed.
+        # OLD assertion (too strict — failed CI):
+        #   assert "safe" not in statuses
+        # NEW assertion: an avoid/not_safe card is enough; cream may be SAFE.
+        # Overall chat/evaluate verdict must still be NOT_SAFE (never SAFE).
         if "avoid" in statuses or "not_safe" in statuses:
             return
         assert "safe" not in statuses, (query, restriction_id, statuses)
@@ -188,6 +191,16 @@ def test_product_recall_at_least_99_percent():
 def test_brand_with_ingredient_word_is_product_name(name: str):
     block = extract_ingredient_block(name)
     assert block.kind == "product_name", (name, block.kind)
+
+
+def test_cream_of_wheat_gluten_free_overall_is_not_safe():
+    """Cards may mix SAFE+AVOID; the product verdict must stay NOT_SAFE."""
+    r = client.post(
+        "/api/v1/evaluate-product",
+        json={"ingredients_text": "Cream of Wheat", "restriction_ids": ["gluten_free"]},
+    )
+    assert r.status_code == 200, r.text[:300]
+    assert r.json()["verdict"]["status"] == "NOT_SAFE", r.json()
 
 
 @pytest.mark.parametrize("name", BRAND_WITH_INGREDIENT_WORD)

@@ -11,6 +11,7 @@ verdict. The resolver submits L5 misses to a single background thread.
 from __future__ import annotations
 
 import logging
+import os
 import re
 import threading
 from concurrent.futures import ThreadPoolExecutor
@@ -28,6 +29,11 @@ _JUNK_PATTERN = re.compile(r"^zyzzx\b")
 _executor: Optional[ThreadPoolExecutor] = None
 _executor_lock = threading.Lock()
 _client = None
+
+
+def queue_writes_enabled() -> bool:
+    raw = (os.environ.get("UNKNOWN_QUEUE_ENABLED") or "1").strip().lower()
+    return raw not in ("0", "false", "no", "off")
 
 
 def is_junk_key(key: str) -> bool:
@@ -67,6 +73,8 @@ def enqueue_unknown(normalized_key: str, raw_input: Optional[str] = None, *, cli
 
     Returns False (never raises) on junk keys, missing config, or write failure.
     """
+    if not queue_writes_enabled():
+        return False
     if not normalized_key or is_junk_key(normalized_key):
         return False
     try:
@@ -105,6 +113,8 @@ def record_miss(normalized_key: str, raw_input: Optional[str] = None) -> None:
     """Fire-and-forget enqueue from the resolver hot path. Never raises."""
     global _executor
     try:
+        if not queue_writes_enabled():
+            return
         if not normalized_key or is_junk_key(normalized_key):
             return
         with _executor_lock:

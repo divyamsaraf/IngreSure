@@ -68,13 +68,26 @@ def _post(
     req = urllib.request.Request(url, data=data, headers=h, method="POST")
     try:
         with urllib.request.urlopen(req, timeout=60, context=_SSL) as resp:
-            return resp.status, json.loads(resp.read().decode())
+            raw = resp.read().decode()
+            try:
+                return resp.status, json.loads(raw)
+            except json.JSONDecodeError:
+                return resp.status, raw
     except urllib.error.HTTPError as exc:
         body = exc.read().decode()[:500]
         try:
             return exc.code, json.loads(body)
         except Exception:
             return exc.code, body
+
+
+def _head(url: str) -> int:
+    req = urllib.request.Request(url, method="HEAD")
+    try:
+        with urllib.request.urlopen(req, timeout=15, context=_SSL) as resp:
+            return resp.status
+    except urllib.error.HTTPError as exc:
+        return exc.code
 
 
 def _options(url: str, origin: str) -> tuple[int, dict]:
@@ -128,6 +141,10 @@ def main() -> int:
             failures.append(f"engine={health.get('engine')!r} (want ike2)")
         if "ike2_live_audit" not in health:
             failures.append("health missing ike2_live_audit")
+
+    head_code = _head(f"{base}/health")
+    if head_code != 200:
+        failures.append(f"HEAD /health → {head_code} (want 200)")
 
     eval_url = f"{base}/api/v1/evaluate-product"
     code, body = _post(
@@ -193,10 +210,83 @@ def main() -> int:
                 f"CORS preview {preview!r} → {code} allow={allow!r}"
             )
 
+    uid = os.environ.get("SMOKE_USER_ID") or "test_smoke_flip"
+    code, body = _post(
+        f"{base}/profile",
+        {
+            "user_id": uid,
+            "dietary_preference": "Vegan",
+            "allergens": ["Peanuts"],
+            "lifestyle": [],
+        },
+        {},
+    )
+    if code != 200:
+        failures.append(f"profile POST → {code} {body!r}")
+    else:
+        code, got = _get(f"{base}/profile/{uid}")
+        if code != 200 or not isinstance(got, dict):
+            failures.append(f"profile GET → {code} {got!r}")
+        elif got.get("dietary_preference") != "Vegan" or "Peanuts" not in (got.get("allergens") or []):
+            failures.append(f"profile round trip mismatch {got!r}")
+        notices = got.get("unsupported_notices") if isinstance(got, dict) else None
+        print("profile_round_trip", got.get("dietary_preference") if isinstance(got, dict) else got, "notices", notices)
+
+    code, body = _post(
+        eval_url,
+        {
+            "ingredients_text": "zyzzxunknownq99",
+            "restriction_ids": ["vegan"],
+        },
+        headers,
+    )
+    if code != 200 or not isinstance(body, dict):
+        failures.append(f"unknown atom → {code} {body!r}")
+    else:
+        status = (body.get("verdict") or {}).get("status")
+        print("unknown_atom_status", status)
+        if status == "SAFE":
+            failures.append(f"unknown atom status={status!r} (must not be SAFE)")
+        elif status not in ("UNCERTAIN", "NOT_SAFE"):
+            failures.append(f"unknown atom status={status!r} (want UNCERTAIN)")
+
+    code, body = _post(
+        f"{base}/chat/grocery",
+        {"query": "I can't breathe", "user_id": uid},
+        {},
+    )
+    if code != 200:
+        failures.append(f"emergency chat → {code} {body!r}")
+    else:
+        text = body if isinstance(body, str) else json.dumps(body)
+        low = text.lower()
+        if "911" not in low and "emergency" not in low and "seek" not in low:
+            failures.append(f"emergency chat missing guidance: {text[:240]!r}")
+
+    code, body = _post(
+        eval_url,
+        {
+            "ingredients_text": "Ingrédients: water, peanuts",
+            "restriction_ids": ["peanut_allergy"],
+        },
+        headers,
+    )
+    if code != 200 or not isinstance(body, dict):
+        failures.append(f"bilingual label → {code} {body!r}")
+    else:
+        status = (body.get("verdict") or {}).get("status")
+        print("bilingual_status", status)
+        if status != "NOT_SAFE":
+            failures.append(f"bilingual label status={status!r} (want NOT_SAFE)")
+
     if failures:
         print("FAIL:", *failures, sep="\n  ")
         return 1
-    print("OK: fingerprint + peanut NOT_SAFE + 422/413" + (" + 401" if production else ""))
+    print(
+        "OK: fingerprint + HEAD + peanut NOT_SAFE + 422/413"
+        + (" + 401" if production else "")
+        + " + profile + unknown UNCERTAIN + emergency + bilingual"
+    )
     return 0
 
 

@@ -26,19 +26,34 @@ celery_app = Celery(
     include=["worker.tasks"],
 )
 
+
+def worker_enabled() -> bool:
+    raw = (os.environ.get("WORKER_ENABLED") or "1").strip().lower()
+    return raw not in ("0", "false", "no", "off")
+
+
+def beat_schedule(*, enabled: bool | None = None) -> dict:
+    """Item 23 schedule. Flip-window containment: WORKER_ENABLED=0 clears beat."""
+    if enabled is None:
+        enabled = worker_enabled()
+    if not enabled:
+        return {}
+    return {
+        "enrich-unknown-batch-hourly": {
+            "task": "enrich_unknown_batch",
+            "schedule": 3600.0,
+            "kwargs": {"min_frequency": 1, "limit": 50},
+        },
+        # Item 12: nightly IKE-2 live audits (asserted-false, DISCOVERED, L2↔L3 drift,
+        # lexicon vs verdict). Report-only; writes .local_reports/item12_*.json.
+        "ike2-scheduled-audits-daily": {
+            "task": "ike2_scheduled_audits",
+            "schedule": 86400.0,
+        },
+    }
+
+
 # Item 23: Beat runs embedded in the single compose worker (`worker -B`).
 # Running more than one worker replica with -B would double-schedule.
-celery_app.conf.beat_schedule = {
-    "enrich-unknown-batch-hourly": {
-        "task": "enrich_unknown_batch",
-        "schedule": 3600.0,
-        "kwargs": {"min_frequency": 1, "limit": 50},
-    },
-    # Item 12: nightly IKE-2 live audits (asserted-false, DISCOVERED, L2↔L3 drift,
-    # lexicon vs verdict). Report-only; writes .local_reports/item12_*.json.
-    "ike2-scheduled-audits-daily": {
-        "task": "ike2_scheduled_audits",
-        "schedule": 86400.0,
-    },
-}
+celery_app.conf.beat_schedule = beat_schedule()
 
