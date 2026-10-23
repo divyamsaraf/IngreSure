@@ -96,6 +96,8 @@ _SEMICOLON_CLAUSE = re.compile(
     r";\s+(?=contains\s+2%|<\s*2%|less\s+than\s+2%)",
     re.IGNORECASE,
 )
+# Latin allergen-contains only. Japanese 「（一部に…を含む）」 is unparsed
+# (deploy/japan_parser_plan.md). UNVERIFIED; no JP ingest.
 _ALLERGEN_CONTAINS_COLON = re.compile(
     r"^\s*(?:contains|contient|enthält)\s*[:;]\s*",
     re.IGNORECASE,

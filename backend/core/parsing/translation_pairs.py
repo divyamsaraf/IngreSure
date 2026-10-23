@@ -43,6 +43,9 @@ def expand_slash_atom(atom: str) -> list[str]:
     """Keep translation pairs as one atom; split non-translation slashes.
 
     Section headers after `` / `` (Contient:, gluten source:) are not pairs.
+    Japanese 原材料名 ``／`` (NFKC → ``/``) is ingredients|additives in CAA
+    examples, not a translation pair. See deploy/japan_parser_plan.md.
+    UNVERIFIED; no JP ingest.
     """
     raw = (atom or "").strip()
     if not raw or "/" not in raw or _AND_OR.search(raw):

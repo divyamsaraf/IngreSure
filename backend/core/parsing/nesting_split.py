@@ -12,7 +12,11 @@ _ADDITIVE_CODE = re.compile(
 
 
 def split_top_level(text: str, seps: str = ",;") -> list[str]:
-    """Split on ``seps`` only when not inside (), [], or {}."""
+    """Split on ``seps`` only when not inside (), [], or {}.
+
+    Ideographic comma ``、`` is not a separator here. JP lists stay unsplit
+    until a later ticket (deploy/japan_parser_plan.md). UNVERIFIED; no ingest.
+    """
     if not text or not text.strip():
         return []
     out: list[str] = []
