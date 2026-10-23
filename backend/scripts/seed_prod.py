@@ -40,8 +40,11 @@ FORBIDDEN = frozenset(
         "wikidata",
         "off",
         "openfoodfacts",
+        "staples",
+        "staples_wave1",
     }
 )
+_STAPLES_DIR = _REPO / "data" / "staples_wave1"
 _LAYER1 = {
     "produce_catalog": _REPO / "data" / "layer1_produce_catalog.json",
     "animal_catalog": _REPO / "data" / "layer1_animal_catalog.json",
@@ -66,6 +69,10 @@ def plan_sources(requested: list[str]) -> list[dict]:
             path = _LAYER1[key]
         else:
             raise ValueError(f"source {key!r} is not allowlisted L1")
+        resolved = Path(path).resolve()
+        staples = _STAPLES_DIR.resolve()
+        if resolved == staples or staples in resolved.parents:
+            raise ValueError("refusing staples_wave1 (review CSVs, not ingest)")
         out.append({"source": key, "path": path})
     return out
 
