@@ -1,0 +1,164 @@
+{
+  "generated_at": "2026-10-23T18:48:58+00:00",
+  "spec": "docs/l5_staples_spec.md",
+  "ingest": false,
+  "database_writes": false,
+  "verified_always": false,
+  "class_trusted_always": false,
+  "batch_size": 200,
+  "audit_size": 300,
+  "audit_seed": 5,
+  "regions": {
+    "GLOBAL": {
+      "rows": 1308,
+      "complete": 0,
+      "incomplete": 1308,
+      "categories": {
+        "pulses": 108,
+        "nuts/seeds": 20,
+        "grains/flours": 57,
+        "eggs": 7,
+        "dairy": 51,
+        "sweeteners": 23,
+        "fish/seafood": 419,
+        "vegetables": 367,
+        "oils": 22,
+        "common additives": 23,
+        "herbs/spices": 56,
+        "fruits": 79,
+        "beverages": 13,
+        "meat": 47,
+        "fungi": 16
+      },
+      "knowledge_state": {
+        "AUTO_CLASSIFIED": 615,
+        "DISCOVERED": 680,
+        "LOCKED": 13
+      },
+      "unique_staples": 1308,
+      "disagreeing": 22
+    },
+    "IN": {
+      "rows": 1772,
+      "complete": 0,
+      "incomplete": 1772,
+      "categories": {
+        "pulses": 140,
+        "nuts/seeds": 24,
+        "grains/flours": 87,
+        "eggs": 11,
+        "sweeteners": 29,
+        "dairy": 57,
+        "fish/seafood": 506,
+        "vegetables": 485,
+        "oils": 26,
+        "common additives": 23,
+        "herbs/spices": 77,
+        "fruits": 145,
+        "beverages": 19,
+        "meat": 123,
+        "fungi": 20
+      },
+      "knowledge_state": {
+        "AUTO_CLASSIFIED": 615,
+        "DISCOVERED": 1144,
+        "LOCKED": 13
+      },
+      "unique_staples": 1772,
+      "disagreeing": 41
+    },
+    "US": {
+      "rows": 2460,
+      "complete": 0,
+      "incomplete": 2460,
+      "categories": {
+        "pulses": 222,
+        "nuts/seeds": 67,
+        "grains/flours": 169,
+        "eggs": 19,
+        "dairy": 219,
+        "sweeteners": 86,
+        "fish/seafood": 532,
+        "vegetables": 503,
+        "oils": 46,
+        "common additives": 31,
+        "herbs/spices": 100,
+        "fruits": 204,
+        "beverages": 72,
+        "meat": 151,
+        "fungi": 39
+      },
+      "knowledge_state": {
+        "AUTO_CLASSIFIED": 615,
+        "DISCOVERED": 1832,
+        "LOCKED": 13
+      },
+      "unique_staples": 2460,
+      "disagreeing": 73
+    }
+  },
+  "batch": {
+    "rows": 200,
+    "complete": 0,
+    "incomplete": 200,
+    "categories": {
+      "sweeteners": 6,
+      "herbs/spices": 15,
+      "oils": 7,
+      "fish/seafood": 14,
+      "meat": 67,
+      "vegetables": 37,
+      "dairy": 8,
+      "fungi": 1,
+      "fruits": 12,
+      "grains/flours": 10,
+      "pulses": 16,
+      "nuts/seeds": 3,
+      "eggs": 1,
+      "common additives": 1,
+      "beverages": 2
+    },
+    "knowledge_state": {
+      "DISCOVERED": 148,
+      "AUTO_CLASSIFIED": 52
+    },
+    "unique_staples": 200,
+    "disagreeing": 92
+  },
+  "audit": {
+    "rows": 300,
+    "complete": 0,
+    "incomplete": 300,
+    "categories": {
+      "vegetables": 20,
+      "fruits": 20,
+      "herbs/spices": 20,
+      "grains/flours": 20,
+      "pulses": 20,
+      "nuts/seeds": 20,
+      "oils": 20,
+      "sweeteners": 20,
+      "dairy": 20,
+      "eggs": 20,
+      "meat": 20,
+      "fish/seafood": 20,
+      "fungi": 20,
+      "beverages": 20,
+      "common additives": 20
+    },
+    "knowledge_state": {
+      "AUTO_CLASSIFIED": 97,
+      "DISCOVERED": 192,
+      "LOCKED": 11
+    },
+    "unique_staples": 300,
+    "disagreeing": 8
+  },
+  "notes": [
+    "Wave 1 review artifacts only. Do not ingest. Do not apply to DB.",
+    "asserted_flags are true-only from source columns + derive_identity_flags + closed Jain/root class.",
+    "Unevaluated flags are empty (null), not invented falses.",
+    "Audit CSV is an ungraded human sample; LLM must not grade it.",
+    "Owner accept of batch_001 may later set reviewer/trust_timestamp/class_trusted."
+  ]
+}

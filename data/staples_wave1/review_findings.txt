@@ -1,0 +1,21 @@
+Wave 1 review findings — no flag edits, no row changes, no DB writes
+====================================================================
+
+Honey (batch_001_owner_accept.csv, staple_id
+1ddd508b-2f20-59ed-85bf-8ddce7190c56, frequency 187)
+
+Observed (leave as-is): insect_derived=true AND bee_product=true.
+This is a review finding, not a write. The CHECK bee_product_not_insect_derived
+and the rule layer decide outcomes. Do not blanket-clear insect_derived.
+
+Per-framework questions (rule layer, not a universal flag):
+  vegan              — bee product; typically NOT_SAFE / AVOID
+  Jain               — often avoids honey; confirm against the Jain rule pack
+  vegetarian         — honey is usually allowed; do not inherit insect_derived
+  Hindu vegetarian   — same as vegetarian unless the pack says otherwise
+  no_insect_derived  — honey is a bee product, not an insect; DEPENDS_ON_SOURCE
+                       / framework, not a blanket insect_derived=true
+
+Arbitration note for a later pilot: store these as per-framework evidence,
+not as a single insect_derived field. Silence from USDA on insect_derived
+is not evidence of absence. Owner accept later; verified stays false.
