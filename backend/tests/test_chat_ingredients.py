@@ -51,6 +51,21 @@ def test_simple_list_uses_compound_expansion_not_decomposer():
     assert "chicken" in [n.lower() for n in prepared.eval_names]
 
 
+def test_chicken_burger_product_question_evaluates_named_hazard():
+    query = "is a chicken burger vegan?"
+    parsed = detect_intent(query)
+    prepared = prepare_chat_ingredients(query, parsed)
+    assert "chicken" in [n.lower() for n in prepared.eval_names]
+
+
+def test_nutella_product_question_has_no_named_hazard_atoms():
+    query = "Is Nutella vegan?"
+    parsed = detect_intent(query)
+    prepared = prepare_chat_ingredients(query, parsed)
+    assert prepared.block_kind == "product_name"
+    assert prepared.eval_names == []
+
+
 def test_gelatin_truth_anchor_lists_porcine_species():
     from core.knowledge.ike2 import truth_anchor
 

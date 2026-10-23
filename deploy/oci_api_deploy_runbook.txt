@@ -82,7 +82,7 @@ Access logs (exposure vs incident): last 7 days unique client IPs for the API vh
 
 **Ontology / L3 seed (Item 29):** after migrations,
 
-1. Confirm `ike2_restriction_rules` count (expect 52 from seed migration).  
+1. Confirm `ike2_restriction_rules` count (expect **58** live rows: 52 from the seed migration plus 6 enzyme-origin rules in `20260918010000`; see `docs/l1_migration_chain.md`).  
 2. `python scripts/seed_ike2_ontology.py` (or current seed entrypoint) from `data/ontology.json` against that DB.  
 3. Optional: `bulk_inject` for selected `data/layer1_*.json` per Item 29 plan.  
 4. Do **not** copy soak `ike2_shadow_diffs`.

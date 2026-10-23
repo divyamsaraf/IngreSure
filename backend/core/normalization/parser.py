@@ -13,7 +13,6 @@ from core.parsing.ingredient_parser import (
     _segment_canonical,
     _strip_allergen_contains_markers,
     _strip_may_contain_markers,
-    _TOP_LEVEL_SEP,
     strip_label_boilerplate,
 )
 from core.parsing.nesting_split import split_by_nesting, split_top_level

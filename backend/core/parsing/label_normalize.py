@@ -3,12 +3,13 @@ from __future__ import annotations
 
 import re
 
+_OPEN = {"(": ")", "[": "]", "{": "}"}
+_CLOSE = {")": "(", "]": "[", "}": "{"}
+
 _BULLET_SEP = re.compile(r"\s*(?:[•·▪‣●])\s*")
-# Top-level " and " between ingredients (not inside nesting delimiters).
-_TOP_LEVEL_AND = re.compile(
-    r"\s+and\s+(?![^(\[\{]*[\)\]\}])",
-    re.IGNORECASE,
-)
+# Linear scan only — do not use (?![^()[]{}]*[)]] lookaheads (O(n^2) on long lists).
+_HAS_AND = re.compile(r"\sand\s", re.IGNORECASE)
+_AND_SEP = re.compile(r"\s+and\s+", re.IGNORECASE)
 # Phrases where ``and`` is part of a name/header, not a list separator.
 _PROTECTED_AND_PHRASES = re.compile(
     r"\b(?:"
@@ -62,6 +63,35 @@ def _newline_rich_list_to_commas(text: str) -> str:
     return f"{header}{joined}" if header else joined
 
 
+def _replace_top_level_and(text: str) -> str:
+    """Replace top-level `` and `` with ``, `` using a delimiter stack (linear)."""
+    out: list[str] = []
+    stack: list[str] = []
+    i = 0
+    n = len(text)
+    while i < n:
+        ch = text[i]
+        if ch in _OPEN:
+            stack.append(ch)
+            out.append(ch)
+            i += 1
+            continue
+        if ch in _CLOSE and stack and _CLOSE[ch] == stack[-1]:
+            stack.pop()
+            out.append(ch)
+            i += 1
+            continue
+        if not stack:
+            m = _AND_SEP.match(text, i)
+            if m:
+                out.append(", ")
+                i = m.end()
+                continue
+        out.append(ch)
+        i += 1
+    return "".join(out)
+
+
 def normalize_label_separators(text: str) -> str:
     """Normalize bullets, newlines, and top-level ``and`` before atom parsing."""
     if not text:
@@ -69,15 +99,10 @@ def normalize_label_separators(text: str) -> str:
     t = text.strip()
     t = _BULLET_SEP.sub(", ", t)
     t = _newline_rich_list_to_commas(t)
-    if _TOP_LEVEL_AND.search(t):
+    if _HAS_AND.search(t):
         protected, placeholders = _protect_and_phrases(t)
-        parts = []
-        for chunk in re.split(r"([,;](?![^(\[\{]*[\)\]\}]))", protected):
-            if chunk in {",", ";"}:
-                parts.append(chunk)
-            else:
-                parts.append(_TOP_LEVEL_AND.sub(", ", chunk))
-        t = _restore_and_phrases("".join(parts), placeholders)
+        t = _replace_top_level_and(protected)
+        t = _restore_and_phrases(t, placeholders)
     t = re.sub(r",\s*,+", ", ", t)
     t = re.sub(r"\s+", " ", t).strip()
     return t
