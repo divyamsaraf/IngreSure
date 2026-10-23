@@ -362,7 +362,12 @@ def root():
 
 @app.get("/health")
 def health_check():
-    """Health for Docker/K8s. ingredient_audit_emitter: true means chat emits INGREDIENT_AUDIT blocks."""
+    """Health for Docker/K8s. ingredient_audit_emitter: true means chat emits INGREDIENT_AUDIT blocks.
+
+    Also exposes deploy fingerprint (git_sha, schema version, engine, ENVIRONMENT)
+    so post-deploy smoke can assert the running host matches the merge tip.
+    """
+    from core.deploy_fingerprint import fingerprint
     from core.knowledge.ike2.audit_health import live_audit_health
 
     body = {
@@ -370,6 +375,7 @@ def health_check():
         "service": "IngreSure AI Scanner",
         "ingredient_audit_emitter": True,
     }
+    body.update(fingerprint())
     body.update(live_audit_health())
     return body
 
