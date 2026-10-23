@@ -1,21 +1,8 @@
 """Spec harness must not start worst at SAFE (remaining fail-open hole)."""
 from pathlib import Path
 
-import pytest
-
-from core.models.verdict import normalize_external_status, worst_external_status
+from core.models.verdict import worst_external_status
 from scripts.run_input_cases import _verdict_status
-
-
-def _broken_worst_safe_default(statuses) -> str:
-    """The fail-open hole: empty fold stays SAFE."""
-    worst = "SAFE"
-    rank = {"NOT_SAFE": 3, "UNCERTAIN": 2, "SAFE": 1}
-    for raw in statuses or []:
-        mapped = normalize_external_status(raw)
-        if rank[mapped] > rank[worst]:
-            worst = mapped
-    return worst
 
 
 def test_source_has_no_worst_safe_default():
@@ -32,10 +19,5 @@ def test_empty_groups_do_not_become_safe():
     assert _verdict_status({"verdict": {"status": "depends"}}) == "UNCERTAIN"
 
 
-def test_broken_worst_safe_default_fails_the_gate():
-    assert _broken_worst_safe_default([]) == "SAFE"
+def test_worst_empty_fold_is_uncertain():
     assert worst_external_status([]) == "UNCERTAIN"
-    with pytest.raises(AssertionError):
-        assert _broken_worst_safe_default([]) != "SAFE"
-    with pytest.raises(AssertionError):
-        assert _broken_worst_safe_default([]) == "UNCERTAIN"

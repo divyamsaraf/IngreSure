@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 from pathlib import Path
 
 import pytest
@@ -142,6 +143,8 @@ def _chat_not_safe(query: str, restriction_id: str, user_id: str) -> None:
         #   that return skipped any overall assertion.
         overall = worst_external_status(statuses)
         assert overall != "SAFE", (query, restriction_id, overall, statuses)
+        # Subset check is only a guard against unknown status strings, not a
+        # safety assertion. The safety assertion is overall != "SAFE".
         assert asked or statuses <= {"depends", "uncertain", "check", "avoid", "not_safe", "safe"}
     else:
         assert asked, (query, restriction_id, text[:400])
@@ -224,6 +227,39 @@ def test_cream_of_wheat_gluten_free_overall_is_not_safe():
         str(g.get("status") or "") for g in (audit.get("groups") or [])
     )
     assert overall == "NOT_SAFE", (overall, audit.get("groups"))
+
+
+def test_gluten_free_water_is_safe_positive_control():
+    """Gate must distinguish: a water/salt label is SAFE for gluten_free.
+
+    Bare "water" is classified product_name and capped to UNCERTAIN (ask for
+    the label). A labeled list is the legitimate SAFE control.
+    """
+    r = client.post(
+        "/api/v1/evaluate-product",
+        json={
+            "ingredients_text": "Ingredients: water, salt",
+            "restriction_ids": ["gluten_free"],
+        },
+    )
+    assert r.status_code == 200, r.text[:300]
+    assert r.json()["verdict"]["status"] == "SAFE", r.json()
+
+
+def test_fail_open_worst_breaks_cream_of_wheat_gate(monkeypatch):
+    """Mutate the real fold the goldens import; the actual gate must then fail."""
+    from core.models.verdict import worst_external_status as real_worst
+
+    assert real_worst([]) == "UNCERTAIN"
+
+    def fail_open(_statuses):
+        return "SAFE"
+
+    monkeypatch.setattr(sys.modules[__name__], "worst_external_status", fail_open)
+    with pytest.raises(AssertionError):
+        _chat_not_safe("Cream of Wheat", "gluten_free", "test_fail_open_gate")
+    with pytest.raises(AssertionError):
+        test_cream_of_wheat_gluten_free_overall_is_not_safe()
 
 
 @pytest.mark.parametrize("name", BRAND_WITH_INGREDIENT_WORD)
