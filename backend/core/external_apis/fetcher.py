@@ -5,6 +5,7 @@ Layer 2 (scientific) sources used when food APIs miss (e.g. E-numbers, chemical 
 import hashlib
 import logging
 import re
+import threading
 import time
 from typing import Optional
 
@@ -32,6 +33,7 @@ logger = logging.getLogger(__name__)
 
 # In-memory cache: hash -> (EnrichmentResult, timestamp)
 _api_cache: dict[str, tuple[EnrichmentResult, float]] = {}
+_API_CACHE_LOCK = threading.Lock()
 _CACHE_MAX_ENTRIES = 500
 _CACHE_TTL_SECONDS = 3600  # 1 hour
 
@@ -73,12 +75,13 @@ def _resolve_to_english_llm(
 
 def _evict_expired() -> None:
     """Remove expired entries when cache is full."""
-    if len(_api_cache) < _CACHE_MAX_ENTRIES:
-        return
-    now = time.time()
-    expired = [k for k, (_, ts) in _api_cache.items() if now - ts > _CACHE_TTL_SECONDS]
-    for k in expired:
-        del _api_cache[k]
+    with _API_CACHE_LOCK:
+        if len(_api_cache) < _CACHE_MAX_ENTRIES:
+            return
+        now = time.time()
+        expired = [k for k, (_, ts) in list(_api_cache.items()) if now - ts > _CACHE_TTL_SECONDS]
+        for k in expired:
+            _api_cache.pop(k, None)
 
 
 def fetch_ingredient_from_apis(
@@ -95,13 +98,16 @@ def fetch_ingredient_from_apis(
 
     # Use cache only for successful resolutions so unknowns always trigger external API search.
     # Never return cached "no result" — we want best/correct results by calling APIs when unknown.
-    if use_cache and key in _api_cache:
-        cached, ts = _api_cache[key]
-        if time.time() - ts < _CACHE_TTL_SECONDS and cached.ingredient is not None:
-            logger.debug("ENRICHMENT cache hit (success) key=%s", normalized_ingredient_key[:50])
-            return cached
-        if key in _api_cache:
-            del _api_cache[key]
+    if use_cache:
+        with _API_CACHE_LOCK:
+            hit = _api_cache.get(key)
+        if hit is not None:
+            cached, ts = hit
+            if time.time() - ts < _CACHE_TTL_SECONDS and cached.ingredient is not None:
+                logger.debug("ENRICHMENT cache hit (success) key=%s", normalized_ingredient_key[:50])
+                return cached
+            with _API_CACHE_LOCK:
+                _api_cache.pop(key, None)
 
     best: Optional[EnrichmentResult] = None
     query = normalized_ingredient_key.replace("_", " ").strip()
@@ -220,8 +226,9 @@ def fetch_ingredient_from_apis(
     # This way unknown ingredients always trigger external API search until we get a real resolution.
     if use_cache and best.ingredient is not None:
         _evict_expired()
-        if len(_api_cache) < _CACHE_MAX_ENTRIES:
-            _api_cache[key] = (best, time.time())
+        with _API_CACHE_LOCK:
+            if len(_api_cache) < _CACHE_MAX_ENTRIES:
+                _api_cache[key] = (best, time.time())
 
     return best
 
@@ -237,5 +244,5 @@ def enrich_unknown_ingredient(
 
 def clear_enrichment_cache() -> None:
     """Clear in-memory API cache (e.g. for tests)."""
-    global _api_cache
-    _api_cache = {}
+    with _API_CACHE_LOCK:
+        _api_cache.clear()

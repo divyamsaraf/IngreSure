@@ -52,12 +52,18 @@ class TestHalal:
         assert _eval(engine, ingredient, "halal") == VerdictStatus.NOT_SAFE
 
     @pytest.mark.parametrize("ingredient", [
-        "beef", "chicken", "lamb", "fish", "tuna", "salmon",
         "milk", "egg", "butter", "cheese",
         "sugar", "rice", "wheat", "tofu",
     ])
     def test_halal_safe(self, engine, ingredient):
         assert _eval(engine, ingredient, "halal") == VerdictStatus.SAFE
+
+    @pytest.mark.parametrize("ingredient", [
+        "beef", "chicken", "lamb", "fish", "tuna", "salmon",
+    ])
+    def test_halal_meat_without_cert_is_not_safe(self, engine, ingredient):
+        """A list cannot prove slaughter; meat stays UNCERTAIN (R06)."""
+        assert _eval(engine, ingredient, "halal") != VerdictStatus.SAFE
 
 
 # ---------------------------------------------------------------------------

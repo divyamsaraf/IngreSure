@@ -12,6 +12,37 @@ class VerdictStatus(str, Enum):
     UNCERTAIN = "UNCERTAIN"
 
 
+_NOT_SAFE_ALIASES = frozenset({"NOT_SAFE", "AVOID", "FAIL"})
+_SAFE_ALIASES = frozenset({"SAFE"})
+_STATUS_RANK = {"NOT_SAFE": 3, "UNCERTAIN": 2, "SAFE": 1}
+
+
+def normalize_external_status(status: Any) -> str:
+    """Map an audit/group/engine status string to SAFE / NOT_SAFE / UNCERTAIN.
+
+    Unrecognized, empty, DEPENDS, CHECK, WARN, and UNKNOWN fail closed to
+    UNCERTAIN — never SAFE.
+    """
+    st = str(status or "").strip().upper()
+    if st in _NOT_SAFE_ALIASES:
+        return VerdictStatus.NOT_SAFE.value
+    if st in _SAFE_ALIASES:
+        return VerdictStatus.SAFE.value
+    return VerdictStatus.UNCERTAIN.value
+
+
+def worst_external_status(statuses: Any) -> str:
+    """Worst-of fold over group statuses. Empty input is UNCERTAIN, not SAFE."""
+    if isinstance(statuses, (str, bytes)):
+        statuses = [statuses]
+    worst: str | None = None
+    for raw in statuses or []:
+        mapped = normalize_external_status(raw)
+        if worst is None or _STATUS_RANK[mapped] > _STATUS_RANK[worst]:
+            worst = mapped
+    return worst if worst is not None else VerdictStatus.UNCERTAIN.value
+
+
 @dataclass
 class ComplianceVerdict:
     status: VerdictStatus
@@ -31,6 +62,8 @@ class ComplianceVerdict:
     # LOCKED/VERIFIED knowledge, "limited" when any ingredient is untrusted
     # or from a low-trust/unclassified source, else "standard".
     evidence_tier: str = "standard"
+    # True when the engine swallowed an exception and fail-closed to UNCERTAIN.
+    degraded: bool = False
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -46,4 +79,5 @@ class ComplianceVerdict:
             "confidence_score": self.confidence_score,
             "ontology_version": self.ontology_version,
             "evidence_tier": self.evidence_tier,
+            "degraded": bool(self.degraded),
         }

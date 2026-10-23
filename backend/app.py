@@ -63,7 +63,13 @@ except ImportError:
 # Request body size limits (aligned with frontend BFF)
 MAX_CHAT_BODY_BYTES = 512 * 1024   # 512KB for POST /chat/grocery
 MAX_PROFILE_BODY_BYTES = 64 * 1024  # 64KB for POST /profile (aligned with BFF)
-_BODY_LIMIT_BY_PATH = {"/chat/grocery": MAX_CHAT_BODY_BYTES, "/profile": MAX_PROFILE_BODY_BYTES}
+MAX_EVALUATE_BODY_BYTES = 512 * 1024
+_BODY_LIMIT_BY_PATH = {
+    "/chat/grocery": MAX_CHAT_BODY_BYTES,
+    "/profile": MAX_PROFILE_BODY_BYTES,
+    "/api/v1/evaluate-product": MAX_EVALUATE_BODY_BYTES,
+    "/api/v1/evaluate-compliance": MAX_EVALUATE_BODY_BYTES,
+}
 
 
 class BodySizeLimitMiddleware(BaseHTTPMiddleware):
@@ -81,6 +87,26 @@ class BodySizeLimitMiddleware(BaseHTTPMiddleware):
                 except ValueError:
                     pass
         return await call_next(request)
+
+
+class RateLimitHeadersMiddleware(BaseHTTPMiddleware):
+    """Expose a stable rate-limit header on every response (SlowAPI may omit it on 200)."""
+
+    async def dispatch(self, request: Request, call_next):
+        response = await call_next(request)
+        keys = {k.lower() for k in response.headers}
+        if any("ratelimit" in k or "retry-after" in k for k in keys):
+            return response
+        path = request.url.path
+        if path.startswith("/api/v1"):
+            from core.security.rate_limit import RATE_LIMIT_API_V1_DEFAULT
+
+            response.headers["X-RateLimit-Limit"] = RATE_LIMIT_API_V1_DEFAULT
+        elif path == "/chat/grocery":
+            from core.security.rate_limit import RATE_LIMIT_CHAT_ANON
+
+            response.headers["X-RateLimit-Limit"] = RATE_LIMIT_CHAT_ANON
+        return response
 
 
 # --- Eagerly import core modules (avoid repeated lazy imports) ---
@@ -167,6 +193,7 @@ if limiter is not None:
     app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
     app.add_middleware(SlowAPIMiddleware)
 
+app.add_middleware(RateLimitHeadersMiddleware)
 app.add_middleware(BodySizeLimitMiddleware)
 
 # CORS: use CORS_ORIGINS env (comma-separated) when set; otherwise allow all (dev).
@@ -335,7 +362,12 @@ def root():
 
 @app.get("/health")
 def health_check():
-    """Health for Docker/K8s. ingredient_audit_emitter: true means chat emits INGREDIENT_AUDIT blocks."""
+    """Health for Docker/K8s. ingredient_audit_emitter: true means chat emits INGREDIENT_AUDIT blocks.
+
+    Also exposes deploy fingerprint (git_sha, schema version, engine, ENVIRONMENT)
+    so post-deploy smoke can assert the running host matches the merge tip.
+    """
+    from core.deploy_fingerprint import fingerprint
     from core.knowledge.ike2.audit_health import live_audit_health
 
     body = {
@@ -343,6 +375,7 @@ def health_check():
         "service": "IngreSure AI Scanner",
         "ingredient_audit_emitter": True,
     }
+    body.update(fingerprint())
     body.update(live_audit_health())
     return body
 
@@ -550,6 +583,48 @@ async def chat_grocery(request: Request, body: ChatRequest):
             user_id = stream_user_id
             profile = get_or_create_profile(user_id)
 
+            from core.emergency import detect_emergency, guidance as emergency_guidance
+            from core.pending_restrictions import (
+                PendingRestriction,
+                abandon,
+                apply_confirm,
+                effective_restriction_ids,
+                get_pending,
+                set_pending,
+            )
+
+            emergency = detect_emergency(query)
+            if emergency:
+                chat_history_meta["intent"] = "EMERGENCY"
+                yield emergency_guidance(emergency) + "\n"
+                yield _profile_json(profile)
+                return
+
+            confirm_kind = apply_confirm(user_id, query)
+            if confirm_kind == "yes":
+                pending = get_pending(user_id)
+                if pending:
+                    updates = {}
+                    if pending.dietary_preference:
+                        updates["dietary_preference"] = pending.dietary_preference
+                    if pending.allergens:
+                        updates["allergens"] = pending.allergens
+                    if updates:
+                        _apply_profile_updates(profile, updates)
+                        save_profile(profile)
+                    abandon(user_id)
+                    yield "Saved on your profile.\n"
+                    yield _profile_json(profile)
+                    return
+            if confirm_kind == "no":
+                yield "Okay, I won't save that restriction.\n"
+                yield _profile_json(profile)
+                return
+            if confirm_kind == "only-today":
+                yield "I'll keep this restriction for this session only; it is not saved.\n"
+                yield _profile_json(profile)
+                return
+
             # 1) /update slash-command
             field_name, values = _parse_update_command(query)
             if field_name and values is not None:
@@ -569,6 +644,31 @@ async def chat_grocery(request: Request, body: ChatRequest):
 
             # 2) Intent detection: rule-based first, LLM fallback
             parsed = detect_intent(query)
+            from core.parsing.restriction_statement import parse_restriction_statement
+
+            restriction_stmt = parse_restriction_statement(query)
+            if restriction_stmt.action == "tighten" or (
+                restriction_stmt.needs_confirm and restriction_stmt.restriction_ids
+            ):
+                set_pending(
+                    user_id,
+                    PendingRestriction(
+                        restriction_ids=list(
+                            restriction_stmt.tighten_ids or restriction_stmt.restriction_ids
+                        ),
+                        dietary_preference=restriction_stmt.dietary_preference,
+                        allergens=list(restriction_stmt.allergens),
+                        persist=False,
+                        confirm_message=restriction_stmt.confirm_message,
+                    ),
+                )
+                parsed.profile_updates = {}
+            if restriction_stmt.confirm_message and restriction_stmt.action in {
+                "confirm",
+                "unsupported",
+                "tighten",
+            }:
+                yield restriction_stmt.confirm_message + "\n\n"
 
             # Merge client-sent profile only when not a simple greeting (keeps server-authoritative for "hi")
             if parsed.intent != "GREETING" and getattr(body, "userProfile", None) and isinstance(body.userProfile, dict):
@@ -588,7 +688,12 @@ async def chat_grocery(request: Request, body: ChatRequest):
             )
 
             # LLM fallback for ambiguous queries
-            if parsed.intent == "GENERAL_QUESTION" and not parsed.has_ingredients and not parsed.has_profile_update:
+            if (
+                parsed.intent == "GENERAL_QUESTION"
+                and not parsed.has_ingredients
+                and not parsed.has_profile_update
+                and restriction_stmt.action not in {"tighten", "confirm", "unsupported"}
+            ):
                 llm_data = llm_extract_intent(query)
                 if llm_data:
                     logger.info("INTENT_DETECT_LLM_FALLBACK intent=%s", llm_data["intent"])
@@ -617,7 +722,11 @@ async def chat_grocery(request: Request, body: ChatRequest):
             # 4) Apply profile updates from natural language
             profile_was_updated = False
             updated_fields = {}
-            if parsed.has_profile_update:
+            if parsed.has_profile_update and restriction_stmt.action not in {
+                "tighten",
+                "confirm",
+                "unsupported",
+            }:
                 updated_fields = _apply_profile_updates(profile, parsed.profile_updates)
                 if updated_fields:
                     save_profile(profile)
@@ -651,6 +760,21 @@ async def chat_grocery(request: Request, body: ChatRequest):
             compound_map = prepared.compound_map
             derived_from_map = prepared.derived_from_map
 
+            if prepared.block_kind == "multi_product":
+                yield (
+                    "That looks like more than one product. "
+                    "Paste one ingredient list at a time so I don't combine them into one verdict.\n"
+                )
+                yield _profile_json(profile)
+                return
+            if prepared.block_kind == "product_name" and not prepared.eval_names:
+                yield (
+                    "I need the ingredient list from the pack, not just the product name. "
+                    "I will not mark this SAFE from the name alone.\n"
+                )
+                yield _profile_json(profile)
+                return
+
             if profile.is_empty() and not eval_ingredients:
                 yield f"{PROFILE_REQUIRED_TAG}\n\n"
                 msg = llm_compose_general(query, profile)
@@ -665,11 +789,33 @@ async def chat_grocery(request: Request, body: ChatRequest):
                 return
 
             # 8) Prepared atoms (decomposer or compound expansion)
+            restriction_ids = effective_restriction_ids(
+                user_id, user_profile_model_to_restriction_ids(profile)
+            )
+            if not restriction_ids:
+                yield f"{PROFILE_REQUIRED_TAG}\n\n"
+                yield (
+                    "I need to know which restrictions apply before I can say SAFE or NOT SAFE. "
+                    "Tell me your diet or allergies.\n"
+                )
+                if eval_ingredients:
+                    yield "I read: " + ", ".join(eval_ingredients[:20]) + ".\n"
+                yield _profile_json(profile)
+                return
+            from core.parsing.understanding_echo import compose_understanding_echo
+
+            echo = compose_understanding_echo(
+                eval_names=eval_ingredients,
+                unparsed=prepared.unparsed,
+                block_kind=prepared.block_kind,
+                restriction_ids=restriction_ids,
+            )
+            if echo:
+                yield echo + "\n\n"
             # Eager first byte: show progress before compliance run (improves perceived latency)
             yield "Checking ingredients…\n\n"
 
             # 9) Run DETERMINISTIC compliance engine
-            restriction_ids = user_profile_model_to_restriction_ids(profile)
             profile_context = {
                 "dietary_preference": profile.dietary_preference,
                 "allergens": profile.allergens,
@@ -688,6 +834,15 @@ async def chat_grocery(request: Request, body: ChatRequest):
                 prepared_decomposed=prepared.decomposed,
                 raw_label=prepared.label_text,
             )
+            if prepared.block_kind == "product_name" and verdict.status != VerdictStatus.NOT_SAFE:
+                yield (
+                    "I need the ingredient list from the pack, not just the product name. "
+                    "I will not mark this SAFE from the name alone.\n"
+                )
+                yield _profile_json(profile)
+                return
+            if prepared.block_kind == "recipe" and verdict.status == VerdictStatus.SAFE:
+                verdict.status = VerdictStatus.UNCERTAIN
             logger.info(
                 "VERDICT=%s confidence=%.2f triggered=%s ingredients=%s",
                 verdict.status.value, verdict.confidence_score,
@@ -773,9 +928,17 @@ async def chat_grocery(request: Request, body: ChatRequest):
                     chunks.append(piece if isinstance(piece, str) else str(piece))
                     yield piece
             except Exception:
-                completed_status = 500
-                err_code = "stream_error"
-                raise
+                logger.exception("CHAT_STREAM_FAILED")
+                completed_status = 200
+                err_code = "fail_closed_uncertain"
+                from core.degraded import record as record_degraded
+
+                record_degraded("chat_stream_failed", where="chat")
+                fail_closed = (
+                    "I could not finish that check. Treat this as UNCERTAIN, not safe.\n"
+                )
+                chunks.append(fail_closed)
+                yield fail_closed
             finally:
                 completed_at = datetime.now(timezone.utc)
                 raw_out = "".join(chunks)
@@ -801,14 +964,26 @@ async def chat_grocery(request: Request, body: ChatRequest):
             completed_at=completed_at,
             user_id=stream_user_id,
             route="/chat/grocery",
-            status=500,
+            status=200,
             error_code=type(e).__name__,
             user_input=query,
             output_text=None,
             metadata=dict(chat_history_meta) if chat_history_meta else None,
             profile_update=None,
         )
-        raise HTTPException(status_code=500, detail=_500_detail(e))
+        logger.exception("CHAT_GROCERY_FAILED")
+        from core.degraded import record as record_degraded
+
+        record_degraded("chat_grocery_failed", where="chat")
+        _ = e
+        return StreamingResponse(
+            iter(
+                [
+                    "I could not finish that check. Treat this as UNCERTAIN, not safe.\n"
+                ]
+            ),
+            media_type="text/plain",
+        )
 
 
 if __name__ == "__main__":

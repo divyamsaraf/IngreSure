@@ -11,6 +11,7 @@ Locked seeding behavior:
 Invalidation is process-restart only -- no TTL, no distributed cache (§9.5
 invariant 4).
 """
+import threading
 from dataclasses import dataclass
 from typing import Literal, Optional
 
@@ -33,6 +34,7 @@ class ResolvedIngredient:
 
 _CACHE: dict[str, ResolvedIngredient] = {}
 _SEEDED = False
+_LOCK = threading.Lock()
 
 # Higher knowledge_state replaces an earlier lower-trust row on the same
 # normalized key. Equal rank keeps the first writer.
@@ -53,18 +55,21 @@ def cache_key(atom: str, region: Optional[str]) -> str:
 
 
 def get(key: str) -> Optional[ResolvedIngredient]:
-    return _CACHE.get(key)
+    with _LOCK:
+        return _CACHE.get(key)
 
 
 def put(key: str, resolved: ResolvedIngredient) -> None:
-    _CACHE[key] = resolved
+    with _LOCK:
+        _CACHE[key] = resolved
 
 
 def clear() -> None:
     """Test-only: drop all cached entries and force a reseed on next resolve()."""
     global _SEEDED
-    _CACHE.clear()
-    _SEEDED = False
+    with _LOCK:
+        _CACHE.clear()
+        _SEEDED = False
 
 
 def _rank(fact) -> int:
@@ -116,9 +121,9 @@ def seed_tier1() -> None:
     omitted it.
     """
     global _SEEDED
-    if _SEEDED:
-        return
-    _SEEDED = True
+    with _LOCK:
+        if _SEEDED:
+            return
 
     from core.evaluation.resolution_trust import is_trusted_for_compliance
     from core.knowledge.ike2 import truth_anchor
@@ -128,8 +133,8 @@ def seed_tier1() -> None:
         key = cache_key(alias, None)
         chosen[key] = _prefer_fact(chosen.get(key), fact)
 
-    for key, fact in chosen.items():
-        _CACHE[key] = ResolvedIngredient(
+    prepared = {
+        key: ResolvedIngredient(
             group=fact,
             source="truth_anchor",
             confidence_band="exact",
@@ -137,3 +142,10 @@ def seed_tier1() -> None:
             resolution_layer="L1_truth_anchor",
             status="resolved",
         )
+        for key, fact in chosen.items()
+    }
+    with _LOCK:
+        if _SEEDED:
+            return
+        _CACHE.update(prepared)
+        _SEEDED = True
