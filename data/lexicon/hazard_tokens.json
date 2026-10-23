@@ -1,0 +1,1541 @@
+{
+  "version": "1",
+  "policy": "positives_only_derive_tokens",
+  "needs_native_review": true,
+  "languages": [
+    "fr",
+    "de",
+    "es",
+    "it",
+    "nl",
+    "pl",
+    "pt",
+    "ar",
+    "hi"
+  ],
+  "classes": {
+    "dairy": {
+      "flag": "dairy_source",
+      "restriction_id": "dairy_free",
+      "tokens": [
+        {
+          "surface": "lait",
+          "lang": "fr",
+          "variants": [
+            "laits",
+            "beurre",
+            "fromage",
+            "crème",
+            "creme",
+            "yaourt",
+            "yoghourt"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "milch",
+          "lang": "de",
+          "variants": [
+            "milchpulver",
+            "butter",
+            "käse",
+            "kaese",
+            "sahne",
+            "joghurt"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "leche",
+          "lang": "es",
+          "variants": [
+            "leches",
+            "mantequilla",
+            "queso",
+            "nata",
+            "yogur"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "latte",
+          "lang": "it",
+          "variants": [
+            "latticini",
+            "burro",
+            "formaggio",
+            "panna",
+            "yogurt"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "melk",
+          "lang": "nl",
+          "variants": [
+            "boter",
+            "kaas",
+            "room",
+            "yoghurt"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "mleko",
+          "lang": "pl",
+          "variants": [
+            "mleka",
+            "masło",
+            "maslo",
+            "ser",
+            "śmietana",
+            "smietana"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "leite",
+          "lang": "pt",
+          "variants": [
+            "leites",
+            "manteiga",
+            "queijo",
+            "nata",
+            "iogurte"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "حليب",
+          "lang": "ar",
+          "variants": [
+            "ألبان",
+            "لبن",
+            "زبدة",
+            "جبن",
+            "جبنة"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "doodh",
+          "lang": "hi",
+          "variants": [
+            "dudh",
+            "दूध",
+            "ghee",
+            "paneer",
+            "dahi",
+            "makhan"
+          ],
+          "needs_native_review": true
+        }
+      ]
+    },
+    "egg": {
+      "flag": "egg_source",
+      "restriction_id": "egg_free",
+      "tokens": [
+        {
+          "surface": "œuf",
+          "lang": "fr",
+          "variants": [
+            "oeuf",
+            "oeufs",
+            "œufs",
+            "blanc d'oeuf",
+            "jaune d'oeuf"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "ei",
+          "lang": "de",
+          "variants": [
+            "eier",
+            "eigelb",
+            "eiweiß",
+            "eiweiss"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "huevo",
+          "lang": "es",
+          "variants": [
+            "huevos",
+            "clara de huevo",
+            "yema"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "uovo",
+          "lang": "it",
+          "variants": [
+            "uova",
+            "albume",
+            "tuorlo"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "ei",
+          "lang": "nl",
+          "variants": [
+            "eieren",
+            "eigeel",
+            "eiwit"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "jajko",
+          "lang": "pl",
+          "variants": [
+            "jaja",
+            "jajka",
+            "żółtko",
+            "zolteko",
+            "białko"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "ovo",
+          "lang": "pt",
+          "variants": [
+            "ovos",
+            "clara de ovo",
+            "gema"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "بيض",
+          "lang": "ar",
+          "variants": [
+            "بيضة",
+            "صفار",
+            "بياض البيض"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "anda",
+          "lang": "hi",
+          "variants": [
+            "ande",
+            "अंडा",
+            "अण्डा",
+            "andé"
+          ],
+          "needs_native_review": true
+        }
+      ]
+    },
+    "gluten": {
+      "flag": "gluten_source",
+      "restriction_id": "gluten_free",
+      "tokens": [
+        {
+          "surface": "blé",
+          "lang": "fr",
+          "variants": [
+            "ble",
+            "farine de blé",
+            "seigle",
+            "orge",
+            "avoine",
+            "épeautre",
+            "epeautre"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "weizen",
+          "lang": "de",
+          "variants": [
+            "weizenmehl",
+            "roggen",
+            "gerste",
+            "hafer",
+            "dinkel",
+            "gluten"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "trigo",
+          "lang": "es",
+          "variants": [
+            "centeno",
+            "cebada",
+            "avena",
+            "espelta",
+            "harina de trigo"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "frumento",
+          "lang": "it",
+          "variants": [
+            "grano",
+            "segale",
+            "orzo",
+            "avena",
+            "farro",
+            "farina di grano"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "tarwe",
+          "lang": "nl",
+          "variants": [
+            "rogge",
+            "gerst",
+            "haver",
+            "spelt",
+            "tarwemeel"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "pszenica",
+          "lang": "pl",
+          "variants": [
+            "żyto",
+            "zyto",
+            "jęczmień",
+            "jeczmien",
+            "owies",
+            "orkisz"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "trigo",
+          "lang": "pt",
+          "variants": [
+            "centeio",
+            "cevada",
+            "aveia",
+            "espelta",
+            "farinha de trigo"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "قمح",
+          "lang": "ar",
+          "variants": [
+            "حنطة",
+            "شعير",
+            "شوفان",
+            "جاودار",
+            "دقيق القمح"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "gehu",
+          "lang": "hi",
+          "variants": [
+            "gehun",
+            "गेहूं",
+            "atta",
+            "maida",
+            "jau",
+            "jai",
+            "wheat"
+          ],
+          "needs_native_review": true
+        }
+      ]
+    },
+    "peanut": {
+      "flag": "peanut_source",
+      "restriction_id": "peanut_allergy",
+      "tokens": [
+        {
+          "surface": "arachide",
+          "lang": "fr",
+          "variants": [
+            "arachides",
+            "cacahuète",
+            "cacahuete",
+            "cacahuètes"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "erdnuss",
+          "lang": "de",
+          "variants": [
+            "erdnüsse",
+            "erdnusse",
+            "erdnussöl"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "cacahuete",
+          "lang": "es",
+          "variants": [
+            "cacahuete",
+            "cacahuetes",
+            "maní",
+            "mani"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "arachide",
+          "lang": "it",
+          "variants": [
+            "arachidi"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "pinda",
+          "lang": "nl",
+          "variants": [
+            "pindas",
+            "aardnoot",
+            "aardnoten"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "orzech ziemny",
+          "lang": "pl",
+          "variants": [
+            "orzeszki ziemne",
+            "arachid",
+            "orzech arachidowy"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "amendoim",
+          "lang": "pt",
+          "variants": [
+            "amendoins"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "فول سوداني",
+          "lang": "ar",
+          "variants": [
+            "فستق عبيد",
+            "سوداني"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "moongfali",
+          "lang": "hi",
+          "variants": [
+            "mungfali",
+            "मूंगफली",
+            "groundnut",
+            "shengdana"
+          ],
+          "needs_native_review": true
+        }
+      ]
+    },
+    "tree_nut": {
+      "flag": "tree_nut_source",
+      "restriction_id": "tree_nut_allergy",
+      "tokens": [
+        {
+          "surface": "amande",
+          "lang": "fr",
+          "variants": [
+            "amandes",
+            "noisette",
+            "noisettes",
+            "noix",
+            "fruits à coque"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "mandel",
+          "lang": "de",
+          "variants": [
+            "mandeln",
+            "haselnuss",
+            "walnuss",
+            "schalenfrüchte"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "almendra",
+          "lang": "es",
+          "variants": [
+            "almendras",
+            "avellana",
+            "nuez",
+            "frutos secos"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "mandorla",
+          "lang": "it",
+          "variants": [
+            "mandorle",
+            "nocciola",
+            "noce",
+            "frutta a guscio"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "amandel",
+          "lang": "nl",
+          "variants": [
+            "amandelen",
+            "hazelnoot",
+            "walnoot",
+            "noten"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "migdał",
+          "lang": "pl",
+          "variants": [
+            "migdal",
+            "orzech laskowy",
+            "orzech włoski",
+            "orzechy"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "amêndoa",
+          "lang": "pt",
+          "variants": [
+            "amendoa",
+            "avelã",
+            "avela",
+            "noz",
+            "frutos de casca rija"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "لوز",
+          "lang": "ar",
+          "variants": [
+            "بندق",
+            "جوز",
+            "مكسرات"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "badam",
+          "lang": "hi",
+          "variants": [
+            "बादाम",
+            "kaju",
+            "pista",
+            "akhrot",
+            "काजू"
+          ],
+          "needs_native_review": true
+        }
+      ]
+    },
+    "soy": {
+      "flag": "soy_source",
+      "restriction_id": "soy_allergy",
+      "tokens": [
+        {
+          "surface": "soja",
+          "lang": "fr",
+          "variants": [
+            "soya",
+            "lécithine de soja",
+            "lecithine de soja"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "soja",
+          "lang": "de",
+          "variants": [
+            "sojasoße",
+            "sojalecithin"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "soja",
+          "lang": "es",
+          "variants": [
+            "soya",
+            "lecitina de soja"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "soia",
+          "lang": "it",
+          "variants": [
+            "lecitina di soia"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "soja",
+          "lang": "nl",
+          "variants": [
+            "sojalecithine"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "soja",
+          "lang": "pl",
+          "variants": [
+            "lecytyna sojowa"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "soja",
+          "lang": "pt",
+          "variants": [
+            "lecitina de soja"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "صويا",
+          "lang": "ar",
+          "variants": [
+            "فول الصويا",
+            "ليسيثين الصويا"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "soya",
+          "lang": "hi",
+          "variants": [
+            "soyabean",
+            "सोया",
+            "soybean"
+          ],
+          "needs_native_review": true
+        }
+      ]
+    },
+    "sesame": {
+      "flag": "sesame_source",
+      "restriction_id": "sesame_allergy",
+      "tokens": [
+        {
+          "surface": "sésame",
+          "lang": "fr",
+          "variants": [
+            "sesame",
+            "tahini",
+            "graines de sésame"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "sesam",
+          "lang": "de",
+          "variants": [
+            "sesamsamen",
+            "tahina"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "sésamo",
+          "lang": "es",
+          "variants": [
+            "sesamo",
+            "ajonjolí",
+            "ajonjoli"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "sesamo",
+          "lang": "it",
+          "variants": [
+            "semi di sesamo",
+            "tahina"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "sesam",
+          "lang": "nl",
+          "variants": [
+            "sesamzaad",
+            "tahin"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "sezam",
+          "lang": "pl",
+          "variants": [
+            "sezamowy",
+            "tahini"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "sésamo",
+          "lang": "pt",
+          "variants": [
+            "sesamo",
+            "gergelim"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "سمسم",
+          "lang": "ar",
+          "variants": [
+            "طحينة",
+            "بذور السمسم"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "til",
+          "lang": "hi",
+          "variants": [
+            "तिल",
+            "sesame",
+            "tahini"
+          ],
+          "needs_native_review": true
+        }
+      ]
+    },
+    "fish": {
+      "flag": "fish_source",
+      "restriction_id": "fish_allergy",
+      "tokens": [
+        {
+          "surface": "poisson",
+          "lang": "fr",
+          "variants": [
+            "poissons",
+            "anchois",
+            "huile de poisson"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "fisch",
+          "lang": "de",
+          "variants": [
+            "fische",
+            "sardine",
+            "fischöl"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "pescado",
+          "lang": "es",
+          "variants": [
+            "pescados",
+            "anchoa",
+            "aceite de pescado"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "pesce",
+          "lang": "it",
+          "variants": [
+            "pesci",
+            "acciuga",
+            "olio di pesce"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "vis",
+          "lang": "nl",
+          "variants": [
+            "vissen",
+            "ansjovis",
+            "visolie"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "ryba",
+          "lang": "pl",
+          "variants": [
+            "ryby",
+            "anchois",
+            "olej rybi"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "peixe",
+          "lang": "pt",
+          "variants": [
+            "peixes",
+            "anchova",
+            "óleo de peixe"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "سمك",
+          "lang": "ar",
+          "variants": [
+            "أسماك",
+            "أنشوجة"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "machli",
+          "lang": "hi",
+          "variants": [
+            "machhli",
+            "मछली",
+            "fish"
+          ],
+          "needs_native_review": true
+        }
+      ]
+    },
+    "crustacean": {
+      "flag": "shellfish_source",
+      "restriction_id": "shellfish_allergy",
+      "tokens": [
+        {
+          "surface": "crustacés",
+          "lang": "fr",
+          "variants": [
+            "crustaces",
+            "crevette",
+            "crevettes"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "krebstiere",
+          "lang": "de",
+          "variants": [
+            "krebs",
+            "garnele",
+            "garnelen"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "crustáceos",
+          "lang": "es",
+          "variants": [
+            "crustaceos",
+            "gamba",
+            "camarón",
+            "camaron"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "crostacei",
+          "lang": "it",
+          "variants": [
+            "gambero",
+            "gamberi"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "schaaldieren",
+          "lang": "nl",
+          "variants": [
+            "garnaal",
+            "garnalen"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "skorupiaki",
+          "lang": "pl",
+          "variants": [
+            "krewetka",
+            "krewetki"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "crustáceos",
+          "lang": "pt",
+          "variants": [
+            "crustaceos",
+            "camarão",
+            "camarao"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "قشريات",
+          "lang": "ar",
+          "variants": [
+            "ربيان",
+            "جمبري",
+            "روبيان"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "jheenga",
+          "lang": "hi",
+          "variants": [
+            "jhinga",
+            "झींगा",
+            "prawn"
+          ],
+          "needs_native_review": true
+        }
+      ]
+    },
+    "mollusc": {
+      "flag": "shellfish_source",
+      "restriction_id": "shellfish_allergy",
+      "tokens": [
+        {
+          "surface": "mollusques",
+          "lang": "fr",
+          "variants": [
+            "mollusque",
+            "moule",
+            "moules"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "weichtiere",
+          "lang": "de",
+          "variants": [
+            "weichtier",
+            "muschel",
+            "muscheln"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "moluscos",
+          "lang": "es",
+          "variants": [
+            "molusco",
+            "mejillón",
+            "mejillon"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "molluschi",
+          "lang": "it",
+          "variants": [
+            "mollusco",
+            "cozza",
+            "cozze"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "weekdieren",
+          "lang": "nl",
+          "variants": [
+            "weekdier",
+            "mossel",
+            "mosselen"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "mięczaki",
+          "lang": "pl",
+          "variants": [
+            "mieczaki",
+            "małż",
+            "malz"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "moluscos",
+          "lang": "pt",
+          "variants": [
+            "molusco",
+            "mexilhão",
+            "mexilhao"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "رخويات",
+          "lang": "ar",
+          "variants": [
+            "محار",
+            "بلح البحر"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "mollusc",
+          "lang": "hi",
+          "variants": [
+            "molluscs",
+            "sipi"
+          ],
+          "needs_native_review": true
+        }
+      ]
+    },
+    "celery": {
+      "flag": "celery_source",
+      "restriction_id": "celery_allergy",
+      "tokens": [
+        {
+          "surface": "céleri",
+          "lang": "fr",
+          "variants": [
+            "celeri",
+            "céleris",
+            "céleri-rave"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "sellerie",
+          "lang": "de",
+          "variants": [
+            "stangensellerie",
+            "knollensellerie"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "apio",
+          "lang": "es",
+          "variants": [
+            "apios"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "sedano",
+          "lang": "it",
+          "variants": [
+            "sedani"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "selderij",
+          "lang": "nl",
+          "variants": [
+            "bleekselderij",
+            "knolselderij"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "seler",
+          "lang": "pl",
+          "variants": [
+            "selery",
+            "seler naciowy"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "aipo",
+          "lang": "pt",
+          "variants": [
+            "salsão",
+            "salsao"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "كرفس",
+          "lang": "ar",
+          "variants": [
+            "كرفس نيئ"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "ajmod",
+          "lang": "hi",
+          "variants": [
+            "celery",
+            "अजमोद"
+          ],
+          "needs_native_review": true
+        }
+      ]
+    },
+    "mustard": {
+      "flag": "mustard_source",
+      "restriction_id": "mustard_allergy",
+      "tokens": [
+        {
+          "surface": "moutarde",
+          "lang": "fr",
+          "variants": [
+            "moutardes"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "senf",
+          "lang": "de",
+          "variants": [
+            "senfkörner",
+            "senfkorner"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "mostaza",
+          "lang": "es",
+          "variants": [
+            "mostazas"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "senape",
+          "lang": "it",
+          "variants": [
+            "senapi"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "mosterd",
+          "lang": "nl",
+          "variants": [
+            "mosterds"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "gorczyca",
+          "lang": "pl",
+          "variants": [
+            "musztarda"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "mostarda",
+          "lang": "pt",
+          "variants": [
+            "mostardas"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "خردل",
+          "lang": "ar",
+          "variants": [
+            "مستردة"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "rai",
+          "lang": "hi",
+          "variants": [
+            "sarson",
+            "सरसों",
+            "mustard"
+          ],
+          "needs_native_review": true
+        }
+      ]
+    },
+    "lupin": {
+      "flag": "lupin_source",
+      "restriction_id": "lupin_allergy",
+      "tokens": [
+        {
+          "surface": "lupin",
+          "lang": "fr",
+          "variants": [
+            "lupins"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "lupine",
+          "lang": "de",
+          "variants": [
+            "lupinen"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "altramuz",
+          "lang": "es",
+          "variants": [
+            "altramuces",
+            "lupino"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "lupino",
+          "lang": "it",
+          "variants": [
+            "lupini"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "lupine",
+          "lang": "nl",
+          "variants": [
+            "lupinen"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "łubin",
+          "lang": "pl",
+          "variants": [
+            "lubin",
+            "łubiny"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "tremoço",
+          "lang": "pt",
+          "variants": [
+            "tremoco",
+            "tremoços",
+            "lupino"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "ترمس",
+          "lang": "ar",
+          "variants": [
+            "الترمس"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "lupin",
+          "lang": "hi",
+          "variants": [
+            "lupine",
+            "ल्यूपिन"
+          ],
+          "needs_native_review": true
+        }
+      ]
+    },
+    "sulphite": {
+      "flag": "sulphite_source",
+      "restriction_id": "sulfite_sensitive",
+      "tokens": [
+        {
+          "surface": "sulfites",
+          "lang": "fr",
+          "variants": [
+            "sulfite",
+            "anhydride sulfureux"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "sulfite",
+          "lang": "de",
+          "variants": [
+            "sulfite",
+            "schwefeldioxid"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "sulfitos",
+          "lang": "es",
+          "variants": [
+            "sulfito",
+            "dióxido de azufre",
+            "dioxido de azufre"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "solfiti",
+          "lang": "it",
+          "variants": [
+            "solfito",
+            "anidride solforosa"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "sulfieten",
+          "lang": "nl",
+          "variants": [
+            "sulfiet",
+            "zwaveldioxide"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "siarczyny",
+          "lang": "pl",
+          "variants": [
+            "siarczyn",
+            "dwutlenek siarki"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "sulfitos",
+          "lang": "pt",
+          "variants": [
+            "sulfito",
+            "dióxido de enxofre",
+            "dioxido de enxofre"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "كبريتيت",
+          "lang": "ar",
+          "variants": [
+            "كبريتيات",
+            "ثاني أكسيد الكبريت"
+          ],
+          "needs_native_review": true
+        },
+        {
+          "surface": "sulphite",
+          "lang": "hi",
+          "variants": [
+            "sulfite",
+            "सल्फाइट"
+          ],
+          "needs_native_review": true
+        }
+      ]
+    }
+  },
+  "false_friends": [
+    {
+      "surface": "beurre de cacao",
+      "lang": "fr",
+      "would_false_trigger": "dairy",
+      "needs_native_review": true
+    },
+    {
+      "surface": "lait de coco",
+      "lang": "fr",
+      "would_false_trigger": "dairy",
+      "needs_native_review": true
+    },
+    {
+      "surface": "lait d'amande",
+      "lang": "fr",
+      "would_false_trigger": "dairy",
+      "needs_native_review": true
+    },
+    {
+      "surface": "kakaobutter",
+      "lang": "de",
+      "would_false_trigger": "dairy",
+      "needs_native_review": true
+    },
+    {
+      "surface": "kokosmilch",
+      "lang": "de",
+      "would_false_trigger": "dairy",
+      "needs_native_review": true
+    },
+    {
+      "surface": "mandelmilch",
+      "lang": "de",
+      "would_false_trigger": "dairy",
+      "needs_native_review": true
+    },
+    {
+      "surface": "leche de almendra",
+      "lang": "es",
+      "would_false_trigger": "dairy",
+      "needs_native_review": true
+    },
+    {
+      "surface": "leche de coco",
+      "lang": "es",
+      "would_false_trigger": "dairy",
+      "needs_native_review": true
+    },
+    {
+      "surface": "manteca de cacao",
+      "lang": "es",
+      "would_false_trigger": "dairy",
+      "needs_native_review": true
+    },
+    {
+      "surface": "burro di cacao",
+      "lang": "it",
+      "would_false_trigger": "dairy",
+      "needs_native_review": true
+    },
+    {
+      "surface": "latte di cocco",
+      "lang": "it",
+      "would_false_trigger": "dairy",
+      "needs_native_review": true
+    },
+    {
+      "surface": "kokosmelk",
+      "lang": "nl",
+      "would_false_trigger": "dairy",
+      "needs_native_review": true
+    },
+    {
+      "surface": "amandelmelk",
+      "lang": "nl",
+      "would_false_trigger": "dairy",
+      "needs_native_review": true
+    },
+    {
+      "surface": "mleko kokosowe",
+      "lang": "pl",
+      "would_false_trigger": "dairy",
+      "needs_native_review": true
+    },
+    {
+      "surface": "masło kakaowe",
+      "lang": "pl",
+      "would_false_trigger": "dairy",
+      "needs_native_review": true
+    },
+    {
+      "surface": "leite de coco",
+      "lang": "pt",
+      "would_false_trigger": "dairy",
+      "needs_native_review": true
+    },
+    {
+      "surface": "manteiga de cacau",
+      "lang": "pt",
+      "would_false_trigger": "dairy",
+      "needs_native_review": true
+    },
+    {
+      "surface": "حليب جوز الهند",
+      "lang": "ar",
+      "would_false_trigger": "dairy",
+      "needs_native_review": true
+    },
+    {
+      "surface": "زبدة الكاكاو",
+      "lang": "ar",
+      "would_false_trigger": "dairy",
+      "needs_native_review": true
+    },
+    {
+      "surface": "nariyal doodh",
+      "lang": "hi",
+      "would_false_trigger": "dairy",
+      "needs_native_review": true
+    },
+    {
+      "surface": "badam doodh",
+      "lang": "hi",
+      "would_false_trigger": "dairy",
+      "needs_native_review": true
+    }
+  ],
+  "negation_words": [
+    {
+      "surface": "sans",
+      "lang": "fr",
+      "needs_native_review": true
+    },
+    {
+      "surface": "ohne",
+      "lang": "de",
+      "needs_native_review": true
+    },
+    {
+      "surface": "sin",
+      "lang": "es",
+      "needs_native_review": true
+    },
+    {
+      "surface": "senza",
+      "lang": "it",
+      "needs_native_review": true
+    },
+    {
+      "surface": "zonder",
+      "lang": "nl",
+      "needs_native_review": true
+    },
+    {
+      "surface": "bez",
+      "lang": "pl",
+      "needs_native_review": true
+    },
+    {
+      "surface": "sem",
+      "lang": "pt",
+      "needs_native_review": true
+    },
+    {
+      "surface": "بدون",
+      "lang": "ar",
+      "needs_native_review": true
+    },
+    {
+      "surface": "خالي من",
+      "lang": "ar",
+      "needs_native_review": true
+    },
+    {
+      "surface": "bina",
+      "lang": "hi",
+      "needs_native_review": true
+    },
+    {
+      "surface": "bin",
+      "lang": "hi",
+      "needs_native_review": true
+    }
+  ]
+}

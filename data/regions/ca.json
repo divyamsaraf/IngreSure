@@ -1,0 +1,99 @@
+{
+  "region": "CA",
+  "name": "Canada",
+  "verified": true,
+  "allergens": [
+    {
+      "id": "peanut",
+      "flag": "peanut_source",
+      "restriction_id": "peanut_allergy",
+      "derive_token": "peanut"
+    },
+    {
+      "id": "tree_nut",
+      "flag": "tree_nut_source",
+      "restriction_id": "tree_nut_allergy",
+      "derive_token": "almond"
+    },
+    {
+      "id": "dairy",
+      "flag": "dairy_source",
+      "restriction_id": "dairy_free",
+      "derive_token": "milk"
+    },
+    {
+      "id": "egg",
+      "flag": "egg_source",
+      "restriction_id": "egg_free",
+      "derive_token": "egg"
+    },
+    {
+      "id": "fish",
+      "flag": "fish_source",
+      "restriction_id": "fish_allergy",
+      "derive_token": "fish"
+    },
+    {
+      "id": "crustacean",
+      "flag": "shellfish_source",
+      "restriction_id": "shellfish_allergy",
+      "derive_token": "shrimp"
+    },
+    {
+      "id": "mollusc",
+      "flag": "shellfish_source",
+      "restriction_id": "shellfish_allergy",
+      "derive_token": "mollusc"
+    },
+    {
+      "id": "sesame",
+      "flag": "sesame_source",
+      "restriction_id": "sesame_allergy",
+      "derive_token": "sesame"
+    },
+    {
+      "id": "soy",
+      "flag": "soy_source",
+      "restriction_id": "soy_allergy",
+      "derive_token": "soy"
+    },
+    {
+      "id": "gluten",
+      "flag": "gluten_source",
+      "restriction_id": "gluten_free",
+      "derive_token": "wheat",
+      "cereals": [
+        "wheat",
+        "rye",
+        "barley",
+        "oats",
+        "triticale"
+      ]
+    },
+    {
+      "id": "mustard",
+      "flag": "mustard_source",
+      "restriction_id": "mustard_allergy",
+      "derive_token": "mustard"
+    },
+    {
+      "id": "sulphite",
+      "flag": "sulphite_source",
+      "restriction_id": "sulfite_sensitive",
+      "derive_token": "sulphite",
+      "threshold": "10 ppm as SO2"
+    }
+  ],
+  "numbering": "Common names; some INS/E cross-reference",
+  "emergency_numbers": [
+    "911"
+  ],
+  "sulphite_label_threshold": "10 mg/kg as SO2",
+  "sources": [
+    {
+      "title": "CFIA priority allergens",
+      "url": "https://inspection.canada.ca/en/food-labels/labelling/industry/allergens-and-gluten",
+      "retrieved": "2026-10-21"
+    }
+  ]
+}

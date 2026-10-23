@@ -1,0 +1,36 @@
+{
+  "table": "ike2_alias_disambiguation",
+  "note": "Seed only. Corn is maize in US/AU/NZ/IN; UK pack 'corn' is a known conflict.",
+  "entries": [
+    {
+      "normalized_alias": "corn",
+      "context_region": "US",
+      "canonical_name": "corn"
+    },
+    {
+      "normalized_alias": "corn",
+      "context_region": "AU",
+      "canonical_name": "corn"
+    },
+    {
+      "normalized_alias": "corn",
+      "context_region": "NZ",
+      "canonical_name": "corn"
+    },
+    {
+      "normalized_alias": "corn",
+      "context_region": "IN",
+      "canonical_name": "corn"
+    },
+    {
+      "normalized_alias": "corn",
+      "context_region": "UK",
+      "canonical_name": "maize"
+    },
+    {
+      "normalized_alias": "maize",
+      "context_region": "UK",
+      "canonical_name": "corn"
+    }
+  ]
+}

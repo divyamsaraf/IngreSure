@@ -49,9 +49,25 @@
     { "regional": ["curry leaves", "kadi patta"], "canonical": "curry leaves" },
     { "regional": ["kokum", "garcinia"], "canonical": "kokum" },
     { "regional": ["tadka", "tarka"], "canonical": "tempered spices" },
-    { "regional": ["aubergine"], "canonical": "eggplant" },
-    { "regional": ["courgette"], "canonical": "zucchini" },
+    { "regional": ["aubergine", "aubergines"], "canonical": "eggplant" },
+    { "regional": ["courgette", "courgettes"], "canonical": "zucchini" },
+    { "regional": ["capsicum"], "canonical": "bell pepper" },
+    { "regional": ["brinjal"], "canonical": "eggplant" },
+    { "regional": ["bhindi", "ladyfinger"], "canonical": "okra" },
+    { "regional": ["kumara"], "canonical": "sweet potato" },
+    { "regional": ["cornflour"], "canonical": "cornstarch" },
+    { "regional": ["icing sugar", "icing mixture"], "canonical": "powdered sugar" },
+    { "regional": ["caster sugar", "castor sugar"], "canonical": "superfine sugar" },
+    { "regional": ["beetroot"], "canonical": "beet" },
+    { "regional": ["rocket"], "canonical": "arugula" },
+    { "regional": ["swede", "neeps"], "canonical": "rutabaga" },
+    { "regional": ["spring onion", "spring onions"], "canonical": "scallion" },
+    { "regional": ["sweetcorn", "maize"], "canonical": "corn" },
+    { "regional": ["coriander leaves", "fresh coriander", "dhania leaves"], "canonical": "cilantro" },
+    { "regional": ["self-raising flour"], "canonical": "self-rising flour" },
     { "regional": ["plain flour"], "canonical": "all purpose flour" },
-    { "regional": ["caster sugar", "superfine sugar"], "canonical": "sugar" }
+    { "regional": ["wholemeal flour"], "canonical": "whole wheat flour" },
+    { "regional": ["sultana", "sultanas"], "canonical": "golden raisin" },
+    { "regional": ["prawn"], "canonical": "shrimp" }
   ]
 }

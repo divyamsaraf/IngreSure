@@ -1,0 +1,76 @@
+{
+  "region": "US",
+  "name": "United States",
+  "verified": true,
+  "allergens": [
+    {
+      "id": "dairy",
+      "flag": "dairy_source",
+      "restriction_id": "dairy_free",
+      "derive_token": "milk"
+    },
+    {
+      "id": "egg",
+      "flag": "egg_source",
+      "restriction_id": "egg_free",
+      "derive_token": "egg"
+    },
+    {
+      "id": "fish",
+      "flag": "fish_source",
+      "restriction_id": "fish_allergy",
+      "derive_token": "fish"
+    },
+    {
+      "id": "crustacean",
+      "flag": "shellfish_source",
+      "restriction_id": "shellfish_allergy",
+      "derive_token": "shrimp"
+    },
+    {
+      "id": "tree_nut",
+      "flag": "tree_nut_source",
+      "restriction_id": "tree_nut_allergy",
+      "derive_token": "almond"
+    },
+    {
+      "id": "peanut",
+      "flag": "peanut_source",
+      "restriction_id": "peanut_allergy",
+      "derive_token": "peanut"
+    },
+    {
+      "id": "soy",
+      "flag": "soy_source",
+      "restriction_id": "soy_allergy",
+      "derive_token": "soy"
+    },
+    {
+      "id": "gluten",
+      "flag": "gluten_source",
+      "restriction_id": "gluten_free",
+      "derive_token": "wheat",
+      "cereals": [
+        "wheat"
+      ]
+    },
+    {
+      "id": "sesame",
+      "flag": "sesame_source",
+      "restriction_id": "sesame_allergy",
+      "derive_token": "sesame"
+    }
+  ],
+  "numbering": "FD&C colour names and common additive names (no E-prefix on pack)",
+  "emergency_numbers": [
+    "911"
+  ],
+  "sulphite_label_threshold": "10 ppm as SO2 (labeled, not a major allergen)",
+  "sources": [
+    {
+      "title": "FDA Food Allergen Labeling (FALCPA / FASTER Act)",
+      "url": "https://www.fda.gov/food/nutrition-food-labeling-and-critical-foods/food-allergies",
+      "retrieved": "2026-10-21"
+    }
+  ]
+}

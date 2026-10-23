@@ -1,0 +1,80 @@
+{
+  "region": "AE",
+  "name": "United Arab Emirates",
+  "verified": false,
+  "allergens": [
+    {
+      "id": "dairy",
+      "flag": "dairy_source",
+      "restriction_id": "dairy_free",
+      "derive_token": "milk"
+    },
+    {
+      "id": "egg",
+      "flag": "egg_source",
+      "restriction_id": "egg_free",
+      "derive_token": "egg"
+    },
+    {
+      "id": "fish",
+      "flag": "fish_source",
+      "restriction_id": "fish_allergy",
+      "derive_token": "fish"
+    },
+    {
+      "id": "crustacean",
+      "flag": "shellfish_source",
+      "restriction_id": "shellfish_allergy",
+      "derive_token": "shrimp"
+    },
+    {
+      "id": "tree_nut",
+      "flag": "tree_nut_source",
+      "restriction_id": "tree_nut_allergy",
+      "derive_token": "almond"
+    },
+    {
+      "id": "peanut",
+      "flag": "peanut_source",
+      "restriction_id": "peanut_allergy",
+      "derive_token": "peanut"
+    },
+    {
+      "id": "soy",
+      "flag": "soy_source",
+      "restriction_id": "soy_allergy",
+      "derive_token": "soy"
+    },
+    {
+      "id": "gluten",
+      "flag": "gluten_source",
+      "restriction_id": "gluten_free",
+      "derive_token": "wheat"
+    },
+    {
+      "id": "sesame",
+      "flag": "sesame_source",
+      "restriction_id": "sesame_allergy",
+      "derive_token": "sesame"
+    },
+    {
+      "id": "sulphite",
+      "flag": "sulphite_source",
+      "restriction_id": "sulfite_sensitive",
+      "derive_token": "sulphite"
+    }
+  ],
+  "numbering": "GSO / UAE.S numbering (unverified pack survey)",
+  "emergency_numbers": [
+    "999",
+    "998"
+  ],
+  "sulphite_label_threshold": "10 mg/kg as SO2",
+  "sources": [
+    {
+      "title": "GSO food allergen labelling (needs native/regulatory review)",
+      "url": "https://www.gso.org.sa/",
+      "retrieved": "2026-10-21"
+    }
+  ]
+}

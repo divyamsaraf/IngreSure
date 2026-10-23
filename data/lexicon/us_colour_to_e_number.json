@@ -1,0 +1,85 @@
+{
+  "description": "US FD&C / common colour names to E-numbers. Own-curated.",
+  "mappings": [
+    {
+      "us_name": "yellow 5",
+      "e_number": "E102",
+      "canonical_name": "tartrazine"
+    },
+    {
+      "us_name": "fd&c yellow no. 5",
+      "e_number": "E102",
+      "canonical_name": "tartrazine"
+    },
+    {
+      "us_name": "fd&c yellow 5",
+      "e_number": "E102",
+      "canonical_name": "tartrazine"
+    },
+    {
+      "us_name": "yellow 6",
+      "e_number": "E110",
+      "canonical_name": "sunset yellow fcf"
+    },
+    {
+      "us_name": "fd&c yellow no. 6",
+      "e_number": "E110",
+      "canonical_name": "sunset yellow fcf"
+    },
+    {
+      "us_name": "red 40",
+      "e_number": "E129",
+      "canonical_name": "allura red ac"
+    },
+    {
+      "us_name": "fd&c red no. 40",
+      "e_number": "E129",
+      "canonical_name": "allura red ac"
+    },
+    {
+      "us_name": "red 3",
+      "e_number": "E127",
+      "canonical_name": "erythrosine"
+    },
+    {
+      "us_name": "fd&c red no. 3",
+      "e_number": "E127",
+      "canonical_name": "erythrosine"
+    },
+    {
+      "us_name": "blue 1",
+      "e_number": "E133",
+      "canonical_name": "brilliant blue fcf"
+    },
+    {
+      "us_name": "fd&c blue no. 1",
+      "e_number": "E133",
+      "canonical_name": "brilliant blue fcf"
+    },
+    {
+      "us_name": "blue 2",
+      "e_number": "E132",
+      "canonical_name": "indigotine"
+    },
+    {
+      "us_name": "annatto extract",
+      "e_number": "E160b",
+      "canonical_name": "annatto"
+    },
+    {
+      "us_name": "titanium white",
+      "e_number": "E171",
+      "canonical_name": "titanium dioxide"
+    },
+    {
+      "us_name": "caramel color",
+      "e_number": "E150a",
+      "canonical_name": "caramel"
+    },
+    {
+      "us_name": "provitamin a carotene",
+      "e_number": "E160a",
+      "canonical_name": "beta-carotene"
+    }
+  ]
+}
