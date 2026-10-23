@@ -3821,7 +3821,7 @@
       "alcohol_content": null,
       "aliases": [
         "corn, sweet, white, raw",
-        "corn, sweet, yellow and white kernels, \u00a0fresh, raw",
+        "corn, sweet, yellow and white kernels,  fresh, raw",
         "Corn, sweet, yellow and white kernels, husked, kernels cut off, raw",
         "corn, sweet, yellow, raw",
         "baby corn"
@@ -36156,7 +36156,7 @@
     {
       "alcohol_content": null,
       "aliases": [
-        "A\u00e7ai"
+        "Açai"
       ],
       "animal_origin": false,
       "animal_species": null,
@@ -43888,7 +43888,7 @@
       "alcohol_content": null,
       "aliases": [
         "comte cheese",
-        "comt\u00e9 cheese"
+        "comté cheese"
       ],
       "animal_origin": true,
       "animal_species": null,
@@ -43924,7 +43924,7 @@
       "aliases": [],
       "animal_origin": true,
       "animal_species": null,
-      "canonical_name": "comt\u00e9",
+      "canonical_name": "comté",
       "contains": [],
       "dairy_source": true,
       "derived_from": [],
@@ -60379,7 +60379,7 @@
       "animal_species": null,
       "canonical_name": "cultured buttermilk",
       "contains": [],
-      "dairy_source": false,
+      "dairy_source": true,
       "derived_from": [],
       "egg_source": false,
       "fermented": false,
@@ -60403,7 +60403,8 @@
       "synthetic": false,
       "uncertainty_flags": [],
       "asserted_flags": [
-        "animal_origin"
+        "animal_origin",
+        "dairy_source"
       ]
     },
     {
@@ -61029,7 +61030,7 @@
       "aliases": [],
       "animal_origin": true,
       "animal_species": null,
-      "canonical_name": "filmj\u00f6lk",
+      "canonical_name": "filmjölk",
       "contains": [],
       "dairy_source": true,
       "derived_from": [],
@@ -61135,7 +61136,7 @@
       "animal_species": null,
       "canonical_name": "flavoured milks",
       "contains": [],
-      "dairy_source": false,
+      "dairy_source": true,
       "derived_from": [],
       "egg_source": false,
       "fermented": false,
@@ -61159,7 +61160,8 @@
       "synthetic": false,
       "uncertainty_flags": [],
       "asserted_flags": [
-        "animal_origin"
+        "animal_origin",
+        "dairy_source"
       ]
     },
     {
@@ -62205,7 +62207,7 @@
       "fish_source": false,
       "fungal": false,
       "garlic_source": false,
-      "gluten_source": false,
+      "gluten_source": true,
       "id": "maize_gluten_feed",
       "insect_derived": false,
       "knowledge_state": "AUTO_CLASSIFIED",
@@ -62222,6 +62224,7 @@
       "synthetic": false,
       "uncertainty_flags": [],
       "asserted_flags": [
+        "gluten_source",
         "plant_origin"
       ]
     },
@@ -64197,7 +64200,7 @@
       "fish_source": false,
       "fungal": false,
       "garlic_source": false,
-      "gluten_source": false,
+      "gluten_source": true,
       "id": "sorghum_gluten_feed",
       "insect_derived": false,
       "knowledge_state": "AUTO_CLASSIFIED",
@@ -64214,6 +64217,7 @@
       "synthetic": false,
       "uncertainty_flags": [],
       "asserted_flags": [
+        "gluten_source",
         "plant_origin"
       ]
     },
@@ -64634,7 +64638,7 @@
       "animal_species": null,
       "canonical_name": "traditional buttermilk (churning)",
       "contains": [],
-      "dairy_source": false,
+      "dairy_source": true,
       "derived_from": [],
       "egg_source": false,
       "fermented": false,
@@ -64658,7 +64662,8 @@
       "synthetic": false,
       "uncertainty_flags": [],
       "asserted_flags": [
-        "animal_origin"
+        "animal_origin",
+        "dairy_source"
       ]
     },
     {
@@ -65402,10 +65407,10 @@
     },
     {
       "aliases": [],
-      "canonical_name": "pur\u00e9e",
+      "canonical_name": "purée",
       "coverage_os_managed": true,
       "flags": {},
-      "id": "pur\u00e9e",
+      "id": "purée",
       "role": "culinary_keep",
       "asserted_flags": []
     },
