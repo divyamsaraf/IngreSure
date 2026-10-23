@@ -1,0 +1,22 @@
+# Staging API vhost. Use a DNS name distinct from production
+# (ingresure-api.gleeze.com). Reverse-proxies 127.0.0.1:8002.
+#
+# Paste into /etc/caddy/Caddyfile (keep global default_bind from
+# deploy/Caddyfile.example). Set CADDY_STAGING_API_V1_KEY in the Caddy
+# service environment — not in git.
+
+YOUR_STAGING_API_HOSTNAME {
+	request_body {
+		max_size 512KB
+	}
+
+	@apiv1 path /api/v1/*
+	handle @apiv1 {
+		@bad not header X-API-Key {$CADDY_STAGING_API_V1_KEY}
+		respond @bad "API key required" 401
+		reverse_proxy 127.0.0.1:8002
+	}
+	handle {
+		reverse_proxy 127.0.0.1:8002
+	}
+}
