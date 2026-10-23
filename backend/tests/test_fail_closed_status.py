@@ -1,7 +1,12 @@
 """Unknown / empty audit status must fail closed to UNCERTAIN, never SAFE."""
 from core.knowledge.ike2.verdict import Verdict, to_external
-from core.models.verdict import normalize_external_status, worst_external_status
+from core.models.verdict import _STATUS_RANK, normalize_external_status, worst_external_status
 from scripts.run_input_cases import _verdict_status
+
+
+def test_status_rank_not_safe_beats_uncertain_beats_safe():
+    assert _STATUS_RANK == {"NOT_SAFE": 3, "UNCERTAIN": 2, "SAFE": 1}
+    assert _STATUS_RANK["NOT_SAFE"] > _STATUS_RANK["UNCERTAIN"] > _STATUS_RANK["SAFE"]
 
 
 def test_unknown_status_is_not_safe():
