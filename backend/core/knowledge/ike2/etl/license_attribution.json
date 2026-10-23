@@ -1,0 +1,8 @@
+{
+  "note": "OGL SPDX identifiers were owner-confirmed on main in PR #17 (D10). Attribution strings must stay exact.",
+  "owner_confirmed": true,
+  "attributions": {
+    "OGL-UK-3.0": "Contains public sector information licensed under the Open Government Licence v3.0.",
+    "OGL-Canada-2.0": "Contains information licensed under the Open Government Licence \u2013 Canada."
+  }
+}

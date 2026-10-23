@@ -4,12 +4,9 @@ Layer 2 (scientific) sources used when food APIs miss (e.g. E-numbers, chemical 
 """
 import hashlib
 import logging
-import re
 import threading
 import time
 from typing import Optional
-
-import requests
 
 from core.ontology.ingredient_schema import Ingredient
 from core.external_apis.base import EnrichmentResult
@@ -23,10 +20,6 @@ from core.external_apis.regional_names import get_canonical_queries, set_learned
 from core.config import (
     get_usda_fdc_api_key,
     get_open_food_facts_enabled,
-    get_ollama_url,
-    get_ollama_model,
-    llm_enabled,
-    LLM_ENGLISH_HINT_TIMEOUT,
 )
 
 logger = logging.getLogger(__name__)
@@ -40,37 +33,6 @@ _CACHE_TTL_SECONDS = 3600  # 1 hour
 
 def _cache_key(normalized_query: str) -> str:
     return hashlib.sha256(normalized_query.encode()).hexdigest()[:32]
-
-
-def _resolve_to_english_llm(
-    query: str, timeout: int = LLM_ENGLISH_HINT_TIMEOUT
-) -> Optional[str]:
-    """Optional LLM fallback: ask Ollama for English name when Wikidata missed. Returns one line or None."""
-    if not llm_enabled() or not query or not query.strip() or timeout <= 0:
-        return None
-    try:
-        prompt = (
-            f"What is the common English or scientific name for this food ingredient? "
-            f"Reply with only the name, one line, no explanation. Ingredient: {query.strip()[:100]}"
-        )
-        r = requests.post(
-            get_ollama_url(),
-            json={"model": get_ollama_model(), "prompt": prompt, "stream": False},
-            timeout=timeout,
-        )
-        r.raise_for_status()
-        text = (r.json().get("response") or "").strip()
-        if not text:
-            return None
-        first_line = text.split("\n")[0].strip()
-        if not first_line or len(first_line) > 150:
-            return None
-        if re.search(r"\b(unknown|don't know|cannot|can't|n/a)\b", first_line, re.I):
-            return None
-        return first_line
-    except Exception as e:
-        logger.debug("LLM resolve_to_english failed query=%s: %s", query[:50], e)
-        return None
 
 
 def _evict_expired() -> None:
@@ -117,8 +79,6 @@ def fetch_ingredient_from_apis(
         query_variants = [query]
     if len(query_variants) == 1 and query_variants[0].replace("_", " ").strip().lower() == query.lower():
         english = resolve_to_english_label(query, timeout=min(timeout, 8))
-        if not english:
-            english = _resolve_to_english_llm(query, timeout=LLM_ENGLISH_HINT_TIMEOUT)
         if english and english.strip().lower() != query.lower():
             query_variants = [english.strip(), query]
             set_learned_english(normalized_ingredient_key, english.strip())

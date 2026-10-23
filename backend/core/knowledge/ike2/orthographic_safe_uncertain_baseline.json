@@ -1,30 +1,15 @@
 {
-  "note": "Grandfathered baseline snapshot of SAFE\u2194UNCERTAIN orthographic asymmetries (ratchet, not a written per-pair review).",
+  "note": "Grandfathered baseline snapshot of SAFE\u2194UNCERTAIN orthographic asymmetries (ratchet, not a written per-pair review). Item 39: stale allergy triples that no longer reproduce were dropped.",
   "pairs": [
     [
       "acesulfame k",
       "acesulphame k",
-      "sulfite_sensitive"
-    ],
-    [
-      "acesulfame k",
-      "acesulphame k",
-      "gluten_free"
+      "celery_allergy"
     ],
     [
       "acesulfame k",
       "acesulphame k",
       "dairy_free"
-    ],
-    [
-      "acesulfame k",
-      "acesulphame k",
-      "vegan"
-    ],
-    [
-      "acesulfame k",
-      "acesulphame k",
-      "vegetarian"
     ],
     [
       "acesulfame k",
@@ -39,6 +24,31 @@
     [
       "acesulfame k",
       "acesulphame k",
+      "gluten_free"
+    ],
+    [
+      "acesulfame k",
+      "acesulphame k",
+      "lupin_allergy"
+    ],
+    [
+      "acesulfame k",
+      "acesulphame k",
+      "mustard_allergy"
+    ],
+    [
+      "acesulfame k",
+      "acesulphame k",
+      "peanut_allergy"
+    ],
+    [
+      "acesulfame k",
+      "acesulphame k",
+      "sesame_allergy"
+    ],
+    [
+      "acesulfame k",
+      "acesulphame k",
       "shellfish_allergy"
     ],
     [
@@ -49,27 +59,7 @@
     [
       "acesulfame k",
       "acesulphame k",
-      "sesame_allergy"
-    ],
-    [
-      "acesulfame k",
-      "acesulphame k",
-      "mustard_allergy"
-    ],
-    [
-      "acesulfame k",
-      "acesulphame k",
-      "celery_allergy"
-    ],
-    [
-      "acesulfame k",
-      "acesulphame k",
-      "lupin_allergy"
-    ],
-    [
-      "acesulfame k",
-      "acesulphame k",
-      "peanut_allergy"
+      "sulfite_sensitive"
     ],
     [
       "acesulfame k",
@@ -77,29 +67,24 @@
       "tree_nut_allergy"
     ],
     [
-      "acesulfame potassium",
-      "acesulphame potassium",
-      "sulfite_sensitive"
+      "acesulfame k",
+      "acesulphame k",
+      "vegan"
+    ],
+    [
+      "acesulfame k",
+      "acesulphame k",
+      "vegetarian"
     ],
     [
       "acesulfame potassium",
       "acesulphame potassium",
-      "gluten_free"
+      "celery_allergy"
     ],
     [
       "acesulfame potassium",
       "acesulphame potassium",
       "dairy_free"
-    ],
-    [
-      "acesulfame potassium",
-      "acesulphame potassium",
-      "vegan"
-    ],
-    [
-      "acesulfame potassium",
-      "acesulphame potassium",
-      "vegetarian"
     ],
     [
       "acesulfame potassium",
@@ -114,6 +99,31 @@
     [
       "acesulfame potassium",
       "acesulphame potassium",
+      "gluten_free"
+    ],
+    [
+      "acesulfame potassium",
+      "acesulphame potassium",
+      "lupin_allergy"
+    ],
+    [
+      "acesulfame potassium",
+      "acesulphame potassium",
+      "mustard_allergy"
+    ],
+    [
+      "acesulfame potassium",
+      "acesulphame potassium",
+      "peanut_allergy"
+    ],
+    [
+      "acesulfame potassium",
+      "acesulphame potassium",
+      "sesame_allergy"
+    ],
+    [
+      "acesulfame potassium",
+      "acesulphame potassium",
       "shellfish_allergy"
     ],
     [
@@ -124,27 +134,7 @@
     [
       "acesulfame potassium",
       "acesulphame potassium",
-      "sesame_allergy"
-    ],
-    [
-      "acesulfame potassium",
-      "acesulphame potassium",
-      "mustard_allergy"
-    ],
-    [
-      "acesulfame potassium",
-      "acesulphame potassium",
-      "celery_allergy"
-    ],
-    [
-      "acesulfame potassium",
-      "acesulphame potassium",
-      "lupin_allergy"
-    ],
-    [
-      "acesulfame potassium",
-      "acesulphame potassium",
-      "peanut_allergy"
+      "sulfite_sensitive"
     ],
     [
       "acesulfame potassium",
@@ -152,9 +142,14 @@
       "tree_nut_allergy"
     ],
     [
-      "aluminium ammonium sulfate",
-      "aluminium ammonium sulphate",
-      "dairy_free"
+      "acesulfame potassium",
+      "acesulphame potassium",
+      "vegan"
+    ],
+    [
+      "acesulfame potassium",
+      "acesulphame potassium",
+      "vegetarian"
     ],
     [
       "aluminium ammonium sulfate",
@@ -167,26 +162,6 @@
       "vegetarian"
     ],
     [
-      "aluminium ammonium sulfate",
-      "aluminium ammonium sulphate",
-      "egg_free"
-    ],
-    [
-      "aluminium ammonium sulphate",
-      "aluminum ammonium sulphate",
-      "sulfite_sensitive"
-    ],
-    [
-      "aluminium ammonium sulphate",
-      "aluminum ammonium sulphate",
-      "gluten_free"
-    ],
-    [
-      "aluminium ammonium sulphate",
-      "aluminum ammonium sulphate",
-      "dairy_free"
-    ],
-    [
       "aluminium ammonium sulphate",
       "aluminum ammonium sulphate",
       "vegan"
@@ -197,54 +172,59 @@
       "vegetarian"
     ],
     [
-      "aluminium ammonium sulphate",
-      "aluminum ammonium sulphate",
-      "egg_free"
-    ],
-    [
-      "aluminium ammonium sulphate",
-      "aluminum ammonium sulphate",
-      "fish_allergy"
-    ],
-    [
-      "aluminium ammonium sulphate",
-      "aluminum ammonium sulphate",
-      "shellfish_allergy"
-    ],
-    [
-      "aluminium ammonium sulphate",
-      "aluminum ammonium sulphate",
-      "soy_allergy"
-    ],
-    [
-      "aluminium ammonium sulphate",
-      "aluminum ammonium sulphate",
-      "sesame_allergy"
-    ],
-    [
-      "aluminium ammonium sulphate",
-      "aluminum ammonium sulphate",
-      "mustard_allergy"
-    ],
-    [
-      "aluminium ammonium sulphate",
-      "aluminum ammonium sulphate",
+      "aluminium potassium sulfate",
+      "aluminium potassium sulphate",
       "celery_allergy"
     ],
     [
-      "aluminium ammonium sulphate",
-      "aluminum ammonium sulphate",
+      "aluminium potassium sulfate",
+      "aluminium potassium sulphate",
+      "dairy_free"
+    ],
+    [
+      "aluminium potassium sulfate",
+      "aluminium potassium sulphate",
+      "egg_free"
+    ],
+    [
+      "aluminium potassium sulfate",
+      "aluminium potassium sulphate",
+      "fish_allergy"
+    ],
+    [
+      "aluminium potassium sulfate",
+      "aluminium potassium sulphate",
+      "gluten_free"
+    ],
+    [
+      "aluminium potassium sulfate",
+      "aluminium potassium sulphate",
       "lupin_allergy"
     ],
     [
-      "aluminium ammonium sulphate",
-      "aluminum ammonium sulphate",
+      "aluminium potassium sulfate",
+      "aluminium potassium sulphate",
+      "mustard_allergy"
+    ],
+    [
+      "aluminium potassium sulfate",
+      "aluminium potassium sulphate",
       "peanut_allergy"
     ],
     [
-      "aluminium ammonium sulphate",
-      "aluminum ammonium sulphate",
-      "tree_nut_allergy"
+      "aluminium potassium sulfate",
+      "aluminium potassium sulphate",
+      "sesame_allergy"
+    ],
+    [
+      "aluminium potassium sulfate",
+      "aluminium potassium sulphate",
+      "shellfish_allergy"
+    ],
+    [
+      "aluminium potassium sulfate",
+      "aluminium potassium sulphate",
+      "soy_allergy"
     ],
     [
       "aluminium potassium sulfate",
@@ -254,12 +234,7 @@
     [
       "aluminium potassium sulfate",
       "aluminium potassium sulphate",
-      "gluten_free"
-    ],
-    [
-      "aluminium potassium sulfate",
-      "aluminium potassium sulphate",
-      "dairy_free"
+      "tree_nut_allergy"
     ],
     [
       "aluminium potassium sulfate",
@@ -272,54 +247,59 @@
       "vegetarian"
     ],
     [
-      "aluminium potassium sulfate",
       "aluminium potassium sulphate",
-      "egg_free"
-    ],
-    [
-      "aluminium potassium sulfate",
-      "aluminium potassium sulphate",
-      "fish_allergy"
-    ],
-    [
-      "aluminium potassium sulfate",
-      "aluminium potassium sulphate",
-      "shellfish_allergy"
-    ],
-    [
-      "aluminium potassium sulfate",
-      "aluminium potassium sulphate",
-      "soy_allergy"
-    ],
-    [
-      "aluminium potassium sulfate",
-      "aluminium potassium sulphate",
-      "sesame_allergy"
-    ],
-    [
-      "aluminium potassium sulfate",
-      "aluminium potassium sulphate",
-      "mustard_allergy"
-    ],
-    [
-      "aluminium potassium sulfate",
-      "aluminium potassium sulphate",
+      "aluminum potassium sulphate",
       "celery_allergy"
     ],
     [
-      "aluminium potassium sulfate",
       "aluminium potassium sulphate",
+      "aluminum potassium sulphate",
+      "dairy_free"
+    ],
+    [
+      "aluminium potassium sulphate",
+      "aluminum potassium sulphate",
+      "egg_free"
+    ],
+    [
+      "aluminium potassium sulphate",
+      "aluminum potassium sulphate",
+      "fish_allergy"
+    ],
+    [
+      "aluminium potassium sulphate",
+      "aluminum potassium sulphate",
+      "gluten_free"
+    ],
+    [
+      "aluminium potassium sulphate",
+      "aluminum potassium sulphate",
       "lupin_allergy"
     ],
     [
-      "aluminium potassium sulfate",
       "aluminium potassium sulphate",
+      "aluminum potassium sulphate",
+      "mustard_allergy"
+    ],
+    [
+      "aluminium potassium sulphate",
+      "aluminum potassium sulphate",
       "peanut_allergy"
     ],
     [
-      "aluminium potassium sulfate",
       "aluminium potassium sulphate",
-      "tree_nut_allergy"
+      "aluminum potassium sulphate",
+      "sesame_allergy"
+    ],
+    [
+      "aluminium potassium sulphate",
+      "aluminum potassium sulphate",
+      "shellfish_allergy"
+    ],
+    [
+      "aluminium potassium sulphate",
+      "aluminum potassium sulphate",
+      "soy_allergy"
     ],
     [
       "aluminium potassium sulphate",
@@ -329,12 +309,7 @@
     [
       "aluminium potassium sulphate",
       "aluminum potassium sulphate",
-      "gluten_free"
-    ],
-    [
-      "aluminium potassium sulphate",
-      "aluminum potassium sulphate",
-      "dairy_free"
+      "tree_nut_allergy"
     ],
     [
       "aluminium potassium sulphate",
@@ -347,54 +322,59 @@
       "vegetarian"
     ],
     [
-      "aluminium potassium sulphate",
-      "aluminum potassium sulphate",
-      "egg_free"
-    ],
-    [
-      "aluminium potassium sulphate",
-      "aluminum potassium sulphate",
-      "fish_allergy"
-    ],
-    [
-      "aluminium potassium sulphate",
-      "aluminum potassium sulphate",
-      "shellfish_allergy"
-    ],
-    [
-      "aluminium potassium sulphate",
-      "aluminum potassium sulphate",
-      "soy_allergy"
-    ],
-    [
-      "aluminium potassium sulphate",
-      "aluminum potassium sulphate",
-      "sesame_allergy"
-    ],
-    [
-      "aluminium potassium sulphate",
-      "aluminum potassium sulphate",
-      "mustard_allergy"
-    ],
-    [
-      "aluminium potassium sulphate",
-      "aluminum potassium sulphate",
+      "aluminium silicate",
+      "aluminum silicate",
       "celery_allergy"
     ],
     [
-      "aluminium potassium sulphate",
-      "aluminum potassium sulphate",
+      "aluminium silicate",
+      "aluminum silicate",
+      "dairy_free"
+    ],
+    [
+      "aluminium silicate",
+      "aluminum silicate",
+      "egg_free"
+    ],
+    [
+      "aluminium silicate",
+      "aluminum silicate",
+      "fish_allergy"
+    ],
+    [
+      "aluminium silicate",
+      "aluminum silicate",
+      "gluten_free"
+    ],
+    [
+      "aluminium silicate",
+      "aluminum silicate",
       "lupin_allergy"
     ],
     [
-      "aluminium potassium sulphate",
-      "aluminum potassium sulphate",
+      "aluminium silicate",
+      "aluminum silicate",
+      "mustard_allergy"
+    ],
+    [
+      "aluminium silicate",
+      "aluminum silicate",
       "peanut_allergy"
     ],
     [
-      "aluminium potassium sulphate",
-      "aluminum potassium sulphate",
-      "tree_nut_allergy"
+      "aluminium silicate",
+      "aluminum silicate",
+      "sesame_allergy"
+    ],
+    [
+      "aluminium silicate",
+      "aluminum silicate",
+      "shellfish_allergy"
+    ],
+    [
+      "aluminium silicate",
+      "aluminum silicate",
+      "soy_allergy"
     ],
     [
       "aluminium silicate",
@@ -404,12 +384,7 @@
     [
       "aluminium silicate",
       "aluminum silicate",
-      "gluten_free"
-    ],
-    [
-      "aluminium silicate",
-      "aluminum silicate",
-      "dairy_free"
+      "tree_nut_allergy"
     ],
     [
       "aluminium silicate",
@@ -422,54 +397,59 @@
       "vegetarian"
     ],
     [
-      "aluminium silicate",
-      "aluminum silicate",
-      "egg_free"
-    ],
-    [
-      "aluminium silicate",
-      "aluminum silicate",
-      "fish_allergy"
-    ],
-    [
-      "aluminium silicate",
-      "aluminum silicate",
-      "shellfish_allergy"
-    ],
-    [
-      "aluminium silicate",
-      "aluminum silicate",
-      "soy_allergy"
-    ],
-    [
-      "aluminium silicate",
-      "aluminum silicate",
-      "sesame_allergy"
-    ],
-    [
-      "aluminium silicate",
-      "aluminum silicate",
-      "mustard_allergy"
-    ],
-    [
-      "aluminium silicate",
-      "aluminum silicate",
+      "aluminium sodium sulfate",
+      "aluminium sodium sulphate",
       "celery_allergy"
     ],
     [
-      "aluminium silicate",
-      "aluminum silicate",
+      "aluminium sodium sulfate",
+      "aluminium sodium sulphate",
+      "dairy_free"
+    ],
+    [
+      "aluminium sodium sulfate",
+      "aluminium sodium sulphate",
+      "egg_free"
+    ],
+    [
+      "aluminium sodium sulfate",
+      "aluminium sodium sulphate",
+      "fish_allergy"
+    ],
+    [
+      "aluminium sodium sulfate",
+      "aluminium sodium sulphate",
+      "gluten_free"
+    ],
+    [
+      "aluminium sodium sulfate",
+      "aluminium sodium sulphate",
       "lupin_allergy"
     ],
     [
-      "aluminium silicate",
-      "aluminum silicate",
+      "aluminium sodium sulfate",
+      "aluminium sodium sulphate",
+      "mustard_allergy"
+    ],
+    [
+      "aluminium sodium sulfate",
+      "aluminium sodium sulphate",
       "peanut_allergy"
     ],
     [
-      "aluminium silicate",
-      "aluminum silicate",
-      "tree_nut_allergy"
+      "aluminium sodium sulfate",
+      "aluminium sodium sulphate",
+      "sesame_allergy"
+    ],
+    [
+      "aluminium sodium sulfate",
+      "aluminium sodium sulphate",
+      "shellfish_allergy"
+    ],
+    [
+      "aluminium sodium sulfate",
+      "aluminium sodium sulphate",
+      "soy_allergy"
     ],
     [
       "aluminium sodium sulfate",
@@ -479,12 +459,7 @@
     [
       "aluminium sodium sulfate",
       "aluminium sodium sulphate",
-      "gluten_free"
-    ],
-    [
-      "aluminium sodium sulfate",
-      "aluminium sodium sulphate",
-      "dairy_free"
+      "tree_nut_allergy"
     ],
     [
       "aluminium sodium sulfate",
@@ -497,54 +472,59 @@
       "vegetarian"
     ],
     [
-      "aluminium sodium sulfate",
       "aluminium sodium sulphate",
-      "egg_free"
-    ],
-    [
-      "aluminium sodium sulfate",
-      "aluminium sodium sulphate",
-      "fish_allergy"
-    ],
-    [
-      "aluminium sodium sulfate",
-      "aluminium sodium sulphate",
-      "shellfish_allergy"
-    ],
-    [
-      "aluminium sodium sulfate",
-      "aluminium sodium sulphate",
-      "soy_allergy"
-    ],
-    [
-      "aluminium sodium sulfate",
-      "aluminium sodium sulphate",
-      "sesame_allergy"
-    ],
-    [
-      "aluminium sodium sulfate",
-      "aluminium sodium sulphate",
-      "mustard_allergy"
-    ],
-    [
-      "aluminium sodium sulfate",
-      "aluminium sodium sulphate",
+      "aluminum sodium sulphate",
       "celery_allergy"
     ],
     [
-      "aluminium sodium sulfate",
       "aluminium sodium sulphate",
+      "aluminum sodium sulphate",
+      "dairy_free"
+    ],
+    [
+      "aluminium sodium sulphate",
+      "aluminum sodium sulphate",
+      "egg_free"
+    ],
+    [
+      "aluminium sodium sulphate",
+      "aluminum sodium sulphate",
+      "fish_allergy"
+    ],
+    [
+      "aluminium sodium sulphate",
+      "aluminum sodium sulphate",
+      "gluten_free"
+    ],
+    [
+      "aluminium sodium sulphate",
+      "aluminum sodium sulphate",
       "lupin_allergy"
     ],
     [
-      "aluminium sodium sulfate",
       "aluminium sodium sulphate",
+      "aluminum sodium sulphate",
+      "mustard_allergy"
+    ],
+    [
+      "aluminium sodium sulphate",
+      "aluminum sodium sulphate",
       "peanut_allergy"
     ],
     [
-      "aluminium sodium sulfate",
       "aluminium sodium sulphate",
-      "tree_nut_allergy"
+      "aluminum sodium sulphate",
+      "sesame_allergy"
+    ],
+    [
+      "aluminium sodium sulphate",
+      "aluminum sodium sulphate",
+      "shellfish_allergy"
+    ],
+    [
+      "aluminium sodium sulphate",
+      "aluminum sodium sulphate",
+      "soy_allergy"
     ],
     [
       "aluminium sodium sulphate",
@@ -554,12 +534,7 @@
     [
       "aluminium sodium sulphate",
       "aluminum sodium sulphate",
-      "gluten_free"
-    ],
-    [
-      "aluminium sodium sulphate",
-      "aluminum sodium sulphate",
-      "dairy_free"
+      "tree_nut_allergy"
     ],
     [
       "aluminium sodium sulphate",
@@ -572,54 +547,59 @@
       "vegetarian"
     ],
     [
-      "aluminium sodium sulphate",
-      "aluminum sodium sulphate",
-      "egg_free"
-    ],
-    [
-      "aluminium sodium sulphate",
-      "aluminum sodium sulphate",
-      "fish_allergy"
-    ],
-    [
-      "aluminium sodium sulphate",
-      "aluminum sodium sulphate",
-      "shellfish_allergy"
-    ],
-    [
-      "aluminium sodium sulphate",
-      "aluminum sodium sulphate",
-      "soy_allergy"
-    ],
-    [
-      "aluminium sodium sulphate",
-      "aluminum sodium sulphate",
-      "sesame_allergy"
-    ],
-    [
-      "aluminium sodium sulphate",
-      "aluminum sodium sulphate",
-      "mustard_allergy"
-    ],
-    [
-      "aluminium sodium sulphate",
-      "aluminum sodium sulphate",
+      "aluminium sulfate",
+      "aluminium sulphate",
       "celery_allergy"
     ],
     [
-      "aluminium sodium sulphate",
-      "aluminum sodium sulphate",
+      "aluminium sulfate",
+      "aluminium sulphate",
+      "dairy_free"
+    ],
+    [
+      "aluminium sulfate",
+      "aluminium sulphate",
+      "egg_free"
+    ],
+    [
+      "aluminium sulfate",
+      "aluminium sulphate",
+      "fish_allergy"
+    ],
+    [
+      "aluminium sulfate",
+      "aluminium sulphate",
+      "gluten_free"
+    ],
+    [
+      "aluminium sulfate",
+      "aluminium sulphate",
       "lupin_allergy"
     ],
     [
-      "aluminium sodium sulphate",
-      "aluminum sodium sulphate",
+      "aluminium sulfate",
+      "aluminium sulphate",
+      "mustard_allergy"
+    ],
+    [
+      "aluminium sulfate",
+      "aluminium sulphate",
       "peanut_allergy"
     ],
     [
-      "aluminium sodium sulphate",
-      "aluminum sodium sulphate",
-      "tree_nut_allergy"
+      "aluminium sulfate",
+      "aluminium sulphate",
+      "sesame_allergy"
+    ],
+    [
+      "aluminium sulfate",
+      "aluminium sulphate",
+      "shellfish_allergy"
+    ],
+    [
+      "aluminium sulfate",
+      "aluminium sulphate",
+      "soy_allergy"
     ],
     [
       "aluminium sulfate",
@@ -629,12 +609,7 @@
     [
       "aluminium sulfate",
       "aluminium sulphate",
-      "gluten_free"
-    ],
-    [
-      "aluminium sulfate",
-      "aluminium sulphate",
-      "dairy_free"
+      "tree_nut_allergy"
     ],
     [
       "aluminium sulfate",
@@ -648,53 +623,58 @@
     ],
     [
       "aluminium sulfate",
-      "aluminium sulphate",
-      "egg_free"
-    ],
-    [
-      "aluminium sulfate",
-      "aluminium sulphate",
-      "fish_allergy"
-    ],
-    [
-      "aluminium sulfate",
-      "aluminium sulphate",
-      "shellfish_allergy"
-    ],
-    [
-      "aluminium sulfate",
-      "aluminium sulphate",
-      "soy_allergy"
-    ],
-    [
-      "aluminium sulfate",
-      "aluminium sulphate",
-      "sesame_allergy"
-    ],
-    [
-      "aluminium sulfate",
-      "aluminium sulphate",
-      "mustard_allergy"
-    ],
-    [
-      "aluminium sulfate",
-      "aluminium sulphate",
+      "aluminum sulfate",
       "celery_allergy"
     ],
     [
       "aluminium sulfate",
-      "aluminium sulphate",
+      "aluminum sulfate",
+      "dairy_free"
+    ],
+    [
+      "aluminium sulfate",
+      "aluminum sulfate",
+      "egg_free"
+    ],
+    [
+      "aluminium sulfate",
+      "aluminum sulfate",
+      "fish_allergy"
+    ],
+    [
+      "aluminium sulfate",
+      "aluminum sulfate",
+      "gluten_free"
+    ],
+    [
+      "aluminium sulfate",
+      "aluminum sulfate",
       "lupin_allergy"
     ],
     [
       "aluminium sulfate",
-      "aluminium sulphate",
+      "aluminum sulfate",
+      "mustard_allergy"
+    ],
+    [
+      "aluminium sulfate",
+      "aluminum sulfate",
       "peanut_allergy"
     ],
     [
       "aluminium sulfate",
-      "aluminium sulphate",
-      "tree_nut_allergy"
+      "aluminum sulfate",
+      "sesame_allergy"
+    ],
+    [
+      "aluminium sulfate",
+      "aluminum sulfate",
+      "shellfish_allergy"
+    ],
+    [
+      "aluminium sulfate",
+      "aluminum sulfate",
+      "soy_allergy"
     ],
     [
       "aluminium sulfate",
@@ -704,12 +684,7 @@
     [
       "aluminium sulfate",
       "aluminum sulfate",
-      "gluten_free"
-    ],
-    [
-      "aluminium sulfate",
-      "aluminum sulfate",
-      "dairy_free"
+      "tree_nut_allergy"
     ],
     [
       "aluminium sulfate",
@@ -722,54 +697,59 @@
       "vegetarian"
     ],
     [
-      "aluminium sulfate",
-      "aluminum sulfate",
-      "egg_free"
-    ],
-    [
-      "aluminium sulfate",
-      "aluminum sulfate",
-      "fish_allergy"
-    ],
-    [
-      "aluminium sulfate",
-      "aluminum sulfate",
-      "shellfish_allergy"
-    ],
-    [
-      "aluminium sulfate",
-      "aluminum sulfate",
-      "soy_allergy"
-    ],
-    [
-      "aluminium sulfate",
-      "aluminum sulfate",
-      "sesame_allergy"
-    ],
-    [
-      "aluminium sulfate",
-      "aluminum sulfate",
-      "mustard_allergy"
-    ],
-    [
-      "aluminium sulfate",
-      "aluminum sulfate",
+      "aluminium sulphate",
+      "aluminum sulphate",
       "celery_allergy"
     ],
     [
-      "aluminium sulfate",
-      "aluminum sulfate",
+      "aluminium sulphate",
+      "aluminum sulphate",
+      "dairy_free"
+    ],
+    [
+      "aluminium sulphate",
+      "aluminum sulphate",
+      "egg_free"
+    ],
+    [
+      "aluminium sulphate",
+      "aluminum sulphate",
+      "fish_allergy"
+    ],
+    [
+      "aluminium sulphate",
+      "aluminum sulphate",
+      "gluten_free"
+    ],
+    [
+      "aluminium sulphate",
+      "aluminum sulphate",
       "lupin_allergy"
     ],
     [
-      "aluminium sulfate",
-      "aluminum sulfate",
+      "aluminium sulphate",
+      "aluminum sulphate",
+      "mustard_allergy"
+    ],
+    [
+      "aluminium sulphate",
+      "aluminum sulphate",
       "peanut_allergy"
     ],
     [
-      "aluminium sulfate",
-      "aluminum sulfate",
-      "tree_nut_allergy"
+      "aluminium sulphate",
+      "aluminum sulphate",
+      "sesame_allergy"
+    ],
+    [
+      "aluminium sulphate",
+      "aluminum sulphate",
+      "shellfish_allergy"
+    ],
+    [
+      "aluminium sulphate",
+      "aluminum sulphate",
+      "soy_allergy"
     ],
     [
       "aluminium sulphate",
@@ -779,12 +759,7 @@
     [
       "aluminium sulphate",
       "aluminum sulphate",
-      "gluten_free"
-    ],
-    [
-      "aluminium sulphate",
-      "aluminum sulphate",
-      "dairy_free"
+      "tree_nut_allergy"
     ],
     [
       "aluminium sulphate",
@@ -797,54 +772,59 @@
       "vegetarian"
     ],
     [
-      "aluminium sulphate",
-      "aluminum sulphate",
-      "egg_free"
-    ],
-    [
-      "aluminium sulphate",
-      "aluminum sulphate",
-      "fish_allergy"
-    ],
-    [
-      "aluminium sulphate",
-      "aluminum sulphate",
-      "shellfish_allergy"
-    ],
-    [
-      "aluminium sulphate",
-      "aluminum sulphate",
-      "soy_allergy"
-    ],
-    [
-      "aluminium sulphate",
-      "aluminum sulphate",
-      "sesame_allergy"
-    ],
-    [
-      "aluminium sulphate",
-      "aluminum sulphate",
-      "mustard_allergy"
-    ],
-    [
-      "aluminium sulphate",
+      "aluminum sulfate",
       "aluminum sulphate",
       "celery_allergy"
     ],
     [
-      "aluminium sulphate",
+      "aluminum sulfate",
+      "aluminum sulphate",
+      "dairy_free"
+    ],
+    [
+      "aluminum sulfate",
+      "aluminum sulphate",
+      "egg_free"
+    ],
+    [
+      "aluminum sulfate",
+      "aluminum sulphate",
+      "fish_allergy"
+    ],
+    [
+      "aluminum sulfate",
+      "aluminum sulphate",
+      "gluten_free"
+    ],
+    [
+      "aluminum sulfate",
       "aluminum sulphate",
       "lupin_allergy"
     ],
     [
-      "aluminium sulphate",
+      "aluminum sulfate",
+      "aluminum sulphate",
+      "mustard_allergy"
+    ],
+    [
+      "aluminum sulfate",
       "aluminum sulphate",
       "peanut_allergy"
     ],
     [
-      "aluminium sulphate",
+      "aluminum sulfate",
       "aluminum sulphate",
-      "tree_nut_allergy"
+      "sesame_allergy"
+    ],
+    [
+      "aluminum sulfate",
+      "aluminum sulphate",
+      "shellfish_allergy"
+    ],
+    [
+      "aluminum sulfate",
+      "aluminum sulphate",
+      "soy_allergy"
     ],
     [
       "aluminum sulfate",
@@ -854,12 +834,7 @@
     [
       "aluminum sulfate",
       "aluminum sulphate",
-      "gluten_free"
-    ],
-    [
-      "aluminum sulfate",
-      "aluminum sulphate",
-      "dairy_free"
+      "tree_nut_allergy"
     ],
     [
       "aluminum sulfate",
@@ -872,66 +847,6 @@
       "vegetarian"
     ],
     [
-      "aluminum sulfate",
-      "aluminum sulphate",
-      "egg_free"
-    ],
-    [
-      "aluminum sulfate",
-      "aluminum sulphate",
-      "fish_allergy"
-    ],
-    [
-      "aluminum sulfate",
-      "aluminum sulphate",
-      "shellfish_allergy"
-    ],
-    [
-      "aluminum sulfate",
-      "aluminum sulphate",
-      "soy_allergy"
-    ],
-    [
-      "aluminum sulfate",
-      "aluminum sulphate",
-      "sesame_allergy"
-    ],
-    [
-      "aluminum sulfate",
-      "aluminum sulphate",
-      "mustard_allergy"
-    ],
-    [
-      "aluminum sulfate",
-      "aluminum sulphate",
-      "celery_allergy"
-    ],
-    [
-      "aluminum sulfate",
-      "aluminum sulphate",
-      "lupin_allergy"
-    ],
-    [
-      "aluminum sulfate",
-      "aluminum sulphate",
-      "peanut_allergy"
-    ],
-    [
-      "aluminum sulfate",
-      "aluminum sulphate",
-      "tree_nut_allergy"
-    ],
-    [
-      "apples dried sulfured stewed without added sugar",
-      "apples dried sulphured stewed without added sugar",
-      "gluten_free"
-    ],
-    [
-      "apples dried sulfured stewed without added sugar",
-      "apples dried sulphured stewed without added sugar",
-      "dairy_free"
-    ],
-    [
       "apples dried sulfured stewed without added sugar",
       "apples dried sulphured stewed without added sugar",
       "vegan"
@@ -940,66 +855,6 @@
       "apples dried sulfured stewed without added sugar",
       "apples dried sulphured stewed without added sugar",
       "vegetarian"
-    ],
-    [
-      "apples dried sulfured stewed without added sugar",
-      "apples dried sulphured stewed without added sugar",
-      "egg_free"
-    ],
-    [
-      "apples dried sulfured stewed without added sugar",
-      "apples dried sulphured stewed without added sugar",
-      "fish_allergy"
-    ],
-    [
-      "apples dried sulfured stewed without added sugar",
-      "apples dried sulphured stewed without added sugar",
-      "shellfish_allergy"
-    ],
-    [
-      "apples dried sulfured stewed without added sugar",
-      "apples dried sulphured stewed without added sugar",
-      "soy_allergy"
-    ],
-    [
-      "apples dried sulfured stewed without added sugar",
-      "apples dried sulphured stewed without added sugar",
-      "sesame_allergy"
-    ],
-    [
-      "apples dried sulfured stewed without added sugar",
-      "apples dried sulphured stewed without added sugar",
-      "mustard_allergy"
-    ],
-    [
-      "apples dried sulfured stewed without added sugar",
-      "apples dried sulphured stewed without added sugar",
-      "celery_allergy"
-    ],
-    [
-      "apples dried sulfured stewed without added sugar",
-      "apples dried sulphured stewed without added sugar",
-      "lupin_allergy"
-    ],
-    [
-      "apples dried sulfured stewed without added sugar",
-      "apples dried sulphured stewed without added sugar",
-      "peanut_allergy"
-    ],
-    [
-      "apples dried sulfured stewed without added sugar",
-      "apples dried sulphured stewed without added sugar",
-      "tree_nut_allergy"
-    ],
-    [
-      "apples dried sulfured uncooked",
-      "apples dried sulphured uncooked",
-      "gluten_free"
-    ],
-    [
-      "apples dried sulfured uncooked",
-      "apples dried sulphured uncooked",
-      "dairy_free"
     ],
     [
       "apples dried sulfured uncooked",
@@ -1012,66 +867,6 @@
       "vegetarian"
     ],
     [
-      "apples dried sulfured uncooked",
-      "apples dried sulphured uncooked",
-      "egg_free"
-    ],
-    [
-      "apples dried sulfured uncooked",
-      "apples dried sulphured uncooked",
-      "fish_allergy"
-    ],
-    [
-      "apples dried sulfured uncooked",
-      "apples dried sulphured uncooked",
-      "shellfish_allergy"
-    ],
-    [
-      "apples dried sulfured uncooked",
-      "apples dried sulphured uncooked",
-      "soy_allergy"
-    ],
-    [
-      "apples dried sulfured uncooked",
-      "apples dried sulphured uncooked",
-      "sesame_allergy"
-    ],
-    [
-      "apples dried sulfured uncooked",
-      "apples dried sulphured uncooked",
-      "mustard_allergy"
-    ],
-    [
-      "apples dried sulfured uncooked",
-      "apples dried sulphured uncooked",
-      "celery_allergy"
-    ],
-    [
-      "apples dried sulfured uncooked",
-      "apples dried sulphured uncooked",
-      "lupin_allergy"
-    ],
-    [
-      "apples dried sulfured uncooked",
-      "apples dried sulphured uncooked",
-      "peanut_allergy"
-    ],
-    [
-      "apples dried sulfured uncooked",
-      "apples dried sulphured uncooked",
-      "tree_nut_allergy"
-    ],
-    [
-      "apricots dried sulfured stewed without added sugar",
-      "apricots dried sulphured stewed without added sugar",
-      "gluten_free"
-    ],
-    [
-      "apricots dried sulfured stewed without added sugar",
-      "apricots dried sulphured stewed without added sugar",
-      "dairy_free"
-    ],
-    [
       "apricots dried sulfured stewed without added sugar",
       "apricots dried sulphured stewed without added sugar",
       "vegan"
@@ -1080,66 +875,6 @@
       "apricots dried sulfured stewed without added sugar",
       "apricots dried sulphured stewed without added sugar",
       "vegetarian"
-    ],
-    [
-      "apricots dried sulfured stewed without added sugar",
-      "apricots dried sulphured stewed without added sugar",
-      "egg_free"
-    ],
-    [
-      "apricots dried sulfured stewed without added sugar",
-      "apricots dried sulphured stewed without added sugar",
-      "fish_allergy"
-    ],
-    [
-      "apricots dried sulfured stewed without added sugar",
-      "apricots dried sulphured stewed without added sugar",
-      "shellfish_allergy"
-    ],
-    [
-      "apricots dried sulfured stewed without added sugar",
-      "apricots dried sulphured stewed without added sugar",
-      "soy_allergy"
-    ],
-    [
-      "apricots dried sulfured stewed without added sugar",
-      "apricots dried sulphured stewed without added sugar",
-      "sesame_allergy"
-    ],
-    [
-      "apricots dried sulfured stewed without added sugar",
-      "apricots dried sulphured stewed without added sugar",
-      "mustard_allergy"
-    ],
-    [
-      "apricots dried sulfured stewed without added sugar",
-      "apricots dried sulphured stewed without added sugar",
-      "celery_allergy"
-    ],
-    [
-      "apricots dried sulfured stewed without added sugar",
-      "apricots dried sulphured stewed without added sugar",
-      "lupin_allergy"
-    ],
-    [
-      "apricots dried sulfured stewed without added sugar",
-      "apricots dried sulphured stewed without added sugar",
-      "peanut_allergy"
-    ],
-    [
-      "apricots dried sulfured stewed without added sugar",
-      "apricots dried sulphured stewed without added sugar",
-      "tree_nut_allergy"
-    ],
-    [
-      "apricots dried sulfured uncooked",
-      "apricots dried sulphured uncooked",
-      "gluten_free"
-    ],
-    [
-      "apricots dried sulfured uncooked",
-      "apricots dried sulphured uncooked",
-      "dairy_free"
     ],
     [
       "apricots dried sulfured uncooked",
@@ -1152,54 +887,59 @@
       "vegetarian"
     ],
     [
-      "apricots dried sulfured uncooked",
-      "apricots dried sulphured uncooked",
-      "egg_free"
-    ],
-    [
-      "apricots dried sulfured uncooked",
-      "apricots dried sulphured uncooked",
-      "fish_allergy"
-    ],
-    [
-      "apricots dried sulfured uncooked",
-      "apricots dried sulphured uncooked",
-      "shellfish_allergy"
-    ],
-    [
-      "apricots dried sulfured uncooked",
-      "apricots dried sulphured uncooked",
-      "soy_allergy"
-    ],
-    [
-      "apricots dried sulfured uncooked",
-      "apricots dried sulphured uncooked",
-      "sesame_allergy"
-    ],
-    [
-      "apricots dried sulfured uncooked",
-      "apricots dried sulphured uncooked",
-      "mustard_allergy"
-    ],
-    [
-      "apricots dried sulfured uncooked",
-      "apricots dried sulphured uncooked",
+      "aspartame acesulfame salt",
+      "aspartame acesulphame salt",
       "celery_allergy"
     ],
     [
-      "apricots dried sulfured uncooked",
-      "apricots dried sulphured uncooked",
+      "aspartame acesulfame salt",
+      "aspartame acesulphame salt",
+      "dairy_free"
+    ],
+    [
+      "aspartame acesulfame salt",
+      "aspartame acesulphame salt",
+      "egg_free"
+    ],
+    [
+      "aspartame acesulfame salt",
+      "aspartame acesulphame salt",
+      "fish_allergy"
+    ],
+    [
+      "aspartame acesulfame salt",
+      "aspartame acesulphame salt",
+      "gluten_free"
+    ],
+    [
+      "aspartame acesulfame salt",
+      "aspartame acesulphame salt",
       "lupin_allergy"
     ],
     [
-      "apricots dried sulfured uncooked",
-      "apricots dried sulphured uncooked",
+      "aspartame acesulfame salt",
+      "aspartame acesulphame salt",
+      "mustard_allergy"
+    ],
+    [
+      "aspartame acesulfame salt",
+      "aspartame acesulphame salt",
       "peanut_allergy"
     ],
     [
-      "apricots dried sulfured uncooked",
-      "apricots dried sulphured uncooked",
-      "tree_nut_allergy"
+      "aspartame acesulfame salt",
+      "aspartame acesulphame salt",
+      "sesame_allergy"
+    ],
+    [
+      "aspartame acesulfame salt",
+      "aspartame acesulphame salt",
+      "shellfish_allergy"
+    ],
+    [
+      "aspartame acesulfame salt",
+      "aspartame acesulphame salt",
+      "soy_allergy"
     ],
     [
       "aspartame acesulfame salt",
@@ -1209,12 +949,7 @@
     [
       "aspartame acesulfame salt",
       "aspartame acesulphame salt",
-      "gluten_free"
-    ],
-    [
-      "aspartame acesulfame salt",
-      "aspartame acesulphame salt",
-      "dairy_free"
+      "tree_nut_allergy"
     ],
     [
       "aspartame acesulfame salt",
@@ -1225,61 +960,11 @@
       "aspartame acesulfame salt",
       "aspartame acesulphame salt",
       "vegetarian"
-    ],
-    [
-      "aspartame acesulfame salt",
-      "aspartame acesulphame salt",
-      "egg_free"
-    ],
-    [
-      "aspartame acesulfame salt",
-      "aspartame acesulphame salt",
-      "fish_allergy"
-    ],
-    [
-      "aspartame acesulfame salt",
-      "aspartame acesulphame salt",
-      "shellfish_allergy"
-    ],
-    [
-      "aspartame acesulfame salt",
-      "aspartame acesulphame salt",
-      "soy_allergy"
-    ],
-    [
-      "aspartame acesulfame salt",
-      "aspartame acesulphame salt",
-      "sesame_allergy"
-    ],
-    [
-      "aspartame acesulfame salt",
-      "aspartame acesulphame salt",
-      "mustard_allergy"
-    ],
-    [
-      "aspartame acesulfame salt",
-      "aspartame acesulphame salt",
-      "celery_allergy"
-    ],
-    [
-      "aspartame acesulfame salt",
-      "aspartame acesulphame salt",
-      "lupin_allergy"
-    ],
-    [
-      "aspartame acesulfame salt",
-      "aspartame acesulphame salt",
-      "peanut_allergy"
-    ],
-    [
-      "aspartame acesulfame salt",
-      "aspartame acesulphame salt",
-      "tree_nut_allergy"
     ],
     [
       "blubberlip snapper maori snapper multi colored snapper",
       "blubberlip snapper maori snapper multi coloured snapper",
-      "sulfite_sensitive"
+      "celery_allergy"
     ],
     [
       "blubberlip snapper maori snapper multi colored snapper",
@@ -1289,17 +974,22 @@
     [
       "blubberlip snapper maori snapper multi colored snapper",
       "blubberlip snapper maori snapper multi coloured snapper",
-      "dairy_free"
+      "lupin_allergy"
     ],
     [
       "blubberlip snapper maori snapper multi colored snapper",
       "blubberlip snapper maori snapper multi coloured snapper",
-      "egg_free"
+      "mustard_allergy"
     ],
     [
       "blubberlip snapper maori snapper multi colored snapper",
       "blubberlip snapper maori snapper multi coloured snapper",
-      "fish_allergy"
+      "peanut_allergy"
+    ],
+    [
+      "blubberlip snapper maori snapper multi colored snapper",
+      "blubberlip snapper maori snapper multi coloured snapper",
+      "sesame_allergy"
     ],
     [
       "blubberlip snapper maori snapper multi colored snapper",
@@ -1314,27 +1004,7 @@
     [
       "blubberlip snapper maori snapper multi colored snapper",
       "blubberlip snapper maori snapper multi coloured snapper",
-      "sesame_allergy"
-    ],
-    [
-      "blubberlip snapper maori snapper multi colored snapper",
-      "blubberlip snapper maori snapper multi coloured snapper",
-      "mustard_allergy"
-    ],
-    [
-      "blubberlip snapper maori snapper multi colored snapper",
-      "blubberlip snapper maori snapper multi coloured snapper",
-      "celery_allergy"
-    ],
-    [
-      "blubberlip snapper maori snapper multi colored snapper",
-      "blubberlip snapper maori snapper multi coloured snapper",
-      "lupin_allergy"
-    ],
-    [
-      "blubberlip snapper maori snapper multi colored snapper",
-      "blubberlip snapper maori snapper multi coloured snapper",
-      "peanut_allergy"
+      "sulfite_sensitive"
     ],
     [
       "blubberlip snapper maori snapper multi colored snapper",
@@ -1344,27 +1014,12 @@
     [
       "calcium aluminium silicate",
       "calcium aluminum silicate",
-      "sulfite_sensitive"
-    ],
-    [
-      "calcium aluminium silicate",
-      "calcium aluminum silicate",
-      "gluten_free"
+      "celery_allergy"
     ],
     [
       "calcium aluminium silicate",
       "calcium aluminum silicate",
       "dairy_free"
-    ],
-    [
-      "calcium aluminium silicate",
-      "calcium aluminum silicate",
-      "vegan"
-    ],
-    [
-      "calcium aluminium silicate",
-      "calcium aluminum silicate",
-      "vegetarian"
     ],
     [
       "calcium aluminium silicate",
@@ -1379,6 +1034,31 @@
     [
       "calcium aluminium silicate",
       "calcium aluminum silicate",
+      "gluten_free"
+    ],
+    [
+      "calcium aluminium silicate",
+      "calcium aluminum silicate",
+      "lupin_allergy"
+    ],
+    [
+      "calcium aluminium silicate",
+      "calcium aluminum silicate",
+      "mustard_allergy"
+    ],
+    [
+      "calcium aluminium silicate",
+      "calcium aluminum silicate",
+      "peanut_allergy"
+    ],
+    [
+      "calcium aluminium silicate",
+      "calcium aluminum silicate",
+      "sesame_allergy"
+    ],
+    [
+      "calcium aluminium silicate",
+      "calcium aluminum silicate",
       "shellfish_allergy"
     ],
     [
@@ -1389,27 +1069,7 @@
     [
       "calcium aluminium silicate",
       "calcium aluminum silicate",
-      "sesame_allergy"
-    ],
-    [
-      "calcium aluminium silicate",
-      "calcium aluminum silicate",
-      "mustard_allergy"
-    ],
-    [
-      "calcium aluminium silicate",
-      "calcium aluminum silicate",
-      "celery_allergy"
-    ],
-    [
-      "calcium aluminium silicate",
-      "calcium aluminum silicate",
-      "lupin_allergy"
-    ],
-    [
-      "calcium aluminium silicate",
-      "calcium aluminum silicate",
-      "peanut_allergy"
+      "sulfite_sensitive"
     ],
     [
       "calcium aluminium silicate",
@@ -1417,29 +1077,24 @@
       "tree_nut_allergy"
     ],
     [
-      "colored carrots varieties",
-      "coloured carrots varieties",
-      "sulfite_sensitive"
+      "calcium aluminium silicate",
+      "calcium aluminum silicate",
+      "vegan"
+    ],
+    [
+      "calcium aluminium silicate",
+      "calcium aluminum silicate",
+      "vegetarian"
     ],
     [
       "colored carrots varieties",
       "coloured carrots varieties",
-      "gluten_free"
+      "celery_allergy"
     ],
     [
       "colored carrots varieties",
       "coloured carrots varieties",
       "dairy_free"
-    ],
-    [
-      "colored carrots varieties",
-      "coloured carrots varieties",
-      "vegan"
-    ],
-    [
-      "colored carrots varieties",
-      "coloured carrots varieties",
-      "vegetarian"
     ],
     [
       "colored carrots varieties",
@@ -1454,6 +1109,31 @@
     [
       "colored carrots varieties",
       "coloured carrots varieties",
+      "gluten_free"
+    ],
+    [
+      "colored carrots varieties",
+      "coloured carrots varieties",
+      "lupin_allergy"
+    ],
+    [
+      "colored carrots varieties",
+      "coloured carrots varieties",
+      "mustard_allergy"
+    ],
+    [
+      "colored carrots varieties",
+      "coloured carrots varieties",
+      "peanut_allergy"
+    ],
+    [
+      "colored carrots varieties",
+      "coloured carrots varieties",
+      "sesame_allergy"
+    ],
+    [
+      "colored carrots varieties",
+      "coloured carrots varieties",
       "shellfish_allergy"
     ],
     [
@@ -1464,27 +1144,7 @@
     [
       "colored carrots varieties",
       "coloured carrots varieties",
-      "sesame_allergy"
-    ],
-    [
-      "colored carrots varieties",
-      "coloured carrots varieties",
-      "mustard_allergy"
-    ],
-    [
-      "colored carrots varieties",
-      "coloured carrots varieties",
-      "celery_allergy"
-    ],
-    [
-      "colored carrots varieties",
-      "coloured carrots varieties",
-      "lupin_allergy"
-    ],
-    [
-      "colored carrots varieties",
-      "coloured carrots varieties",
-      "peanut_allergy"
+      "sulfite_sensitive"
     ],
     [
       "colored carrots varieties",
@@ -1492,29 +1152,24 @@
       "tree_nut_allergy"
     ],
     [
-      "dietary fiber",
-      "dietary fibre",
-      "sulfite_sensitive"
+      "colored carrots varieties",
+      "coloured carrots varieties",
+      "vegan"
+    ],
+    [
+      "colored carrots varieties",
+      "coloured carrots varieties",
+      "vegetarian"
     ],
     [
       "dietary fiber",
       "dietary fibre",
-      "gluten_free"
+      "celery_allergy"
     ],
     [
       "dietary fiber",
       "dietary fibre",
       "dairy_free"
-    ],
-    [
-      "dietary fiber",
-      "dietary fibre",
-      "vegan"
-    ],
-    [
-      "dietary fiber",
-      "dietary fibre",
-      "vegetarian"
     ],
     [
       "dietary fiber",
@@ -1529,6 +1184,31 @@
     [
       "dietary fiber",
       "dietary fibre",
+      "gluten_free"
+    ],
+    [
+      "dietary fiber",
+      "dietary fibre",
+      "lupin_allergy"
+    ],
+    [
+      "dietary fiber",
+      "dietary fibre",
+      "mustard_allergy"
+    ],
+    [
+      "dietary fiber",
+      "dietary fibre",
+      "peanut_allergy"
+    ],
+    [
+      "dietary fiber",
+      "dietary fibre",
+      "sesame_allergy"
+    ],
+    [
+      "dietary fiber",
+      "dietary fibre",
       "shellfish_allergy"
     ],
     [
@@ -1539,42 +1219,27 @@
     [
       "dietary fiber",
       "dietary fibre",
-      "sesame_allergy"
-    ],
-    [
-      "dietary fiber",
-      "dietary fibre",
-      "mustard_allergy"
-    ],
-    [
-      "dietary fiber",
-      "dietary fibre",
-      "celery_allergy"
-    ],
-    [
-      "dietary fiber",
-      "dietary fibre",
-      "lupin_allergy"
-    ],
-    [
-      "dietary fiber",
-      "dietary fibre",
-      "peanut_allergy"
+      "sulfite_sensitive"
     ],
     [
       "dietary fiber",
       "dietary fibre",
       "tree_nut_allergy"
+    ],
+    [
+      "dietary fiber",
+      "dietary fibre",
+      "vegan"
+    ],
+    [
+      "dietary fiber",
+      "dietary fibre",
+      "vegetarian"
     ],
     [
       "macolor niger",
       "macolour niger",
-      "sulfite_sensitive"
-    ],
-    [
-      "macolor niger",
-      "macolour niger",
-      "gluten_free"
+      "celery_allergy"
     ],
     [
       "macolor niger",
@@ -1589,6 +1254,31 @@
     [
       "macolor niger",
       "macolour niger",
+      "gluten_free"
+    ],
+    [
+      "macolor niger",
+      "macolour niger",
+      "lupin_allergy"
+    ],
+    [
+      "macolor niger",
+      "macolour niger",
+      "mustard_allergy"
+    ],
+    [
+      "macolor niger",
+      "macolour niger",
+      "peanut_allergy"
+    ],
+    [
+      "macolor niger",
+      "macolour niger",
+      "sesame_allergy"
+    ],
+    [
+      "macolor niger",
+      "macolour niger",
       "shellfish_allergy"
     ],
     [
@@ -1599,27 +1289,7 @@
     [
       "macolor niger",
       "macolour niger",
-      "sesame_allergy"
-    ],
-    [
-      "macolor niger",
-      "macolour niger",
-      "mustard_allergy"
-    ],
-    [
-      "macolor niger",
-      "macolour niger",
-      "celery_allergy"
-    ],
-    [
-      "macolor niger",
-      "macolour niger",
-      "lupin_allergy"
-    ],
-    [
-      "macolor niger",
-      "macolour niger",
-      "peanut_allergy"
+      "sulfite_sensitive"
     ],
     [
       "macolor niger",
@@ -1629,12 +1299,62 @@
     [
       "oat fiber",
       "oat fibre",
+      "celery_allergy"
+    ],
+    [
+      "oat fiber",
+      "oat fibre",
+      "dairy_free"
+    ],
+    [
+      "oat fiber",
+      "oat fibre",
+      "egg_free"
+    ],
+    [
+      "oat fiber",
+      "oat fibre",
+      "fish_allergy"
+    ],
+    [
+      "oat fiber",
+      "oat fibre",
+      "lupin_allergy"
+    ],
+    [
+      "oat fiber",
+      "oat fibre",
+      "mustard_allergy"
+    ],
+    [
+      "oat fiber",
+      "oat fibre",
+      "peanut_allergy"
+    ],
+    [
+      "oat fiber",
+      "oat fibre",
+      "sesame_allergy"
+    ],
+    [
+      "oat fiber",
+      "oat fibre",
+      "shellfish_allergy"
+    ],
+    [
+      "oat fiber",
+      "oat fibre",
+      "soy_allergy"
+    ],
+    [
+      "oat fiber",
+      "oat fibre",
       "sulfite_sensitive"
     ],
     [
       "oat fiber",
       "oat fibre",
-      "dairy_free"
+      "tree_nut_allergy"
     ],
     [
       "oat fiber",
@@ -1647,334 +1367,99 @@
       "vegetarian"
     ],
     [
-      "oat fiber",
-      "oat fibre",
-      "egg_free"
-    ],
-    [
-      "oat fiber",
-      "oat fibre",
-      "fish_allergy"
-    ],
-    [
-      "oat fiber",
-      "oat fibre",
-      "shellfish_allergy"
-    ],
-    [
-      "oat fiber",
-      "oat fibre",
-      "soy_allergy"
-    ],
-    [
-      "oat fiber",
-      "oat fibre",
-      "sesame_allergy"
-    ],
-    [
-      "oat fiber",
-      "oat fibre",
-      "mustard_allergy"
-    ],
-    [
-      "oat fiber",
-      "oat fibre",
-      "celery_allergy"
-    ],
-    [
-      "oat fiber",
-      "oat fibre",
-      "lupin_allergy"
-    ],
-    [
-      "oat fiber",
-      "oat fibre",
-      "peanut_allergy"
-    ],
-    [
-      "oat fiber",
-      "oat fibre",
-      "tree_nut_allergy"
+      "peaches dried sulfured stewed without added sugar",
+      "peaches dried sulphured stewed without added sugar",
+      "vegan"
     ],
     [
       "peaches dried sulfured stewed without added sugar",
       "peaches dried sulphured stewed without added sugar",
+      "vegetarian"
+    ],
+    [
+      "peaches dried sulfured uncooked",
+      "peaches dried sulphured uncooked",
+      "vegan"
+    ],
+    [
+      "peaches dried sulfured uncooked",
+      "peaches dried sulphured uncooked",
+      "vegetarian"
+    ],
+    [
+      "pears dried sulfured stewed without added sugar",
+      "pears dried sulphured stewed without added sugar",
+      "vegan"
+    ],
+    [
+      "pears dried sulfured stewed without added sugar",
+      "pears dried sulphured stewed without added sugar",
+      "vegetarian"
+    ],
+    [
+      "pears dried sulfured uncooked",
+      "pears dried sulphured uncooked",
+      "vegan"
+    ],
+    [
+      "pears dried sulfured uncooked",
+      "pears dried sulphured uncooked",
+      "vegetarian"
+    ],
+    [
+      "potassium aluminium silicate",
+      "potassium aluminum silicate",
+      "celery_allergy"
+    ],
+    [
+      "potassium aluminium silicate",
+      "potassium aluminum silicate",
+      "dairy_free"
+    ],
+    [
+      "potassium aluminium silicate",
+      "potassium aluminum silicate",
+      "egg_free"
+    ],
+    [
+      "potassium aluminium silicate",
+      "potassium aluminum silicate",
+      "fish_allergy"
+    ],
+    [
+      "potassium aluminium silicate",
+      "potassium aluminum silicate",
       "gluten_free"
     ],
     [
-      "peaches dried sulfured stewed without added sugar",
-      "peaches dried sulphured stewed without added sugar",
-      "dairy_free"
-    ],
-    [
-      "peaches dried sulfured stewed without added sugar",
-      "peaches dried sulphured stewed without added sugar",
-      "vegan"
-    ],
-    [
-      "peaches dried sulfured stewed without added sugar",
-      "peaches dried sulphured stewed without added sugar",
-      "vegetarian"
-    ],
-    [
-      "peaches dried sulfured stewed without added sugar",
-      "peaches dried sulphured stewed without added sugar",
-      "egg_free"
-    ],
-    [
-      "peaches dried sulfured stewed without added sugar",
-      "peaches dried sulphured stewed without added sugar",
-      "fish_allergy"
-    ],
-    [
-      "peaches dried sulfured stewed without added sugar",
-      "peaches dried sulphured stewed without added sugar",
-      "shellfish_allergy"
-    ],
-    [
-      "peaches dried sulfured stewed without added sugar",
-      "peaches dried sulphured stewed without added sugar",
-      "soy_allergy"
-    ],
-    [
-      "peaches dried sulfured stewed without added sugar",
-      "peaches dried sulphured stewed without added sugar",
-      "sesame_allergy"
-    ],
-    [
-      "peaches dried sulfured stewed without added sugar",
-      "peaches dried sulphured stewed without added sugar",
-      "mustard_allergy"
-    ],
-    [
-      "peaches dried sulfured stewed without added sugar",
-      "peaches dried sulphured stewed without added sugar",
-      "celery_allergy"
-    ],
-    [
-      "peaches dried sulfured stewed without added sugar",
-      "peaches dried sulphured stewed without added sugar",
+      "potassium aluminium silicate",
+      "potassium aluminum silicate",
       "lupin_allergy"
     ],
     [
-      "peaches dried sulfured stewed without added sugar",
-      "peaches dried sulphured stewed without added sugar",
-      "peanut_allergy"
-    ],
-    [
-      "peaches dried sulfured stewed without added sugar",
-      "peaches dried sulphured stewed without added sugar",
-      "tree_nut_allergy"
-    ],
-    [
-      "peaches dried sulfured uncooked",
-      "peaches dried sulphured uncooked",
-      "gluten_free"
-    ],
-    [
-      "peaches dried sulfured uncooked",
-      "peaches dried sulphured uncooked",
-      "dairy_free"
-    ],
-    [
-      "peaches dried sulfured uncooked",
-      "peaches dried sulphured uncooked",
-      "vegan"
-    ],
-    [
-      "peaches dried sulfured uncooked",
-      "peaches dried sulphured uncooked",
-      "vegetarian"
-    ],
-    [
-      "peaches dried sulfured uncooked",
-      "peaches dried sulphured uncooked",
-      "egg_free"
-    ],
-    [
-      "peaches dried sulfured uncooked",
-      "peaches dried sulphured uncooked",
-      "fish_allergy"
-    ],
-    [
-      "peaches dried sulfured uncooked",
-      "peaches dried sulphured uncooked",
-      "shellfish_allergy"
-    ],
-    [
-      "peaches dried sulfured uncooked",
-      "peaches dried sulphured uncooked",
-      "soy_allergy"
-    ],
-    [
-      "peaches dried sulfured uncooked",
-      "peaches dried sulphured uncooked",
-      "sesame_allergy"
-    ],
-    [
-      "peaches dried sulfured uncooked",
-      "peaches dried sulphured uncooked",
+      "potassium aluminium silicate",
+      "potassium aluminum silicate",
       "mustard_allergy"
     ],
     [
-      "peaches dried sulfured uncooked",
-      "peaches dried sulphured uncooked",
-      "celery_allergy"
-    ],
-    [
-      "peaches dried sulfured uncooked",
-      "peaches dried sulphured uncooked",
-      "lupin_allergy"
-    ],
-    [
-      "peaches dried sulfured uncooked",
-      "peaches dried sulphured uncooked",
+      "potassium aluminium silicate",
+      "potassium aluminum silicate",
       "peanut_allergy"
     ],
     [
-      "peaches dried sulfured uncooked",
-      "peaches dried sulphured uncooked",
-      "tree_nut_allergy"
-    ],
-    [
-      "pears dried sulfured stewed without added sugar",
-      "pears dried sulphured stewed without added sugar",
-      "gluten_free"
-    ],
-    [
-      "pears dried sulfured stewed without added sugar",
-      "pears dried sulphured stewed without added sugar",
-      "dairy_free"
-    ],
-    [
-      "pears dried sulfured stewed without added sugar",
-      "pears dried sulphured stewed without added sugar",
-      "vegan"
-    ],
-    [
-      "pears dried sulfured stewed without added sugar",
-      "pears dried sulphured stewed without added sugar",
-      "vegetarian"
-    ],
-    [
-      "pears dried sulfured stewed without added sugar",
-      "pears dried sulphured stewed without added sugar",
-      "egg_free"
-    ],
-    [
-      "pears dried sulfured stewed without added sugar",
-      "pears dried sulphured stewed without added sugar",
-      "fish_allergy"
-    ],
-    [
-      "pears dried sulfured stewed without added sugar",
-      "pears dried sulphured stewed without added sugar",
-      "shellfish_allergy"
-    ],
-    [
-      "pears dried sulfured stewed without added sugar",
-      "pears dried sulphured stewed without added sugar",
-      "soy_allergy"
-    ],
-    [
-      "pears dried sulfured stewed without added sugar",
-      "pears dried sulphured stewed without added sugar",
+      "potassium aluminium silicate",
+      "potassium aluminum silicate",
       "sesame_allergy"
     ],
     [
-      "pears dried sulfured stewed without added sugar",
-      "pears dried sulphured stewed without added sugar",
-      "mustard_allergy"
-    ],
-    [
-      "pears dried sulfured stewed without added sugar",
-      "pears dried sulphured stewed without added sugar",
-      "celery_allergy"
-    ],
-    [
-      "pears dried sulfured stewed without added sugar",
-      "pears dried sulphured stewed without added sugar",
-      "lupin_allergy"
-    ],
-    [
-      "pears dried sulfured stewed without added sugar",
-      "pears dried sulphured stewed without added sugar",
-      "peanut_allergy"
-    ],
-    [
-      "pears dried sulfured stewed without added sugar",
-      "pears dried sulphured stewed without added sugar",
-      "tree_nut_allergy"
-    ],
-    [
-      "pears dried sulfured uncooked",
-      "pears dried sulphured uncooked",
-      "gluten_free"
-    ],
-    [
-      "pears dried sulfured uncooked",
-      "pears dried sulphured uncooked",
-      "dairy_free"
-    ],
-    [
-      "pears dried sulfured uncooked",
-      "pears dried sulphured uncooked",
-      "vegan"
-    ],
-    [
-      "pears dried sulfured uncooked",
-      "pears dried sulphured uncooked",
-      "vegetarian"
-    ],
-    [
-      "pears dried sulfured uncooked",
-      "pears dried sulphured uncooked",
-      "egg_free"
-    ],
-    [
-      "pears dried sulfured uncooked",
-      "pears dried sulphured uncooked",
-      "fish_allergy"
-    ],
-    [
-      "pears dried sulfured uncooked",
-      "pears dried sulphured uncooked",
+      "potassium aluminium silicate",
+      "potassium aluminum silicate",
       "shellfish_allergy"
     ],
     [
-      "pears dried sulfured uncooked",
-      "pears dried sulphured uncooked",
+      "potassium aluminium silicate",
+      "potassium aluminum silicate",
       "soy_allergy"
-    ],
-    [
-      "pears dried sulfured uncooked",
-      "pears dried sulphured uncooked",
-      "sesame_allergy"
-    ],
-    [
-      "pears dried sulfured uncooked",
-      "pears dried sulphured uncooked",
-      "mustard_allergy"
-    ],
-    [
-      "pears dried sulfured uncooked",
-      "pears dried sulphured uncooked",
-      "celery_allergy"
-    ],
-    [
-      "pears dried sulfured uncooked",
-      "pears dried sulphured uncooked",
-      "lupin_allergy"
-    ],
-    [
-      "pears dried sulfured uncooked",
-      "pears dried sulphured uncooked",
-      "peanut_allergy"
-    ],
-    [
-      "pears dried sulfured uncooked",
-      "pears dried sulphured uncooked",
-      "tree_nut_allergy"
     ],
     [
       "potassium aluminium silicate",
@@ -1984,12 +1469,7 @@
     [
       "potassium aluminium silicate",
       "potassium aluminum silicate",
-      "gluten_free"
-    ],
-    [
-      "potassium aluminium silicate",
-      "potassium aluminum silicate",
-      "dairy_free"
+      "tree_nut_allergy"
     ],
     [
       "potassium aluminium silicate",
@@ -2002,54 +1482,59 @@
       "vegetarian"
     ],
     [
-      "potassium aluminium silicate",
-      "potassium aluminum silicate",
-      "egg_free"
-    ],
-    [
-      "potassium aluminium silicate",
-      "potassium aluminum silicate",
-      "fish_allergy"
-    ],
-    [
-      "potassium aluminium silicate",
-      "potassium aluminum silicate",
-      "shellfish_allergy"
-    ],
-    [
-      "potassium aluminium silicate",
-      "potassium aluminum silicate",
-      "soy_allergy"
-    ],
-    [
-      "potassium aluminium silicate",
-      "potassium aluminum silicate",
-      "sesame_allergy"
-    ],
-    [
-      "potassium aluminium silicate",
-      "potassium aluminum silicate",
-      "mustard_allergy"
-    ],
-    [
-      "potassium aluminium silicate",
-      "potassium aluminum silicate",
+      "potassium sulfates",
+      "potassium sulphates",
       "celery_allergy"
     ],
     [
-      "potassium aluminium silicate",
-      "potassium aluminum silicate",
+      "potassium sulfates",
+      "potassium sulphates",
+      "dairy_free"
+    ],
+    [
+      "potassium sulfates",
+      "potassium sulphates",
+      "egg_free"
+    ],
+    [
+      "potassium sulfates",
+      "potassium sulphates",
+      "fish_allergy"
+    ],
+    [
+      "potassium sulfates",
+      "potassium sulphates",
+      "gluten_free"
+    ],
+    [
+      "potassium sulfates",
+      "potassium sulphates",
       "lupin_allergy"
     ],
     [
-      "potassium aluminium silicate",
-      "potassium aluminum silicate",
+      "potassium sulfates",
+      "potassium sulphates",
+      "mustard_allergy"
+    ],
+    [
+      "potassium sulfates",
+      "potassium sulphates",
       "peanut_allergy"
     ],
     [
-      "potassium aluminium silicate",
-      "potassium aluminum silicate",
-      "tree_nut_allergy"
+      "potassium sulfates",
+      "potassium sulphates",
+      "sesame_allergy"
+    ],
+    [
+      "potassium sulfates",
+      "potassium sulphates",
+      "shellfish_allergy"
+    ],
+    [
+      "potassium sulfates",
+      "potassium sulphates",
+      "soy_allergy"
     ],
     [
       "potassium sulfates",
@@ -2059,12 +1544,7 @@
     [
       "potassium sulfates",
       "potassium sulphates",
-      "gluten_free"
-    ],
-    [
-      "potassium sulfates",
-      "potassium sulphates",
-      "dairy_free"
+      "tree_nut_allergy"
     ],
     [
       "potassium sulfates",
@@ -2077,54 +1557,59 @@
       "vegetarian"
     ],
     [
-      "potassium sulfates",
-      "potassium sulphates",
-      "egg_free"
-    ],
-    [
-      "potassium sulfates",
-      "potassium sulphates",
-      "fish_allergy"
-    ],
-    [
-      "potassium sulfates",
-      "potassium sulphates",
-      "shellfish_allergy"
-    ],
-    [
-      "potassium sulfates",
-      "potassium sulphates",
-      "soy_allergy"
-    ],
-    [
-      "potassium sulfates",
-      "potassium sulphates",
-      "sesame_allergy"
-    ],
-    [
-      "potassium sulfates",
-      "potassium sulphates",
-      "mustard_allergy"
-    ],
-    [
-      "potassium sulfates",
-      "potassium sulphates",
+      "salt of aspartame acesulfame",
+      "salt of aspartame acesulphame",
       "celery_allergy"
     ],
     [
-      "potassium sulfates",
-      "potassium sulphates",
+      "salt of aspartame acesulfame",
+      "salt of aspartame acesulphame",
+      "dairy_free"
+    ],
+    [
+      "salt of aspartame acesulfame",
+      "salt of aspartame acesulphame",
+      "egg_free"
+    ],
+    [
+      "salt of aspartame acesulfame",
+      "salt of aspartame acesulphame",
+      "fish_allergy"
+    ],
+    [
+      "salt of aspartame acesulfame",
+      "salt of aspartame acesulphame",
+      "gluten_free"
+    ],
+    [
+      "salt of aspartame acesulfame",
+      "salt of aspartame acesulphame",
       "lupin_allergy"
     ],
     [
-      "potassium sulfates",
-      "potassium sulphates",
+      "salt of aspartame acesulfame",
+      "salt of aspartame acesulphame",
+      "mustard_allergy"
+    ],
+    [
+      "salt of aspartame acesulfame",
+      "salt of aspartame acesulphame",
       "peanut_allergy"
     ],
     [
-      "potassium sulfates",
-      "potassium sulphates",
-      "tree_nut_allergy"
+      "salt of aspartame acesulfame",
+      "salt of aspartame acesulphame",
+      "sesame_allergy"
+    ],
+    [
+      "salt of aspartame acesulfame",
+      "salt of aspartame acesulphame",
+      "shellfish_allergy"
+    ],
+    [
+      "salt of aspartame acesulfame",
+      "salt of aspartame acesulphame",
+      "soy_allergy"
     ],
     [
       "salt of aspartame acesulfame",
@@ -2134,12 +1619,7 @@
     [
       "salt of aspartame acesulfame",
       "salt of aspartame acesulphame",
-      "gluten_free"
-    ],
-    [
-      "salt of aspartame acesulfame",
-      "salt of aspartame acesulphame",
-      "dairy_free"
+      "tree_nut_allergy"
     ],
     [
       "salt of aspartame acesulfame",
@@ -2152,54 +1632,59 @@
       "vegetarian"
     ],
     [
-      "salt of aspartame acesulfame",
-      "salt of aspartame acesulphame",
-      "egg_free"
-    ],
-    [
-      "salt of aspartame acesulfame",
-      "salt of aspartame acesulphame",
-      "fish_allergy"
-    ],
-    [
-      "salt of aspartame acesulfame",
-      "salt of aspartame acesulphame",
-      "shellfish_allergy"
-    ],
-    [
-      "salt of aspartame acesulfame",
-      "salt of aspartame acesulphame",
-      "soy_allergy"
-    ],
-    [
-      "salt of aspartame acesulfame",
-      "salt of aspartame acesulphame",
-      "sesame_allergy"
-    ],
-    [
-      "salt of aspartame acesulfame",
-      "salt of aspartame acesulphame",
-      "mustard_allergy"
-    ],
-    [
-      "salt of aspartame acesulfame",
-      "salt of aspartame acesulphame",
+      "sodium aluminium silicate",
+      "sodium aluminum silicate",
       "celery_allergy"
     ],
     [
-      "salt of aspartame acesulfame",
-      "salt of aspartame acesulphame",
+      "sodium aluminium silicate",
+      "sodium aluminum silicate",
+      "dairy_free"
+    ],
+    [
+      "sodium aluminium silicate",
+      "sodium aluminum silicate",
+      "egg_free"
+    ],
+    [
+      "sodium aluminium silicate",
+      "sodium aluminum silicate",
+      "fish_allergy"
+    ],
+    [
+      "sodium aluminium silicate",
+      "sodium aluminum silicate",
+      "gluten_free"
+    ],
+    [
+      "sodium aluminium silicate",
+      "sodium aluminum silicate",
       "lupin_allergy"
     ],
     [
-      "salt of aspartame acesulfame",
-      "salt of aspartame acesulphame",
+      "sodium aluminium silicate",
+      "sodium aluminum silicate",
+      "mustard_allergy"
+    ],
+    [
+      "sodium aluminium silicate",
+      "sodium aluminum silicate",
       "peanut_allergy"
     ],
     [
-      "salt of aspartame acesulfame",
-      "salt of aspartame acesulphame",
-      "tree_nut_allergy"
+      "sodium aluminium silicate",
+      "sodium aluminum silicate",
+      "sesame_allergy"
+    ],
+    [
+      "sodium aluminium silicate",
+      "sodium aluminum silicate",
+      "shellfish_allergy"
+    ],
+    [
+      "sodium aluminium silicate",
+      "sodium aluminum silicate",
+      "soy_allergy"
     ],
     [
       "sodium aluminium silicate",
@@ -2209,92 +1694,27 @@
     [
       "sodium aluminium silicate",
       "sodium aluminum silicate",
-      "gluten_free"
-    ],
-    [
-      "sodium aluminium silicate",
-      "sodium aluminum silicate",
-      "dairy_free"
-    ],
-    [
-      "sodium aluminium silicate",
-      "sodium aluminum silicate",
-      "vegan"
-    ],
-    [
-      "sodium aluminium silicate",
-      "sodium aluminum silicate",
-      "vegetarian"
-    ],
-    [
-      "sodium aluminium silicate",
-      "sodium aluminum silicate",
-      "egg_free"
-    ],
-    [
-      "sodium aluminium silicate",
-      "sodium aluminum silicate",
-      "fish_allergy"
-    ],
-    [
-      "sodium aluminium silicate",
-      "sodium aluminum silicate",
-      "shellfish_allergy"
-    ],
-    [
-      "sodium aluminium silicate",
-      "sodium aluminum silicate",
-      "soy_allergy"
-    ],
-    [
-      "sodium aluminium silicate",
-      "sodium aluminum silicate",
-      "sesame_allergy"
-    ],
-    [
-      "sodium aluminium silicate",
-      "sodium aluminum silicate",
-      "mustard_allergy"
-    ],
-    [
-      "sodium aluminium silicate",
-      "sodium aluminum silicate",
-      "celery_allergy"
-    ],
-    [
-      "sodium aluminium silicate",
-      "sodium aluminum silicate",
-      "lupin_allergy"
-    ],
-    [
-      "sodium aluminium silicate",
-      "sodium aluminum silicate",
-      "peanut_allergy"
-    ],
-    [
-      "sodium aluminium silicate",
-      "sodium aluminum silicate",
       "tree_nut_allergy"
     ],
     [
+      "sodium aluminium silicate",
+      "sodium aluminum silicate",
+      "vegan"
+    ],
+    [
+      "sodium aluminium silicate",
+      "sodium aluminum silicate",
+      "vegetarian"
+    ],
+    [
       "sodium pyrosulfite",
       "sodium pyrosulphite",
-      "gluten_free"
+      "celery_allergy"
     ],
     [
       "sodium pyrosulfite",
       "sodium pyrosulphite",
       "dairy_free"
-    ],
-    [
-      "sodium pyrosulfite",
-      "sodium pyrosulphite",
-      "vegan"
-    ],
-    [
-      "sodium pyrosulfite",
-      "sodium pyrosulphite",
-      "vegetarian"
     ],
     [
       "sodium pyrosulfite",
@@ -2309,6 +1729,31 @@
     [
       "sodium pyrosulfite",
       "sodium pyrosulphite",
+      "gluten_free"
+    ],
+    [
+      "sodium pyrosulfite",
+      "sodium pyrosulphite",
+      "lupin_allergy"
+    ],
+    [
+      "sodium pyrosulfite",
+      "sodium pyrosulphite",
+      "mustard_allergy"
+    ],
+    [
+      "sodium pyrosulfite",
+      "sodium pyrosulphite",
+      "peanut_allergy"
+    ],
+    [
+      "sodium pyrosulfite",
+      "sodium pyrosulphite",
+      "sesame_allergy"
+    ],
+    [
+      "sodium pyrosulfite",
+      "sodium pyrosulphite",
       "shellfish_allergy"
     ],
     [
@@ -2319,32 +1764,72 @@
     [
       "sodium pyrosulfite",
       "sodium pyrosulphite",
-      "sesame_allergy"
+      "tree_nut_allergy"
     ],
     [
       "sodium pyrosulfite",
       "sodium pyrosulphite",
-      "mustard_allergy"
+      "vegan"
     ],
     [
       "sodium pyrosulfite",
       "sodium pyrosulphite",
+      "vegetarian"
+    ],
+    [
+      "sodium sulfates",
+      "sodium sulphates",
       "celery_allergy"
     ],
     [
-      "sodium pyrosulfite",
-      "sodium pyrosulphite",
+      "sodium sulfates",
+      "sodium sulphates",
+      "dairy_free"
+    ],
+    [
+      "sodium sulfates",
+      "sodium sulphates",
+      "egg_free"
+    ],
+    [
+      "sodium sulfates",
+      "sodium sulphates",
+      "fish_allergy"
+    ],
+    [
+      "sodium sulfates",
+      "sodium sulphates",
+      "gluten_free"
+    ],
+    [
+      "sodium sulfates",
+      "sodium sulphates",
       "lupin_allergy"
     ],
     [
-      "sodium pyrosulfite",
-      "sodium pyrosulphite",
+      "sodium sulfates",
+      "sodium sulphates",
+      "mustard_allergy"
+    ],
+    [
+      "sodium sulfates",
+      "sodium sulphates",
       "peanut_allergy"
     ],
     [
-      "sodium pyrosulfite",
-      "sodium pyrosulphite",
-      "tree_nut_allergy"
+      "sodium sulfates",
+      "sodium sulphates",
+      "sesame_allergy"
+    ],
+    [
+      "sodium sulfates",
+      "sodium sulphates",
+      "shellfish_allergy"
+    ],
+    [
+      "sodium sulfates",
+      "sodium sulphates",
+      "soy_allergy"
     ],
     [
       "sodium sulfates",
@@ -2354,12 +1839,7 @@
     [
       "sodium sulfates",
       "sodium sulphates",
-      "gluten_free"
-    ],
-    [
-      "sodium sulfates",
-      "sodium sulphates",
-      "dairy_free"
+      "tree_nut_allergy"
     ],
     [
       "sodium sulfates",
@@ -2372,54 +1852,59 @@
       "vegetarian"
     ],
     [
-      "sodium sulfates",
-      "sodium sulphates",
-      "egg_free"
-    ],
-    [
-      "sodium sulfates",
-      "sodium sulphates",
-      "fish_allergy"
-    ],
-    [
-      "sodium sulfates",
-      "sodium sulphates",
-      "shellfish_allergy"
-    ],
-    [
-      "sodium sulfates",
-      "sodium sulphates",
-      "soy_allergy"
-    ],
-    [
-      "sodium sulfates",
-      "sodium sulphates",
-      "sesame_allergy"
-    ],
-    [
-      "sodium sulfates",
-      "sodium sulphates",
-      "mustard_allergy"
-    ],
-    [
-      "sodium sulfates",
-      "sodium sulphates",
+      "starch aluminium octenyl succinate",
+      "starch aluminum octenyl succinate",
       "celery_allergy"
     ],
     [
-      "sodium sulfates",
-      "sodium sulphates",
+      "starch aluminium octenyl succinate",
+      "starch aluminum octenyl succinate",
+      "dairy_free"
+    ],
+    [
+      "starch aluminium octenyl succinate",
+      "starch aluminum octenyl succinate",
+      "egg_free"
+    ],
+    [
+      "starch aluminium octenyl succinate",
+      "starch aluminum octenyl succinate",
+      "fish_allergy"
+    ],
+    [
+      "starch aluminium octenyl succinate",
+      "starch aluminum octenyl succinate",
+      "gluten_free"
+    ],
+    [
+      "starch aluminium octenyl succinate",
+      "starch aluminum octenyl succinate",
       "lupin_allergy"
     ],
     [
-      "sodium sulfates",
-      "sodium sulphates",
+      "starch aluminium octenyl succinate",
+      "starch aluminum octenyl succinate",
+      "mustard_allergy"
+    ],
+    [
+      "starch aluminium octenyl succinate",
+      "starch aluminum octenyl succinate",
       "peanut_allergy"
     ],
     [
-      "sodium sulfates",
-      "sodium sulphates",
-      "tree_nut_allergy"
+      "starch aluminium octenyl succinate",
+      "starch aluminum octenyl succinate",
+      "sesame_allergy"
+    ],
+    [
+      "starch aluminium octenyl succinate",
+      "starch aluminum octenyl succinate",
+      "shellfish_allergy"
+    ],
+    [
+      "starch aluminium octenyl succinate",
+      "starch aluminum octenyl succinate",
+      "soy_allergy"
     ],
     [
       "starch aluminium octenyl succinate",
@@ -2429,12 +1914,7 @@
     [
       "starch aluminium octenyl succinate",
       "starch aluminum octenyl succinate",
-      "gluten_free"
-    ],
-    [
-      "starch aluminium octenyl succinate",
-      "starch aluminum octenyl succinate",
-      "dairy_free"
+      "tree_nut_allergy"
     ],
     [
       "starch aluminium octenyl succinate",
@@ -2447,54 +1927,59 @@
       "vegetarian"
     ],
     [
-      "starch aluminium octenyl succinate",
-      "starch aluminum octenyl succinate",
-      "egg_free"
-    ],
-    [
-      "starch aluminium octenyl succinate",
-      "starch aluminum octenyl succinate",
-      "fish_allergy"
-    ],
-    [
-      "starch aluminium octenyl succinate",
-      "starch aluminum octenyl succinate",
-      "shellfish_allergy"
-    ],
-    [
-      "starch aluminium octenyl succinate",
-      "starch aluminum octenyl succinate",
-      "soy_allergy"
-    ],
-    [
-      "starch aluminium octenyl succinate",
-      "starch aluminum octenyl succinate",
-      "sesame_allergy"
-    ],
-    [
-      "starch aluminium octenyl succinate",
-      "starch aluminum octenyl succinate",
-      "mustard_allergy"
-    ],
-    [
-      "starch aluminium octenyl succinate",
-      "starch aluminum octenyl succinate",
+      "sulfan blue",
+      "sulphan blue",
       "celery_allergy"
     ],
     [
-      "starch aluminium octenyl succinate",
-      "starch aluminum octenyl succinate",
+      "sulfan blue",
+      "sulphan blue",
+      "dairy_free"
+    ],
+    [
+      "sulfan blue",
+      "sulphan blue",
+      "egg_free"
+    ],
+    [
+      "sulfan blue",
+      "sulphan blue",
+      "fish_allergy"
+    ],
+    [
+      "sulfan blue",
+      "sulphan blue",
+      "gluten_free"
+    ],
+    [
+      "sulfan blue",
+      "sulphan blue",
       "lupin_allergy"
     ],
     [
-      "starch aluminium octenyl succinate",
-      "starch aluminum octenyl succinate",
+      "sulfan blue",
+      "sulphan blue",
+      "mustard_allergy"
+    ],
+    [
+      "sulfan blue",
+      "sulphan blue",
       "peanut_allergy"
     ],
     [
-      "starch aluminium octenyl succinate",
-      "starch aluminum octenyl succinate",
-      "tree_nut_allergy"
+      "sulfan blue",
+      "sulphan blue",
+      "sesame_allergy"
+    ],
+    [
+      "sulfan blue",
+      "sulphan blue",
+      "shellfish_allergy"
+    ],
+    [
+      "sulfan blue",
+      "sulphan blue",
+      "soy_allergy"
     ],
     [
       "sulfan blue",
@@ -2504,92 +1989,27 @@
     [
       "sulfan blue",
       "sulphan blue",
-      "gluten_free"
-    ],
-    [
-      "sulfan blue",
-      "sulphan blue",
-      "dairy_free"
-    ],
-    [
-      "sulfan blue",
-      "sulphan blue",
-      "vegan"
-    ],
-    [
-      "sulfan blue",
-      "sulphan blue",
-      "vegetarian"
-    ],
-    [
-      "sulfan blue",
-      "sulphan blue",
-      "egg_free"
-    ],
-    [
-      "sulfan blue",
-      "sulphan blue",
-      "fish_allergy"
-    ],
-    [
-      "sulfan blue",
-      "sulphan blue",
-      "shellfish_allergy"
-    ],
-    [
-      "sulfan blue",
-      "sulphan blue",
-      "soy_allergy"
-    ],
-    [
-      "sulfan blue",
-      "sulphan blue",
-      "sesame_allergy"
-    ],
-    [
-      "sulfan blue",
-      "sulphan blue",
-      "mustard_allergy"
-    ],
-    [
-      "sulfan blue",
-      "sulphan blue",
-      "celery_allergy"
-    ],
-    [
-      "sulfan blue",
-      "sulphan blue",
-      "lupin_allergy"
-    ],
-    [
-      "sulfan blue",
-      "sulphan blue",
-      "peanut_allergy"
-    ],
-    [
-      "sulfan blue",
-      "sulphan blue",
       "tree_nut_allergy"
     ],
     [
+      "sulfan blue",
+      "sulphan blue",
+      "vegan"
+    ],
+    [
+      "sulfan blue",
+      "sulphan blue",
+      "vegetarian"
+    ],
+    [
       "sulfurous acid anhydride",
       "sulphurous acid anhydride",
-      "gluten_free"
+      "celery_allergy"
     ],
     [
       "sulfurous acid anhydride",
       "sulphurous acid anhydride",
       "dairy_free"
-    ],
-    [
-      "sulfurous acid anhydride",
-      "sulphurous acid anhydride",
-      "vegan"
-    ],
-    [
-      "sulfurous acid anhydride",
-      "sulphurous acid anhydride",
-      "vegetarian"
     ],
     [
       "sulfurous acid anhydride",
@@ -2604,6 +2024,31 @@
     [
       "sulfurous acid anhydride",
       "sulphurous acid anhydride",
+      "gluten_free"
+    ],
+    [
+      "sulfurous acid anhydride",
+      "sulphurous acid anhydride",
+      "lupin_allergy"
+    ],
+    [
+      "sulfurous acid anhydride",
+      "sulphurous acid anhydride",
+      "mustard_allergy"
+    ],
+    [
+      "sulfurous acid anhydride",
+      "sulphurous acid anhydride",
+      "peanut_allergy"
+    ],
+    [
+      "sulfurous acid anhydride",
+      "sulphurous acid anhydride",
+      "sesame_allergy"
+    ],
+    [
+      "sulfurous acid anhydride",
+      "sulphurous acid anhydride",
       "shellfish_allergy"
     ],
     [
@@ -2614,32 +2059,17 @@
     [
       "sulfurous acid anhydride",
       "sulphurous acid anhydride",
-      "sesame_allergy"
-    ],
-    [
-      "sulfurous acid anhydride",
-      "sulphurous acid anhydride",
-      "mustard_allergy"
-    ],
-    [
-      "sulfurous acid anhydride",
-      "sulphurous acid anhydride",
-      "celery_allergy"
-    ],
-    [
-      "sulfurous acid anhydride",
-      "sulphurous acid anhydride",
-      "lupin_allergy"
-    ],
-    [
-      "sulfurous acid anhydride",
-      "sulphurous acid anhydride",
-      "peanut_allergy"
-    ],
-    [
-      "sulfurous acid anhydride",
-      "sulphurous acid anhydride",
       "tree_nut_allergy"
+    ],
+    [
+      "sulfurous acid anhydride",
+      "sulphurous acid anhydride",
+      "vegan"
+    ],
+    [
+      "sulfurous acid anhydride",
+      "sulphurous acid anhydride",
+      "vegetarian"
     ]
   ]
 }
