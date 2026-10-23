@@ -9,11 +9,65 @@ import type {
 import { PROFILE_REQUIRED_TAG, PROFILE_UPDATE_TAG, INGREDIENT_AUDIT_TAG } from '@/constants/chatProtocol'
 import { UserProfile, DEFAULT_PROFILE, backendToProfile, type BackendProfile, type ProfileUpdateStreamPayload } from '@/types/userProfile'
 import type { RecentCheckEntry } from '@/lib/profileStorage'
+import {
+  isConfirmPrompt,
+  isDegradedText,
+  isEmergencyGuidance,
+  isProfileRequiredText,
+  parseUnderstandingEcho,
+  type UnderstandingEcho,
+} from '@/lib/chatContract'
 
 export interface Message {
   role: 'user' | 'assistant'
   content: string
   audit?: IngredientAuditData
+  profileRequired?: boolean
+  degraded?: boolean
+  emergency?: boolean
+  understandingEcho?: UnderstandingEcho | null
+  confirmPending?: boolean
+}
+
+const PROFILE_REQUIRED_FALLBACK =
+  'I need to know which restrictions apply before I can say SAFE or NOT SAFE. Tell me your diet or allergies.'
+
+export function applyAssistantContract(
+  content: string,
+  extras: {
+    profileRequired?: boolean
+    audit?: IngredientAuditData
+    forceEmergency?: boolean
+  } = {},
+): Pick<
+  Message,
+  | 'content'
+  | 'profileRequired'
+  | 'degraded'
+  | 'emergency'
+  | 'understandingEcho'
+  | 'confirmPending'
+  | 'audit'
+> {
+  const { echo, remainder } = parseUnderstandingEcho(content)
+  const emergency = Boolean(extras.forceEmergency) || isEmergencyGuidance(content)
+  const profileRequired =
+    (Boolean(extras.profileRequired) || isProfileRequiredText(content)) && !emergency
+  const degraded = extras.audit?.degraded === true || isDegradedText(content)
+  const confirmPending = !emergency && !profileRequired && isConfirmPrompt(content)
+  let visible = remainder
+  if (degraded) {
+    visible = visible.replace(/I could not finish that check\.[^\n]*/gi, '').trim()
+  }
+  return {
+    content: visible,
+    understandingEcho: echo,
+    profileRequired,
+    degraded,
+    emergency,
+    confirmPending,
+    audit: emergency || profileRequired ? undefined : extras.audit,
+  }
 }
 
 /** Top-level verdict from audit groups: avoid beats depends beats safe. */
@@ -110,6 +164,7 @@ export function normalizeAuditData(raw: BackendAuditPayload): IngredientAuditDat
     groups: groupsArray,
     explanation: raw.explanation,
     confidenceTier,
+    degraded: raw.degraded === true,
   }
 }
 
@@ -132,18 +187,28 @@ export function stripStatusPlaceholders(text: string): string {
 function flushStreamContent(
   buffer: string,
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>,
+  flags: { profileRequired: boolean; forceEmergency: boolean },
 ) {
   const content = stripStatusPlaceholders(
     buffer
       .replace(new RegExp(`${PROFILE_UPDATE_TAG}[\\s\\S]*?${PROFILE_UPDATE_TAG}`, 'g'), '')
-      .replace(new RegExp(`${PROFILE_REQUIRED_TAG}[\\s\\S]*?(?=${PROFILE_UPDATE_TAG}|$)`, 'g'), '')
+      .replaceAll(PROFILE_REQUIRED_TAG, '')
       .replace(new RegExp(`${INGREDIENT_AUDIT_TAG}[\\s\\S]*?${INGREDIENT_AUDIT_TAG}`, 'g'), '')
       .trim(),
   )
   setMessages((prev) => {
     const newMsgs = [...prev]
     const last = newMsgs[newMsgs.length - 1]
-    if (last && last.role === 'assistant') last.content = content
+    if (last && last.role === 'assistant') {
+      Object.assign(
+        last,
+        applyAssistantContract(content, {
+          profileRequired: flags.profileRequired,
+          audit: last.audit,
+          forceEmergency: flags.forceEmergency || Boolean(last.emergency),
+        }),
+      )
+    }
     return newMsgs
   })
 }
@@ -158,23 +223,27 @@ export async function streamChatResponse(
   const decoder = new TextDecoder()
   let buffer = ''
   let lastFlushAt = 0
+  const flags = { profileRequired: false, forceEmergency: false }
 
   while (true) {
     const { done, value } = await reader.read()
     if (done) {
-      flushStreamContent(buffer, setMessages)
+      if (flags.profileRequired && !stripStatusPlaceholders(buffer.replaceAll(PROFILE_REQUIRED_TAG, '')).trim()) {
+        buffer = `${buffer}\n${PROFILE_REQUIRED_FALLBACK}`
+      }
+      flushStreamContent(buffer, setMessages, flags)
       break
     }
 
     const chunk = decoder.decode(value, { stream: true })
     buffer += chunk
 
-    if (buffer.includes(PROFILE_REQUIRED_TAG)) {
-      const profileRequiredPattern = new RegExp(`${PROFILE_REQUIRED_TAG}[^]*?(?=${PROFILE_UPDATE_TAG}|$)`, 'g')
-      buffer = buffer.replace(profileRequiredPattern, '').trim()
-      if (!buffer.trim())
-        buffer =
-          'Please set your dietary preference, allergens, and lifestyle in the form above so we can give you personalized advice.'
+    if (buffer.includes(PROFILE_REQUIRED_TAG) || isProfileRequiredText(buffer)) {
+      flags.profileRequired = true
+      setShowOnboarding(true)
+    }
+    if (isEmergencyGuidance(buffer)) {
+      flags.forceEmergency = true
     }
 
     if (buffer.includes(PROFILE_UPDATE_TAG)) {
@@ -224,7 +293,7 @@ export async function streamChatResponse(
           setMessages((prev) => {
             const next = [...prev]
             const last = next[next.length - 1]
-            if (last && last.role === 'assistant') {
+            if (last && last.role === 'assistant' && !flags.profileRequired && !flags.forceEmergency) {
               last.audit = normalized
             }
             return next
@@ -238,7 +307,7 @@ export async function streamChatResponse(
 
     const now = Date.now()
     if (now - lastFlushAt >= STREAM_UI_THROTTLE_MS) {
-      flushStreamContent(buffer, setMessages)
+      flushStreamContent(buffer, setMessages, flags)
       lastFlushAt = now
     }
   }

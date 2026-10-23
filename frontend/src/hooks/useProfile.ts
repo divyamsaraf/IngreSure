@@ -47,6 +47,7 @@ export function useProfile(profileApiBase: string) {
               allergens: Array.isArray(p.allergens) ? p.allergens : Array.isArray(p.allergies) ? p.allergies : [],
               lifestyle: Array.isArray(p.lifestyle) ? p.lifestyle : Array.isArray(p.lifestyle_flags) ? p.lifestyle_flags : [],
               is_onboarding_completed: Boolean(p.is_onboarding_completed),
+              region: typeof p.region === 'string' ? p.region : undefined,
             })
           } catch {
             // ignore parse error and fall through to default onboarding behavior
@@ -70,6 +71,7 @@ export function useProfile(profileApiBase: string) {
             allergens: Array.isArray(p.allergens) ? p.allergens : Array.isArray(p.allergies) ? p.allergies : [],
             lifestyle: Array.isArray(p.lifestyle) ? p.lifestyle : Array.isArray(p.lifestyle_flags) ? p.lifestyle_flags : [],
             is_onboarding_completed: Boolean(p.is_onboarding_completed),
+            region: typeof p.region === 'string' ? p.region : undefined,
           })
         } catch {
           // ignore parse error and leave default profile

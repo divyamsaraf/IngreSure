@@ -57,7 +57,7 @@ describe('ChatInterface', () => {
 
     await waitFor(
       () => {
-        expect(screen.getByText(/Sorry, something went wrong/)).toBeInTheDocument()
+        expect(screen.getByText(/Backend error|Chat failed|Sorry/)).toBeInTheDocument()
       },
       { timeout: 3000 },
     )

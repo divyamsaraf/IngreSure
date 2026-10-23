@@ -41,6 +41,8 @@ export interface UserProfile {
   allergens: string[];
   lifestyle: string[];
   is_onboarding_completed: boolean;
+  /** Frontend-only region hint (US, GB, IN, …). Not sent to the grocery chat API. */
+  region?: string;
 }
 
 export const DEFAULT_PROFILE: UserProfile = {

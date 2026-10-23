@@ -42,6 +42,7 @@ export interface IngredientAuditData {
   groups: IngredientAuditGroup[]
   explanation?: string
   confidenceTier?: ConfidenceTier
+  degraded?: boolean
 }
 
 /** Backend audit payload: groups may be array or keyed object; item shape is permissive. */
@@ -50,6 +51,7 @@ export interface BackendAuditPayload {
   explanation?: string
   explanation_source?: string
   confidence_tier?: string
+  degraded?: boolean
   llm_used?: boolean
   source?: string
   groups?:
@@ -61,6 +63,7 @@ interface Props {
   data: IngredientAuditData
   showPersonaliseNudge?: boolean
   onPersonalise?: () => void
+  hideVerdictChips?: boolean
 }
 
 const PILL_LABEL: Record<IngredientStatus, string> = {
@@ -536,7 +539,12 @@ export default function IngredientAuditCards(props: Props) {
   return <IngredientAuditCardsContent key={resultFingerprint} {...props} />
 }
 
-function IngredientAuditCardsContent({ data, showPersonaliseNudge, onPersonalise }: Props) {
+function IngredientAuditCardsContent({
+  data,
+  showPersonaliseNudge,
+  onPersonalise,
+  hideVerdictChips,
+}: Props) {
   const { profile } = useProfileContext()
   const safeSectionRef = useRef<HTMLDivElement>(null)
   const avoidSectionRef = useRef<HTMLDivElement>(null)
@@ -597,8 +605,9 @@ function IngredientAuditCardsContent({ data, showPersonaliseNudge, onPersonalise
 
   return (
     <div className="space-y-4">
-      {/* Status summary pills: click to scroll to section */}
-      <div className="flex flex-wrap items-center gap-2">
+      {/* Status summary pills: click to scroll to section. Hidden for PROFILE_REQUIRED / degraded. */}
+      {!hideVerdictChips && !data.degraded ? (
+      <div className="flex flex-wrap items-center gap-2" data-testid="verdict-chips">
         {(['safe', 'avoid', 'depends'] as IngredientStatus[]).map((status) => {
           const count = counts[status]
           if (!count) return null
@@ -625,6 +634,7 @@ function IngredientAuditCardsContent({ data, showPersonaliseNudge, onPersonalise
           )
         })}
       </div>
+      ) : null}
 
       <div className="space-y-2">
         <AvoidSection
