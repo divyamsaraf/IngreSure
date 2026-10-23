@@ -24,6 +24,40 @@ def record_live_audit_success(report_path: Path | None = None) -> dict:
     return payload
 
 
+def db_health() -> dict:
+    """Probe configured DB for GET /health. Never SAFE; down → UNCERTAIN.
+
+    Does not increment the degraded counter (k8s probes would pump it).
+    Resolve/evaluate paths call ``core.degraded.record`` on DB failure.
+    """
+    from core.degraded import snapshot
+    from core.models.verdict import VerdictStatus
+
+    uncertain = VerdictStatus.UNCERTAIN.value
+    try:
+        from core.knowledge.ingredient_db import IngredientKnowledgeDB
+
+        db = IngredientKnowledgeDB()
+        if not db.enabled:
+            return {
+                "db_reachable": None,
+                "ike2_status": uncertain,
+                "degraded": snapshot(),
+            }
+        ok = bool(db.ping())
+        return {
+            "db_reachable": ok,
+            "ike2_status": "ok" if ok else uncertain,
+            "degraded": snapshot(),
+        }
+    except Exception:
+        return {
+            "db_reachable": False,
+            "ike2_status": uncertain,
+            "degraded": snapshot(),
+        }
+
+
 def live_audit_health() -> dict:
     """Fields merged into GET /health for ops visibility."""
     if not _STAMP_PATH.exists():

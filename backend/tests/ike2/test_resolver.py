@@ -63,6 +63,8 @@ def test_title_case_atom_uses_normalized_key_for_tier3(monkeypatch):
             animal_origin=False,
             ingredient_id="beet",
             uncertainty_flags=[],
+            source="ontology",
+            asserted_flags=[],
         )
 
     monkeypatch.setattr(db, "disambiguate", _disambiguate)

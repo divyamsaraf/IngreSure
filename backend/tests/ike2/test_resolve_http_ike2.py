@@ -74,6 +74,8 @@ def test_get_resolve_tier3_db(monkeypatch):
         dairy_source=True,
         plant_origin=False,
         uncertainty_flags=[],
+        source="usda",
+        asserted_flags=[],
     )
     monkeypatch.setattr(resolver_mod.truth_anchor, "lookup", lambda _n: None)
     monkeypatch.setattr(resolver_mod.local_ontology, "lookup", lambda _n: None)

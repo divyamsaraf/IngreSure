@@ -368,7 +368,7 @@ def health_check():
     so post-deploy smoke can assert the running host matches the merge tip.
     """
     from core.deploy_fingerprint import fingerprint
-    from core.knowledge.ike2.audit_health import live_audit_health
+    from core.knowledge.ike2.audit_health import db_health, live_audit_health
 
     body = {
         "status": "ok",
@@ -377,6 +377,7 @@ def health_check():
     }
     body.update(fingerprint())
     body.update(live_audit_health())
+    body.update(db_health())
     return body
 
 
