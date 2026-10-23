@@ -1,0 +1,34 @@
+# Staging API on the OCI host, beside production.
+# Production stays on 127.0.0.1:8000 (blue/green candidate :8001).
+# This stack binds 127.0.0.1:8002 only — not the public interface.
+#
+# Image and env come from the host (copy env.template; fill values locally):
+#   INGRESURE_API_IMAGE  e.g. ingresure-api:<git sha>
+#   GIT_SHA              same sha as the image
+#   STAGING_ENV_FILE     default ./.env (gitignored)
+#
+# Do not put secret values in this file.
+
+name: ingresure-staging
+
+services:
+  api:
+    image: ${INGRESURE_API_IMAGE:?set INGRESURE_API_IMAGE to the built tag}
+    container_name: ingresure-api-staging
+    ports:
+      - "127.0.0.1:8002:8000"
+    env_file:
+      - path: ${STAGING_ENV_FILE:-.env}
+        required: true
+    environment:
+      ENVIRONMENT: staging
+      GIT_SHA: ${GIT_SHA:?set GIT_SHA to the image commit}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; r=urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=10); c=r.getcode(); r.read(); r.close(); exit(0 if c==200 else 1)"]
+      interval: 20s
+      timeout: 15s
+      retries: 6
+      start_period: 300s
