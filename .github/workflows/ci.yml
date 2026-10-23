@@ -104,6 +104,12 @@ jobs:
           mkdir -p .local_reports
           python scripts/ike2_item12_scheduled_audits.py \
             --out .local_reports/item12_scheduled_audit_report.json
+      - name: pip-audit (report only; non-blocking)
+        continue-on-error: true
+        working-directory: .
+        run: |
+          pip install pip-audit
+          python scripts/audit_deps.py --python-only --out backend/.local_reports/dep_audit.json
 
   frontend:
     runs-on: ubuntu-latest
@@ -125,3 +131,7 @@ jobs:
         run: npm test -- --run
       - name: Build
         run: npm run build
+      - name: npm audit (report only; non-blocking)
+        continue-on-error: true
+        working-directory: .
+        run: python3 scripts/audit_deps.py --npm-only --out backend/.local_reports/npm_dep_audit.json

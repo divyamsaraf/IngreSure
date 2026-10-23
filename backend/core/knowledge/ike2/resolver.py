@@ -44,11 +44,11 @@ def _uncertain(layer: str, source: str, *, miss_class: str | None = None) -> Res
     )
 
 
-# A Tier-3 row missing its canonical name or its base origin flag can't
-# safely drive a verdict: a silently-absent flag column reads back as
-# ``None``/falsy, which would let a malformed row sail through compliance as
-# a false SAFE. Same incomplete-flags policy as Tier 2 (design §9.4 note).
-_REQUIRED_DB_FIELDS = ("canonical_name", "animal_origin")
+# A Tier-3 row missing canonical_name, animal_origin, source, or asserted_flags
+# can't safely drive a verdict: a silently-absent column reads back as missing
+# and would let a stale view sail through as a false SAFE. Same incomplete-flags
+# policy as Tier 2 (design §9.4 note).
+_REQUIRED_DB_FIELDS = ("canonical_name", "animal_origin", "source", "asserted_flags")
 
 
 def _is_well_formed_db_row(group) -> bool:
@@ -173,11 +173,17 @@ def _resolve_uncached(norm: str, region: Optional[str], *, atom: str) -> Resolve
         group = db.resolve_alias(norm, region)
     except Exception as exc:
         logger.warning("IKE2 Tier-3 resolution error for %r: %s", atom, exc)
+        from core.degraded import record as record_degraded
+
+        record_degraded("l3_db_down", where="resolver")
         return _uncertain("L3_db_error", "db")
 
     if group is not None:
         if not _is_well_formed_db_row(group):
             logger.warning("IKE2 Tier-3 row malformed for %r", atom)
+            from core.degraded import record as record_degraded
+
+            record_degraded("l3_view_missing_required_column", where="resolver")
             return _uncertain("L3_db_malformed", "db")
         return ResolvedIngredient(
             group=group,
