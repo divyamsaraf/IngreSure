@@ -142,7 +142,9 @@ def _chat_not_safe(query: str, restriction_id: str, user_id: str) -> None:
         # BROKEN (PR #26): if "avoid" in statuses or "not_safe" in statuses: return
         #   that return skipped any overall assertion.
         overall = worst_external_status(statuses)
-        assert overall != "SAFE", {"overall": overall, "query": query, "restriction_id": restriction_id}
+        assert overall != "SAFE", (
+            f"overall={overall!r} query={query!r} restriction_id={restriction_id!r}"
+        )
         # Subset check is only a guard against unknown status strings, not a
         # safety assertion. The safety assertion is overall != "SAFE".
         assert asked or statuses <= {"depends", "uncertain", "check", "avoid", "not_safe", "safe"}
@@ -226,7 +228,7 @@ def test_cream_of_wheat_gluten_free_overall_is_not_safe():
     overall = worst_external_status(
         str(g.get("status") or "") for g in (audit.get("groups") or [])
     )
-    assert overall == "NOT_SAFE", {"overall": overall, "groups": audit.get("groups")}
+    assert overall == "NOT_SAFE", f"overall={overall!r} groups={audit.get('groups')!r}"
 
 
 def test_gluten_free_water_is_safe_positive_control():
@@ -260,14 +262,12 @@ def test_fail_open_worst_breaks_cream_of_wheat_gate(monkeypatch):
     with pytest.raises(AssertionError) as chat_exc:
         _chat_not_safe("Cream of Wheat", "gluten_free", "test_fail_open_gate")
     chat_msg = str(chat_exc.value)
-    assert "overall" in chat_msg
-    assert "'SAFE'" in chat_msg
+    assert "overall='SAFE'" in chat_msg
 
     with pytest.raises(AssertionError) as overall_exc:
         test_cream_of_wheat_gluten_free_overall_is_not_safe()
     overall_msg = str(overall_exc.value)
-    assert "overall" in overall_msg
-    assert "'SAFE'" in overall_msg
+    assert "overall='SAFE'" in overall_msg
 
 
 @pytest.mark.parametrize("name", BRAND_WITH_INGREDIENT_WORD)
