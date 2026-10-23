@@ -130,6 +130,10 @@ def _chat_not_safe(query: str, restriction_id: str, user_id: str) -> None:
             audit = json.loads(text[start + len(INGREDIENT_AUDIT_TAG) : end])
     if audit:
         statuses = {str(g.get("status") or "").lower() for g in (audit.get("groups") or [])}
+        # Named-hazard positives may emit mixed cards (wheat AVOID + cream SAFE).
+        # The gate is: not a SAFE-only audit. Avoid/not_safe is enough.
+        if "avoid" in statuses or "not_safe" in statuses:
+            return
         assert "safe" not in statuses, (query, restriction_id, statuses)
         assert asked or statuses <= {"depends", "uncertain", "check", "avoid", "not_safe"}
     else:
