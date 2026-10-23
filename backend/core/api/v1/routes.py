@@ -150,9 +150,15 @@ def evaluate_product(request: Request, req: EvaluateProductRequest) -> EvaluateP
         )
     from core.parsing.ingredient_block import extract_ingredient_block
 
-    paste = extract_ingredient_block(req.ingredients_text)
     try:
+        paste = extract_ingredient_block(req.ingredients_text)
         parsed = preprocess_ingredients_to_strings(req.ingredients_text)
+        if paste.kind == "product_name":
+            from core.compound_expansion import named_restricted_atoms
+
+            named = named_restricted_atoms(*(paste.unparsed or [paste.text]))
+            if named:
+                parsed = named
     except Exception:
         logger.exception("EVALUATE_PRODUCT_PARSE_FAILED")
         record_degraded("parse_failed", where="evaluate_product")
@@ -172,11 +178,13 @@ def evaluate_product(request: Request, req: EvaluateProductRequest) -> EvaluateP
         return _fail_closed_product(parsed)
     _ = (req.use_api_fallback, req.profile_context)
     if paste.kind == "product_name" and getattr(verdict, "status", None) is not None:
-        from core.models.verdict import VerdictStatus
+        from core.models.verdict import VerdictStatus, normalize_external_status
 
         status = verdict.status
-        status_val = status.value if hasattr(status, "value") else str(status)
-        if status_val == "SAFE":
+        status_val = normalize_external_status(
+            status.value if hasattr(status, "value") else status
+        )
+        if status_val != VerdictStatus.NOT_SAFE.value:
             verdict.status = VerdictStatus.UNCERTAIN
     return EvaluateProductResponse(
         parsed_ingredients=parsed, verdict=verdict.to_dict(), ike2=ike2_block

@@ -1,0 +1,200 @@
+{"id": "PS-P001", "query": "Cadbury Dairy Milk", "label": "product", "market": "IN", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P002", "query": "Amul butter", "label": "product", "market": "IN", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P003", "query": "Maggi masala", "label": "product", "market": "IN", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P004", "query": "Parle-G", "label": "product", "market": "IN", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P005", "query": "Bournvita", "label": "product", "market": "IN", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P006", "query": "Nestle Milkmaid", "label": "product", "market": "IN", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P007", "query": "Amul cheese", "label": "product", "market": "IN", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P008", "query": "Maggi noodles", "label": "product", "market": "IN", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P009", "query": "Cadbury Dairy Milk vegan hai kya?", "label": "product", "market": "IN", "lang": "hi-en", "expect_kind": "product_name"}
+{"id": "PS-P010", "query": "Maggi masala gluten free hai?", "label": "product", "market": "IN", "lang": "hi-en", "expect_kind": "product_name"}
+{"id": "PS-P011", "query": "Kya Amul butter vegan hai?", "label": "product", "market": "IN", "lang": "hi-en", "expect_kind": "product_name"}
+{"id": "PS-P012", "query": "Kya Maggi vegan hai?", "label": "product", "market": "IN", "lang": "hi-en", "expect_kind": "product_name"}
+{"id": "PS-P013", "query": "Bournvita vegan hai?", "label": "product", "market": "IN", "lang": "hi-en", "expect_kind": "product_name"}
+{"id": "PS-P014", "query": "8901030865222", "label": "product", "market": "IN", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P015", "query": "Dairy Milk", "label": "product", "market": "US", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P016", "query": "Almond Joy", "label": "product", "market": "US", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P017", "query": "Honey Nut Cheerios", "label": "product", "market": "US", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P018", "query": "Butterfinger", "label": "product", "market": "US", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P019", "query": "Cream of Wheat", "label": "product", "market": "US", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P020", "query": "Rice Krispies", "label": "product", "market": "US", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P021", "query": "Milky Way", "label": "product", "market": "US", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P022", "query": "Hershey's Milk Chocolate", "label": "product", "market": "US", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P023", "query": "Philadelphia cream cheese", "label": "product", "market": "US", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P024", "query": "Almond Breeze", "label": "product", "market": "US", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P025", "query": "Honey Smacks", "label": "product", "market": "US", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P026", "query": "Corn Flakes", "label": "product", "market": "US", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P027", "query": "Is Honey Nut Cheerios gluten free?", "label": "product", "market": "US", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P028", "query": "Is Almond Joy peanut free?", "label": "product", "market": "US", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P029", "query": "Is Butterfinger vegan?", "label": "product", "market": "US", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P030", "query": "Oreo", "label": "product", "market": "US", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P031", "query": "Snickers", "label": "product", "market": "US", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P032", "query": "Is I Can't Believe It's Not Butter vegan?", "label": "product", "market": "US", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P033", "query": "Ben & Jerry's", "label": "product", "market": "US", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P034", "query": "Doritos", "label": "product", "market": "US", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P035", "query": "McVitie's", "label": "product", "market": "UK", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P036", "query": "Marmite", "label": "product", "market": "UK", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P037", "query": "Weetabix", "label": "product", "market": "UK", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P038", "query": "Hobnobs", "label": "product", "market": "UK", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P039", "query": "Jaffa Cakes", "label": "product", "market": "UK", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P040", "query": "Walkers crisps", "label": "product", "market": "UK", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P041", "query": "Cadbury Flake", "label": "product", "market": "UK", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P042", "query": "Maltesers", "label": "product", "market": "UK", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P043", "query": "Heinz baked beans", "label": "product", "market": "UK", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P044", "query": "Is Marmite vegan?", "label": "product", "market": "UK", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P045", "query": "Digestive biscuit", "label": "product", "market": "UK", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P046", "query": "5000159461122", "label": "product", "market": "UK", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P047", "query": "Vegemite", "label": "product", "market": "AU", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P048", "query": "Tim Tam", "label": "product", "market": "AU", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P049", "query": "Arnott's Shapes", "label": "product", "market": "AU", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P050", "query": "Cherry Ripe", "label": "product", "market": "AU", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P051", "query": "Smiths chips", "label": "product", "market": "AU", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P052", "query": "Twisties", "label": "product", "market": "AU", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P053", "query": "Picnic bar", "label": "product", "market": "AU", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P054", "query": "Violet Crumble", "label": "product", "market": "AU", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P055", "query": "Milo", "label": "product", "market": "AU", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P056", "query": "Weet-Bix", "label": "product", "market": "AU", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P057", "query": "Is Vegemite vegan?", "label": "product", "market": "AU", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P058", "query": "Is Tim Tam dairy free?", "label": "product", "market": "AU", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P059", "query": "Whittaker's", "label": "product", "market": "NZ", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P060", "query": "Pineapple Lumps", "label": "product", "market": "NZ", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P061", "query": "Cookie Time", "label": "product", "market": "NZ", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P062", "query": "Griffin's cookies", "label": "product", "market": "NZ", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P063", "query": "Wattie's", "label": "product", "market": "NZ", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P064", "query": "Sanitarium Weet-Bix", "label": "product", "market": "NZ", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P065", "query": "L&P", "label": "product", "market": "NZ", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P066", "query": "Meadow Fresh", "label": "product", "market": "NZ", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P067", "query": "Is Whittaker's vegan?", "label": "product", "market": "NZ", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P068", "query": "Tip Top", "label": "product", "market": "NZ", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P069", "query": "Kraft Dinner", "label": "product", "market": "CA", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P070", "query": "Coffee Crisp", "label": "product", "market": "CA", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P071", "query": "Smarties", "label": "product", "market": "CA", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P072", "query": "Hawkins Cheezies", "label": "product", "market": "CA", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P073", "query": "Aero", "label": "product", "market": "CA", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P074", "query": "Caramilk", "label": "product", "market": "CA", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P075", "query": "Crispy Crunch", "label": "product", "market": "CA", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P076", "query": "All-Dressed chips", "label": "product", "market": "CA", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P077", "query": "Tim Hortons", "label": "product", "market": "CA", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P078", "query": "President's Choice", "label": "product", "market": "CA", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P079", "query": "Is Coffee Crisp vegan?", "label": "product", "market": "CA", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P080", "query": "Is Caramilk dairy free?", "label": "product", "market": "CA", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P081", "query": "Nutella", "label": "product", "market": "EU", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P082", "query": "Ferrero Rocher", "label": "product", "market": "EU", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P083", "query": "Haribo", "label": "product", "market": "EU", "lang": "de", "expect_kind": "product_name"}
+{"id": "PS-P084", "query": "Lu Petit Écolier", "label": "product", "market": "EU", "lang": "fr", "expect_kind": "product_name"}
+{"id": "PS-P085", "query": "Kinder Bueno", "label": "product", "market": "EU", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P086", "query": "Milka", "label": "product", "market": "EU", "lang": "de", "expect_kind": "product_name"}
+{"id": "PS-P087", "query": "Ritter Sport", "label": "product", "market": "EU", "lang": "de", "expect_kind": "product_name"}
+{"id": "PS-P088", "query": "Est-ce que Nutella est vegan?", "label": "product", "market": "EU", "lang": "fr", "expect_kind": "product_name"}
+{"id": "PS-P089", "query": "Ist Haribo vegan?", "label": "product", "market": "EU", "lang": "de", "expect_kind": "product_name"}
+{"id": "PS-P090", "query": "Ist Ritter Sport glutenfrei?", "label": "product", "market": "EU", "lang": "de", "expect_kind": "product_name"}
+{"id": "PS-P091", "query": "Est-ce que Milka est vegan?", "label": "product", "market": "EU", "lang": "fr", "expect_kind": "product_name"}
+{"id": "PS-P092", "query": "Lu Petit Beurre", "label": "product", "market": "EU", "lang": "fr", "expect_kind": "product_name"}
+{"id": "PS-P093", "query": "Almarai", "label": "product", "market": "UAE", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P094", "query": "Tiffany biscuits", "label": "product", "market": "UAE", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P095", "query": "Americana", "label": "product", "market": "UAE", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P096", "query": "Al Ain", "label": "product", "market": "UAE", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P097", "query": "Pretz", "label": "product", "market": "UAE", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P098", "query": "Al Islami", "label": "product", "market": "UAE", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P099", "query": "Is Almarai vegan?", "label": "product", "market": "UAE", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-P100", "query": "Tang", "label": "product", "market": "UAE", "lang": "en", "expect_kind": "product_name"}
+{"id": "PS-N001", "query": "Is milk vegan?", "label": "ingredient", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N002", "query": "Is egg vegan?", "label": "ingredient", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N003", "query": "Is gelatin vegan?", "label": "ingredient", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N004", "query": "Is honey vegan?", "label": "ingredient", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N005", "query": "Is butter vegan?", "label": "ingredient", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N006", "query": "Is wheat vegan?", "label": "ingredient", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N007", "query": "Is rice vegan?", "label": "ingredient", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N008", "query": "Is almond vegan?", "label": "ingredient", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N009", "query": "Is peanut vegan?", "label": "ingredient", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N010", "query": "Is soy vegan?", "label": "ingredient", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N011", "query": "Is tofu vegan?", "label": "ingredient", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N012", "query": "Is onion vegan?", "label": "ingredient", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N013", "query": "Is garlic vegan?", "label": "ingredient", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N014", "query": "Is cheese vegan?", "label": "ingredient", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N015", "query": "Is yogurt vegan?", "label": "ingredient", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N016", "query": "Is cream vegan?", "label": "ingredient", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N017", "query": "Is sugar vegan?", "label": "ingredient", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N018", "query": "Is salt vegan?", "label": "ingredient", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N019", "query": "Is water vegan?", "label": "ingredient", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N020", "query": "Is flour vegan?", "label": "ingredient", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N021", "query": "Is cocoa vegan?", "label": "ingredient", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N022", "query": "Is vanilla vegan?", "label": "ingredient", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N023", "query": "Is paneer vegan?", "label": "ingredient", "market": "IN", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N024", "query": "Is ghee vegan?", "label": "ingredient", "market": "IN", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N025", "query": "Is atta vegan?", "label": "ingredient", "market": "IN", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N026", "query": "Is chicken vegan?", "label": "ingredient", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N027", "query": "Is beef vegan?", "label": "ingredient", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N028", "query": "Is fish vegan?", "label": "ingredient", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N029", "query": "Is shrimp vegan?", "label": "ingredient", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N030", "query": "Is lentil vegan?", "label": "ingredient", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N031", "query": "Is chickpea vegan?", "label": "ingredient", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N032", "query": "Is spinach vegan?", "label": "ingredient", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N033", "query": "Is tomato vegan?", "label": "ingredient", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N034", "query": "Is potato vegan?", "label": "ingredient", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N035", "query": "Is banana vegan?", "label": "ingredient", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N036", "query": "Is oat vegan?", "label": "ingredient", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N037", "query": "Kya doodh vegan hai?", "label": "ingredient", "market": "IN", "lang": "hi-en", "expect_kind": "not_product_name"}
+{"id": "PS-N038", "query": "Est-ce que le lait est vegan?", "label": "ingredient", "market": "EU", "lang": "fr", "expect_kind": "not_product_name"}
+{"id": "PS-N039", "query": "Ist Milch vegan?", "label": "ingredient", "market": "EU", "lang": "de", "expect_kind": "not_product_name"}
+{"id": "PS-N040", "query": "Is coconut vegan?", "label": "ingredient", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N041", "query": "butter chicken", "label": "dish", "market": "IN", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N042", "query": "Is butter chicken vegan?", "label": "dish", "market": "IN", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N043", "query": "paneer tikka", "label": "dish", "market": "IN", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N044", "query": "palak paneer", "label": "dish", "market": "IN", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N045", "query": "dal makhani", "label": "dish", "market": "IN", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N046", "query": "biryani", "label": "dish", "market": "IN", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N047", "query": "masala dosa", "label": "dish", "market": "IN", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N048", "query": "idli sambar", "label": "dish", "market": "IN", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N049", "query": "chole bhature", "label": "dish", "market": "IN", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N050", "query": "pav bhaji", "label": "dish", "market": "IN", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N051", "query": "pizza", "label": "dish", "market": "EU", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N052", "query": "pasta carbonara", "label": "dish", "market": "EU", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N053", "query": "spaghetti bolognese", "label": "dish", "market": "EU", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N054", "query": "chicken tikka masala", "label": "dish", "market": "UK", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N055", "query": "hamburger", "label": "dish", "market": "US", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N056", "query": "sushi", "label": "dish", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N057", "query": "ramen", "label": "dish", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N058", "query": "pad thai", "label": "dish", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N059", "query": "fried rice", "label": "dish", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N060", "query": "caesar salad", "label": "dish", "market": "US", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N061", "query": "tomato soup", "label": "dish", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N062", "query": "apple pie", "label": "dish", "market": "US", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N063", "query": "chocolate cake", "label": "dish", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N064", "query": "pancakes", "label": "dish", "market": "US", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N065", "query": "french toast", "label": "dish", "market": "US", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N066", "query": "scrambled eggs", "label": "dish", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N067", "query": "grilled cheese", "label": "dish", "market": "US", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N068", "query": "hummus", "label": "dish", "market": "UAE", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N069", "query": "guacamole", "label": "dish", "market": "US", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N070", "query": "pho", "label": "dish", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N071", "query": "taco", "label": "dish", "market": "US", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N072", "query": "burrito", "label": "dish", "market": "US", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N073", "query": "lasagna", "label": "dish", "market": "EU", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N074", "query": "risotto", "label": "dish", "market": "EU", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N075", "query": "falafel", "label": "dish", "market": "UAE", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N076", "query": "recipe for cake", "label": "dish", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N077", "query": "recipe for soup", "label": "dish", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N078", "query": "ingredients for a curry", "label": "dish", "market": "IN", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N079", "query": "Can I eat burger with chicken?", "label": "dish", "market": "US", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N080", "query": "How do I make pesto? Basil, pine nuts, parmesan, olive oil, garlic.", "label": "dish", "market": "EU", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N081", "query": "something sweet", "label": "ambiguous", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N082", "query": "the red one", "label": "ambiguous", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N083", "query": "that chocolate bar", "label": "ambiguous", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N084", "query": "dairy", "label": "ambiguous", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N085", "query": "milk chocolate", "label": "ambiguous", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N086", "query": "dark chocolate", "label": "ambiguous", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N087", "query": "peanut butter", "label": "ambiguous", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N088", "query": "cream cheese", "label": "ambiguous", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N089", "query": "almond milk", "label": "ambiguous", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N090", "query": "oat milk", "label": "ambiguous", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N091", "query": "coconut milk", "label": "ambiguous", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N092", "query": "soy milk", "label": "ambiguous", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N093", "query": "this snack", "label": "ambiguous", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N094", "query": "leftover curry", "label": "ambiguous", "market": "IN", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N095", "query": "homemade cookies", "label": "ambiguous", "market": "US", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N096", "query": "restaurant meal", "label": "ambiguous", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N097", "query": "street food", "label": "ambiguous", "market": "IN", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N098", "query": "packed lunch", "label": "ambiguous", "market": "UK", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N099", "query": "mystery drink", "label": "ambiguous", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
+{"id": "PS-N100", "query": "flavored water", "label": "ambiguous", "market": "GLOBAL", "lang": "en", "expect_kind": "not_product_name"}
