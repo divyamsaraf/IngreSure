@@ -21839,7 +21839,9 @@
       "alcohol_content": null,
       "aliases": [
         "cassava, raw",
-        "cassava root"
+        "cassava root",
+        "manioc",
+        "yuca"
       ],
       "animal_origin": false,
       "animal_species": null,
@@ -24375,7 +24377,8 @@
     {
       "alcohol_content": null,
       "aliases": [
-        "jerusalem-artichokes, raw"
+        "jerusalem-artichokes, raw",
+        "jerusalem artichokes"
       ],
       "animal_origin": false,
       "animal_species": null,
@@ -24396,13 +24399,14 @@
       "onion_source": false,
       "plant_origin": true,
       "regions": [],
-      "root_vegetable": false,
+      "root_vegetable": true,
       "sesame_source": false,
       "soy_source": false,
       "synthetic": false,
       "uncertainty_flags": [],
       "asserted_flags": [
-        "plant_origin"
+        "plant_origin",
+        "root_vegetable"
       ]
     },
     {
@@ -35998,8 +36002,9 @@
     {
       "alcohol_content": null,
       "aliases": [
-        "jerusalem-artichokes, raw",
-        "sunchoke"
+        "sunchoke",
+        "jerusalem artichoke",
+        "jerusalem-artichoke"
       ],
       "animal_origin": false,
       "animal_species": null,

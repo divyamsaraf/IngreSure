@@ -16,6 +16,8 @@ from core.knowledge.ike2.stores import local_ontology
 _ONION_FORMS = ("scallion", "scallions", "green onions", "ramps")
 _ROOT_FORMS = (
     "cassava",
+    "manioc",
+    "yuca",
     "jicama",
     "horseradish",
     "wasabi",
@@ -23,6 +25,8 @@ _ROOT_FORMS = (
     "chicory root",
     "salsify",
     "sunchoke",
+    "jerusalem artichoke",
+    "jerusalem artichokes",
     "celeriac",
 )
 
