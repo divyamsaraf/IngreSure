@@ -33961,7 +33961,7 @@
       "enzyme_microbial_source": false,
       "animal_species": null,
       "alcohol_content": null,
-      "alcohol_role": "none"
+      "alcohol_role": "fermentation_trace"
     },
     "knowledge_state": "LOCKED",
     "alias_type": "e_number"
@@ -33996,7 +33996,7 @@
       "enzyme_microbial_source": false,
       "animal_species": null,
       "alcohol_content": null,
-      "alcohol_role": "none"
+      "alcohol_role": "fermentation_trace"
     },
     "knowledge_state": "LOCKED",
     "alias_type": "common"
@@ -34031,7 +34031,7 @@
       "enzyme_microbial_source": false,
       "animal_species": null,
       "alcohol_content": null,
-      "alcohol_role": "none"
+      "alcohol_role": "fermentation_trace"
     },
     "knowledge_state": "LOCKED",
     "alias_type": "common"
@@ -34066,7 +34066,7 @@
       "enzyme_microbial_source": false,
       "animal_species": null,
       "alcohol_content": null,
-      "alcohol_role": "none"
+      "alcohol_role": "fermentation_trace"
     },
     "knowledge_state": "LOCKED",
     "alias_type": "common"
@@ -34101,7 +34101,7 @@
       "enzyme_microbial_source": false,
       "animal_species": null,
       "alcohol_content": null,
-      "alcohol_role": "none"
+      "alcohol_role": "fermentation_trace"
     },
     "knowledge_state": "LOCKED",
     "alias_type": "common"
@@ -34136,7 +34136,7 @@
       "enzyme_microbial_source": false,
       "animal_species": null,
       "alcohol_content": null,
-      "alcohol_role": "none"
+      "alcohol_role": "fermentation_trace"
     },
     "knowledge_state": "LOCKED",
     "alias_type": "common"
@@ -34171,7 +34171,7 @@
       "enzyme_microbial_source": false,
       "animal_species": null,
       "alcohol_content": null,
-      "alcohol_role": "none"
+      "alcohol_role": "fermentation_trace"
     },
     "knowledge_state": "LOCKED",
     "alias_type": "common"
@@ -34206,7 +34206,7 @@
       "enzyme_microbial_source": false,
       "animal_species": null,
       "alcohol_content": null,
-      "alcohol_role": "none"
+      "alcohol_role": "fermentation_trace"
     },
     "knowledge_state": "LOCKED",
     "alias_type": "common"
