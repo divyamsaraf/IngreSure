@@ -21780,13 +21780,14 @@
       "onion_source": false,
       "plant_origin": true,
       "regions": [],
-      "root_vegetable": false,
+      "root_vegetable": true,
       "sesame_source": false,
       "soy_source": false,
       "synthetic": false,
       "uncertainty_flags": [],
       "asserted_flags": [
-        "plant_origin"
+        "plant_origin",
+        "root_vegetable"
       ]
     },
     {
@@ -26271,14 +26272,15 @@
       "onion_source": true,
       "plant_origin": true,
       "regions": [],
-      "root_vegetable": false,
+      "root_vegetable": true,
       "sesame_source": false,
       "soy_source": false,
       "synthetic": false,
       "uncertainty_flags": [],
       "asserted_flags": [
         "onion_source",
-        "plant_origin"
+        "plant_origin",
+        "root_vegetable"
       ]
     },
     {
@@ -26566,13 +26568,14 @@
       "onion_source": false,
       "plant_origin": true,
       "regions": [],
-      "root_vegetable": false,
+      "root_vegetable": true,
       "sesame_source": false,
       "soy_source": false,
       "synthetic": false,
       "uncertainty_flags": [],
       "asserted_flags": [
-        "plant_origin"
+        "plant_origin",
+        "root_vegetable"
       ]
     },
     {
@@ -27518,13 +27521,14 @@
       "onion_source": false,
       "plant_origin": true,
       "regions": [],
-      "root_vegetable": false,
+      "root_vegetable": true,
       "sesame_source": false,
       "soy_source": false,
       "synthetic": false,
       "uncertainty_flags": [],
       "asserted_flags": [
-        "plant_origin"
+        "plant_origin",
+        "root_vegetable"
       ]
     },
     {
@@ -51261,13 +51265,14 @@
       "onion_source": false,
       "plant_origin": true,
       "regions": [],
-      "root_vegetable": false,
+      "root_vegetable": true,
       "sesame_source": false,
       "soy_source": false,
       "synthetic": false,
       "uncertainty_flags": [],
       "asserted_flags": [
-        "plant_origin"
+        "plant_origin",
+        "root_vegetable"
       ]
     },
     {
