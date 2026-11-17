@@ -44907,15 +44907,20 @@
     },
     {
       "alcohol_content": null,
-      "aliases": [],
-      "animal_origin": false,
-      "animal_species": null,
+      "aliases": [
+        "botarga",
+        "poutargue",
+        "botargo"
+      ],
+      "animal_origin": true,
+      "animal_species": "fish",
       "canonical_name": "bottarga",
       "contains": [],
       "dairy_source": false,
       "derived_from": [],
       "egg_source": false,
       "fermented": false,
+      "fish_source": true,
       "fungal": false,
       "garlic_source": false,
       "gluten_source": false,
@@ -44925,7 +44930,7 @@
       "may_contain": [],
       "nut_source": null,
       "onion_source": false,
-      "plant_origin": true,
+      "plant_origin": false,
       "regions": [],
       "root_vegetable": false,
       "sesame_source": false,
@@ -44933,20 +44938,27 @@
       "synthetic": false,
       "uncertainty_flags": [],
       "asserted_flags": [
-        "plant_origin"
+        "animal_origin",
+        "fish_source"
       ]
     },
     {
       "alcohol_content": null,
-      "aliases": [],
-      "animal_origin": false,
-      "animal_species": null,
+      "aliases": [
+        "katsuobushi",
+        "katsuo bushi",
+        "dried bonito",
+        "bonito flake"
+      ],
+      "animal_origin": true,
+      "animal_species": "fish",
       "canonical_name": "bonito flakes",
       "contains": [],
       "dairy_source": false,
       "derived_from": [],
       "egg_source": false,
       "fermented": false,
+      "fish_source": true,
       "fungal": false,
       "garlic_source": false,
       "gluten_source": false,
@@ -44956,7 +44968,7 @@
       "may_contain": [],
       "nut_source": null,
       "onion_source": false,
-      "plant_origin": true,
+      "plant_origin": false,
       "regions": [],
       "root_vegetable": false,
       "sesame_source": false,
@@ -44964,7 +44976,8 @@
       "synthetic": false,
       "uncertainty_flags": [],
       "asserted_flags": [
-        "plant_origin"
+        "animal_origin",
+        "fish_source"
       ]
     },
     {
@@ -65443,7 +65456,8 @@
       "flags": {},
       "id": "broth",
       "role": "process_keep",
-      "asserted_flags": []
+      "asserted_flags": [],
+      "verdict_cap": "WARN"
     },
     {
       "aliases": [],
@@ -65641,7 +65655,8 @@
       "flags": {},
       "id": "stock",
       "role": "process_keep",
-      "asserted_flags": []
+      "asserted_flags": [],
+      "verdict_cap": "WARN"
     },
     {
       "aliases": [],
