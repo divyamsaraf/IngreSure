@@ -1,9 +1,9 @@
 """DRAFT #41 — Jain onion/root expansions (not opened until owner sign-off).
 
-Covers Claude's confirmed-candidate list:
   onion_source: scallion (+ aliases scallions/green onions), ramps
-  root_vegetable: cassava, jicama, horseradish, wasabi, galangal, chicory,
-                  salsify, sunchokes, celeriac (new record, keeps celery_source)
+  root_vegetable: cassava, jicama, horseradish, wasabi, galangal, salsify,
+                  sunchokes, celeriac (new), chicory_root (new; leaf chicory untouched)
+  rebuild note: salsify asserted shellfish_source cleared (bool was already false)
 """
 from __future__ import annotations
 
@@ -46,6 +46,24 @@ def test_jain_batch41_onion_forms_not_safe(form: str):
 def test_jain_batch41_root_forms_not_safe(form: str):
     status = evaluate_ingredients([form], ["jain"], use_api_fallback=False).status.value
     assert status != "SAFE", (form, status)
+
+
+def test_leaf_chicory_not_forced_root():
+    r = resolver.resolve("chicory", None)
+    assert r.status == "resolved"
+    g = r.group
+    flags = getattr(g, "flags", None) or g
+    assert bool(flags.get("root_vegetable")) is False
+
+
+def test_chicory_root_is_own_root_group():
+    r = resolver.resolve("chicory root", None)
+    assert r.status == "resolved"
+    g = r.group
+    cn = getattr(g, "canonical_name", None) or (g.get("canonical_name") if isinstance(g, dict) else None)
+    assert cn in ("chicory root", "chicory_root")
+    flags = getattr(g, "flags", None) or g
+    assert bool(flags.get("root_vegetable")) is True
 
 
 def test_celeriac_is_own_group_with_celery_and_root():
