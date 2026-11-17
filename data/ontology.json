@@ -28505,7 +28505,8 @@
       "uncertainty_flags": [],
       "asserted_flags": [
         "plant_origin",
-        "root_vegetable"
+        "root_vegetable",
+        "shellfish_source"
       ],
       "shellfish_source": false
     },
