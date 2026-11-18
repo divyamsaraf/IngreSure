@@ -3821,7 +3821,7 @@
       "alcohol_content": null,
       "aliases": [
         "corn, sweet, white, raw",
-        "corn, sweet, yellow and white kernels, \u00a0fresh, raw",
+        "corn, sweet, yellow and white kernels,  fresh, raw",
         "Corn, sweet, yellow and white kernels, husked, kernels cut off, raw",
         "corn, sweet, yellow, raw",
         "baby corn"
@@ -8702,14 +8702,10 @@
       "aliases": [
         "celery seed",
         "celery salt",
-        "celeriac",
-        "celeriac, cooked, boiled, drained, without salt",
-        "celeriac, raw",
         "celery, cooked, boiled, drained, without salt",
         "celery, raw",
         "celery stalks",
-        "celery leaves",
-        "celery roots"
+        "celery leaves"
       ],
       "animal_origin": false,
       "animal_species": null,
@@ -8738,6 +8734,55 @@
       "asserted_flags": [
         "celery_source",
         "plant_origin"
+      ],
+      "celery_source": true
+    },
+    {
+      "alcohol_role": null,
+      "aliases": [
+        "celeriac",
+        "celeriac, cooked, boiled, drained, without salt",
+        "celeriac, raw",
+        "celery root",
+        "celery roots"
+      ],
+      "animal_origin": false,
+      "animal_species": null,
+      "bee_product": false,
+      "canonical_name": "celeriac",
+      "category": null,
+      "confidence": "high",
+      "dairy_source": false,
+      "egg_source": false,
+      "enzyme_animal_source": false,
+      "enzyme_microbial_source": false,
+      "fermented": false,
+      "fish_source": false,
+      "fungal": false,
+      "garlic_source": false,
+      "gluten_source": false,
+      "id": "celeriac",
+      "insect_derived": false,
+      "kind": null,
+      "lupin_source": false,
+      "mustard_source": false,
+      "notes": "Celery root / celeriac — separate from stalk celery; celery_source for allergy, root_vegetable for Jain.",
+      "onion_source": false,
+      "peanut_source": false,
+      "plant_origin": true,
+      "regions": [],
+      "root_vegetable": true,
+      "sesame_source": false,
+      "shellfish_source": false,
+      "soy_source": false,
+      "sulphite_source": false,
+      "synthetic": false,
+      "tree_nut_source": false,
+      "uncertainty_flags": [],
+      "asserted_flags": [
+        "celery_source",
+        "plant_origin",
+        "root_vegetable"
       ],
       "celery_source": true
     },
@@ -21794,7 +21839,9 @@
       "alcohol_content": null,
       "aliases": [
         "cassava, raw",
-        "cassava root"
+        "cassava root",
+        "manioc",
+        "yuca"
       ],
       "animal_origin": false,
       "animal_species": null,
@@ -21815,13 +21862,14 @@
       "onion_source": false,
       "plant_origin": true,
       "regions": [],
-      "root_vegetable": false,
+      "root_vegetable": true,
       "sesame_source": false,
       "soy_source": false,
       "synthetic": false,
       "uncertainty_flags": [],
       "asserted_flags": [
-        "plant_origin"
+        "plant_origin",
+        "root_vegetable"
       ]
     },
     {
@@ -22213,8 +22261,7 @@
     {
       "alcohol_content": null,
       "aliases": [
-        "chicory, witloof, raw",
-        "chicory root"
+        "chicory, witloof, raw"
       ],
       "animal_origin": false,
       "animal_species": null,
@@ -22243,6 +22290,50 @@
       "asserted_flags": [
         "plant_origin"
       ]
+    },
+    {
+      "alcohol_role": null,
+      "aliases": [
+        "chicory root"
+      ],
+      "animal_origin": false,
+      "animal_species": null,
+      "bee_product": false,
+      "canonical_name": "chicory root",
+      "category": null,
+      "confidence": "high",
+      "dairy_source": false,
+      "egg_source": false,
+      "enzyme_animal_source": false,
+      "enzyme_microbial_source": false,
+      "fermented": false,
+      "fish_source": false,
+      "fungal": false,
+      "garlic_source": false,
+      "gluten_source": false,
+      "id": "chicory_root",
+      "insect_derived": false,
+      "kind": null,
+      "lupin_source": false,
+      "mustard_source": false,
+      "notes": "Root form of chicory — separate from leaf chicory/witloof/endive for Jain.",
+      "onion_source": false,
+      "peanut_source": false,
+      "plant_origin": true,
+      "regions": [],
+      "root_vegetable": true,
+      "sesame_source": false,
+      "shellfish_source": false,
+      "soy_source": false,
+      "sulphite_source": false,
+      "synthetic": false,
+      "tree_nut_source": false,
+      "uncertainty_flags": [],
+      "asserted_flags": [
+        "plant_origin",
+        "root_vegetable"
+      ],
+      "celery_source": false
     },
     {
       "alcohol_content": null,
@@ -24286,7 +24377,8 @@
     {
       "alcohol_content": null,
       "aliases": [
-        "jerusalem-artichokes, raw"
+        "jerusalem-artichokes, raw",
+        "jerusalem artichokes"
       ],
       "animal_origin": false,
       "animal_species": null,
@@ -24307,13 +24399,14 @@
       "onion_source": false,
       "plant_origin": true,
       "regions": [],
-      "root_vegetable": false,
+      "root_vegetable": true,
       "sesame_source": false,
       "soy_source": false,
       "synthetic": false,
       "uncertainty_flags": [],
       "asserted_flags": [
-        "plant_origin"
+        "plant_origin",
+        "root_vegetable"
       ]
     },
     {
@@ -28409,13 +28502,14 @@
       "onion_source": false,
       "plant_origin": true,
       "regions": [],
-      "root_vegetable": false,
+      "root_vegetable": true,
       "sesame_source": false,
       "soy_source": false,
       "synthetic": false,
       "uncertainty_flags": [],
       "asserted_flags": [
         "plant_origin",
+        "root_vegetable",
         "shellfish_source"
       ],
       "shellfish_source": false
@@ -30058,13 +30152,14 @@
       "onion_source": false,
       "plant_origin": true,
       "regions": [],
-      "root_vegetable": false,
+      "root_vegetable": true,
       "sesame_source": false,
       "soy_source": false,
       "synthetic": false,
       "uncertainty_flags": [],
       "asserted_flags": [
-        "plant_origin"
+        "plant_origin",
+        "root_vegetable"
       ]
     },
     {
@@ -35372,13 +35467,14 @@
       "onion_source": false,
       "plant_origin": true,
       "regions": [],
-      "root_vegetable": false,
+      "root_vegetable": true,
       "sesame_source": false,
       "soy_source": false,
       "synthetic": false,
       "uncertainty_flags": [],
       "asserted_flags": [
-        "plant_origin"
+        "plant_origin",
+        "root_vegetable"
       ]
     },
     {
@@ -35407,13 +35503,14 @@
       "onion_source": false,
       "plant_origin": true,
       "regions": [],
-      "root_vegetable": false,
+      "root_vegetable": true,
       "sesame_source": false,
       "soy_source": false,
       "synthetic": false,
       "uncertainty_flags": [],
       "asserted_flags": [
-        "plant_origin"
+        "plant_origin",
+        "root_vegetable"
       ]
     },
     {
@@ -35507,7 +35604,7 @@
       "knowledge_state": "AUTO_CLASSIFIED",
       "may_contain": [],
       "nut_source": null,
-      "onion_source": false,
+      "onion_source": true,
       "plant_origin": true,
       "regions": [],
       "root_vegetable": false,
@@ -35516,6 +35613,7 @@
       "synthetic": false,
       "uncertainty_flags": [],
       "asserted_flags": [
+        "onion_source",
         "plant_origin"
       ]
     },
@@ -35793,7 +35891,7 @@
       "knowledge_state": "AUTO_CLASSIFIED",
       "may_contain": [],
       "nut_source": null,
-      "onion_source": false,
+      "onion_source": true,
       "plant_origin": true,
       "regions": [],
       "root_vegetable": false,
@@ -35802,6 +35900,7 @@
       "synthetic": false,
       "uncertainty_flags": [],
       "asserted_flags": [
+        "onion_source",
         "plant_origin"
       ]
     },
@@ -35903,8 +36002,9 @@
     {
       "alcohol_content": null,
       "aliases": [
-        "jerusalem-artichokes, raw",
-        "sunchoke"
+        "sunchoke",
+        "jerusalem artichoke",
+        "jerusalem-artichoke"
       ],
       "animal_origin": false,
       "animal_species": null,
@@ -35925,13 +36025,14 @@
       "onion_source": false,
       "plant_origin": true,
       "regions": [],
-      "root_vegetable": false,
+      "root_vegetable": true,
       "sesame_source": false,
       "soy_source": false,
       "synthetic": false,
       "uncertainty_flags": [],
       "asserted_flags": [
-        "plant_origin"
+        "plant_origin",
+        "root_vegetable"
       ]
     },
     {
@@ -36160,7 +36261,7 @@
     {
       "alcohol_content": null,
       "aliases": [
-        "A\u00e7ai"
+        "Açai"
       ],
       "animal_origin": false,
       "animal_species": null,
@@ -40121,13 +40222,14 @@
       "onion_source": false,
       "plant_origin": true,
       "regions": [],
-      "root_vegetable": false,
+      "root_vegetable": true,
       "sesame_source": false,
       "soy_source": false,
       "synthetic": false,
       "uncertainty_flags": [],
       "asserted_flags": [
-        "plant_origin"
+        "plant_origin",
+        "root_vegetable"
       ]
     },
     {
@@ -43896,7 +43998,7 @@
       "alcohol_content": null,
       "aliases": [
         "comte cheese",
-        "comt\u00e9 cheese"
+        "comté cheese"
       ],
       "animal_origin": true,
       "animal_species": null,
@@ -43932,7 +44034,7 @@
       "aliases": [],
       "animal_origin": true,
       "animal_species": null,
-      "canonical_name": "comt\u00e9",
+      "canonical_name": "comté",
       "contains": [],
       "dairy_source": true,
       "derived_from": [],
@@ -61051,7 +61153,7 @@
       "aliases": [],
       "animal_origin": true,
       "animal_species": null,
-      "canonical_name": "filmj\u00f6lk",
+      "canonical_name": "filmjölk",
       "contains": [],
       "dairy_source": true,
       "derived_from": [],
@@ -65424,10 +65526,10 @@
     },
     {
       "aliases": [],
-      "canonical_name": "pur\u00e9e",
+      "canonical_name": "purée",
       "coverage_os_managed": true,
       "flags": {},
-      "id": "pur\u00e9e",
+      "id": "purée",
       "role": "culinary_keep",
       "asserted_flags": []
     },

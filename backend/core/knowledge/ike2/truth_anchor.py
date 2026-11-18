@@ -225,7 +225,14 @@ _add(["soy lecithin"], "soy lecithin", _f(soy_source=True))
 _add(["sesame", "sesame seed"], "sesame", _f(sesame_source=True))
 _add(["tahini", "tahini paste"], "tahini", _f(sesame_source=True))
 _add(["mustard", "mustard seed", "mustard seeds", "rai"], "mustard", _f(mustard_source=True))
-_add(["celery", "celeriac", "celery stalk"], "celery", _f(celery_source=True))
+_add(["celery", "celery stalk"], "celery", _f(celery_source=True))
+# Celeriac is celery-allergy-relevant but a root (Jain); must not share the
+# stalk-celery L1 identity (draft #41 — owner sign-off before merge).
+_add(
+    ["celeriac", "celery root", "celery roots"],
+    "celeriac",
+    _f(celery_source=True, root_vegetable=True),
+)
 _add(
     ["lupin", "lupin flour", "lupins", "lupini", "lupini beans", "lupine beans"],
     "lupin",
