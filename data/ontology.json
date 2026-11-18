@@ -60504,7 +60504,7 @@
       "animal_species": null,
       "canonical_name": "cultured buttermilk",
       "contains": [],
-      "dairy_source": false,
+      "dairy_source": true,
       "derived_from": [],
       "egg_source": false,
       "fermented": false,
@@ -60528,7 +60528,8 @@
       "synthetic": false,
       "uncertainty_flags": [],
       "asserted_flags": [
-        "animal_origin"
+        "animal_origin",
+        "dairy_source"
       ]
     },
     {
@@ -61260,7 +61261,7 @@
       "animal_species": null,
       "canonical_name": "flavoured milks",
       "contains": [],
-      "dairy_source": false,
+      "dairy_source": true,
       "derived_from": [],
       "egg_source": false,
       "fermented": false,
@@ -61284,7 +61285,8 @@
       "synthetic": false,
       "uncertainty_flags": [],
       "asserted_flags": [
-        "animal_origin"
+        "animal_origin",
+        "dairy_source"
       ]
     },
     {
@@ -62330,7 +62332,7 @@
       "fish_source": false,
       "fungal": false,
       "garlic_source": false,
-      "gluten_source": false,
+      "gluten_source": true,
       "id": "maize_gluten_feed",
       "insect_derived": false,
       "knowledge_state": "AUTO_CLASSIFIED",
@@ -62347,6 +62349,7 @@
       "synthetic": false,
       "uncertainty_flags": [],
       "asserted_flags": [
+        "gluten_source",
         "plant_origin"
       ]
     },
@@ -64322,7 +64325,7 @@
       "fish_source": false,
       "fungal": false,
       "garlic_source": false,
-      "gluten_source": false,
+      "gluten_source": true,
       "id": "sorghum_gluten_feed",
       "insect_derived": false,
       "knowledge_state": "AUTO_CLASSIFIED",
@@ -64339,6 +64342,7 @@
       "synthetic": false,
       "uncertainty_flags": [],
       "asserted_flags": [
+        "gluten_source",
         "plant_origin"
       ]
     },
@@ -64759,7 +64763,7 @@
       "animal_species": null,
       "canonical_name": "traditional buttermilk (churning)",
       "contains": [],
-      "dairy_source": false,
+      "dairy_source": true,
       "derived_from": [],
       "egg_source": false,
       "fermented": false,
@@ -64783,7 +64787,8 @@
       "synthetic": false,
       "uncertainty_flags": [],
       "asserted_flags": [
-        "animal_origin"
+        "animal_origin",
+        "dairy_source"
       ]
     },
     {
