@@ -45,6 +45,7 @@ _FERMENTED_JAIN_FORMS = (
     "chinkiang vinegar",
     "malt vinegar",
     "sherry vinegar",
+    "sauerkraut",
 )
 
 
@@ -135,6 +136,7 @@ def test_beer_matrix_only_gluten_free_moves():
         "apple cider vinegar",
         "balsamic vinegar",
         "champagne vinegar",
+        "sauerkraut",
     ),
 )
 def test_fermented_matrix_only_jain_moves(form: str):
@@ -149,6 +151,7 @@ def test_fermented_matrix_only_jain_moves(form: str):
         "apple cider vinegar": {},
         "balsamic vinegar": {},
         "champagne vinegar": {},
+        "sauerkraut": {},
     }
     default_safe = {
         fw: "SAFE"
