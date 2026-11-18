@@ -33956,12 +33956,12 @@
       "root_vegetable": false,
       "onion_source": false,
       "garlic_source": false,
-      "fermented": false,
+      "fermented": true,
       "enzyme_animal_source": false,
       "enzyme_microbial_source": false,
       "animal_species": null,
       "alcohol_content": null,
-      "alcohol_role": "none"
+      "alcohol_role": "fermentation_trace"
     },
     "knowledge_state": "LOCKED",
     "alias_type": "e_number"
@@ -33991,12 +33991,12 @@
       "root_vegetable": false,
       "onion_source": false,
       "garlic_source": false,
-      "fermented": false,
+      "fermented": true,
       "enzyme_animal_source": false,
       "enzyme_microbial_source": false,
       "animal_species": null,
       "alcohol_content": null,
-      "alcohol_role": "none"
+      "alcohol_role": "fermentation_trace"
     },
     "knowledge_state": "LOCKED",
     "alias_type": "common"
@@ -34026,12 +34026,12 @@
       "root_vegetable": false,
       "onion_source": false,
       "garlic_source": false,
-      "fermented": false,
+      "fermented": true,
       "enzyme_animal_source": false,
       "enzyme_microbial_source": false,
       "animal_species": null,
       "alcohol_content": null,
-      "alcohol_role": "none"
+      "alcohol_role": "fermentation_trace"
     },
     "knowledge_state": "LOCKED",
     "alias_type": "common"
@@ -34061,12 +34061,12 @@
       "root_vegetable": false,
       "onion_source": false,
       "garlic_source": false,
-      "fermented": false,
+      "fermented": true,
       "enzyme_animal_source": false,
       "enzyme_microbial_source": false,
       "animal_species": null,
       "alcohol_content": null,
-      "alcohol_role": "none"
+      "alcohol_role": "fermentation_trace"
     },
     "knowledge_state": "LOCKED",
     "alias_type": "common"
@@ -34096,12 +34096,12 @@
       "root_vegetable": false,
       "onion_source": false,
       "garlic_source": false,
-      "fermented": false,
+      "fermented": true,
       "enzyme_animal_source": false,
       "enzyme_microbial_source": false,
       "animal_species": null,
       "alcohol_content": null,
-      "alcohol_role": "none"
+      "alcohol_role": "fermentation_trace"
     },
     "knowledge_state": "LOCKED",
     "alias_type": "common"
@@ -34131,12 +34131,12 @@
       "root_vegetable": false,
       "onion_source": false,
       "garlic_source": false,
-      "fermented": false,
+      "fermented": true,
       "enzyme_animal_source": false,
       "enzyme_microbial_source": false,
       "animal_species": null,
       "alcohol_content": null,
-      "alcohol_role": "none"
+      "alcohol_role": "fermentation_trace"
     },
     "knowledge_state": "LOCKED",
     "alias_type": "common"
@@ -34166,12 +34166,12 @@
       "root_vegetable": false,
       "onion_source": false,
       "garlic_source": false,
-      "fermented": false,
+      "fermented": true,
       "enzyme_animal_source": false,
       "enzyme_microbial_source": false,
       "animal_species": null,
       "alcohol_content": null,
-      "alcohol_role": "none"
+      "alcohol_role": "fermentation_trace"
     },
     "knowledge_state": "LOCKED",
     "alias_type": "common"
@@ -34201,12 +34201,12 @@
       "root_vegetable": false,
       "onion_source": false,
       "garlic_source": false,
-      "fermented": false,
+      "fermented": true,
       "enzyme_animal_source": false,
       "enzyme_microbial_source": false,
       "animal_species": null,
       "alcohol_content": null,
-      "alcohol_role": "none"
+      "alcohol_role": "fermentation_trace"
     },
     "knowledge_state": "LOCKED",
     "alias_type": "common"

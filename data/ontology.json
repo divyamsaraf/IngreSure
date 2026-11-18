@@ -28592,7 +28592,7 @@
       "dairy_source": false,
       "derived_from": [],
       "egg_source": false,
-      "fermented": false,
+      "fermented": true,
       "fungal": false,
       "garlic_source": false,
       "gluten_source": false,
@@ -28610,6 +28610,7 @@
       "synthetic": false,
       "uncertainty_flags": [],
       "asserted_flags": [
+        "fermented",
         "plant_origin"
       ]
     },
@@ -38859,7 +38860,7 @@
       "dairy_source": false,
       "derived_from": [],
       "egg_source": false,
-      "fermented": false,
+      "fermented": true,
       "fungal": false,
       "garlic_source": false,
       "gluten_source": false,
@@ -38877,6 +38878,7 @@
       "synthetic": false,
       "uncertainty_flags": [],
       "asserted_flags": [
+        "fermented",
         "plant_origin"
       ]
     },
@@ -38890,7 +38892,7 @@
       "dairy_source": false,
       "derived_from": [],
       "egg_source": false,
-      "fermented": false,
+      "fermented": true,
       "fungal": false,
       "garlic_source": false,
       "gluten_source": false,
@@ -38908,6 +38910,7 @@
       "synthetic": false,
       "uncertainty_flags": [],
       "asserted_flags": [
+        "fermented",
         "plant_origin"
       ]
     },
@@ -38921,7 +38924,7 @@
       "dairy_source": false,
       "derived_from": [],
       "egg_source": false,
-      "fermented": false,
+      "fermented": true,
       "fungal": false,
       "garlic_source": false,
       "gluten_source": false,
@@ -38939,6 +38942,7 @@
       "synthetic": false,
       "uncertainty_flags": [],
       "asserted_flags": [
+        "fermented",
         "plant_origin"
       ]
     },
@@ -38952,7 +38956,7 @@
       "dairy_source": false,
       "derived_from": [],
       "egg_source": false,
-      "fermented": false,
+      "fermented": true,
       "fungal": false,
       "garlic_source": false,
       "gluten_source": false,
@@ -38970,6 +38974,7 @@
       "synthetic": false,
       "uncertainty_flags": [],
       "asserted_flags": [
+        "fermented",
         "plant_origin"
       ]
     },

@@ -10351,7 +10351,7 @@
       "root_vegetable": false,
       "onion_source": false,
       "garlic_source": false,
-      "fermented": false,
+      "fermented": true,
       "animal_species": null,
       "nut_source": null,
       "alcohol_content": null,

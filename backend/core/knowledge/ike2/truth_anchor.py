@@ -213,7 +213,14 @@ _add(
 _add(["soy", "soybean", "edamame"], "soy", _f(soy_source=True))
 _add(["tofu"], "tofu", _f(soy_source=True))
 _add(["tempeh"], "tempeh", _f(soy_source=True, fungal=True))
-_add(["soy sauce"], "soy sauce", _f(soy_source=True))
+# fermented aligns L1 with L2 soy_sauce (Jain WARN); L1 otherwise shadows L2.
+# gluten_source: typical shoyu wheat (matches PROCESSED_FOOD_TO_BASE); keep-whole
+# would otherwise flip gluten_free SAFE when recipe-tear stops.
+_add(
+    ["soy sauce"],
+    "soy sauce",
+    _f(soy_source=True, fermented=True, gluten_source=True),
+)
 _add(["soy lecithin"], "soy lecithin", _f(soy_source=True))
 _add(["sesame", "sesame seed"], "sesame", _f(sesame_source=True))
 _add(["tahini", "tahini paste"], "tahini", _f(sesame_source=True))
@@ -472,7 +479,8 @@ _add_compound(["enzymes", "enzyme"], "enzymes")
 # --- alcohol sources ---------------------------------------------------------
 _add(["ethanol", "ethyl alcohol"], "ethanol", _f(alcohol_content=1.0))
 _add(["wine"], "wine", _f(alcohol_content=1.0, alcohol_role="ingredient"))
-_add(["beer"], "beer", _f(alcohol_content=1.0, alcohol_role="ingredient"))
+# gluten_source: L2 beer already asserts it; L1 first-wins left gluten_free SAFE.
+_add(["beer"], "beer", _f(alcohol_content=1.0, alcohol_role="ingredient", gluten_source=True))
 _add(["vodka"], "vodka", _f(alcohol_content=1.0, alcohol_role="ingredient"))
 _add(["rum"], "rum", _f(alcohol_content=1.0, alcohol_role="ingredient"))
 _add(["whiskey", "whisky"], "whiskey", _f(alcohol_content=1.0, alcohol_role="ingredient"))
@@ -486,9 +494,9 @@ _add(["wine vinegar", "red wine vinegar", "white wine vinegar"], "wine vinegar",
      _f(alcohol_content=1.0, alcohol_role="ingredient"))
 # Culinary plant vinegars without wine identity — Halal/Kosher-safe when anchored.
 _add(["apple cider vinegar", "cider vinegar"], "apple cider vinegar",
-     _f(animal_origin=False, plant_origin=True, alcohol_role="none"))
+     _f(animal_origin=False, plant_origin=True, alcohol_role="none", fermented=True))
 _add(["balsamic vinegar"], "balsamic vinegar",
-     _f(animal_origin=False, plant_origin=True, alcohol_role="none"))
+     _f(animal_origin=False, plant_origin=True, alcohol_role="none", fermented=True))
 _add_compound(["natural flavoring", "natural flavouring"], "natural flavors")
 
 # --- Jain / no-onion-no-garlic ---------------------------------------------
