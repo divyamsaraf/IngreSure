@@ -331,6 +331,10 @@ _VEGETABLE_OIL_CAP_RESTRICTIONS = (
     "soy_allergy",
     "tree_nut_allergy",
 )
+# Flip-blocking false-SAFE caps (#43): scope to the hazard framework only.
+# Hing must NOT get a global WARN — Jain cooks use it in place of onion/garlic.
+_GLUTEN_FREE_CAP_RESTRICTIONS = ("gluten_free",)
+_SULFITE_SENSITIVE_CAP_RESTRICTIONS = ("sulfite_sensitive",)
 _add(
     ["vegetable oil", "edible vegetable oil"],
     "vegetable oil",
@@ -451,15 +455,50 @@ _add(
     ),
 )
 _add(["invert sugar syrup", "invert sugar"], "invert sugar", _f(plant_origin=True))
+# Hing / asafoetida: often compounded with wheat flour → gluten_free UNCERTAIN only.
+# Keep Jain SAFE (staple onion/garlic substitute).
+_add(
+    ["hing", "asafoetida", "asafetida", "heeng"],
+    "asafetida",
+    _f(
+        animal_origin=False,
+        plant_origin=True,
+        verdict_cap="WARN",
+        verdict_cap_restrictions=list(_GLUTEN_FREE_CAP_RESTRICTIONS),
+    ),
+)
+# Papad / papadum: usually lentil, but wheat versions exist → gluten_free only.
+_add(
+    ["papad", "papadum", "papadums", "appalam"],
+    "papadum",
+    _f(
+        animal_origin=False,
+        plant_origin=True,
+        verdict_cap="WARN",
+        verdict_cap_restrictions=list(_GLUTEN_FREE_CAP_RESTRICTIONS),
+    ),
+)
+# Dried apricots: usually sulphited → sulfite_sensitive UNCERTAIN only.
+# Plural surface only — singular was previously unresolved; adding it would
+# create UNCERTAIN→SAFE cells outside the intended sulfite move.
+_add(
+    ["dried apricots"],
+    "dried apricots",
+    _f(
+        animal_origin=False,
+        plant_origin=True,
+        verdict_cap="WARN",
+        verdict_cap_restrictions=list(_SULFITE_SENSITIVE_CAP_RESTRICTIONS),
+    ),
+)
 # Yeast / yeast-culture: Jain fungal FAIL. Empty flags here previously shadowed
 # richer L2 ontology rows (baker's yeast fungal=True) and left plain "yeast" SAFE.
+# Brewer's yeast is a separate L1 — can carry gluten from beer production.
 _add(
     [
         "yeast",
         "baker's yeast",
         "bakers yeast",
-        "brewer's yeast",
-        "brewers yeast",
         "nutritional yeast",
         "active dry yeast",
         "instant yeast",
@@ -468,6 +507,17 @@ _add(
     ],
     "yeast",
     _f(fungal=True, plant_origin=True, animal_origin=False),
+)
+_add(
+    ["brewer's yeast", "brewers yeast", "yeast brewers"],
+    "brewer's yeast",
+    _f(
+        fungal=True,
+        plant_origin=True,
+        animal_origin=False,
+        verdict_cap="WARN",
+        verdict_cap_restrictions=list(_GLUTEN_FREE_CAP_RESTRICTIONS),
+    ),
 )
 _add(
     ["yeast extract", "autolyzed yeast extract", "yeast extract spread"],
